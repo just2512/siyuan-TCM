@@ -66,6 +66,14 @@ class CatalogueBuilderTests(unittest.TestCase):
                 "FOUND",
             )
             self.assertEqual(
+                catalog.resolve_asset_reference(r"assets\\nested-a\\same.png", root, lookup)[0],
+                "FOUND",
+            )
+            self.assertEqual(
+                catalog.resolve_asset_reference(r"..\\assets\\..\\..\\outside.txt", root, lookup)[0],
+                "INVALID_REFERENCE",
+            )
+            self.assertEqual(
                 catalog.resolve_asset_reference("../assets/same.png", root, lookup)[0],
                 "AMBIGUOUS",
             )
