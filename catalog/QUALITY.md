@@ -50,3 +50,11 @@
 - 自动主题标签仅用于检索导航，不可作为辨证、处方或临床决策规则。
 - SHA-256 只能识别文件字节完全一致，不能识别改写、节选或语义重复。
 - 索引生成不改变原始资料的版权、授权及使用限制。
+
+
+## 标题来源与主题证据边界（2026-11-04 后续修订）
+
+- documents.csv 新增 title_source：PROPERTY 表示读取到思源 Properties.title；BODY_FIRST_LINE 表示通用标题回退到正文首行；FILENAME 表示正文为空时回退文件名；RAW_FILENAME 表示 JSON 无法解析时使用文件名。
+- 正文首行和文件名回退仅供导航，不应作为已核验书名、篇名或原始标题。
+- topic_review.csv 新增 catalog_topics 与 evidence_scope。分类标签由完整正文计算，但复核队列只能使用 documents.csv 保存的前 2000 字检索片段展示关键词证据；未在片段中出现的词不代表分类器没有命中。
+- 逐篇来源、版本及校勘仍为 UNVERIFIED / NOT_REVIEWED；标题来源可追溯不等于标题内容已人工核验。
