@@ -111,6 +111,8 @@ class CatalogueBuilderTests(unittest.TestCase):
             output = Path(temp) / "out"
             result = catalog.build(root, output, None, {"notebook-a": "本草资料"})
             self.assertEqual(result["documents"], 1)
+            self.assertFalse(result["asset_scan_performed"])
+            self.assertEqual(result["asset_prefix_candidates"], 0)
             self.assertTrue((output / "documents.csv").is_file())
             self.assertTrue((output / "topic_index.csv").is_file())
             self.assertTrue((output / "asset_references.csv").is_file())
@@ -231,7 +233,9 @@ class CatalogueBuilderTests(unittest.TestCase):
             (assets / "unrelated.jpg").write_bytes(b"d")
             output = Path(temp) / "generated"
 
-            catalog.build(root, output, assets, {})
+            result = catalog.build(root, output, assets, {})
+            self.assertTrue(result["asset_scan_performed"])
+            self.assertEqual(result["asset_prefix_candidates"], 4)
 
             with (output / "asset_prefix_candidates.csv").open(
                 encoding="utf-8-sig", newline=""
