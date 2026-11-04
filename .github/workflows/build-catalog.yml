@@ -32,7 +32,7 @@ jobs:
       - name: Test catalogue generator
         run: python -m unittest discover -s tools -p 'test_*.py' -v
       - name: Generate catalogue
-        run: python tools/build_siyuan_catalog.py
+        run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
       - name: Commit generated catalogue
         run: |
           git config user.name 'github-actions[bot]'
