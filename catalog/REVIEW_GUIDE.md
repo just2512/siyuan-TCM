@@ -40,9 +40,11 @@
 
 文件：`topic_review.csv`
 
-- `catalog_topics` 是完整正文初筛生成的现有主题标签。\n- `catalog_matched_terms` 是生成正式主题标签时，在标题和完整正文中命中的关键词证据；它用于追溯机器标签的触发依据，不代表语义审核。\n
+- `catalog_topics` 是完整正文初筛生成的现有主题标签。
+- `catalog_matched_terms` 是生成正式主题标签时，在标题和完整正文中命中的关键词证据；它用于追溯机器标签的触发依据，不代表语义审核。\n
 - `title_matched_terms` 是标题中的命中词。
-- `body_excerpt_matched_terms` 仅覆盖前 2,000 字正文检索片段。\n- `catalog_matched_terms` 覆盖完整正文，`body_excerpt_matched_terms` 仍只覆盖前 2,000 字；两者用途不同。
+- `body_excerpt_matched_terms` 仅覆盖前 2,000 字正文检索片段。
+- `catalog_matched_terms` 覆盖完整正文，`body_excerpt_matched_terms` 仍只覆盖前 2,000 字；两者用途不同。
 - `excerpt_topics` 是上述有限证据片段所命中的主题；它与完整正文主题标签不一致时，不代表程序错误，需回到原始 .sy 检查。
 
 建议人工状态：
