@@ -163,7 +163,7 @@ def resolve_asset_reference(reference: str, assets_dir: Path | None,
                             ) -> tuple[str, str, str]:
     if assets_dir is None:
         return "NOT_CHECKED", "", "NOT_CHECKED"
-    raw = reference.replace("\\\\", "/")
+    raw = reference.replace("\\", "/")
     # SiYuan exports commonly use either assets/... or ../assets/... .
     # Accept only those explicit prefixes; never normalize away arbitrary
     # parent-directory segments because that can turn traversal into a valid path.
