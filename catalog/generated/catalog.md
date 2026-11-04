@@ -46,6 +46,7 @@
 
 - documents.csv：逐篇文件清单、标题、目录、主题标签、解析状态、哈希及正文检索片段。
 - topic_index.csv：按主题展开的文档索引。
+- metadata_inventory.csv：Properties 中非空字段的文档覆盖数；不导出字段值。
 - asset_references.csv：文档引用的 assets 路径及本地映射状态。
 - catalog.md：本概况报告。
 
