@@ -37,6 +37,16 @@ class CatalogueBuilderTests(unittest.TestCase):
         self.assertEqual(catalog.extract_title_with_source(payload, "fallback"), ("小柴胡汤证", "BODY_FIRST_LINE"))
         self.assertEqual(catalog.extract_text(payload), "小柴胡汤证")
 
+    def test_counts_child_node_types_without_metadata_nodes(self):
+        payload = {
+            "Properties": {"title": "空文档"},
+            "Children": [
+                {"Type": "NodeParagraph", "Properties": {"id": "p1"}},
+                {"Type": "NodeParagraph", "Properties": {"id": "p2"}},
+            ],
+        }
+        self.assertEqual(catalog.collect_child_node_types(payload), {"NodeParagraph": 2})
+
     def test_extracts_asset_paths_without_eating_trailing_punctuation(self):
         raw = '![图](assets/herb.png) and ../assets/pulse.jpg，'
         refs = sorted({m.rstrip(catalog.TRAILING) for m in catalog.ASSET_RE.findall(raw)})
@@ -62,6 +72,8 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("本草资料", csv_text)
             self.assertIn("title_source", csv_text)
             self.assertIn("PROPERTY", csv_text)
+            self.assertIn("node_types", csv_text)
+            self.assertIn("NodeText:1", csv_text)
 
 
 if __name__ == "__main__":
