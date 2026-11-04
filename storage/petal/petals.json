@@ -1,0 +1,11 @@
+[
+	{
+		"name": "siyuan-color-scheme",
+		"displayName": "配色方案",
+		"enabled": true,
+		"incompatible": false,
+		"js": "",
+		"css": "",
+		"i18n": null
+	}
+]

@@ -1,0 +1,11 @@
+{
+	"colorSchemeStyleId": "color-scheme-plugin",
+	"currentLight": "default",
+	"currentDark": "default",
+	"lightSchemes": {
+		"default": "系统默认"
+	},
+	"darkSchemes": {
+		"default": "系统默认"
+	}
+}
