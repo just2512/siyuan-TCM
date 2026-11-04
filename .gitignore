@@ -1,0 +1,11 @@
+# 排除大体积附件目录
+assets/
+
+# 顺便建议排除的思源本地缓存/配置（按需保留）
+storage/
+.siyuan/
+plugins/
+
+# 系统文件
+.DS_Store
+Thumbs.db
