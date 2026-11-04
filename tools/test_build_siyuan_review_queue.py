@@ -49,6 +49,8 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("matched_terms", topics[0])
             self.assertEqual(topics[0]["evidence_scope"], "TITLE_PLUS_FIRST_2000_BODY_CHARS")
             self.assertEqual(topics[0]["catalog_topics"], "伤寒与温病;经典与理论")
+            self.assertEqual(topics[0]["catalog_topic_count"], "2")
+            self.assertEqual(topics[0]["excerpt_topic_count"], "2")
             self.assertEqual(topics[0]["review_status"], "NOT_REVIEWED")
 
 
