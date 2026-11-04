@@ -96,7 +96,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             doc_dir = root / "notebook-a"
             doc_dir.mkdir(parents=True)
             (doc_dir / "doc.sy").write_text(json.dumps({
-                "Properties": {"title": "神农本草经"},
+                "Properties": {"title": "神农本草经", "author": "测试作者", "publisher": ""},
                 "Children": [{"Type": "NodeText", "Data": "本草药性 assets/herb.png"}],
             }, ensure_ascii=False), encoding="utf-8")
             output = Path(temp) / "out"
@@ -112,6 +112,12 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("PROPERTY", csv_text)
             self.assertIn("node_types", csv_text)
             self.assertIn("NodeText:1", csv_text)
+            self.assertIn("properties_fields", csv_text)
+            self.assertIn("title;author", csv_text)
+            metadata_text = (output / "metadata_inventory.csv").read_text(encoding="utf-8-sig")
+            self.assertIn("author,1", metadata_text)
+            self.assertIn("title,1", metadata_text)
+            self.assertNotIn("测试作者", metadata_text)
 
 
     def test_build_uses_safe_asset_resolver_for_generated_reference_index(self):
