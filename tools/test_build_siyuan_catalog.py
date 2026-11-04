@@ -29,7 +29,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             "Children": [
                 {"Type": "NodeParagraph", "Children": [
                     {"Type": "NodeTextMark", "TextMarkTextContent": "小柴胡汤证"},
-                    {"Type": "NodeKramdownSpanIAL", "Data": "{: style=\\"color:red\\"}"}
+                    {"Type": "NodeKramdownSpanIAL", "Data": "{: style=color-red}"}
                 ]}
             ],
         }
