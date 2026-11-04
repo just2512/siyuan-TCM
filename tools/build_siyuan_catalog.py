@@ -157,7 +157,7 @@ def resolve_asset_reference(reference: str, assets_dir: Path | None,
                             ) -> tuple[str, str, str]:
     if assets_dir is None:
         return "NOT_CHECKED", "", "NOT_CHECKED"
-    normalized = reference.replace("\\\\", "/").lstrip("/")
+    normalized = reference.replace("\\", "/").lstrip("/")
     while normalized.startswith("../"):
         normalized = normalized[3:]
     parts = Path(normalized).parts
