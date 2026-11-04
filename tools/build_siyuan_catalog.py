@@ -183,8 +183,10 @@ def main() -> int:
     assets = args.assets_dir.expanduser().resolve() if args.assets_dir else None
     if assets and not assets.is_dir():
         p.error(f"assets 目录不存在：{assets}")
+    default_map = Path(__file__).resolve().parents[1] / "catalog" / "notebook-map.json"
+    map_path = args.notebook_map or (default_map if default_map.is_file() else None)
     try:
-        result = build(root, output, assets, load_notebook_map(args.notebook_map))
+        result = build(root, output, assets, load_notebook_map(map_path))
     except (OSError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
