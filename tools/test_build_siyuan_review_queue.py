@@ -51,6 +51,9 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertEqual(topics[0]["catalog_topics"], "伤寒与温病;经典与理论")
             self.assertEqual(topics[0]["catalog_topic_count"], "2")
             self.assertEqual(topics[0]["excerpt_topic_count"], "2")
+            self.assertEqual(topics[0]["review_bucket"], "2_TOPICS")
+            self.assertIn("伤寒与温病:伤寒论", topics[0]["title_matched_terms"])
+            self.assertIn("经典与理论:黄帝内经", topics[0]["body_excerpt_matched_terms"])
             self.assertEqual(topics[0]["review_status"], "NOT_REVIEWED")
 
 
