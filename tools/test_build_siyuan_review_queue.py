@@ -25,6 +25,7 @@ class ReviewQueueTests(unittest.TestCase):
                     "path": "book/a.sy", "notebook": "书籍", "title": "伤寒论",
                     "title_source": "PROPERTY", "topics": "伤寒与温病;经典与理论", "parse_status": "PARSED",
                     "search_text": "伤寒论 太阳病 黄帝内经 阴阳",
+                    "topic_matched_terms": "伤寒与温病:伤寒论;经典与理论:黄帝内经",
                 })
                 writer.writerow({
                     "path": "book/b.sy", "notebook": "书籍", "title": "空白",
@@ -66,6 +67,10 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("matched_terms", topics[0])
             self.assertEqual(topics[0]["evidence_scope"], "TITLE_PLUS_FIRST_2000_BODY_CHARS")
             self.assertEqual(topics[0]["catalog_topics"], "伤寒与温病;经典与理论")
+            self.assertEqual(
+                topics[0]["catalog_matched_terms"],
+                "伤寒与温病:伤寒论;经典与理论:黄帝内经",
+            )
             self.assertEqual(topics[0]["catalog_topic_count"], "2")
             self.assertEqual(topics[0]["excerpt_topic_count"], "2")
             self.assertEqual(topics[0]["review_bucket"], "2_TOPICS")
