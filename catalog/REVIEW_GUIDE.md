@@ -90,6 +90,10 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `NOT_CHECKED`：没有提供 `--assets-dir`，不是缺失结论。
 - `asset_references.csv` 的 `match_method` 记录命中方式；不得把文件名回退当成精确路径命中。
 
+- `asset_prefix_candidates.csv`：在提供 `--assets-dir` 时，对全部本地附件文件名做候选搜索；仅输出文件名线索，不检查图像内容、不自动匹配。
+- `asset_audit.md` 同时报告候选扫描状态。`NOT_RUN` 表示没有提供本地附件目录，不能将候选数 0 理解为未匹配附件为 0；只有 `COMPLETED` 才能读取候选统计。
+
+
 不要将 assets 复制或上传到仓库。对 `MISSING` 项应先核对思源导出目录结构和相对路径，再判断是否真正缺失。
 
 
