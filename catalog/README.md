@@ -41,6 +41,9 @@
 
 ```bash
 python tools/build_siyuan_catalog.py
+
+# 运行索引工具单元测试
+python -m unittest discover -s tools -p 'test_*.py' -v
 ```
 
 指定思源数据目录：
@@ -65,7 +68,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | catalog.md | 本次扫描概况、目录统计和重复文件清单 |
 | asset_audit.md | 附件引用审计概况 |
 
-如需把思源内部目录 ID 显示为笔记本名称，可创建 JSON 映射文件并通过 --notebook-map 传入，格式为：
+仓库提供 catalog/notebook-map.json，工具默认读取该映射，将思源内部目录 ID 显示为可读笔记本名称。若扫描其他数据集，可通过 --notebook-map 指定自己的映射文件，格式为：
 
 ```json
 {
@@ -92,7 +95,10 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 
 - [x] Git tree 文件结构与 .sy 数量盘点
 - [x] 顶层目录/笔记本文档数量及字节数统计
-- [x] 仓库内可重复运行的逐篇索引工具初版
+- [x] 仓库内可重复运行的逐篇索引工具
+- [x] SiYuan 文本节点提取、通用标题回退与 IAL 样式噪声过滤
+- [x] 笔记本目录 ID 到显示名称映射
+- [x] 索引工具单元测试并接入 GitHub Actions
 - [ ] 在真实仓库工作副本上执行工具并核对生成结果
 - [ ] 对 2,667 篇逐篇核验标题、来源、版本和校勘状态
 - [ ] 用户本地 assets 映射（需要本地目录参与，不上传附件）
