@@ -58,3 +58,20 @@
 - 正文首行和文件名回退仅供导航，不应作为已核验书名、篇名或原始标题。
 - topic_review.csv 新增 catalog_topics 与 evidence_scope。分类标签由完整正文计算，但复核队列只能使用 documents.csv 保存的前 2000 字检索片段展示关键词证据；未在片段中出现的词不代表分类器没有命中。
 - 逐篇来源、版本及校勘仍为 UNVERIFIED / NOT_REVIEWED；标题来源可追溯不等于标题内容已人工核验。
+
+
+## 逐篇核验队列实测结果（2026-11-04）
+
+最近一次全量生成提交：`6062d33972b03f6328343bf465df13d110978523`。对应工作流：<https://github.com/just2512/siyuan-TCM/actions/runs/41819737909>，测试、索引生成、核验队列生成和提交均完成。
+
+- 2,667 篇文档；33 篇正文抽取为空；5,309 条附件引用仍为 NOT_CHECKED。
+- 标题来源：PROPERTY 2,662 篇；BODY_FIRST_LINE 5 篇。未出现 FILENAME 或 RAW_FILENAME 回退。
+- 多主题复核队列 1,425 篇：5_PLUS_TOPICS 153 篇；3_TO_4_TOPICS 650 篇；2_TOPICS 622 篇。这些是按主题标签数量分组，不代表错误程度。
+- `topic_review.csv` 将标题命中词与前 2,000 字正文片段命中词分开记录。完整正文分类与有限片段证据范围不同，不能将片段中未显示某个词解释为分类器未命中。
+- 新增 `empty_body_review.csv`，单独列出 33 篇空正文文档，含原始路径、标题来源、解析状态、文件字节数和附件引用数，状态为 NEEDS_SOURCE_INSPECTION。
+
+抽查空正文文件时，多个样本均为 JSON 可解析的 NodeDocument，Children 中只有带 Properties 的 NodeParagraph 节点，没有可见文本字段；这支持“空段落/占位节点”的解释，但抽查不等于逐篇确认，33 篇仍保持 NEEDS_SOURCE_INSPECTION。不得将其直接判为资料损坏。
+
+## 自动提交可靠性
+
+工作流的生成提交步骤增加了有限次数的 fetch/rebase/push 重试，不使用 force-push。此前出现过 GitHub push 拒绝及一次内部服务器错误；在修正工作流并重试后，最新工作流完成成功。若后续仍遇到持续性 GitHub 服务错误，应保留失败状态和日志，不覆盖远端历史。
