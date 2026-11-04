@@ -113,7 +113,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("node_types", csv_text)
             self.assertIn("NodeText:1", csv_text)
             self.assertIn("properties_fields", csv_text)
-            self.assertIn("title;author", csv_text)
+            self.assertIn("author;title", csv_text)
             metadata_text = (output / "metadata_inventory.csv").read_text(encoding="utf-8-sig")
             self.assertIn("author,1", metadata_text)
             self.assertIn("title,1", metadata_text)
