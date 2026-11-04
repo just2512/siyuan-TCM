@@ -44,6 +44,11 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertEqual(rows[0]["source_version_status"], "UNVERIFIED")
             self.assertEqual(rows[0]["collation_status"], "NOT_REVIEWED")
             self.assertEqual(rows[1]["body_status"], "EMPTY_BODY")
+            with (output / "empty_body_review.csv").open(encoding="utf-8-sig", newline="") as stream:
+                empty_rows = list(csv.DictReader(stream))
+            self.assertEqual(len(empty_rows), 1)
+            self.assertEqual(empty_rows[0]["document"], "book/b.sy")
+            self.assertEqual(empty_rows[0]["review_status"], "NEEDS_SOURCE_INSPECTION")
             with (output / "topic_review.csv").open(encoding="utf-8-sig", newline="") as stream:
                 topics = list(csv.DictReader(stream))
             self.assertIn("matched_terms", topics[0])
