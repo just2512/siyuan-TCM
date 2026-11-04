@@ -108,7 +108,6 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "- 标题来源分布：" + "；".join(f"{key}={value}" for key, value in sorted(title_sources.items())),
         "- 命中证据仅覆盖标题和前 2000 字正文片段；正式主题标签使用完整正文，两者可能不完全一致。",
         "- 所有来源、版本及校勘状态均初始化为 UNVERIFIED / NOT_REVIEWED；未从文件名或关键词推断出处。",
-        "- 标题状态统一为 NOT_REVIEWED；当前索引没有可靠的标题来源字段，因此不伪造“已核验标题”。",
         "",
         "## 文件",
         "",
@@ -117,9 +116,9 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "",
         "## 边界",
         "",
-        "- 主题命中只是字符串包含关系，不是语义分类；多主题记录只是复核队列，不自动判为错误。
-- title_source 区分 Properties 字段、正文首行回退、文件名回退及原始文本回退；回退标题不得当作已核验书名或篇名。
-- matched_terms 只覆盖前 2000 字正文检索片段，不保证包含完整正文的全部分类触发词。",
+        "- 主题命中只是字符串包含关系，不是语义分类；多主题记录只是复核队列，不自动判为错误。",
+        "- title_source 区分 Properties 字段、正文首行回退、文件名回退及原始文本回退；回退标题不得当作已核验书名或篇名。",
+        "- matched_terms 只覆盖前 2000 字正文检索片段，不保证包含完整正文的全部分类触发词。",
         "- 空正文可能来自空白文档、非文本内容或提取器尚未覆盖的节点类型，必须回看原始 .sy。",
         "- 本清单不构成医学内容真实性、出处或临床有效性的证明。",
         "",
