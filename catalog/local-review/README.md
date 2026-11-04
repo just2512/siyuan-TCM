@@ -35,3 +35,15 @@
 4. 将结论填写在对应 CSV 的 `manual_status`、`manual_note`；不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
 5. 复核完成后，将有证据的结果作为新的日期版本保存在本目录。只有确认路径和内容对应后，才讨论是否把匹配规则升级为自动解析。
 
+### 下一轮完整 assets 候选扫描
+
+本目录现有的 `asset-prefix-candidates-2026-11-04.csv` 是基于当次 4,567 条已命中引用所暴露出的文件名做的初步比对，不是全量 assets 文件扫描。
+
+已更新生成器：再次运行原命令后，`catalog/generated/asset_prefix_candidates.csv` 会直接扫描本地 assets 目录，为未匹配引用列出文件名候选。请将该文件复制为新的日期版本，例如：
+
+```text
+catalog/local-review/asset-prefix-candidates-2026-11-05.csv
+```
+
+保留旧版作为审计基线，不覆盖。候选只是文件名线索，不会自动改写引用，也不会被标为 FOUND。
+
