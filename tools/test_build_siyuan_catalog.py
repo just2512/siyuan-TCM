@@ -34,6 +34,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             ],
         }
         self.assertEqual(catalog.extract_title(payload, "fallback"), "小柴胡汤证")
+        self.assertEqual(catalog.extract_title_with_source(payload, "fallback"), ("小柴胡汤证", "BODY_FIRST_LINE"))
         self.assertEqual(catalog.extract_text(payload), "小柴胡汤证")
 
     def test_extracts_asset_paths_without_eating_trailing_punctuation(self):
@@ -57,7 +58,10 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertTrue((output / "topic_index.csv").is_file())
             self.assertTrue((output / "asset_references.csv").is_file())
             self.assertIn("NOT_CHECKED", (output / "asset_references.csv").read_text(encoding="utf-8-sig"))
-            self.assertIn("本草资料", (output / "documents.csv").read_text(encoding="utf-8-sig"))
+            csv_text = (output / "documents.csv").read_text(encoding="utf-8-sig")
+            self.assertIn("本草资料", csv_text)
+            self.assertIn("title_source", csv_text)
+            self.assertIn("PROPERTY", csv_text)
 
 
 if __name__ == "__main__":
