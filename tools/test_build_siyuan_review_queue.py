@@ -18,7 +18,7 @@ class ReviewQueueTests(unittest.TestCase):
             source = root / "documents.csv"
             with source.open("w", encoding="utf-8-sig", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
-                    "path", "notebook", "title", "title_source", "topics", "parse_status", "search_text"
+                    "path", "notebook", "title", "title_source", "topics", "parse_status", "bytes", "asset_ref_count", "node_types", "child_node_count", "search_text"
                 ])
                 writer.writeheader()
                 writer.writerow({
@@ -29,7 +29,8 @@ class ReviewQueueTests(unittest.TestCase):
                 writer.writerow({
                     "path": "book/b.sy", "notebook": "书籍", "title": "空白",
                     "title_source": "BODY_FIRST_LINE", "topics": "其他与待归类", "parse_status": "PARSED",
-                    "search_text": "",
+                    "bytes": "100", "asset_ref_count": "0", "node_types": "NodeParagraph:1",
+                    "child_node_count": "1", "search_text": "",
                 })
             output = root / "out"
             result = review.build_review_queues(source, output)
@@ -49,6 +50,7 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertEqual(len(empty_rows), 1)
             self.assertEqual(empty_rows[0]["document"], "book/b.sy")
             self.assertEqual(empty_rows[0]["review_status"], "NEEDS_SOURCE_INSPECTION")
+            self.assertEqual(empty_rows[0]["structure_status"], "PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT")
             with (output / "topic_review.csv").open(encoding="utf-8-sig", newline="") as stream:
                 topics = list(csv.DictReader(stream))
             self.assertIn("matched_terms", topics[0])
