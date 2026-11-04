@@ -191,16 +191,19 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
                   for d in docs for topic in d["topics"].split(";")]
     write_csv(output / "topic_index.csv", topic_rows, ["topic", "title", "path", "notebook"])
     asset_rows = []
+    asset_lookup = build_asset_lookup(assets_dir) if assets_dir else None
     for d in docs:
         for ref in d["asset_refs"]:
-            relref = ref.replace("\\", "/").removeprefix("../").removeprefix("/")
-            candidates = [assets_dir / relref, assets_dir / Path(relref).name] if assets_dir else []
-            found = next((p for p in candidates if p.is_file()), None)
-            asset_rows.append({"document": d["path"], "title": d["title"], "reference": ref,
-                               "local_status": "FOUND" if found else ("NOT_CHECKED" if not assets_dir else "MISSING"),
-                               "local_path": str(found) if found else ""})
+            local_status, local_path, match_method = resolve_asset_reference(
+                ref, assets_dir, asset_lookup
+            )
+            asset_rows.append({
+                "document": d["path"], "title": d["title"], "reference": ref,
+                "local_status": local_status, "local_path": local_path,
+                "match_method": match_method,
+            })
     write_csv(output / "asset_references.csv", asset_rows,
-              ["document", "title", "reference", "local_status", "local_path"])
+              ["document", "title", "reference", "local_status", "local_path", "match_method"])
     notebooks = Counter(d["notebook"] for d in docs)
     topics = Counter(row["topic"] for row in topic_rows)
     statuses = Counter(d["parse_status"] for d in docs)
