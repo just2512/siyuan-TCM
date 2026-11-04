@@ -77,6 +77,10 @@ class CatalogueBuilderTests(unittest.TestCase):
                 catalog.resolve_asset_reference("../assets/../../outside.txt", root, lookup)[0],
                 "INVALID_REFERENCE",
             )
+            self.assertEqual(
+                catalog.resolve_asset_reference(r"..\\assets\\..\\..\\outside.txt", root, lookup)[0],
+                "INVALID_REFERENCE",
+            )
 
     def test_builds_document_topic_and_asset_indexes(self):
         with tempfile.TemporaryDirectory() as temp:
