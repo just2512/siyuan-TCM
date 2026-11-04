@@ -32,9 +32,14 @@ class ReviewQueueTests(unittest.TestCase):
                     "bytes": "100", "asset_ref_count": "0", "node_types": "NodeParagraph:1",
                     "child_node_count": "1", "search_text": "",
                 })
+                writer.writerow({
+                    "path": "book/c.sy", "notebook": "书籍", "title": "方剂",
+                    "title_source": "PROPERTY", "topics": "其他与待归类",
+                    "parse_status": "PARSED", "search_text": "普通内容",
+                })
             output = root / "out"
             result = review.build_review_queues(source, output)
-            self.assertEqual(result["documents"], 2)
+            self.assertEqual(result["documents"], 3)
             self.assertEqual(result["empty_bodies"], 1)
             self.assertEqual(result["multi_topic_review"], 1)
             with (output / "document_review.csv").open(encoding="utf-8-sig", newline="") as stream:
@@ -51,6 +56,11 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertEqual(empty_rows[0]["document"], "book/b.sy")
             self.assertEqual(empty_rows[0]["review_status"], "NEEDS_SOURCE_INSPECTION")
             self.assertEqual(empty_rows[0]["structure_status"], "PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT")
+            with (output / "title_review_candidates.csv").open(encoding="utf-8-sig", newline="") as stream:
+                title_candidates = list(csv.DictReader(stream))
+            self.assertEqual(len(title_candidates), 2)
+            self.assertEqual(title_candidates[0]["reason"], "FALLBACK_TITLE_SOURCE")
+            self.assertEqual(title_candidates[1]["reason"], "POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE")
             with (output / "topic_review.csv").open(encoding="utf-8-sig", newline="") as stream:
                 topics = list(csv.DictReader(stream))
             self.assertIn("matched_terms", topics[0])
