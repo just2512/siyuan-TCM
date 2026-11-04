@@ -1,0 +1,51 @@
+import importlib.util
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+MODULE_PATH = Path(__file__).with_name("build_siyuan_catalog.py")
+SPEC = importlib.util.spec_from_file_location("build_siyuan_catalog", MODULE_PATH)
+catalog = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(catalog)
+
+
+class CatalogueBuilderTests(unittest.TestCase):
+    def test_extracts_title_and_nested_text_from_siyuan_json(self):
+        payload = {
+            "Properties": {"title": "伤寒论·太阳病"},
+            "Children": [
+                {"Type": "NodeParagraph", "Children": [
+                    {"Type": "NodeText", "Data": "太阳病，脉浮，头项强痛"}
+                ]}
+            ],
+        }
+        self.assertEqual(catalog.extract_title(payload, "fallback"), "伤寒论·太阳病")
+        self.assertIn("太阳病，脉浮，头项强痛", catalog.extract_text(payload))
+
+    def test_extracts_asset_paths_without_eating_trailing_punctuation(self):
+        raw = '![图](assets/herb.png) and ../assets/pulse.jpg，'
+        refs = sorted({m.rstrip(catalog.TRAILING) for m in catalog.ASSET_RE.findall(raw)})
+        self.assertEqual(refs, ["../assets/pulse.jpg", "assets/herb.png"])
+
+    def test_builds_document_topic_and_asset_indexes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "data"
+            doc_dir = root / "notebook-a"
+            doc_dir.mkdir(parents=True)
+            (doc_dir / "doc.sy").write_text(json.dumps({
+                "Properties": {"title": "神农本草经"},
+                "Children": [{"Type": "NodeText", "Data": "本草药性 assets/herb.png"}],
+            }, ensure_ascii=False), encoding="utf-8")
+            output = Path(temp) / "out"
+            result = catalog.build(root, output, None, {"notebook-a": "本草资料"})
+            self.assertEqual(result["documents"], 1)
+            self.assertTrue((output / "documents.csv").is_file())
+            self.assertTrue((output / "topic_index.csv").is_file())
+            self.assertTrue((output / "asset_references.csv").is_file())
+            self.assertIn("NOT_CHECKED", (output / "asset_references.csv").read_text(encoding="utf-8-sig"))
+            self.assertIn("本草资料", (output / "documents.csv").read_text(encoding="utf-8-sig"))
+
+
+if __name__ == "__main__":
+    unittest.main()
