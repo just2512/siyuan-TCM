@@ -73,6 +73,18 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         body_status = "EMPTY_BODY" if not doc.get("search_text", "").strip() else "HAS_EXTRACTED_TEXT"
         empty_count += body_status == "EMPTY_BODY"
         if body_status == "EMPTY_BODY":
+            node_types = doc.get("node_types", "")
+            node_type_names = {
+                part.rsplit(":", 1)[0] for part in node_types.split(";") if part
+            }
+            if doc.get("parse_status") != "PARSED":
+                structure_status = "RAW_FALLBACK_NOT_PARSED"
+            elif not node_type_names:
+                structure_status = "NO_TYPED_CHILD_NODES"
+            elif node_type_names == {"NodeParagraph"}:
+                structure_status = "PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT"
+            else:
+                structure_status = "NON_PARAGRAPH_OR_UNSUPPORTED_EMPTY_STRUCTURE"
             empty_rows.append({
                 "document": doc.get("path", ""),
                 "notebook": doc.get("notebook", ""),
@@ -81,6 +93,9 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
                 "parse_status": doc.get("parse_status", ""),
                 "bytes": doc.get("bytes", ""),
                 "asset_ref_count": doc.get("asset_ref_count", ""),
+                "node_types": node_types,
+                "child_node_count": doc.get("child_node_count", ""),
+                "structure_status": structure_status,
                 "review_status": "NEEDS_SOURCE_INSPECTION",
                 "review_notes": "",
             })
@@ -142,7 +157,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
     ])
     write_csv(output / "empty_body_review.csv", empty_rows, [
         "document", "notebook", "title", "title_source", "parse_status",
-        "bytes", "asset_ref_count", "review_status", "review_notes",
+        "bytes", "asset_ref_count", "node_types", "child_node_count",
+        "structure_status", "review_status", "review_notes",
     ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics",
