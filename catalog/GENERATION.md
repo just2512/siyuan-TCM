@@ -13,6 +13,7 @@
 要求 Python 3.10 或更新版本。在仓库根目录执行：
 
 ```bash
+python -m unittest discover -s tools -p 'test_*.py' -v
 python tools/build_siyuan_catalog.py
 ```
 
@@ -28,7 +29,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data
 python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /path/to/assets
 ```
 
-默认结果写入 catalog/generated/。工具不会上传或复制 assets。
+默认结果写入 catalog/generated/，并自动读取仓库的 catalog/notebook-map.json。工具不会上传或复制 assets。
 
 ## 当前执行状态
 
