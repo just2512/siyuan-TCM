@@ -78,6 +78,23 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("经典与理论:黄帝内经", topics[0]["body_excerpt_matched_terms"])
             self.assertEqual(topics[0]["review_status"], "NOT_REVIEWED")
 
+    def test_assign_review_batches_is_stable_and_handles_boundaries(self):
+        self.assertEqual(review.assign_review_batches([]), [])
+        exact = review.assign_review_batches([{"document": f"d/{i:02}.sy"} for i in range(1, 101)])
+        self.assertEqual(len(exact), 100)
+        self.assertEqual(exact[0]["batch_id"], "TOPIC-001")
+        self.assertEqual(exact[49]["batch_position"], 50)
+        self.assertEqual(exact[50]["batch_id"], "TOPIC-002")
+        self.assertEqual(exact[99]["batch_size"], 50)
+        tail = review.assign_review_batches([{"document": f"d/{i:02}.sy"} for i in range(1, 53)])
+        self.assertEqual(tail[50]["batch_id"], "TOPIC-002")
+        self.assertEqual(tail[50]["batch_size"], 2)
+        self.assertEqual(tail[51]["batch_position"], 2)
+        shuffled = review.assign_review_batches([{"document": "z.sy"}, {"document": "a.sy"}])
+        self.assertEqual([row["document"] for row in shuffled], ["a.sy", "z.sy"])
+        with self.assertRaises(ValueError):
+            review.assign_review_batches([], 0)
+
     def test_applies_human_decisions_without_overwriting_source_csv(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
