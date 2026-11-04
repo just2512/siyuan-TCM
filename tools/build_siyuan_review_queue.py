@@ -102,9 +102,12 @@ def load_decisions(path: Path, known_documents: set[str]) -> dict[str, dict[str,
                 value = decision.get(field, "")
                 if value and value not in allowed:
                     raise ValueError(f"{document} 的 {field} 状态无效：{value}")
+            conclusion_fields = set(DECISION_FIELDS) | {
+                "human_corrected_title", "human_approved_topics"
+            }
             changed = any(
                 value and value not in {"NOT_REVIEWED", "UNVERIFIED", "NEEDS_SOURCE_INSPECTION"}
-                for field, value in decision.items() if field in DECISION_FIELDS
+                for field, value in decision.items() if field in conclusion_fields
             )
             if changed and not decision.get("evidence_reference"):
                 raise ValueError(f"{document} 已填写人工结论但缺少 evidence_reference")
@@ -201,6 +204,7 @@ def build_review_queues(documents_csv: Path, output: Path,
             "parse_status": doc.get("parse_status", ""),
             "body_status": body_status,
             "title_review_status": "NOT_REVIEWED",
+            "topic_review_status": "NOT_REVIEWED",
             "source_status": "UNVERIFIED",
             "source_version_status": "UNVERIFIED",
             "collation_status": "NOT_REVIEWED",
@@ -244,6 +248,7 @@ def build_review_queues(documents_csv: Path, output: Path,
 
     apply_decisions(review_rows, decisions, {
         "title_review_status": "title_review_status",
+        "topic_review_status": "topic_review_status",
         "source_status": "source_status",
         "source_version_status": "source_version_status",
         "collation_status": "collation_status",
@@ -260,7 +265,7 @@ def build_review_queues(documents_csv: Path, output: Path,
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "document_review.csv", review_rows, [
         "document", "notebook", "title", "title_source", "topics", "parse_status", "body_status",
-        "title_review_status", "source_status", "source_version_status",
+        "title_review_status", "topic_review_status", "source_status", "source_version_status",
         "collation_status", "human_corrected_title", "human_approved_topics",
         "reviewer", "review_notes", "evidence_reference",
     ])
