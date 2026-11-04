@@ -90,7 +90,8 @@ def validate_catalogue(generated: Path, source_candidates: Path,
 
     review_rows = read_csv(generated / "document_review.csv", {
         "document", "title", "topics", "parse_status", "title_review_status",
-        "source_status", "source_version_status", "collation_status",
+        "topic_review_status", "source_status", "source_version_status",
+        "collation_status", "evidence_reference",
     })
     review = unique_index(review_rows, "document", "document_review.csv")
     if set(review) != set(docs):
@@ -100,18 +101,36 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         for field in ("title", "topics", "parse_status"):
             if row[field] != source[field]:
                 raise ValueError(f"{path} 的 document_review.{field} 与 documents.csv 不一致")
-        if row["source_status"] not in {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
-            raise ValueError(f"{path} 的 source_status 无效")
-        if row["source_version_status"] not in {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
-            raise ValueError(f"{path} 的 source_version_status 无效")
-        if row["collation_status"] not in {"NOT_REVIEWED", "COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"}:
-            raise ValueError(f"{path} 的 collation_status 无效")
+        allowed_statuses = {
+            "title_review_status": {"NOT_REVIEWED", "CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
+            "topic_review_status": {"NOT_REVIEWED", "CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
+            "source_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+            "source_version_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+            "collation_status": {"NOT_REVIEWED", "COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
+        }
+        for field, allowed in allowed_statuses.items():
+            if row[field] not in allowed:
+                raise ValueError(f"{path} 的 {field} 无效：{row[field]}")
+        conclusion_values = {
+            "CONFIRMED", "RENAME_REQUIRED", "REMOVE_TOPIC", "ADD_TOPIC",
+            "SPLIT_REQUIRED", "VERIFIED", "CONFLICT", "UNRESOLVED",
+            "COLLATION_CONFIRMED", "CORRECTION_REQUIRED",
+        }
+        if any(row[field] in conclusion_values for field in allowed_statuses) and not row["evidence_reference"].strip():
+            raise ValueError(f"{path} 已有人工核验结论但缺少 evidence_reference")
 
     empty_rows = read_csv(generated / "empty_body_review.csv", {"document", "review_status"})
     empty = unique_index(empty_rows, "document", "empty_body_review.csv")
     expected_empty = {path for path, row in docs.items() if not row["search_text"].strip()}
     if set(empty) != expected_empty:
         raise ValueError("empty_body_review.csv 与 documents.csv 的空正文集合不一致")
+    empty_statuses = {
+        "NEEDS_SOURCE_INSPECTION", "SOURCE_EMPTY_CONFIRMED",
+        "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED",
+    }
+    for path, row in empty.items():
+        if row["review_status"] not in empty_statuses:
+            raise ValueError(f"{path} 的 empty_body review_status 无效：{row['review_status']}")
 
     title_rows = read_csv(generated / "title_review_candidates.csv", {"document", "review_status"})
     title = unique_index(title_rows, "document", "title_review_candidates.csv")
@@ -132,13 +151,27 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{path} 不应进入多主题复核队列")
 
     batches = read_csv(generated / "topic_review_batches.csv", {"document", "batch_id", "batch_position"})
-    if {row["document"] for row in batches} != set(topic):
+    batch_doc_index = unique_index(batches, "document", "topic_review_batches.csv")
+    if set(batch_doc_index) != set(topic):
         raise ValueError("topic_review_batches.csv 与 topic_review.csv 文档集合不一致")
     batch_positions: dict[str, list[int]] = {}
     for row in batches:
-        batch_positions.setdefault(row["batch_id"], []).append(int(row["batch_position"]))
+        if not row["batch_id"]:
+            raise ValueError("topic_review_batches.csv 缺少 batch_id")
+        try:
+            position = int(row["batch_position"])
+            size = int(row.get("batch_size", ""))
+        except ValueError as exc:
+            raise ValueError("topic_review_batches.csv 的批次序号或批次大小不是整数") from exc
+        if position < 1 or size < 1 or position > size:
+            raise ValueError("topic_review_batches.csv 的批次序号或批次大小越界")
+        batch_positions.setdefault(row["batch_id"], []).append(position)
     if any(sorted(values) != list(range(1, len(values) + 1)) for values in batch_positions.values()):
         raise ValueError("topic_review_batches.csv 批内序号不连续")
+    for batch_id, positions in batch_positions.items():
+        batch_size_values = {int(row["batch_size"]) for row in batches if row["batch_id"] == batch_id}
+        if len(batch_size_values) != 1 or next(iter(batch_size_values)) != len(positions):
+            raise ValueError(f"{batch_id} 的 batch_size 与实际批次记录数不一致")
 
     asset_queue = read_csv(generated / "asset_review_queue.csv", {
         "reference", "candidate_status", "candidate_count", "manual_status",
@@ -154,6 +187,15 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{reference} 的附件候选队列与原始候选表不一致")
         if row["manual_status"] not in {"NEEDS_INSPECTION", "CONFIRMED_MATCH", "NOT_MATCH", "UNRESOLVED"}:
             raise ValueError(f"{reference} 的附件人工状态无效")
+        try:
+            candidate_count = int(row["candidate_count"])
+        except ValueError as exc:
+            raise ValueError(f"{reference} 的附件候选数不是整数") from exc
+        if candidate_count < 0:
+            raise ValueError(f"{reference} 的附件候选数不能为负数")
+        expected_status = "NO_CANDIDATE" if candidate_count == 0 else "ONE_CANDIDATE" if candidate_count == 1 else "MULTIPLE_CANDIDATES"
+        if row["candidate_status"] != expected_status:
+            raise ValueError(f"{reference} 的附件候选状态与候选数不一致")
 
     source_queue = read_csv(generated / "source_review_queue.csv", {
         "path", "candidate_category", "verification_status", "evidence_reference",
@@ -169,6 +211,10 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         source = persisted_source_index[path]
         if row["candidate_category"] != source["candidate_category"] or row["verification_status"] != source["verification_status"] or row["evidence_reference"] != source["evidence_reference"]:
             raise ValueError(f"{path} 的来源核验队列与原始候选表不一致")
+        if row["verification_status"] not in {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
+            raise ValueError(f"{path} 的来源核验状态无效")
+        if row["verification_status"] != "UNVERIFIED" and not row["evidence_reference"].strip():
+            raise ValueError(f"{path} 已有来源核验结论但缺少 evidence_reference")
 
     return {
         "documents": len(docs),
