@@ -21,13 +21,30 @@ assert SPEC.loader is not None
 SPEC.loader.exec_module(catalog)
 
 
+def matched_terms_by_source(title: str, text: str) -> dict[str, dict[str, list[str]]]:
+    title_text = title.lower()
+    body_text = text.lower()
+    evidence = {}
+    for topic, terms in catalog.TOPICS.items():
+        title_hits = [term for term in terms if term.lower() in title_text]
+        body_hits = [term for term in terms if term.lower() in body_text]
+        if title_hits or body_hits:
+            evidence[topic] = {"title": title_hits, "body_excerpt": body_hits}
+    return evidence
+
 def matched_terms(title: str, text: str) -> dict[str, list[str]]:
-    haystack = (title + "\n" + text).lower()
+    """Compatibility helper returning combined title/body-excerpt matches."""
     return {
-        topic: [term for term in terms if term.lower() in haystack]
-        for topic, terms in catalog.TOPICS.items()
-        if any(term.lower() in haystack for term in terms)
+        topic: evidence["title"] + evidence["body_excerpt"]
+        for topic, evidence in matched_terms_by_source(title, text).items()
     }
+
+def review_bucket(topic_count: int) -> str:
+    if topic_count >= 5:
+        return "5_PLUS_TOPICS"
+    if topic_count >= 3:
+        return "3_TO_4_TOPICS"
+    return "2_TOPICS"
 
 
 def read_documents(path: Path) -> list[dict[str, str]]:
@@ -69,7 +86,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
             "reviewer": "",
             "review_notes": "",
         })
-        matches = matched_terms(doc.get("title", ""), doc.get("search_text", ""))
+        evidence = matched_terms_by_source(doc.get("title", ""), doc.get("search_text", ""))
+        matches = {topic: hits["title"] + hits["body_excerpt"] for topic, hits in evidence.items()}
         catalog_topics = [topic for topic in doc.get("topics", "").split(";") if topic]
         # The catalogue classifies the full body, while this review tool only
         # receives a 2,000-character excerpt. Queue either source of multi-topic
@@ -84,8 +102,17 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
                 "catalog_topic_count": len(catalog_topics),
                 "excerpt_topic_count": len(matches),
                 "topic_count": len(catalog_topics),
-                "topics": ";".join(matches),
+                "review_bucket": review_bucket(len(catalog_topics)),
+                "excerpt_topics": ";".join(matches),
                 "evidence_scope": "TITLE_PLUS_FIRST_2000_BODY_CHARS",
+                "title_matched_terms": ";".join(
+                    f"{topic}:{'、'.join(hits['title'])}"
+                    for topic, hits in evidence.items() if hits["title"]
+                ),
+                "body_excerpt_matched_terms": ";".join(
+                    f"{topic}:{'、'.join(hits['body_excerpt'])}"
+                    for topic, hits in evidence.items() if hits["body_excerpt"]
+                ),
                 "matched_terms": ";".join(
                     f"{topic}:{'、'.join(terms)}" for topic, terms in matches.items()
                 ),
@@ -102,7 +129,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
     ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics",
-        "catalog_topic_count", "excerpt_topic_count", "topic_count", "topics",
+        "catalog_topic_count", "excerpt_topic_count", "topic_count", "review_bucket",
+        "excerpt_topics", "title_matched_terms", "body_excerpt_matched_terms",
         "matched_terms", "evidence_scope",
         "search_text", "review_status", "review_notes",
     ])
@@ -112,6 +140,10 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         f"- 文档记录：{len(docs)}",
         f"- 正文抽取为空：{empty_count}",
         f"- 多主题关键词命中、待人工复核：{len(topic_rows)}",
+        "- 多主题复核分组：" + "；".join(
+            f"{bucket}={sum(row['review_bucket'] == bucket for row in topic_rows)}"
+            for bucket in ("5_PLUS_TOPICS", "3_TO_4_TOPICS", "2_TOPICS")
+        ),
         "- 标题来源分布：" + "；".join(f"{key}={value}" for key, value in sorted(title_sources.items())),
         "- 命中证据仅覆盖标题和前 2000 字正文片段；正式主题标签使用完整正文，两者可能不完全一致。",
         "- 所有来源、版本及校勘状态均初始化为 UNVERIFIED / NOT_REVIEWED；未从文件名或关键词推断出处。",
@@ -125,7 +157,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "",
         "- 主题命中只是字符串包含关系，不是语义分类；多主题记录只是复核队列，不自动判为错误。",
         "- title_source 区分 Properties 字段、正文首行回退、文件名回退及原始文本回退；回退标题不得当作已核验书名或篇名。",
-        "- matched_terms 只覆盖前 2000 字正文检索片段，不保证包含完整正文的全部分类触发词。",
+        "- title_matched_terms 与 body_excerpt_matched_terms 分开记录标题命中和前 2000 字正文片段命中；二者都只是字符串证据。
+- review_bucket 仅按当前主题标签数量分组，方便分批检查，不代表错误程度或医学风险。",
         "- 空正文可能来自空白文档、非文本内容或提取器尚未覆盖的节点类型，必须回看原始 .sy。",
         "- 本清单不构成医学内容真实性、出处或临床有效性的证明。",
         "",
