@@ -366,6 +366,8 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
              "", "详细记录见 asset_references.csv。未提供 --assets-dir 时不对附件是否存在作判断。", ""]
     (output / "asset_audit.md").write_text("\n".join(audit), encoding="utf-8")
     return {"documents": len(docs), "asset_references": len(asset_rows),
+            "asset_scan_performed": assets_dir is not None,
+            "asset_prefix_candidates": len(prefix_candidates),
             "duplicate_groups": len(duplicates), "output": str(output)}
 
 def main() -> int:
