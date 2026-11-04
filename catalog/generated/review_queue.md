@@ -12,6 +12,7 @@
 
 - document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。
 - topic_review.csv：多主题命中的关键词证据和正文片段，供人工判断是否误分类。
+- empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。
 
 ## 边界
 
