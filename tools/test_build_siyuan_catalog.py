@@ -23,6 +23,19 @@ class CatalogueBuilderTests(unittest.TestCase):
         self.assertEqual(catalog.extract_title(payload, "fallback"), "伤寒论·太阳病")
         self.assertIn("太阳病，脉浮，头项强痛", catalog.extract_text(payload))
 
+    def test_uses_first_visible_line_when_document_title_is_generic_and_ignores_ial(self):
+        payload = {
+            "Properties": {"title": "笔记"},
+            "Children": [
+                {"Type": "NodeParagraph", "Children": [
+                    {"Type": "NodeTextMark", "TextMarkTextContent": "小柴胡汤证"},
+                    {"Type": "NodeKramdownSpanIAL", "Data": "{: style=\\"color:red\\"}"}
+                ]}
+            ],
+        }
+        self.assertEqual(catalog.extract_title(payload, "fallback"), "小柴胡汤证")
+        self.assertEqual(catalog.extract_text(payload), "小柴胡汤证")
+
     def test_extracts_asset_paths_without_eating_trailing_punctuation(self):
         raw = '![图](assets/herb.png) and ../assets/pulse.jpg，'
         refs = sorted({m.rstrip(catalog.TRAILING) for m in catalog.ASSET_RE.findall(raw)})
