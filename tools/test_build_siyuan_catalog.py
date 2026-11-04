@@ -52,6 +52,32 @@ class CatalogueBuilderTests(unittest.TestCase):
         refs = sorted({m.rstrip(catalog.TRAILING) for m in catalog.ASSET_RE.findall(raw)})
         self.assertEqual(refs, ["../assets/pulse.jpg", "assets/herb.png"])
 
+    def test_resolves_assets_exactly_and_marks_ambiguous_basenames(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "assets"
+            (root / "nested-a").mkdir(parents=True)
+            (root / "nested-b").mkdir(parents=True)
+            (root / "nested-a" / "same.png").write_bytes(b"a")
+            (root / "nested-b" / "same.png").write_bytes(b"b")
+            (root / "unique.jpg").write_bytes(b"c")
+            lookup = catalog.build_asset_lookup(root)
+            self.assertEqual(
+                catalog.resolve_asset_reference("assets/nested-a/same.png", root, lookup)[0],
+                "FOUND",
+            )
+            self.assertEqual(
+                catalog.resolve_asset_reference("../assets/same.png", root, lookup)[0],
+                "AMBIGUOUS",
+            )
+            self.assertEqual(
+                catalog.resolve_asset_reference("assets/unique.jpg", root, lookup)[0],
+                "FOUND",
+            )
+            self.assertEqual(
+                catalog.resolve_asset_reference("../assets/../../outside.txt", root, lookup)[0],
+                "INVALID_REFERENCE",
+            )
+
     def test_builds_document_topic_and_asset_indexes(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "data"
