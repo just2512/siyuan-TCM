@@ -43,8 +43,8 @@ class CatalogueValidationTests(unittest.TestCase):
             {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION"},
         ])
         self.write(generated / "title_review_candidates.csv", ["document", "review_status"], [])
-        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket"], [
-            {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS"},
+        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status"], [
+            {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "NOT_REVIEWED"},
         ])
         self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size"], [
             {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1"},
@@ -134,6 +134,25 @@ class CatalogueValidationTests(unittest.TestCase):
                 {"document": "book/b.sy", "review_status": "MADE_UP"},
             ])
             with self.assertRaisesRegex(ValueError, "review_status 无效"):
+                validator.validate_catalogue(generated, source, assets)
+
+
+    def test_rejects_topic_queue_status_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "topic_review.csv"
+            self.write(path, ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status"], [
+                {"document": "book/a.sy", "catalog_topics": "经典与理论;伤寒与温病", "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "CONFIRMED"},
+            ])
+            with self.assertRaisesRegex(ValueError, "主题复核队列状态"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_duplicate_csv_headers(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "documents.csv"
+            path.write_text("path,path,title,title_source,topics,parse_status,asset_ref_count,search_text\\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "重复列名"):
                 validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_unknown_document_in_asset_references(self):
