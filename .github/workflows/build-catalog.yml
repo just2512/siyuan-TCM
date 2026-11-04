@@ -1,0 +1,44 @@
+name: Build and commit TCM catalogue
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**/*.sy'
+      - 'tools/build_siyuan_catalog.py'
+      - '.github/workflows/build-catalog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tcm-catalog-master
+  cancel-in-progress: false
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate catalogue
+        run: python tools/build_siyuan_catalog.py
+      - name: Commit generated catalogue
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add catalog/generated
+          if git diff --cached --quiet; then
+            echo 'Catalogue is unchanged.'
+            exit 0
+          fi
+          git commit -m 'docs(catalog): refresh generated TCM index [skip ci]'
+          git push origin HEAD:master
