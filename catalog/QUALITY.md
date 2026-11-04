@@ -75,3 +75,13 @@
 ## 自动提交可靠性
 
 工作流的生成提交步骤增加了有限次数的 fetch/rebase/push 重试，不使用 force-push。此前出现过 GitHub push 拒绝及一次内部服务器错误；在修正工作流并重试后，最新工作流完成成功。若后续仍遇到持续性 GitHub 服务错误，应保留失败状态和日志，不覆盖远端历史。
+
+
+## 空正文结构与标题候选复核（2026-11-04 后续验收）
+
+最新生成提交：`7913b2107121e09fbbd99d62eb9def47e8cff045`；对应工作流：<https://github.com/just2512/siyuan-TCM/actions/runs/41820373093>，结果为 success。
+
+- 新增 `node_types` 与 `child_node_count`，保留每篇文档的子节点类型结构；`empty_body_review.csv` 进一步列出结构判定。
+- 33 篇空正文文档全部是 JSON 可解析文档，且当前记录的子节点均为 `NodeParagraph`，没有抽取到可见文本；其状态为 `PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT`。这说明仓库文件里保存的是空段落节点结构，不等同于证明原始资料损坏；仍需与用户本地思源库核对。
+- 新增 `title_review_candidates.csv`，当前 19 篇候选：包括正文首行回退标题和“其他/方剂/药势/总义/穴/法门/收纳/未命名/待收录”等可能是目录标签或占位名称的标题。它们全部是待核验候选，不自动判错。
+- 当前标题来源统计仍为 PROPERTY 2,662 篇、BODY_FIRST_LINE 5 篇；但 PROPERTY 只说明读取到 Properties.title，不代表标题语义准确或书目身份已核实。
