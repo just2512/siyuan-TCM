@@ -35,9 +35,9 @@ class CatalogueValidationTests(unittest.TestCase):
                    ["document", "reference", "local_status", "local_path", "match_method"], [
             {"document": "book/a.sy", "reference": "assets/a.png", "local_status": "NOT_CHECKED", "local_path": "", "match_method": "NOT_CHECKED"},
         ])
-        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "source_status", "source_version_status", "collation_status"]
+        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference"]
         self.write(generated / "document_review.csv", review_fields, [
-            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED"} for d in docs
+            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": ""} for d in docs
         ])
         self.write(generated / "empty_body_review.csv", ["document", "review_status"], [
             {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION"},
@@ -46,8 +46,8 @@ class CatalogueValidationTests(unittest.TestCase):
         self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket"], [
             {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS"},
         ])
-        self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position"], [
-            {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1"},
+        self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size"], [
+            {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1"},
         ])
         self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status"], [
             {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION"},
@@ -101,6 +101,39 @@ class CatalogueValidationTests(unittest.TestCase):
                 {"reference": "assets/missing", "candidate_status": "NO_CANDIDATE", "candidate_count": "0", "manual_status": "NEEDS_INSPECTION"},
             ])
             with self.assertRaisesRegex(ValueError, "附件候选队列"):
+                validator.validate_catalogue(generated, source, assets)
+
+
+    def test_rejects_review_conclusion_without_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "document_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["source_status"] = "VERIFIED"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "缺少 evidence_reference"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_duplicate_document_in_topic_batches(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "topic_review_batches.csv"
+            self.write(path, ["document", "batch_id", "batch_position", "batch_size"], [
+                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "2"},
+                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "2", "batch_size": "2"},
+            ])
+            with self.assertRaisesRegex(ValueError, "重复 document"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_invalid_empty_body_review_status(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "empty_body_review.csv"
+            self.write(path, ["document", "review_status"], [
+                {"document": "book/b.sy", "review_status": "MADE_UP"},
+            ])
+            with self.assertRaisesRegex(ValueError, "review_status 无效"):
                 validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_unknown_document_in_asset_references(self):
