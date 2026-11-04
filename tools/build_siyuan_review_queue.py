@@ -70,14 +70,20 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
             "review_notes": "",
         })
         matches = matched_terms(doc.get("title", ""), doc.get("search_text", ""))
-        if len(matches) > 1:
+        catalog_topics = [topic for topic in doc.get("topics", "").split(";") if topic]
+        # The catalogue classifies the full body, while this review tool only
+        # receives a 2,000-character excerpt. Queue either source of multi-topic
+        # evidence so truncated excerpts cannot hide a full-body multi-topic row.
+        if len(matches) > 1 or len(catalog_topics) > 1:
             topic_rows.append({
                 "document": doc.get("path", ""),
                 "notebook": doc.get("notebook", ""),
                 "title": doc.get("title", ""),
                 "title_source": title_source,
                 "catalog_topics": doc.get("topics", ""),
-                "topic_count": len(matches),
+                "catalog_topic_count": len(catalog_topics),
+                "excerpt_topic_count": len(matches),
+                "topic_count": len(catalog_topics),
                 "topics": ";".join(matches),
                 "evidence_scope": "TITLE_PLUS_FIRST_2000_BODY_CHARS",
                 "matched_terms": ";".join(
@@ -96,7 +102,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
     ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics",
-        "topic_count", "topics", "matched_terms", "evidence_scope",
+        "catalog_topic_count", "excerpt_topic_count", "topic_count", "topics",
+        "matched_terms", "evidence_scope",
         "search_text", "review_status", "review_notes",
     ])
     report = [
