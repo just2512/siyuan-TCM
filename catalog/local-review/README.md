@@ -23,3 +23,15 @@
 - 本目录下的人工记录必须作为持久化输入保留，CI 不得覆盖。
 - 新一轮核验请使用新日期文件，保留历史记录。
 - 若将单篇结果写入 `catalog/review-decisions.csv`，必须遵循 `catalog/REVIEW_GUIDE.md` 的状态与证据字段约束；不能仅凭汇总数字批量生成书目或校勘结论。
+
+## 附件未匹配项的本地复核顺序
+
+1. 先看 `asset-missing-unique-2026-11-04.csv`，634 个唯一引用已去重；不要先逐条处理 742 条原始引用。
+2. 再看 `asset-prefix-candidates-2026-11-04.csv`：
+   - `ONE_PREFIX_CANDIDATE`：只有一个已被其他引用命中的同名前缀附件，仍需打开文件确认图像/内容是否相同。
+   - `MULTIPLE_PREFIX_CANDIDATES`：存在多个同名前缀附件，必须人工辨认，禁止自动挑选。
+   - `NO_PREFIX_CANDIDATE`：当前已匹配引用集合中没有候选；仍需在本地 assets 目录搜索。
+3. 图片引用与无扩展名引用分别核验。对无扩展名引用，不要只凭药材名称相同就认定图片相同。
+4. 将结论填写在对应 CSV 的 `manual_status`、`manual_note`；不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
+5. 复核完成后，将有证据的结果作为新的日期版本保存在本目录。只有确认路径和内容对应后，才讨论是否把匹配规则升级为自动解析。
+
