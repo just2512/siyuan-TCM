@@ -30,7 +30,7 @@ jobs:
       - name: Generate catalogue
         run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
       - name: Build human review queues
-        run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated
+        run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
       - name: Commit generated catalogue
         run: |
           git config user.name 'github-actions[bot]'
