@@ -18,7 +18,7 @@ class ReviewQueueTests(unittest.TestCase):
             source = root / "documents.csv"
             with source.open("w", encoding="utf-8-sig", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
-                    "path", "notebook", "title", "title_source", "topics", "parse_status", "bytes", "asset_ref_count", "node_types", "child_node_count", "search_text"
+                    "path", "notebook", "title", "title_source", "topics", "parse_status", "bytes", "asset_ref_count", "node_types", "child_node_count", "search_text", "topic_matched_terms"
                 ])
                 writer.writeheader()
                 writer.writerow({
