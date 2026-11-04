@@ -195,6 +195,73 @@ def resolve_asset_reference(reference: str, assets_dir: Path | None,
     return "MISSING", "", "NO_MATCH"
 
 
+
+def build_asset_prefix_candidates(
+    asset_rows: list[dict[str, str]],
+    assets_dir: Path | None,
+    lookup: tuple[dict[str, Path], dict[str, list[Path]]] | None,
+) -> list[dict[str, str]]:
+    """List possible filename-prefix/extension candidates without auto-matching."""
+    if assets_dir is None or lookup is None:
+        return []
+    exact, _ = lookup
+    all_paths = sorted(set(exact.values()), key=lambda path: path.as_posix().casefold())
+    grouped: dict[str, dict[str, Any]] = {}
+    for row in asset_rows:
+        if row.get("local_status") != "MISSING":
+            continue
+        reference = str(row.get("reference", ""))
+        group = grouped.setdefault(reference, {
+            "documents": [], "titles": [],
+        })
+        group["documents"].append(str(row.get("document", "")))
+        group["titles"].append(str(row.get("title", "")))
+
+    result = []
+    root = assets_dir.resolve()
+    for reference, group in sorted(grouped.items()):
+        basename = reference.replace("\\\\", "/").rsplit("/", 1)[-1]
+        suffix = Path(basename).suffix
+        if suffix:
+            candidate_class = "IMAGE_REFERENCE" if suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"} else "EXTENSIONED_REFERENCE"
+            stem = Path(basename).stem
+            matches = [
+                path for path in all_paths
+                if path.name == basename or (path.stem == stem and path.name != basename)
+            ]
+        else:
+            candidate_class = "NO_EXTENSION_REFERENCE"
+            stem = basename
+            matches = [
+                path for path in all_paths
+                if path.name.startswith((stem + "-", stem + "_", stem + "."))
+            ]
+        candidate_paths = sorted({
+            "assets/" + path.relative_to(root).as_posix()
+            for path in matches if path.resolve().is_relative_to(root)
+        })
+        count = len(candidate_paths)
+        if count == 0:
+            candidate_status = "NO_CANDIDATE"
+        elif count == 1:
+            candidate_status = "ONE_CANDIDATE"
+        else:
+            candidate_status = "MULTIPLE_CANDIDATES"
+        result.append({
+            "reference": reference,
+            "candidate_class": candidate_class,
+            "occurrence_count": str(len(group["documents"])),
+            "candidate_status": candidate_status,
+            "candidate_count": str(count),
+            "candidate_paths": ";".join(candidate_paths),
+            "document_paths": ";".join(sorted(set(group["documents"]))),
+            "titles": ";".join(sorted(set(group["titles"]))),
+            "candidate_basis": "ASSETS_DIRECTORY_FILENAME_ONLY_NOT_CONTENT_VERIFIED",
+            "manual_status": "NEEDS_INSPECTION",
+            "manual_note": "",
+        })
+    return result
+
 def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[str, str]):
     files = sorted(p for p in root.rglob("*.sy") if p.is_file() and "assets" not in p.parts)
     docs = [parse_document(p, root, notebook_map) for p in files]
@@ -229,6 +296,12 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
             })
     write_csv(output / "asset_references.csv", asset_rows,
               ["document", "title", "reference", "local_status", "local_path", "match_method"])
+    prefix_candidates = build_asset_prefix_candidates(asset_rows, assets_dir, asset_lookup)
+    write_csv(output / "asset_prefix_candidates.csv", prefix_candidates, [
+        "reference", "candidate_class", "occurrence_count", "candidate_status",
+        "candidate_count", "candidate_paths", "document_paths", "titles",
+        "candidate_basis", "manual_status", "manual_note",
+    ])
     notebooks = Counter(d["notebook"] for d in docs)
     topics = Counter(row["topic"] for row in topic_rows)
     statuses = Counter(d["parse_status"] for d in docs)
