@@ -220,7 +220,7 @@ def build_asset_prefix_candidates(
     result = []
     root = assets_dir.resolve()
     for reference, group in sorted(grouped.items()):
-        basename = reference.replace("\\\\", "/").rsplit("/", 1)[-1]
+        basename = reference.replace("\\", "/").rsplit("/", 1)[-1]
         suffix = Path(basename).suffix
         if suffix:
             candidate_class = "IMAGE_REFERENCE" if suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"} else "EXTENSIONED_REFERENCE"
