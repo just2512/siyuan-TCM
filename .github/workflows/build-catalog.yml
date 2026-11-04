@@ -29,6 +29,8 @@ jobs:
         run: python -m unittest discover -s tools -p 'test_*.py' -v
       - name: Generate catalogue
         run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
+      - name: Build human review queues
+        run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated
       - name: Commit generated catalogue
         run: |
           git config user.name 'github-actions[bot]'
