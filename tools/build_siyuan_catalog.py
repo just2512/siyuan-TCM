@@ -136,6 +136,50 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None
         for row in rows:
             writer.writerow({k: ";".join(v) if isinstance(v, list) else v for k, v in row.items()})
 
+def build_asset_lookup(assets_dir: Path) -> tuple[dict[str, Path], dict[str, list[Path]]]:
+    exact: dict[str, Path] = {}
+    by_name: dict[str, list[Path]] = defaultdict(list)
+    root = assets_dir.resolve()
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        resolved = path.resolve()
+        if not resolved.is_relative_to(root):
+            continue
+        relative = resolved.relative_to(root).as_posix()
+        exact[relative] = resolved
+        by_name[path.name].append(resolved)
+    return exact, by_name
+
+
+def resolve_asset_reference(reference: str, assets_dir: Path | None,
+                            lookup: tuple[dict[str, Path], dict[str, list[Path]]] | None = None
+                            ) -> tuple[str, str, str]:
+    if assets_dir is None:
+        return "NOT_CHECKED", "", "NOT_CHECKED"
+    normalized = reference.replace("\\\\", "/").lstrip("/")
+    while normalized.startswith("../"):
+        normalized = normalized[3:]
+    parts = Path(normalized).parts
+    if not parts or any(part in {"", ".", ".."} for part in parts):
+        return "INVALID_REFERENCE", "", "UNSAFE_OR_EMPTY_PATH"
+    if parts[0].lower() == "assets":
+        normalized = Path(*parts[1:]).as_posix()
+    else:
+        normalized = Path(*parts).as_posix()
+    if normalized in {"", "."}:
+        return "INVALID_REFERENCE", "", "UNSAFE_OR_EMPTY_PATH"
+    exact, by_name = lookup or build_asset_lookup(assets_dir)
+    if normalized in exact:
+        return "FOUND", str(exact[normalized]), "EXACT_RELATIVE_PATH"
+    matches = by_name.get(Path(normalized).name, [])
+    if len(matches) == 1:
+        return "FOUND_BY_UNIQUE_BASENAME", str(matches[0]), "UNIQUE_BASENAME_FALLBACK"
+    if len(matches) > 1:
+        return "AMBIGUOUS", "", "DUPLICATE_BASENAME"
+    return "MISSING", "", "NO_MATCH"
+
+
 def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[str, str]):
     files = sorted(p for p in root.rglob("*.sy") if p.is_file() and "assets" not in p.parts)
     docs = [parse_document(p, root, notebook_map) for p in files]
@@ -192,8 +236,11 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
               "- 索引生成不改变原始资料的版权、授权及使用限制。", ""]
     (output / "catalog.md").write_text("\n".join(lines), encoding="utf-8")
     audit = ["# 附件引用审计", "", f"- 引用条目：{len(asset_rows)}",
-             f"- 已找到：{sum(x['local_status']=='FOUND' for x in asset_rows)}",
+             f"- 精确路径找到：{sum(x['local_status']=='FOUND' for x in asset_rows)}",
+             f"- 唯一文件名回退找到：{sum(x['local_status']=='FOUND_BY_UNIQUE_BASENAME' for x in asset_rows)}",
+             f"- 文件名冲突待处理：{sum(x['local_status']=='AMBIGUOUS' for x in asset_rows)}",
              f"- 未找到：{sum(x['local_status']=='MISSING' for x in asset_rows)}",
+             f"- 非法引用路径：{sum(x['local_status']=='INVALID_REFERENCE' for x in asset_rows)}",
              f"- 未检查：{sum(x['local_status']=='NOT_CHECKED' for x in asset_rows)}",
              "", "详细记录见 asset_references.csv。未提供 --assets-dir 时不对附件是否存在作判断。", ""]
     (output / "asset_audit.md").write_text("\n".join(audit), encoding="utf-8")
