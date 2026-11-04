@@ -150,7 +150,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{path} 的标题复核队列状态与逐篇核验状态不一致")
 
     topic_rows = read_csv(generated / "topic_review.csv", {
-        "document", "catalog_topics", "catalog_topic_count", "review_bucket",
+        "document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status",
     })
     topic = unique_index(topic_rows, "document", "topic_review.csv")
     for path, row in topic.items():
@@ -166,7 +166,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         if len(expected) <= 1:
             raise ValueError(f"{path} 不应进入多主题复核队列")
 
-    batches = read_csv(generated / "topic_review_batches.csv", {"document", "batch_id", "batch_position"})
+    batches = read_csv(generated / "topic_review_batches.csv", {"document", "batch_id", "batch_position", "batch_size"})
     batch_doc_index = unique_index(batches, "document", "topic_review_batches.csv")
     if set(batch_doc_index) != set(topic):
         raise ValueError("topic_review_batches.csv 与 topic_review.csv 文档集合不一致")
