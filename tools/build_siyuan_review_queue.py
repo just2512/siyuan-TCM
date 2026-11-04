@@ -157,8 +157,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "",
         "- 主题命中只是字符串包含关系，不是语义分类；多主题记录只是复核队列，不自动判为错误。",
         "- title_source 区分 Properties 字段、正文首行回退、文件名回退及原始文本回退；回退标题不得当作已核验书名或篇名。",
-        "- title_matched_terms 与 body_excerpt_matched_terms 分开记录标题命中和前 2000 字正文片段命中；二者都只是字符串证据。
-- review_bucket 仅按当前主题标签数量分组，方便分批检查，不代表错误程度或医学风险。",
+        "- title_matched_terms 与 body_excerpt_matched_terms 分开记录标题命中和前 2000 字正文片段命中；二者都只是字符串证据。",
+        "- review_bucket 仅按当前主题标签数量分组，方便分批检查，不代表错误程度或医学风险。",
         "- 空正文可能来自空白文档、非文本内容或提取器尚未覆盖的节点类型，必须回看原始 .sy。",
         "- 本清单不构成医学内容真实性、出处或临床有效性的证明。",
         "",
