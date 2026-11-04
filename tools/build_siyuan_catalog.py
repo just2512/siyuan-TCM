@@ -51,6 +51,28 @@ def extract_text(data: Any) -> str:
     visit(data)
     return "\n".join(parts)
 
+def collect_child_node_types(data: Any) -> dict[str, int]:
+    """Count typed nodes below the document root without reading metadata."""
+    counts: dict[str, int] = {}
+
+    def visit(node: Any) -> None:
+        if isinstance(node, list):
+            for child in node:
+                visit(child)
+            return
+        if not isinstance(node, dict):
+            return
+        node_type = node.get("Type")
+        if isinstance(node_type, str) and node_type:
+            counts[node_type] = counts.get(node_type, 0) + 1
+        for key, value in node.items():
+            if key not in {"Properties", "IAL"} and isinstance(value, (dict, list)):
+                visit(value)
+
+    if isinstance(data, dict):
+        visit(data.get("Children", []))
+    return counts
+
 def extract_title_with_source(data: Any, fallback: str) -> tuple[str, str]:
     properties = data.get("Properties", {}) if isinstance(data, dict) else {}
     title = properties.get("title", "") if isinstance(properties, dict) else ""
@@ -93,6 +115,7 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         title, title_source = path.stem, "RAW_FILENAME"
         text, status = raw.decode("utf-8", errors="replace"), "RAW_FALLBACK"
     refs = sorted({m.rstrip(TRAILING) for m in ASSET_RE.findall(raw.decode("utf-8", errors="ignore"))})
+    node_type_counts = collect_child_node_types(data) if status == "PARSED" else {}
     return {
         "path": rel, "notebook_id": notebook_id,
         "notebook": notebook_map.get(notebook_id, notebook_id),
@@ -100,6 +123,8 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         "parse_status": status, "bytes": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
         "asset_ref_count": len(refs), "asset_refs": refs,
+        "node_types": ";".join(f"{name}:{count}" for name, count in sorted(node_type_counts.items())),
+        "child_node_count": sum(node_type_counts.values()),
         "search_text": re.sub(r"\s+", " ", text)[:2000],
     }
 
@@ -117,7 +142,7 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "documents.csv", docs, [
         "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
-        "bytes", "sha256", "asset_ref_count", "search_text"])
+        "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
     write_csv(output / "topic_index.csv", topic_rows, ["topic", "title", "path", "notebook"])
