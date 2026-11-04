@@ -35,7 +35,7 @@ def extract_text(data: Any) -> str:
         if not isinstance(node, dict):
             return
         current_type = str(node.get("Type", node_type))
-        if current_type == "NodeKramdownSpanIAL":
+        if "IAL" in current_type:
             return
         for key, value in node.items():
             if key == "TextMarkTextContent" and isinstance(value, str) and value.strip():
