@@ -13,36 +13,54 @@ from typing import Any
 TOPICS = {
     "经典与理论": ["黄帝内经", "素问", "灵枢", "阴阳", "五行", "藏象", "经络", "运气"],
     "伤寒与温病": ["伤寒论", "金匮要略", "六经", "少阳", "太阳病", "阳明病", "太阴病", "少阴病", "厥阴病", "温病"],
-    "方剂与用药": ["方剂", "经方", "汤", "散", "丸", "剂量", "配伍", "加减", "药性"],
+    "方剂与用药": ["方剂", "经方", "药方", "处方", "剂量", "配伍", "加减", "煎服", "药性", "用药"],
     "中药与本草": ["本草", "中草药", "药材", "药图", "神农本草经", "性味", "归经"],
     "针灸与经穴": ["针灸", "穴位", "经穴", "艾灸", "刺法", "针法"],
     "诊断与辨证": ["望诊", "闻诊", "问诊", "切诊", "脉诊", "舌诊", "辨证", "合病", "并病"],
     "医家与课程": ["倪海厦", "谭杰中", "jt叔叔", "梁冬", "医案", "讲座", "课程"],
 }
 ASSET_RE = re.compile(r"""(?:\.\./|/)?assets/[^\s"'<>\\)]+""", re.IGNORECASE)
-TEXT_KEYS = {"markdown", "content", "text", "data", "title", "name", "memo", "ial"}
-TITLE_KEYS = {"title", "name"}
 TRAILING = ".,;:!?，。；：！？)]}）】》、"
-
-def walk_strings(node: Any, key: str = ""):
-    if isinstance(node, dict):
-        for k, value in node.items():
-            yield from walk_strings(value, str(k).lower())
-    elif isinstance(node, list):
-        for value in node:
-            yield from walk_strings(value, key)
-    elif isinstance(node, str):
-        yield key, node
-
-def extract_title(data: Any, fallback: str) -> str:
-    for key, value in walk_strings(data):
-        if key in TITLE_KEYS and value.strip():
-            return value.strip()
-    return fallback
+GENERIC_TITLES = {"", "笔记", "无标题", "untitled"}
 
 def extract_text(data: Any) -> str:
-    return "\n".join(value.strip() for key, value in walk_strings(data)
-                     if key in TEXT_KEYS and value.strip())
+    """Extract visible SiYuan block text, excluding Properties and Kramdown IAL."""
+    parts = []
+
+    def visit(node: Any, node_type: str = "") -> None:
+        if isinstance(node, list):
+            for child in node:
+                visit(child, node_type)
+            return
+        if not isinstance(node, dict):
+            return
+        current_type = str(node.get("Type", node_type))
+        if current_type == "NodeKramdownSpanIAL":
+            return
+        for key, value in node.items():
+            if key == "TextMarkTextContent" and isinstance(value, str) and value.strip():
+                parts.append(value.strip())
+            elif key == "Data" and isinstance(value, str) and value.strip():
+                parts.append(value.strip())
+            elif key == "Children":
+                visit(value, current_type)
+            elif key not in {"Properties", "IAL", "Type", "ID", "Spec"}:
+                if isinstance(value, (dict, list)):
+                    visit(value, current_type)
+
+    visit(data)
+    return "\n".join(parts)
+
+def extract_title(data: Any, fallback: str) -> str:
+    properties = data.get("Properties", {}) if isinstance(data, dict) else {}
+    title = properties.get("title", "") if isinstance(properties, dict) else ""
+    title = str(title).strip()
+    if title and title.lower() not in GENERIC_TITLES:
+        return title
+    # A large portion of this corpus uses the generic document title "笔记".
+    # Use the first visible text line as a navigational fallback, not as a verified title.
+    first_line = next((line.strip() for line in extract_text(data).splitlines() if line.strip()), "")
+    return first_line[:100] if first_line else fallback
 
 def classify(title: str, text: str) -> list[str]:
     haystack = (title + "\n" + text).lower()
