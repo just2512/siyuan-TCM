@@ -339,11 +339,24 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
               "- 索引生成不改变原始资料的版权、授权及使用限制。", ""]
     (output / "catalog.md").write_text("\n".join(lines), encoding="utf-8")
     prefix_counts = Counter(row["candidate_status"] for row in prefix_candidates)
+    prefix_audit = (
+        [
+            "- 候选扫描状态：COMPLETED",
+            f"- 未匹配引用唯一项：{len(prefix_candidates)}",
+            f"- 文件名候选唯一命中：{prefix_counts.get('ONE_CANDIDATE', 0)}",
+            f"- 文件名候选多重命中：{prefix_counts.get('MULTIPLE_CANDIDATES', 0)}",
+            f"- 文件名无候选：{prefix_counts.get('NO_CANDIDATE', 0)}",
+        ]
+        if assets_dir
+        else [
+            "- 候选扫描状态：NOT_RUN（未提供 --assets-dir）",
+            "- 未匹配引用唯一项：未执行本地映射，不能统计",
+            "- 文件名候选：未执行本地扫描",
+        ]
+    )
     audit = ["# 附件引用审计", "", f"- 引用条目：{len(asset_rows)}",
-             f"- 未匹配引用唯一项：{len(prefix_candidates)}",
-             f"- 文件名候选唯一命中：{prefix_counts.get('ONE_CANDIDATE', 0)}",
-             f"- 文件名候选多重命中：{prefix_counts.get('MULTIPLE_CANDIDATES', 0)}",
-             f"- 文件名无候选：{prefix_counts.get('NO_CANDIDATE', 0)}",
+             f"- 本地附件目录：{'已提供' if assets_dir else '未提供'}",
+             *prefix_audit,
              f"- 精确路径找到：{sum(x['local_status']=='FOUND' for x in asset_rows)}",
              f"- 唯一文件名回退找到：{sum(x['local_status']=='FOUND_BY_UNIQUE_BASENAME' for x in asset_rows)}",
              f"- 文件名冲突待处理：{sum(x['local_status']=='AMBIGUOUS' for x in asset_rows)}",
