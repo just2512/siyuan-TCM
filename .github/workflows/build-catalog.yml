@@ -3,10 +3,6 @@ name: Build and commit TCM catalogue
 on:
   push:
     branches: [master]
-    paths:
-      - '**/*.sy'
-      - 'tools/**'
-      - '.github/workflows/build-catalog.yml'
   workflow_dispatch:
 
 permissions:
