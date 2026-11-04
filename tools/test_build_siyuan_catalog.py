@@ -176,5 +176,36 @@ class CatalogueBuilderTests(unittest.TestCase):
             )
 
 
+    def test_generated_reports_and_asset_rows_do_not_leak_local_absolute_paths(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "private-data-root"
+            doc_dir = root / "notebook-a"
+            doc_dir.mkdir(parents=True)
+            (doc_dir / "doc.sy").write_text(json.dumps({
+                "Properties": {"title": "路径隐私测试"},
+                "Children": [{
+                    "Type": "NodeParagraph",
+                    "Data": "assets/private-image.png",
+                }],
+            }, ensure_ascii=False), encoding="utf-8")
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "private-image.png").write_bytes(b"image")
+            output = Path(temp) / "generated"
+
+            catalog.build(root, output, assets, {})
+
+            report = (output / "catalog.md").read_text(encoding="utf-8")
+            self.assertNotIn(str(root), report)
+            self.assertNotIn(str(assets), report)
+            with (output / "asset_references.csv").open(
+                encoding="utf-8-sig", newline=""
+            ) as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(rows[0]["local_status"], "FOUND")
+            self.assertEqual(rows[0]["local_path"], "assets/private-image.png")
+            self.assertNotIn(str(root), rows[0]["local_path"])
+
+
 if __name__ == "__main__":
     unittest.main()
