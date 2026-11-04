@@ -44,6 +44,8 @@ def matched_terms(title: str, text: str) -> dict[str, list[str]]:
     }
 
 def review_bucket(topic_count: int) -> str:
+    if topic_count <= 1:
+        return "0_TO_1_TOPICS"
     if topic_count >= 5:
         return "5_PLUS_TOPICS"
     if topic_count >= 3:
@@ -318,7 +320,7 @@ def build_review_queues(documents_csv: Path, output: Path,
         f"- 多主题关键词命中、待人工复核：{len(topic_rows)}",
         "- 多主题复核分组：" + "；".join(
             f"{bucket}={sum(row['review_bucket'] == bucket for row in topic_rows)}"
-            for bucket in ("5_PLUS_TOPICS", "3_TO_4_TOPICS", "2_TOPICS")
+            for bucket in ("5_PLUS_TOPICS", "3_TO_4_TOPICS", "2_TOPICS", "0_TO_1_TOPICS")
         ),
         "- 标题来源分布：" + "；".join(f"{key}={value}" for key, value in sorted(title_sources.items())),
         "- catalog_matched_terms 保留标题和完整正文的机器命中词；人工复核的 excerpt 证据仍只覆盖标题和前 2000 字正文片段，两者可能不完全一致。",
