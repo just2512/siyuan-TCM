@@ -208,5 +208,50 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertNotIn(str(root), rows[0]["local_path"])
 
 
+    def test_builds_non_committal_asset_prefix_candidates_from_local_assets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "data"
+            doc_dir = root / "notebook-a"
+            doc_dir.mkdir(parents=True)
+            (doc_dir / "doc.sy").write_text(json.dumps({
+                "Properties": {"title": "附件候选测试"},
+                "Children": [{
+                    "Type": "NodeParagraph",
+                    "Data": "assets/single assets/multi assets/none assets/missing.png",
+                }],
+            }, ensure_ascii=False), encoding="utf-8")
+            assets = Path(temp) / "assets"
+            assets.mkdir()
+            (assets / "single-20260101-a.jpg").write_bytes(b"a")
+            (assets / "multi-20260101-a.jpg").write_bytes(b"b")
+            (assets / "multi-20260102-b.jpg").write_bytes(b"c")
+            (assets / "unrelated.jpg").write_bytes(b"d")
+            output = Path(temp) / "generated"
+
+            catalog.build(root, output, assets, {})
+
+            with (output / "asset_prefix_candidates.csv").open(
+                encoding="utf-8-sig", newline=""
+            ) as stream:
+                rows = list(csv.DictReader(stream))
+            by_ref = {row["reference"]: row for row in rows}
+            self.assertEqual(by_ref["assets/single"]["candidate_status"], "ONE_CANDIDATE")
+            self.assertEqual(by_ref["assets/single"]["candidate_count"], "1")
+            self.assertEqual(
+                by_ref["assets/multi"]["candidate_status"], "MULTIPLE_CANDIDATES"
+            )
+            self.assertEqual(by_ref["assets/none"]["candidate_status"], "NO_CANDIDATE")
+            self.assertEqual(
+                by_ref["assets/missing.png"]["candidate_status"], "NO_CANDIDATE"
+            )
+            self.assertEqual(
+                by_ref["assets/single"]["candidate_paths"],
+                "assets/single-20260101-a.jpg",
+            )
+            self.assertNotIn(str(temp), (output / "asset_prefix_candidates.csv").read_text(
+                encoding="utf-8-sig"
+            ))
+
+
 if __name__ == "__main__":
     unittest.main()
