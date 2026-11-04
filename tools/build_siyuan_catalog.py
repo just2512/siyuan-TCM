@@ -116,6 +116,11 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         text, status = raw.decode("utf-8", errors="replace"), "RAW_FALLBACK"
     refs = sorted({m.rstrip(TRAILING) for m in ASSET_RE.findall(raw.decode("utf-8", errors="ignore"))})
     node_type_counts = collect_child_node_types(data) if status == "PARSED" else {}
+    properties = data.get("Properties", {}) if status == "PARSED" and isinstance(data, dict) else {}
+    properties_fields = sorted(
+        str(key) for key, value in properties.items()
+        if str(key) and value is not None and value != "" and value != [] and value != {}
+    ) if isinstance(properties, dict) else []
     return {
         "path": rel, "notebook_id": notebook_id,
         "notebook": notebook_map.get(notebook_id, notebook_id),
