@@ -89,7 +89,7 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "document_review.csv"
-            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "source_status", "source_version_status", "collation_status"], [])
+            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference"], [])
             with self.assertRaisesRegex(ValueError, "文档集合不一致"):
                 validator.validate_catalogue(generated, source, assets)
 
