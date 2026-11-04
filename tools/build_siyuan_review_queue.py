@@ -64,8 +64,77 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None
         writer.writerows(rows)
 
 
-def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
+DECISION_FIELDS = {
+    "title_review_status": {"NOT_REVIEWED", "CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
+    "source_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_version_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "collation_status": {"NOT_REVIEWED", "COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
+    "topic_review_status": {"NOT_REVIEWED", "CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
+    "empty_body_status": {"NEEDS_SOURCE_INSPECTION", "SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},
+}
+DECISION_COLUMNS = [
+    "document", "reviewer", "title_review_status", "human_corrected_title",
+    "source_status", "source_version_status", "collation_status",
+    "topic_review_status", "human_approved_topics", "empty_body_status",
+    "review_notes", "evidence_reference",
+]
+
+
+def load_decisions(path: Path, known_documents: set[str]) -> dict[str, dict[str, str]]:
+    if not path.is_file():
+        return {}
+    with path.open("r", encoding="utf-8-sig", newline="") as stream:
+        reader = csv.DictReader(stream)
+        missing = set(DECISION_COLUMNS) - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f"人工核验覆盖表缺少字段：{', '.join(sorted(missing))}")
+        decisions = {}
+        for line_number, row in enumerate(reader, start=2):
+            document = (row.get("document") or "").strip()
+            if not document:
+                raise ValueError(f"人工核验覆盖表第 {line_number} 行缺少 document")
+            if document not in known_documents:
+                raise ValueError(f"人工核验覆盖表第 {line_number} 行引用不存在的文档：{document}")
+            if document in decisions:
+                raise ValueError(f"人工核验覆盖表存在重复文档键：{document}")
+            decision = {key: (value or "").strip() for key, value in row.items() if key}
+            for field, allowed in DECISION_FIELDS.items():
+                value = decision.get(field, "")
+                if value and value not in allowed:
+                    raise ValueError(f"{document} 的 {field} 状态无效：{value}")
+            changed = any(
+                value and value not in {"NOT_REVIEWED", "UNVERIFIED", "NEEDS_SOURCE_INSPECTION"}
+                for field, value in decision.items() if field in DECISION_FIELDS
+            )
+            if changed and not decision.get("evidence_reference"):
+                raise ValueError(f"{document} 已填写人工结论但缺少 evidence_reference")
+            decisions[document] = decision
+    return decisions
+
+
+def apply_decisions(rows: list[dict[str, Any]], decisions: dict[str, dict[str, str]],
+                    field_map: dict[str, str]) -> None:
+    for row in rows:
+        decision = decisions.get(str(row.get("document", "")))
+        if not decision:
+            continue
+        for decision_field, output_field in field_map.items():
+            value = decision.get(decision_field, "")
+            if value:
+                row[output_field] = value
+        if decision.get("reviewer"):
+            row["reviewer"] = decision["reviewer"]
+        if decision.get("review_notes"):
+            row["review_notes"] = decision["review_notes"]
+        if decision.get("evidence_reference"):
+            row["evidence_reference"] = decision["evidence_reference"]
+
+
+def build_review_queues(documents_csv: Path, output: Path,
+                        decisions_csv: Path | None = None) -> dict[str, int]:
     docs = read_documents(documents_csv)
+    decisions_path = decisions_csv or documents_csv.parent.parent / "review-decisions.csv"
+    decisions = load_decisions(decisions_path, {doc.get("path", "") for doc in docs})
     review_rows = []
     topic_rows = []
     empty_rows = []
@@ -173,27 +242,43 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
                 "review_notes": "",
             })
 
+    apply_decisions(review_rows, decisions, {
+        "title_review_status": "title_review_status",
+        "source_status": "source_status",
+        "source_version_status": "source_version_status",
+        "collation_status": "collation_status",
+        "human_corrected_title": "human_corrected_title",
+        "human_approved_topics": "human_approved_topics",
+    })
+    apply_decisions(title_candidate_rows, decisions, {
+        "title_review_status": "review_status",
+        "human_corrected_title": "human_corrected_title",
+    })
+    apply_decisions(topic_rows, decisions, {"topic_review_status": "review_status"})
+    apply_decisions(empty_rows, decisions, {"empty_body_status": "review_status"})
+
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "document_review.csv", review_rows, [
         "document", "notebook", "title", "title_source", "topics", "parse_status", "body_status",
         "title_review_status", "source_status", "source_version_status",
-        "collation_status", "reviewer", "review_notes",
+        "collation_status", "human_corrected_title", "human_approved_topics",
+        "reviewer", "review_notes", "evidence_reference",
     ])
     write_csv(output / "title_review_candidates.csv", title_candidate_rows, [
         "document", "notebook", "title", "title_source", "reason",
-        "review_status", "review_notes",
+        "review_status", "human_corrected_title", "review_notes", "evidence_reference",
     ])
     write_csv(output / "empty_body_review.csv", empty_rows, [
         "document", "notebook", "title", "title_source", "parse_status",
         "bytes", "asset_ref_count", "node_types", "child_node_count",
-        "structure_status", "review_status", "review_notes",
+        "structure_status", "review_status", "review_notes", "evidence_reference",
     ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics",
         "catalog_topic_count", "excerpt_topic_count", "topic_count", "review_bucket",
         "excerpt_topics", "title_matched_terms", "body_excerpt_matched_terms",
         "matched_terms", "evidence_scope",
-        "search_text", "review_status", "review_notes",
+        "search_text", "review_status", "review_notes", "evidence_reference",
     ])
     report = [
         "# 逐篇人工核验队列",
@@ -212,6 +297,8 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "## 文件",
         "",
         "- 人工核验状态、证据要求和附件本地检查方法见 catalog/REVIEW_GUIDE.md。",
+        "- 人工结论从 catalog/review-decisions.csv 读取；该文件与自动生成产物分离，重建索引不会覆盖人工结论。",
+        f"- 已应用人工核验覆盖记录：{len(decisions)} 篇；无覆盖记录时保持 NOT_REVIEWED / UNVERIFIED。",
         "- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。",
         "- topic_review.csv：多主题命中的关键词证据和正文片段，供人工判断是否误分类。",
         "- empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。",
@@ -236,8 +323,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--documents", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--decisions", type=Path, default=None,
+                        help="人工核验覆盖 CSV；默认 <repo>/catalog/review-decisions.csv")
     args = parser.parse_args()
-    result = build_review_queues(args.documents, args.output)
+    result = build_review_queues(args.documents, args.output, args.decisions)
     print(result)
     return 0
 
