@@ -100,3 +100,8 @@
 最新持久化覆盖层版本的 CI：<https://github.com/just2512/siyuan-TCM/actions/runs/41822653752>，8 项单元测试、索引生成、核验队列生成和生成提交均成功。生成结果显示 2,667 篇文档、33 篇空正文、1,425 篇多主题候选、19 篇标题候选，人工覆盖记录 0 篇。
 
 人工填写规则见 `catalog/REVIEW_GUIDE.md`。不要直接编辑 `catalog/generated/` 下的 CSV；请编辑 `catalog/review-decisions.csv` 并提交到 master，随后由 CI 自动应用。
+
+
+### 覆盖层校验补充（2026-11-04）
+
+随后补充重复键和非法状态的拒绝测试。最新 CI：<https://github.com/just2512/siyuan-TCM/actions/runs/41822816916>，9 项单元测试全部通过，生成索引和人工核验队列步骤均通过。由于生成内容未变化，工作流无需产生新的生成提交；人工覆盖表仍为空表，未产生虚构的人工结论。
