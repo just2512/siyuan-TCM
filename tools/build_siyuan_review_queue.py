@@ -133,6 +133,21 @@ def apply_decisions(rows: list[dict[str, Any]], decisions: dict[str, dict[str, s
             row["evidence_reference"] = decision["evidence_reference"]
 
 
+
+def assign_review_batches(rows: list[dict[str, Any]], batch_size: int = 50) -> list[dict[str, Any]]:
+    """Assign deterministic batches by repository-relative document path."""
+    if batch_size < 1:
+        raise ValueError("batch_size 必须大于 0")
+    ordered = sorted(rows, key=lambda row: str(row.get("document", "")))
+    total = len(ordered)
+    for index, row in enumerate(ordered, start=1):
+        batch_number = (index - 1) // batch_size + 1
+        row["batch_id"] = f"TOPIC-{batch_number:03d}"
+        row["batch_position"] = index - (batch_number - 1) * batch_size
+        row["batch_size"] = min(batch_size, total - (batch_number - 1) * batch_size)
+    return ordered
+
+
 def build_review_queues(documents_csv: Path, output: Path,
                         decisions_csv: Path | None = None) -> dict[str, int]:
     docs = read_documents(documents_csv)
@@ -262,6 +277,7 @@ def build_review_queues(documents_csv: Path, output: Path,
     })
     apply_decisions(topic_rows, decisions, {"topic_review_status": "review_status"})
     apply_decisions(empty_rows, decisions, {"empty_body_status": "review_status"})
+    topic_rows = assign_review_batches(topic_rows)
 
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "document_review.csv", review_rows, [
@@ -286,6 +302,14 @@ def build_review_queues(documents_csv: Path, output: Path,
         "matched_terms", "evidence_scope",
         "search_text", "review_status", "review_notes", "evidence_reference",
     ])
+    write_csv(output / "topic_review_batches.csv", topic_rows, [
+        "batch_id", "batch_position", "batch_size", "document", "notebook", "title",
+        "title_source", "catalog_topics", "catalog_matched_terms", "catalog_topic_count",
+        "excerpt_topic_count", "topic_count", "review_bucket", "excerpt_topics",
+        "title_matched_terms", "body_excerpt_matched_terms", "matched_terms",
+        "evidence_scope", "search_text", "review_status", "review_notes", "evidence_reference",
+    ])
+    batch_counts = Counter(row["batch_id"] for row in topic_rows)
     report = [
         "# 逐篇人工核验队列",
         "",
@@ -306,7 +330,8 @@ def build_review_queues(documents_csv: Path, output: Path,
         "- 人工结论从 catalog/review-decisions.csv 读取；该文件与自动生成产物分离，重建索引不会覆盖人工结论。",
         f"- 已应用人工核验覆盖记录：{len(decisions)} 篇；无覆盖记录时保持 NOT_REVIEWED / UNVERIFIED。",
         "- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。",
-        "- topic_review.csv：多主题命中的关键词证据和正文片段，供人工判断是否误分类。",
+        "- topic_review.csv：完整多主题复核清单。",
+        f"- topic_review_batches.csv：按文档仓库相对路径排序后每批 50 篇的人工工作包索引，共 {len(batch_counts)} 批；批次只用于组织工作，不保存人工结论。",
         "- empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。",
         f"- title_review_candidates.csv：标题来源回退或命中少量通用目录标签的候选项，共 {len(title_candidate_rows)} 篇；均未自动判错。",
         "",
@@ -316,13 +341,14 @@ def build_review_queues(documents_csv: Path, output: Path,
         "- title_source 区分 Properties 字段、正文首行回退、文件名回退及原始文本回退；回退标题不得当作已核验书名或篇名。",
         "- title_matched_terms 与 body_excerpt_matched_terms 分开记录标题命中和前 2000 字正文片段命中；二者都只是字符串证据。",
         "- review_bucket 仅按当前主题标签数量分组，方便分批检查，不代表错误程度或医学风险。",
+        "- topic_review_batches.csv 每次按 document 路径字典序重新分批；新增/删除文档可能改变后续批次边界。人工结论仍只写入 catalog/review-decisions.csv。",
         "- 空正文可能来自空白文档、非文本内容或提取器尚未覆盖的节点类型，必须回看原始 .sy。",
         "- 本清单不构成医学内容真实性、出处或临床有效性的证明。",
         "",
     ]
     (output / "review_queue.md").write_text("\n".join(report), encoding="utf-8")
     return {"documents": len(docs), "empty_bodies": empty_count,
-            "multi_topic_review": len(topic_rows)}
+            "multi_topic_review": len(topic_rows), "topic_review_batches": len(batch_counts)}
 
 
 def main() -> int:
