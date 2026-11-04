@@ -24,11 +24,18 @@ def read_csv(path: Path, required: set[str]) -> list[dict[str, str]]:
         raise ValueError(f"缺少生成文件：{path.name}")
     with path.open("r", encoding="utf-8-sig", newline="") as stream:
         reader = csv.DictReader(stream)
-        fields = set(reader.fieldnames or [])
+        headers = reader.fieldnames or []
+        if len(headers) != len(set(headers)):
+            raise ValueError(f"{path.name} 存在重复列名")
+        fields = set(headers)
         missing = required - fields
         if missing:
             raise ValueError(f"{path.name} 缺少字段：{', '.join(sorted(missing))}")
-        return list(reader)
+        rows = list(reader)
+        for line, row in enumerate(rows, start=2):
+            if None in row:
+                raise ValueError(f"{path.name} 第 {line} 行列数超过表头")
+        return rows
 
 
 def unique_index(rows: list[dict[str, str]], key: str, label: str) -> dict[str, dict[str, str]]:
@@ -136,6 +143,11 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     title = unique_index(title_rows, "document", "title_review_candidates.csv")
     if not set(title).issubset(docs):
         raise ValueError("title_review_candidates.csv 引用了未知文档")
+    for path, row in title.items():
+        if row["review_status"] not in {"NOT_REVIEWED", "CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"}:
+            raise ValueError(f"{path} 的标题复核状态无效")
+        if row["review_status"] != review[path]["title_review_status"]:
+            raise ValueError(f"{path} 的标题复核队列状态与逐篇核验状态不一致")
 
     topic_rows = read_csv(generated / "topic_review.csv", {
         "document", "catalog_topics", "catalog_topic_count", "review_bucket",
@@ -144,6 +156,10 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     for path, row in topic.items():
         if path not in docs:
             raise ValueError(f"topic_review.csv 引用了未知文档：{path}")
+        if row.get("review_status") not in {"NOT_REVIEWED", "CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"}:
+            raise ValueError(f"{path} 的主题复核状态无效")
+        if row["review_status"] != review[path]["topic_review_status"]:
+            raise ValueError(f"{path} 的主题复核队列状态与逐篇核验状态不一致")
         expected = [item for item in docs[path]["topics"].split(";") if item]
         if row["catalog_topics"] != docs[path]["topics"] or int(row["catalog_topic_count"]) != len(expected):
             raise ValueError(f"{path} 的主题复核证据与 documents.csv 不一致")
