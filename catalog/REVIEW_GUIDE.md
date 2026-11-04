@@ -111,3 +111,13 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `evidence_reference`：必须可定位到原始资料、书目、版本或校勘底本。填写任何非默认人工结论时必填。
 
 生成器会检查重复文档键、仓库中不存在的路径、非法状态和缺少证据引用；发现问题即失败，不会静默忽略。人工结论输出到生成核验表的对应字段，机器原始标签仍保留，避免把人工判断与算法结果混为一谈。
+
+
+## 8. 多主题核验分批工作包
+
+文件：`catalog/generated/topic_review_batches.csv`
+
+- 该文件将多主题候选按 .sy 仓库相对路径字典序排列，每批 50 篇，包含批次编号、批内序号、主题标签及机器命中词，便于分段处理。
+- 批次是工作组织方式，不代表风险、错误程度或优先级；批次边界随新增/删除文档可能变化。
+- 不要在该生成文件中填写结论。所有人工结论仍写入 `catalog/review-decisions.csv`，以 document 路径为唯一键。
+- `topic_review.csv` 保留完整复核清单；`topic_review_batches.csv` 是便于筛选和分批的工作视图。
