@@ -115,6 +115,24 @@ class ReviewQueueTests(unittest.TestCase):
                 original = list(csv.DictReader(stream))
             self.assertEqual(original[0]["topics"], "伤寒与温病")
 
+    def test_rejects_duplicate_decision_rows_and_invalid_status(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            decisions = root / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({"document": "book/a.sy"})
+                writer.writerow({"document": "book/a.sy"})
+            with self.assertRaises(ValueError):
+                review.load_decisions(decisions, {"book/a.sy"})
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({"document": "book/a.sy", "source_status": "MAYBE"})
+            with self.assertRaises(ValueError):
+                review.load_decisions(decisions, {"book/a.sy"})
+
     def test_rejects_decision_without_evidence_or_unknown_document(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
