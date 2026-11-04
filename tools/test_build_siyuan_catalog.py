@@ -106,5 +106,51 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("NodeText:1", csv_text)
 
 
+    def test_build_uses_safe_asset_resolver_for_generated_reference_index(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "data"
+            doc_dir = root / "notebook-a"
+            doc_dir.mkdir(parents=True)
+            (doc_dir / "doc.sy").write_text(json.dumps({
+                "Properties": {"title": "附件映射验证"},
+                "Children": [{
+                    "Type": "NodeParagraph",
+                    "Data": "assets/nested-a/same.png ../assets/same.png assets/unique.jpg",
+                }],
+            }, ensure_ascii=False), encoding="utf-8")
+
+            assets = Path(temp) / "assets"
+            (assets / "nested-a").mkdir(parents=True)
+            (assets / "nested-b").mkdir(parents=True)
+            (assets / "nested-a" / "same.png").write_bytes(b"a")
+            (assets / "nested-b" / "same.png").write_bytes(b"b")
+            (assets / "unique.jpg").write_bytes(b"c")
+
+            output = Path(temp) / "out"
+            catalog.build(root, output, assets, {})
+            import csv
+            with (output / "asset_references.csv").open(
+                encoding="utf-8-sig", newline=""
+            ) as stream:
+                rows = list(csv.DictReader(stream))
+
+            by_reference = {row["reference"]: row for row in rows}
+            self.assertEqual(by_reference["assets/nested-a/same.png"]["local_status"], "FOUND")
+            self.assertEqual(
+                by_reference["assets/nested-a/same.png"]["match_method"],
+                "EXACT_RELATIVE_PATH",
+            )
+            self.assertEqual(by_reference["../assets/same.png"]["local_status"], "AMBIGUOUS")
+            self.assertEqual(
+                by_reference["../assets/same.png"]["match_method"],
+                "DUPLICATE_BASENAME",
+            )
+            self.assertEqual(by_reference["assets/unique.jpg"]["local_status"], "FOUND")
+            self.assertEqual(
+                by_reference["assets/unique.jpg"]["match_method"],
+                "EXACT_RELATIVE_PATH",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
