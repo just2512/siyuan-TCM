@@ -157,3 +157,10 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `NO_CANDIDATE` 只表示当前候选规则未找到文件名线索，不证明附件不存在。
 - 该 CSV 属于本地审计输出。若要长期保存，请复制到 `catalog/local-review/asset-prefix-candidates-YYYY-MM-DD.csv`，不要只保留在 `catalog/generated/`。
 
+
+
+## 10. 生成结果跨文件一致性门禁
+
+CI 在所有索引和人工核验工作队列生成后，运行 `tools/validate_siyuan_catalog.py`。它会检查文档键、附件引用计数、逐篇核验记录、空正文集合、主题复核队列、附件候选队列和来源候选队列之间的一致性。
+
+若新增或调整生成字段，应同步更新校验器及其测试。门禁通过只表示表间结构和状态关系一致，不代表人工内容审核完成。
