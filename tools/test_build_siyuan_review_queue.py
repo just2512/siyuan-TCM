@@ -109,6 +109,7 @@ class ReviewQueueTests(unittest.TestCase):
                 rows = list(csv.DictReader(stream))
             self.assertEqual(rows[0]["source_status"], "VERIFIED")
             self.assertEqual(rows[0]["title_review_status"], "CONFIRMED")
+            self.assertEqual(rows[0]["topic_review_status"], "CONFIRMED")
             self.assertEqual(rows[0]["human_approved_topics"], "伤寒与温病")
             self.assertEqual(rows[0]["evidence_reference"], "书名页 p.1；目录 p.3")
             with source.open("r", encoding="utf-8-sig", newline="") as stream:
@@ -130,6 +131,20 @@ class ReviewQueueTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
                 writer.writeheader()
                 writer.writerow({"document": "book/a.sy", "source_status": "MAYBE"})
+            with self.assertRaises(ValueError):
+                review.load_decisions(decisions, {"book/a.sy"})
+
+
+    def test_rejects_corrected_title_without_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            decisions = Path(temp) / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy",
+                    "human_corrected_title": "经方辨证",
+                })
             with self.assertRaises(ValueError):
                 review.load_decisions(decisions, {"book/a.sy"})
 
