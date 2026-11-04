@@ -64,6 +64,7 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
     docs = read_documents(documents_csv)
     review_rows = []
     topic_rows = []
+    empty_rows = []
     empty_count = 0
     title_sources = Counter()
     for doc in docs:
@@ -71,6 +72,18 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         title_sources[title_source] += 1
         body_status = "EMPTY_BODY" if not doc.get("search_text", "").strip() else "HAS_EXTRACTED_TEXT"
         empty_count += body_status == "EMPTY_BODY"
+        if body_status == "EMPTY_BODY":
+            empty_rows.append({
+                "document": doc.get("path", ""),
+                "notebook": doc.get("notebook", ""),
+                "title": doc.get("title", ""),
+                "title_source": title_source,
+                "parse_status": doc.get("parse_status", ""),
+                "bytes": doc.get("bytes", ""),
+                "asset_ref_count": doc.get("asset_ref_count", ""),
+                "review_status": "NEEDS_SOURCE_INSPECTION",
+                "review_notes": "",
+            })
         review_rows.append({
             "document": doc.get("path", ""),
             "notebook": doc.get("notebook", ""),
@@ -127,6 +140,10 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "title_review_status", "source_status", "source_version_status",
         "collation_status", "reviewer", "review_notes",
     ])
+    write_csv(output / "empty_body_review.csv", empty_rows, [
+        "document", "notebook", "title", "title_source", "parse_status",
+        "bytes", "asset_ref_count", "review_status", "review_notes",
+    ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics",
         "catalog_topic_count", "excerpt_topic_count", "topic_count", "review_bucket",
@@ -152,6 +169,7 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "",
         "- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。",
         "- topic_review.csv：多主题命中的关键词证据和正文片段，供人工判断是否误分类。",
+        "- empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。",
         "",
         "## 边界",
         "",
