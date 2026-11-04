@@ -329,6 +329,7 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
               "- topic_index.csv：按主题展开的文档索引。",
               "- metadata_inventory.csv：Properties 中非空字段的文档覆盖数；不导出字段值。",
               "- asset_references.csv：文档引用的 assets 路径及本地映射状态。",
+              "- asset_prefix_candidates.csv：未匹配引用的本地文件名候选，仅供人工核验，不自动认定为匹配。",
               "- catalog.md：本概况报告。", "",
               "## 使用边界", "",
               "- 仓库 .gitignore 排除了 assets/。未提供附件目录时，附件状态为 NOT_CHECKED，不代表附件缺失。",
@@ -337,7 +338,12 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
               "- 自动主题标签仅用于检索导航，须人工复核，不能作为辨证、处方或临床决策规则。",
               "- 索引生成不改变原始资料的版权、授权及使用限制。", ""]
     (output / "catalog.md").write_text("\n".join(lines), encoding="utf-8")
+    prefix_counts = Counter(row["candidate_status"] for row in prefix_candidates)
     audit = ["# 附件引用审计", "", f"- 引用条目：{len(asset_rows)}",
+             f"- 未匹配引用唯一项：{len(prefix_candidates)}",
+             f"- 文件名候选唯一命中：{prefix_counts.get('ONE_CANDIDATE', 0)}",
+             f"- 文件名候选多重命中：{prefix_counts.get('MULTIPLE_CANDIDATES', 0)}",
+             f"- 文件名无候选：{prefix_counts.get('NO_CANDIDATE', 0)}",
              f"- 精确路径找到：{sum(x['local_status']=='FOUND' for x in asset_rows)}",
              f"- 唯一文件名回退找到：{sum(x['local_status']=='FOUND_BY_UNIQUE_BASENAME' for x in asset_rows)}",
              f"- 文件名冲突待处理：{sum(x['local_status']=='AMBIGUOUS' for x in asset_rows)}",
