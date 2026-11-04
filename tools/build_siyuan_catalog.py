@@ -157,18 +157,20 @@ def resolve_asset_reference(reference: str, assets_dir: Path | None,
                             ) -> tuple[str, str, str]:
     if assets_dir is None:
         return "NOT_CHECKED", "", "NOT_CHECKED"
-    normalized = reference.replace("\\", "/").lstrip("/")
-    while normalized.startswith("../"):
-        normalized = normalized[3:]
+    raw = reference.replace("\\\\", "/")
+    # SiYuan exports commonly use either assets/... or ../assets/... .
+    # Accept only those explicit prefixes; never normalize away arbitrary
+    # parent-directory segments because that can turn traversal into a valid path.
+    if raw.startswith("../assets/"):
+        normalized = raw[len("../assets/"):]
+    elif raw.startswith("assets/"):
+        normalized = raw[len("assets/"):]
+    else:
+        return "INVALID_REFERENCE", "", "UNSAFE_OR_UNSUPPORTED_PREFIX"
     parts = Path(normalized).parts
     if not parts or any(part in {"", ".", ".."} for part in parts):
         return "INVALID_REFERENCE", "", "UNSAFE_OR_EMPTY_PATH"
-    if parts[0].lower() == "assets":
-        normalized = Path(*parts[1:]).as_posix()
-    else:
-        normalized = Path(*parts).as_posix()
-    if normalized in {"", "."}:
-        return "INVALID_REFERENCE", "", "UNSAFE_OR_EMPTY_PATH"
+    normalized = Path(*parts).as_posix()
     exact, by_name = lookup or build_asset_lookup(assets_dir)
     if normalized in exact:
         return "FOUND", str(exact[normalized]), "EXACT_RELATIVE_PATH"
