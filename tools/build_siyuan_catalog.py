@@ -51,16 +51,21 @@ def extract_text(data: Any) -> str:
     visit(data)
     return "\n".join(parts)
 
-def extract_title(data: Any, fallback: str) -> str:
+def extract_title_with_source(data: Any, fallback: str) -> tuple[str, str]:
     properties = data.get("Properties", {}) if isinstance(data, dict) else {}
     title = properties.get("title", "") if isinstance(properties, dict) else ""
     title = str(title).strip()
     if title and title.lower() not in GENERIC_TITLES:
-        return title
-    # A large portion of this corpus uses the generic document title "笔记".
-    # Use the first visible text line as a navigational fallback, not as a verified title.
+        return title, "PROPERTY"
+    # First visible line is a navigational fallback, not a verified title.
     first_line = next((line.strip() for line in extract_text(data).splitlines() if line.strip()), "")
-    return first_line[:100] if first_line else fallback
+    if first_line:
+        return first_line[:100], "BODY_FIRST_LINE"
+    return fallback, "FILENAME"
+
+def extract_title(data: Any, fallback: str) -> str:
+    """Backward-compatible title-only helper."""
+    return extract_title_with_source(data, fallback)[0]
 
 def classify(title: str, text: str) -> list[str]:
     haystack = (title + "\n" + text).lower()
@@ -82,14 +87,16 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
     notebook_id = path.relative_to(root).parts[0] if len(path.relative_to(root).parts) > 1 else "ROOT"
     try:
         data = json.loads(raw.decode("utf-8-sig"))
-        title, text, status = extract_title(data, path.stem), extract_text(data), "PARSED"
+        title, title_source = extract_title_with_source(data, path.stem)
+        text, status = extract_text(data), "PARSED"
     except (UnicodeDecodeError, json.JSONDecodeError):
-        title, text, status = path.stem, raw.decode("utf-8", errors="replace"), "RAW_FALLBACK"
+        title, title_source = path.stem, "RAW_FILENAME"
+        text, status = raw.decode("utf-8", errors="replace"), "RAW_FALLBACK"
     refs = sorted({m.rstrip(TRAILING) for m in ASSET_RE.findall(raw.decode("utf-8", errors="ignore"))})
     return {
         "path": rel, "notebook_id": notebook_id,
         "notebook": notebook_map.get(notebook_id, notebook_id),
-        "title": title, "topics": ";".join(classify(title, text)),
+        "title": title, "title_source": title_source, "topics": ";".join(classify(title, text)),
         "parse_status": status, "bytes": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
         "asset_ref_count": len(refs), "asset_refs": refs,
@@ -109,7 +116,7 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     docs = [parse_document(p, root, notebook_map) for p in files]
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "documents.csv", docs, [
-        "path", "notebook_id", "notebook", "title", "topics", "parse_status",
+        "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
         "bytes", "sha256", "asset_ref_count", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
