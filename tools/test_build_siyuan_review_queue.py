@@ -73,6 +73,61 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("经典与理论:黄帝内经", topics[0]["body_excerpt_matched_terms"])
             self.assertEqual(topics[0]["review_status"], "NOT_REVIEWED")
 
+    def test_applies_human_decisions_without_overwriting_source_csv(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "documents.csv"
+            with source.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "path", "notebook", "title", "title_source", "topics",
+                    "parse_status", "bytes", "asset_ref_count", "node_types",
+                    "child_node_count", "search_text",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "path": "book/a.sy", "notebook": "书籍", "title": "伤寒论",
+                    "title_source": "PROPERTY", "topics": "伤寒与温病",
+                    "parse_status": "PARSED", "search_text": "伤寒论",
+                })
+            decisions = root / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy", "reviewer": "reviewer-1",
+                    "title_review_status": "CONFIRMED",
+                    "source_status": "VERIFIED", "source_version_status": "VERIFIED",
+                    "collation_status": "COLLATION_CONFIRMED",
+                    "topic_review_status": "CONFIRMED",
+                    "human_approved_topics": "伤寒与温病",
+                    "review_notes": "与底本目录一致",
+                    "evidence_reference": "书名页 p.1；目录 p.3",
+                })
+            output = root / "out"
+            review.build_review_queues(source, output, decisions)
+            with (output / "document_review.csv").open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(rows[0]["source_status"], "VERIFIED")
+            self.assertEqual(rows[0]["title_review_status"], "CONFIRMED")
+            self.assertEqual(rows[0]["human_approved_topics"], "伤寒与温病")
+            self.assertEqual(rows[0]["evidence_reference"], "书名页 p.1；目录 p.3")
+            with source.open("r", encoding="utf-8-sig", newline="") as stream:
+                original = list(csv.DictReader(stream))
+            self.assertEqual(original[0]["topics"], "伤寒与温病")
+
+    def test_rejects_decision_without_evidence_or_unknown_document(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            decisions = root / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "missing.sy", "source_status": "VERIFIED",
+                })
+            with self.assertRaises(ValueError):
+                review.load_decisions(decisions, {"book/a.sy"})
+
 
 if __name__ == "__main__":
     unittest.main()
