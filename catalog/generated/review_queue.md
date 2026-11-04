@@ -3,7 +3,7 @@
 - 文档记录：2667
 - 正文抽取为空：33
 - 多主题关键词命中、待人工复核：1425
-- 多主题复核分组：5_PLUS_TOPICS=153；3_TO_4_TOPICS=650；2_TOPICS=622
+- 多主题复核分组：5_PLUS_TOPICS=153；3_TO_4_TOPICS=650；2_TOPICS=622；0_TO_1_TOPICS=0
 - 标题来源分布：BODY_FIRST_LINE=5；PROPERTY=2662
 - catalog_matched_terms 保留标题和完整正文的机器命中词；人工复核的 excerpt 证据仍只覆盖标题和前 2000 字正文片段，两者可能不完全一致。
 - 所有来源、版本及校勘状态均初始化为 UNVERIFIED / NOT_REVIEWED；未从文件名或关键词推断出处。
