@@ -121,3 +121,25 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - 批次是工作组织方式，不代表风险、错误程度或优先级；批次边界随新增/删除文档可能变化。
 - 不要在该生成文件中填写结论。所有人工结论仍写入 `catalog/review-decisions.csv`，以 document 路径为唯一键。
 - `topic_review.csv` 保留完整复核清单；`topic_review_batches.csv` 是便于筛选和分批的工作视图。
+
+## 9. 本地核验记录与 CI 边界
+
+用户本地核验结果保存在 `catalog/local-review/`，不要写入 `catalog/generated/`：
+
+- `empty-body-review-YYYY-MM-DD.csv`：本地逐篇核验空正文的结果。
+- `asset-audit-YYYY-MM-DD.md`：本地 assets 映射的汇总结果。
+- 新一轮核验应新增日期文件，不覆盖旧记录。
+
+本地核验结果和机器生成队列不是同一数据源。CI 会重新生成 `catalog/generated/empty_body_review.csv`、`asset_references.csv` 等文件，因此不要把人工结果只写在这些生成文件中。
+
+### 来源候选清单
+
+文件：`catalog/source-review-candidates.csv`
+
+- 该表是本地整理出的来源核验候选，不是已验证书目。
+- `candidate_category` 仅表示候选分组；`verification_status` 当前统一为 `UNVERIFIED`。
+- `asset_file` 只表示附件候选，不证明它是原始底本、正式出版物或讲稿。
+- `huangdi_neijing_chapter` 和 `nihongxia_lecture` 是按笔记标题/目录整理的候选归类，不能据此确认作者、讲者、出处或版本。
+- 找到版权页、扉页、目录页或明确的原始来源后，才填写 `evidence_reference` 并更新正式人工核验记录。
+- 不要将本地附件上传到 GitHub；只提交必要的相对路径、人工核验说明和可定位证据。
+
