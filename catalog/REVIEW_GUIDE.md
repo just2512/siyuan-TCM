@@ -143,3 +143,13 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - 找到版权页、扉页、目录页或明确的原始来源后，才填写 `evidence_reference` 并更新正式人工核验记录。
 - 不要将本地附件上传到 GitHub；只提交必要的相对路径、人工核验说明和可定位证据。
 
+### 文件名候选分析（仅用于缩小人工搜索范围）
+
+使用本地 `--assets-dir` 运行最新的 `tools/build_siyuan_catalog.py` 后，会额外生成 `asset_prefix_candidates.csv`：
+
+- 该表扫描本地 assets 目录中的文件名，为未匹配引用列出无扩展名前缀候选或扩展名变体候选。
+- `ONE_CANDIDATE` 仍不是 `FOUND`；只代表当前目录中有一个文件名候选，必须打开文件确认内容。
+- `MULTIPLE_CANDIDATES` 必须人工辨认，不能按排序或首个候选自动选择。
+- `NO_CANDIDATE` 只表示当前候选规则未找到文件名线索，不证明附件不存在。
+- 该 CSV 属于本地审计输出。若要长期保存，请复制到 `catalog/local-review/asset-prefix-candidates-YYYY-MM-DD.csv`，不要只保留在 `catalog/generated/`。
+
