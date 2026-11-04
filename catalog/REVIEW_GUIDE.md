@@ -75,3 +75,23 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `NOT_CHECKED`：没有提供 `--assets-dir`，不是缺失结论。
 
 不要将 assets 复制或上传到仓库。对 `MISSING` 项应先核对思源导出目录结构和相对路径，再判断是否真正缺失。
+
+
+## 7. 人工结论持久化（重要）
+
+人工核验结论统一填写在仓库中的 `catalog/review-decisions.csv`，不要直接编辑 `catalog/generated/*.csv`。生成文件每次都会重建，手工修改生成文件会丢失。
+
+每条记录以 `document` 的仓库相对 .sy 路径作为稳定键；同一文档只允许一行。可只填写已经核实的字段，其余留空。可用字段：
+
+- `reviewer`：核验人。
+- `title_review_status`：`CONFIRMED`、`RENAME_REQUIRED`、`UNRESOLVED`。
+- `human_corrected_title`：人工确认后的标题建议，不覆盖机器原始标题。
+- `source_status` / `source_version_status`：`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
+- `collation_status`：`COLLATION_CONFIRMED`、`CORRECTION_REQUIRED`、`UNRESOLVED`。
+- `topic_review_status`：`CONFIRMED`、`REMOVE_TOPIC`、`ADD_TOPIC`、`SPLIT_REQUIRED`、`UNRESOLVED`。
+- `human_approved_topics`：人工确认的主题标签，以分号分隔；不会覆盖自动生成的 `topics`。
+- `empty_body_status`：`SOURCE_EMPTY_CONFIRMED`、`LOCAL_SOURCE_HAS_CONTENT`、`RESTORE_REQUIRED`、`UNRESOLVED`。
+- `review_notes`：核验说明。
+- `evidence_reference`：必须可定位到原始资料、书目、版本或校勘底本。填写任何非默认人工结论时必填。
+
+生成器会检查重复文档键、仓库中不存在的路径、非法状态和缺少证据引用；发现问题即失败，不会静默忽略。人工结论输出到生成核验表的对应字段，机器原始标签仍保留，避免把人工判断与算法结果混为一谈。
