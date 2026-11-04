@@ -121,7 +121,7 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         str(key) for key, value in properties.items()
         if str(key) and value is not None and value != "" and value != [] and value != {}
     ) if isinstance(properties, dict) else []
-    full_text = (title + "\\n" + text).lower()
+    full_text = (title + "\n" + text).lower()
     topic_matched_terms = ";".join(
         f"{topic}:{'、'.join(term for term in terms if term.lower() in full_text)}"
         for topic, terms in TOPICS.items()
@@ -137,6 +137,7 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         "node_types": ";".join(f"{name}:{count}" for name, count in sorted(node_type_counts.items())),
         "child_node_count": sum(node_type_counts.values()),
         "properties_fields": properties_fields,
+        "topic_matched_terms": topic_matched_terms,
         "search_text": re.sub(r"\s+", " ", text)[:2000],
     }
 
