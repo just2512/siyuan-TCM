@@ -14,6 +14,10 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+GENERIC_TITLE_CANDIDATES = {
+    "其他", "方剂", "药势", "总义", "穴", "法门", "收纳", "未命名", "待收录",
+}
+
 MODULE_PATH = Path(__file__).with_name("build_siyuan_catalog.py")
 SPEC = importlib.util.spec_from_file_location("build_siyuan_catalog", MODULE_PATH)
 catalog = importlib.util.module_from_spec(SPEC)
@@ -65,11 +69,31 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
     review_rows = []
     topic_rows = []
     empty_rows = []
+    title_candidate_rows = []
     empty_count = 0
     title_sources = Counter()
     for doc in docs:
         title_source = doc.get("title_source", "UNKNOWN")
         title_sources[title_source] += 1
+        title = doc.get("title", "").strip()
+        if title_source != "PROPERTY":
+            title_reason = "FALLBACK_TITLE_SOURCE"
+        elif title.lower() in GENERIC_TITLE_CANDIDATES:
+            title_reason = "POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE"
+        elif not title:
+            title_reason = "EMPTY_TITLE"
+        else:
+            title_reason = ""
+        if title_reason:
+            title_candidate_rows.append({
+                "document": doc.get("path", ""),
+                "notebook": doc.get("notebook", ""),
+                "title": title,
+                "title_source": title_source,
+                "reason": title_reason,
+                "review_status": "NOT_REVIEWED",
+                "review_notes": "",
+            })
         body_status = "EMPTY_BODY" if not doc.get("search_text", "").strip() else "HAS_EXTRACTED_TEXT"
         empty_count += body_status == "EMPTY_BODY"
         if body_status == "EMPTY_BODY":
@@ -155,6 +179,10 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "title_review_status", "source_status", "source_version_status",
         "collation_status", "reviewer", "review_notes",
     ])
+    write_csv(output / "title_review_candidates.csv", title_candidate_rows, [
+        "document", "notebook", "title", "title_source", "reason",
+        "review_status", "review_notes",
+    ])
     write_csv(output / "empty_body_review.csv", empty_rows, [
         "document", "notebook", "title", "title_source", "parse_status",
         "bytes", "asset_ref_count", "node_types", "child_node_count",
@@ -186,6 +214,7 @@ def build_review_queues(documents_csv: Path, output: Path) -> dict[str, int]:
         "- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。",
         "- topic_review.csv：多主题命中的关键词证据和正文片段，供人工判断是否误分类。",
         "- empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。",
+        f"- title_review_candidates.csv：标题来源回退或命中少量通用目录标签的候选项，共 {len(title_candidate_rows)} 篇；均未自动判错。",
         "",
         "## 边界",
         "",
