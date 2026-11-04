@@ -85,3 +85,18 @@
 - 33 篇空正文文档全部是 JSON 可解析文档，且当前记录的子节点均为 `NodeParagraph`，没有抽取到可见文本；其状态为 `PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT`。这说明仓库文件里保存的是空段落节点结构，不等同于证明原始资料损坏；仍需与用户本地思源库核对。
 - 新增 `title_review_candidates.csv`，当前 19 篇候选：包括正文首行回退标题和“其他/方剂/药势/总义/穴/法门/收纳/未命名/待收录”等可能是目录标签或占位名称的标题。它们全部是待核验候选，不自动判错。
 - 当前标题来源统计仍为 PROPERTY 2,662 篇、BODY_FIRST_LINE 5 篇；但 PROPERTY 只说明读取到 Properties.title，不代表标题语义准确或书目身份已核实。
+
+
+## 人工核验结论持久化（2026-11-04）
+
+新增 `catalog/review-decisions.csv` 作为人工核验覆盖层，避免自动重建索引覆盖人工结论。工作流现已把该文件作为输入，再生成 `catalog/generated/*.csv`。
+
+- 人工结论以 .sy 仓库相对路径作为键；重复键、未知文档路径、非法状态值、缺少证据引用均使生成步骤失败，不静默丢弃。
+- 自动标签 `topics` 保留不变；人工确认结果写入独立的 `human_approved_topics`，保留机器结果与人工判断的来源区别。
+- 标题人工修订写入 `human_corrected_title`，不覆盖机器提取的 `title`。
+- 核验结论必须填写 `evidence_reference`，以便回溯书目、原文页码或底本。
+- 初始模板只有表头，当前已应用人工核验记录为 0；这表示机制已建立，不表示任何书目、主题或校勘事项已人工验收。
+
+最新持久化覆盖层版本的 CI：<https://github.com/just2512/siyuan-TCM/actions/runs/41822653752>，8 项单元测试、索引生成、核验队列生成和生成提交均成功。生成结果显示 2,667 篇文档、33 篇空正文、1,425 篇多主题候选、19 篇标题候选，人工覆盖记录 0 篇。
+
+人工填写规则见 `catalog/REVIEW_GUIDE.md`。不要直接编辑 `catalog/generated/` 下的 CSV；请编辑 `catalog/review-decisions.csv` 并提交到 master，随后由 CI 自动应用。
