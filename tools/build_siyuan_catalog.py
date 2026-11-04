@@ -121,6 +121,12 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         str(key) for key, value in properties.items()
         if str(key) and value is not None and value != "" and value != [] and value != {}
     ) if isinstance(properties, dict) else []
+    full_text = (title + "\\n" + text).lower()
+    topic_matched_terms = ";".join(
+        f"{topic}:{'、'.join(term for term in terms if term.lower() in full_text)}"
+        for topic, terms in TOPICS.items()
+        if any(term.lower() in full_text for term in terms)
+    )
     return {
         "path": rel, "notebook_id": notebook_id,
         "notebook": notebook_map.get(notebook_id, notebook_id),
@@ -195,7 +201,7 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     write_csv(output / "documents.csv", docs, [
         "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
         "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count",
-        "properties_fields", "search_text"])
+        "properties_fields", "topic_matched_terms", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
     property_field_counts = Counter(
