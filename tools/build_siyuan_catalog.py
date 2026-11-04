@@ -186,10 +186,10 @@ def resolve_asset_reference(reference: str, assets_dir: Path | None,
     normalized = Path(*parts).as_posix()
     exact, by_name = lookup or build_asset_lookup(assets_dir)
     if normalized in exact:
-        return "FOUND", str(exact[normalized]), "EXACT_RELATIVE_PATH"
+        return "FOUND", f"assets/{normalized}", "EXACT_RELATIVE_PATH"
     matches = by_name.get(Path(normalized).name, [])
     if len(matches) == 1:
-        return "FOUND_BY_UNIQUE_BASENAME", str(matches[0]), "UNIQUE_BASENAME_FALLBACK"
+        return "FOUND_BY_UNIQUE_BASENAME", f"assets/{matches[0].relative_to(assets_dir.resolve()).as_posix()}", "UNIQUE_BASENAME_FALLBACK"
     if len(matches) > 1:
         return "AMBIGUOUS", "", "DUPLICATE_BASENAME"
     return "MISSING", "", "NO_MATCH"
@@ -240,10 +240,10 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
         "# 思源中医资料自动索引", "",
         "> 本文件由 tools/build_siyuan_catalog.py 生成。主题分类是关键词机器初筛，不代表医学语义审核或内容校勘。", "",
         "## 扫描概况", "",
-        f"- 扫描根目录：{root}", f"- .sy 文档数：{len(docs)}",
+        "- 扫描根目录：本机输入目录（绝对路径不写入报告）", f"- .sy 文档数：{len(docs)}",
         f"- 解析状态：{dict(statuses)}", f"- 完全相同文件内容组：{len(duplicates)}",
         f"- 附件引用条目：{len(asset_rows)}",
-        f"- 附件目录：{'已检查 ' + str(assets_dir) if assets_dir else '未提供，只有引用清单'}",
+        f"- 附件目录：{'已提供并完成本地映射（绝对路径不写入报告）' if assets_dir else '未提供，只有引用清单'}",
         "", "## 按笔记本", "", "| 笔记本/目录 | 文档数 |", "|---|---:|"
     ]
     lines.extend(f"| {name} | {count} |" for name, count in sorted(notebooks.items()))
