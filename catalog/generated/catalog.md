@@ -48,6 +48,7 @@
 - topic_index.csv：按主题展开的文档索引。
 - metadata_inventory.csv：Properties 中非空字段的文档覆盖数；不导出字段值。
 - asset_references.csv：文档引用的 assets 路径及本地映射状态。
+- asset_prefix_candidates.csv：未匹配引用的本地文件名候选，仅供人工核验，不自动认定为匹配。
 - catalog.md：本概况报告。
 
 ## 使用边界
