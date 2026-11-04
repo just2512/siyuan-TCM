@@ -95,6 +95,13 @@ class ReviewQueueTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             review.assign_review_batches([], 0)
 
+    def test_review_bucket_does_not_mislabel_single_catalog_topic(self):
+        self.assertEqual(review.review_bucket(0), "0_TO_1_TOPICS")
+        self.assertEqual(review.review_bucket(1), "0_TO_1_TOPICS")
+        self.assertEqual(review.review_bucket(2), "2_TOPICS")
+        self.assertEqual(review.review_bucket(4), "3_TO_4_TOPICS")
+        self.assertEqual(review.review_bucket(5), "5_PLUS_TOPICS")
+
     def test_applies_human_decisions_without_overwriting_source_csv(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
