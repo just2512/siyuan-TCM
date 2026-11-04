@@ -70,9 +70,13 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 ```
 
 `asset_references.csv` 中：
-- `FOUND`：本地找到匹配附件。
-- `MISSING`：在指定附件目录及脚本检查的候选路径中未找到。
+- `FOUND`：按 assets 根目录下的相对路径精确找到附件。
+- `FOUND_BY_UNIQUE_BASENAME`：相对路径未命中，但整个 assets 目录中只有一个同名文件；这是回退匹配，建议人工确认。
+- `AMBIGUOUS`：存在多个同名候选，脚本拒绝任意挑选，必须人工核对引用路径。
+- `MISSING`：精确路径和唯一文件名回退均未找到。
+- `INVALID_REFERENCE`：引用路径为空或包含不安全的路径穿越片段。
 - `NOT_CHECKED`：没有提供 `--assets-dir`，不是缺失结论。
+- `asset_references.csv` 的 `match_method` 记录命中方式；不得把文件名回退当成精确路径命中。
 
 不要将 assets 复制或上传到仓库。对 `MISSING` 项应先核对思源导出目录结构和相对路径，再判断是否真正缺失。
 
