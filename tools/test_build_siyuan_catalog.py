@@ -251,6 +251,43 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertNotIn(str(temp), (output / "asset_prefix_candidates.csv").read_text(
                 encoding="utf-8-sig"
             ))
+            audit = (output / "asset_audit.md").read_text(encoding="utf-8")
+            self.assertIn("未匹配引用唯一项：4", audit)
+            self.assertIn("文件名候选唯一命中：1", audit)
+            self.assertIn("文件名候选多重命中：1", audit)
+            self.assertIn("文件名无候选：2", audit)
+            catalog_report = (output / "catalog.md").read_text(encoding="utf-8")
+            self.assertIn("asset_prefix_candidates.csv", catalog_report)
+
+    def test_asset_lookup_and_candidates_exclude_symlinks_outside_assets_root(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            assets = base / "assets"
+            assets.mkdir()
+            outside = base / "outside"
+            outside.mkdir()
+            (outside / "escape-20260101.jpg").write_bytes(b"outside")
+            try:
+                (assets / "escape-20260101.jpg").symlink_to(
+                    outside / "escape-20260101.jpg"
+                )
+            except (OSError, NotImplementedError):
+                self.skipTest("symlink creation is unavailable on this platform")
+            exact, by_name = catalog.build_asset_lookup(assets)
+            self.assertEqual(exact, {})
+            self.assertEqual(dict(by_name), {})
+            candidates = catalog.build_asset_prefix_candidates(
+                [{
+                    "reference": "assets/escape",
+                    "local_status": "MISSING",
+                    "document": "notebook/doc.sy",
+                    "title": "外部符号链接测试",
+                }],
+                assets,
+                (exact, by_name),
+            )
+            self.assertEqual(candidates[0]["candidate_status"], "NO_CANDIDATE")
+            self.assertEqual(candidates[0]["candidate_paths"], "")
 
 
 if __name__ == "__main__":
