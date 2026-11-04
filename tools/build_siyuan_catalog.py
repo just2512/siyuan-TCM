@@ -125,6 +125,7 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         "asset_ref_count": len(refs), "asset_refs": refs,
         "node_types": ";".join(f"{name}:{count}" for name, count in sorted(node_type_counts.items())),
         "child_node_count": sum(node_type_counts.values()),
+        "properties_fields": properties_fields,
         "search_text": re.sub(r"\s+", " ", text)[:2000],
     }
 
@@ -188,9 +189,19 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "documents.csv", docs, [
         "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
-        "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count", "search_text"])
+        "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count",
+        "properties_fields", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
+    property_field_counts = Counter(
+        field for doc in docs for field in doc.get("properties_fields", [])
+    )
+    metadata_rows = [
+        {"property_field": field, "document_count": count}
+        for field, count in sorted(property_field_counts.items())
+    ]
+    write_csv(output / "metadata_inventory.csv", metadata_rows,
+              ["property_field", "document_count"])
     write_csv(output / "topic_index.csv", topic_rows, ["topic", "title", "path", "notebook"])
     asset_rows = []
     asset_lookup = build_asset_lookup(assets_dir) if assets_dir else None
@@ -231,6 +242,7 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     lines += ["", "## 输出文件", "",
               "- documents.csv：逐篇文件清单、标题、目录、主题标签、解析状态、哈希及正文检索片段。",
               "- topic_index.csv：按主题展开的文档索引。",
+              "- metadata_inventory.csv：Properties 中非空字段的文档覆盖数；不导出字段值。",
               "- asset_references.csv：文档引用的 assets 路径及本地映射状态。",
               "- catalog.md：本概况报告。", "",
               "## 使用边界", "",
