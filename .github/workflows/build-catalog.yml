@@ -31,6 +31,8 @@ jobs:
         run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
       - name: Build human review queues
         run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
+      - name: Build asset review queue from persisted local scan
+        run: python tools/build_asset_review_queue.py --candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv --output catalog/generated --batch-size 25
       - name: Commit generated catalogue
         run: |
           git config user.name 'github-actions[bot]'
