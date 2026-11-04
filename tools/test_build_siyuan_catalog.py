@@ -105,7 +105,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             doc_dir.mkdir(parents=True)
             (doc_dir / "doc.sy").write_text(json.dumps({
                 "Properties": {"title": "神农本草经", "author": "测试作者", "publisher": ""},
-                "Children": [{"Type": "NodeText", "Data": "本草药性 assets/herb.png"}],
+                "Children": [{"Type": "NodeText", "Data": "本草药性 " + ("普通内容" * 600) + "针灸 assets/herb.png"}],
             }, ensure_ascii=False), encoding="utf-8")
             output = Path(temp) / "out"
             result = catalog.build(root, output, None, {"notebook-a": "本草资料"})
@@ -121,6 +121,8 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("node_types", csv_text)
             self.assertIn("NodeText:1", csv_text)
             self.assertIn("properties_fields", csv_text)
+            self.assertIn("topic_matched_terms", csv_text)
+            self.assertIn("针灸与经穴:针灸", csv_text)
             self.assertIn("author;title", csv_text)
             metadata_text = (output / "metadata_inventory.csv").read_text(encoding="utf-8-sig")
             self.assertIn("author,1", metadata_text)
