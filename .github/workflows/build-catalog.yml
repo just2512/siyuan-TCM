@@ -41,4 +41,16 @@ jobs:
             exit 0
           fi
           git commit -m 'docs(catalog): refresh generated TCM index [skip ci]'
-          git push origin HEAD:master
+          # A concurrent master update or transient GitHub 5xx must not
+          # discard the generated catalogue. Rebase and retry a bounded number
+          # of times; never force-push.
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git rebase origin/master
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo 'Unable to publish generated catalogue after 3 attempts.' >&2
+          exit 1
