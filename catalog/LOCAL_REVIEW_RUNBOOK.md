@@ -66,6 +66,8 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 查看 `catalog/generated/topic_rule_audit.csv`。本次静态审计有 4,783 条记录，全部初始为 `NOT_REVIEWED`。
 
+**当前持久化状态核对：** `catalog/review-decisions.csv` 当前 33 行记录的 `topic_review_status` 全部为空，尚无主题人工结论被正式应用。提交说明中提到的 `BODY_CONFIRMED`、`BROAD_TERM_REVIEW` 等分类没有映射进当前人工决策字段，不能据此宣称主题复核已完成。请将逐条结论映射为 `CONFIRMED`、`REMOVE_TOPIC`、`ADD_TOPIC`、`SPLIT_REQUIRED` 或 `UNRESOLVED`，填写 `human_approved_topics`、理由和证据定位；否则保持 `NOT_REVIEWED`。
+
 优先按 `audit_flags` 筛选：
 
 - `BROAD_TERM_ONLY`：仅宽泛词触发，需要查看词语所在语境。
@@ -86,7 +88,9 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 ## 5. 标题核验：22 条静态风险信号（本次重算）
 
-查看 `catalog/generated/title_extraction_audit.csv`，逐条打开原始 `.sy`：
+查看 `catalog/generated/title_extraction_audit.csv`，逐条打开原始 `.sy`。
+
+**当前持久化状态核对：** `title_review_candidates.csv` 当前 19 条：11 条 `CONFIRMED`、1 条 `UNRESOLVED`、7 条 `NOT_REVIEWED`；另有 22 条静态审计信号，其审计状态仍为 `NOT_REVIEWED`。提交说明中提到的 2 条 `RENAME_REQUIRED` 未出现在当前 `review-decisions.csv`，不能计入已落地结论；如确实已人工确认改名，必须补录对应文档、修正标题、理由和证据。
 
 - `TITLE_IS_FALLBACK`：当前标题不是 Properties.title，核对是否只是正文首行/文件名回退。
 - `GENERIC_OR_PLACEHOLDER_TITLE`：检查是否为目录标题、占位标题或有效的章节标题。
