@@ -6,12 +6,12 @@
 
 | 核验域 | 记录数 | 状态分布 |
 |---|---:|---|
-| title_review_status | 33 | NOT_REVIEWED: 33 |
+| title_review_status | 33 | CONFIRMED: 31；UNRESOLVED: 2 |
 | source_status | 33 | NOT_REVIEWED: 33 |
 | source_version_status | 33 | NOT_REVIEWED: 33 |
 | collation_status | 33 | NOT_REVIEWED: 33 |
 | topic_review_status | 33 | NOT_REVIEWED: 33 |
-| empty_body_status | 33 | NEEDS_SOURCE_INSPECTION: 33 |
+| empty_body_status | 33 | SOURCE_EMPTY_CONFIRMED: 33 |
 
 ## 来源候选
 
@@ -26,8 +26,8 @@
 
 ## 证据台账
 
-- 证据记录：0
-- 当前没有人工证据记录。
+- 证据记录：33
+- original_sy: 33
 
 ## 状态解释
 
