@@ -17,7 +17,7 @@ from typing import Any
 EXTRACTED_FIELDS = {
     "NodeText": {"Data"},
     "NodeLinkText": {"Data"},
-    "NodeTextMark": {"TextMarkTextContent"},
+    "NodeTextMark": {"TextMarkTextContent", "TextMarkInlineMathContent"},
 }
 METADATA_FIELDS = {"Properties", "IAL", "Type", "ID", "Spec"}
 
@@ -154,13 +154,13 @@ def build(root: Path, output: Path) -> dict[str, int]:
         f"- 当前解析器提取的字符数：{sum(int(r['extracted_char_count']) for r in doc_rows)}",
         f"- 出现的非当前提取字段字符串键：{len(unclassified_fields)}",
         "", "## 块类型检查入口", "",
-        "详见 block_type_inventory.csv。nodes_without_extracted_payload 仅表示该节点子树中没有被当前规则识别的 TextMarkTextContent/Data 文本载荷；它可能是容器、图片、附件、布局或其他非文本节点，不能直接判定为丢失内容。",
+        "详见 block_type_inventory.csv。nodes_without_extracted_payload 仅表示该节点子树中没有被当前规则识别的可见文本载荷（NodeText/NodeLinkText.Data、NodeTextMark.TextMarkTextContent/NodeTextMark.TextMarkInlineMathContent）；它可能是容器、图片、附件、布局或其他非文本节点，不能直接判定为丢失内容。",
         "", "## 逐篇定位", "",
         "详见 content_integrity_audit.csv。unclassified_string_fields 列出该文档中出现的、当前提取器未作为正文处理的字符串字段名，供后续按块类型检查其语义。",
         "", "## 判读限制", "",
         "- PARSED 只表示 JSON 语法有效，不代表正文提取无损。",
         "- 没有提取文本的节点不一定是错误；必须结合块类型和原始笔记上下文判断。",
-        "- Data 字段在 SiYuan AST 中存在多种语义：NodeText/NodeLinkText 是可检索文字；NodeImage 的 span 和 NodeLinkDest 的资源路径不是正文。其他字段必须先建立块类型语义映射，不能直接拼进正文。",
+        "- Data 字段在 SiYuan AST 中存在多种语义：NodeText/NodeLinkText 是可检索文字；NodeImage 的 span 和 NodeLinkDest 的资源路径不是正文。NodeTextMark 的 TextMarkInlineMathContent 也是笔记可见内容，已纳入提取。其他字段必须先建立块类型语义映射，不能直接拼进正文。",
         "- 本报告不修改任何原始 .sy 文件。",
     ]
     (output / "content_integrity_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
