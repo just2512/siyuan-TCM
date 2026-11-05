@@ -256,19 +256,23 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{batch_id} 的 batch_size 与实际批次记录数不一致")
 
     asset_queue = read_csv(generated / "asset_review_queue.csv", {
-        "reference", "candidate_status", "candidate_count", "manual_status",
+        "reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference",
     })
     asset_queue_index = unique_index(asset_queue, "reference", "asset_review_queue.csv")
-    persisted_assets = read_csv(asset_candidates, {"reference", "candidate_status", "candidate_count"})
+    persisted_assets = read_csv(asset_candidates, {
+        "reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference",
+    })
     persisted_asset_index = unique_index(persisted_assets, "reference", "asset candidate source")
     if set(asset_queue_index) != set(persisted_asset_index):
         raise ValueError("asset_review_queue.csv 与持久化本地扫描候选引用集合不一致")
     for reference, row in asset_queue_index.items():
         source = persisted_asset_index[reference]
-        if row["candidate_status"] != source["candidate_status"] or row["candidate_count"] != source["candidate_count"]:
+        if any(row[field] != source[field] for field in ("candidate_status", "candidate_count", "manual_status", "content_evidence_reference")):
             raise ValueError(f"{reference} 的附件候选队列与原始候选表不一致")
         if row["manual_status"] not in {"NEEDS_INSPECTION", "CONFIRMED_MATCH", "NOT_MATCH", "UNRESOLVED"}:
             raise ValueError(f"{reference} 的附件人工状态无效")
+        if row["manual_status"] in {"CONFIRMED_MATCH", "NOT_MATCH"} and not row["content_evidence_reference"].strip():
+            raise ValueError(f"{reference} 已有附件内容核验结论但缺少 content_evidence_reference")
         try:
             candidate_count = int(row["candidate_count"])
         except ValueError as exc:
