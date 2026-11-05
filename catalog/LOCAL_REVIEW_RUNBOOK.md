@@ -48,13 +48,13 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 ## 3. 来源与版本核验：231 条候选
 
-本次人工回传为 187 条 `PARTIAL`、44 条 `UNVERIFIED`。`PARTIAL` 仅表示已有部分身份线索或来源身份初步确认，版本/版权页/校勘仍未完成；不得升级为 `VERIFIED`。按 `catalog/generated/source_review_queue.csv` 的批次处理。
+当前 231 条来源候选均为 `UNVERIFIED`。此前 187 条 `PARTIAL` 只有文件名、文档标题或关键词线索，没有定位到原始来源证据，已全部退回 `UNVERIFIED`。按 `catalog/generated/source_review_queue.csv` 的批次处理。
 
 逐条打开原始文件或可靠书目资料，填写 `catalog/source-review-candidates.csv`：
 
 - `verification_status` 使用 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
-- `PARTIAL` 不等于来源已完整核验，更不代表版本或校勘正确；保留其未完成边界。
-- 非 `UNVERIFIED` 必须填写 `evidence_reference`，指向仓库内可审阅的证据记录或明确页码/期次定位；不能填写本机绝对路径。
+- `PARTIAL` 只有在直接检查过原始来源材料、能提供具体页码/段落/期次/时间戳定位时才允许使用；文件名、文档标题、关键词命中或自动提取首页文字不能单独支撑 `PARTIAL`。
+- 非 `UNVERIFIED` 必须填写 `evidence_reference`，指向仓库内可审阅的证据记录或明确页码/段落/期次/时间戳定位；不能填写本机绝对路径。
 - 书籍：记录书名页、版权页、作者/编者、出版社、出版年、版次/印次、ISBN（若有）、目录及对应正文页码。
 - 《黄帝内经》篇章候选：先确认所据版本，再记录卷/篇/章、目录位置和正文页码；不同版本篇名或编次冲突要保留冲突，不强行统一。
 - 课程/讲座：记录原始课程载体、讲者身份依据、日期/期次、原文定位；整理稿、转录稿不能自动视为讲者原始讲稿。
@@ -126,7 +126,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 ## 完成条件
 
 - 附件：每条引用都有人工结论或明确的未解决原因，且证据可追溯。
-- 来源：每条来源候选有 PARTIAL / VERIFIED / CONFLICT / UNRESOLVED / UNVERIFIED 状态；所有非 UNVERIFIED 结论都有证据定位，PARTIAL 不得计入 VERIFIED。
+- 来源：当前 231 条均为 UNVERIFIED；只有直接检查原始来源材料并留下可定位证据后才能转为 PARTIAL / VERIFIED / CONFLICT / UNRESOLVED。PARTIAL 不得计入 VERIFIED。
 - 主题：对审计记录作出人工结论，保留原始命中词和上下文证据。
 - 标题：对本次重算后的 22 条风险信号逐条确认、改名或标记未解决。
 - 空正文：逐条检查原始思源内容和父子关系。
