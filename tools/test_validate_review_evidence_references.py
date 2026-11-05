@@ -52,7 +52,7 @@ class EvidenceReferenceTests(unittest.TestCase):
 
     def test_validates_decision_source_and_asset_references(self):
         result = validator.validate_references(self.ledger, self.decisions, self.sources, self.assets)
-        self.assertEqual(result["evidence_records"], 4)
+        self.assertEqual(result["evidence_records"], 5)
         self.assertEqual(result["decision_conclusions"], 1)
         self.assertEqual(result["source_conclusions"], 1)
         self.assertEqual(result["asset_conclusions"], 1)
