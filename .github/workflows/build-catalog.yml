@@ -38,7 +38,7 @@ jobs:
       - name: Build bibliographic source review queue
         run: python tools/build_source_review_queue.py --candidates catalog/source-review-candidates.csv --output catalog/generated --batch-size 20
       - name: Build human-review progress report
-        run: python tools/build_review_progress_report.py --decisions catalog/review-decisions.csv --sources catalog/source-review-candidates.csv --assets catalog/generated/asset_review_queue.csv --evidence catalog/review-evidence.csv --output catalog/generated/review_progress.md
+        run: python tools/build_review_progress_report.py --decisions catalog/review-decisions.csv --sources catalog/source-review-candidates.csv --assets catalog/generated/asset_review_queue.csv --evidence catalog/review-evidence.csv --topics catalog/generated/topic_rule_audit.csv --titles catalog/generated/title_extraction_audit.csv --empty-body catalog/generated/empty_body_review.csv --output catalog/generated/review_progress.md
       - name: Validate generated catalogue consistency
         run: python tools/validate_siyuan_catalog.py --generated catalog/generated --source-candidates catalog/source-review-candidates.csv --asset-candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv
       - name: Validate human evidence ledger references

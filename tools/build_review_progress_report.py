@@ -36,11 +36,15 @@ def count_column(rows: list[dict[str, str]], column: str) -> Counter:
 
 
 def render_report(decisions: Path, sources: Path, assets: Path,
-                  evidence: Path) -> str:
+                  evidence: Path, topics: Path | None = None,
+                  titles: Path | None = None, empty_body: Path | None = None) -> str:
     decision_rows = read_rows(decisions)
     source_rows = read_rows(sources)
     asset_rows = read_rows(assets)
     evidence_rows = read_rows(evidence)
+    topic_rows = read_rows(topics) if topics else []
+    title_rows = read_rows(titles) if titles else []
+    empty_rows = read_rows(empty_body) if empty_body else []
 
     lines = [
         "# 人工核验进度报告", "",
@@ -52,6 +56,19 @@ def render_report(decisions: Path, sources: Path, assets: Path,
         counts = count_column(decision_rows, column)
         rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
         lines.append(f"| {column} | {len(decision_rows)} | {rendered} |")
+
+    lines += ["", "## 原始人工复核队列", ""]
+    for label, rows, column in (
+        ("逐文档—主题审计", topic_rows, "review_status"),
+        ("标题风险审计", title_rows, "review_status"),
+        ("空正文候选", empty_rows, "review_status"),
+    ):
+        if rows:
+            counts = count_column(rows, column)
+            rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
+            lines.append(f"- {label}：{len(rows)} 条；{rendered}")
+        else:
+            lines.append(f"- {label}：未提供审计队列输入")
 
     lines += ["", "## 来源候选", "", f"- 候选记录：{len(source_rows)}"]
     source_counts = count_column(source_rows, "verification_status")
@@ -88,9 +105,13 @@ def main() -> int:
     parser.add_argument("--sources", type=Path, required=True)
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--topics", type=Path)
+    parser.add_argument("--titles", type=Path)
+    parser.add_argument("--empty-body", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    report = render_report(args.decisions, args.sources, args.assets, args.evidence)
+    report = render_report(args.decisions, args.sources, args.assets, args.evidence,
+                           args.topics, args.titles, args.empty_body)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
     print(f"Review progress report written: {args.output}")
