@@ -232,3 +232,19 @@
 - 仓库 CI 不包含用户本地 assets，不能打开或哈希本地附件。634 条附件候选仍需在本地按候选路径打开内容，核实后记录相对路径、文件指纹和引用文档；不得仅凭文件名确认。
 - 231 条来源候选仍需原始版权页、扉页、目录、讲稿页码或可定位来源。候选类别和文件名均不能升级为书目事实。
 - 无原始证据时继续保留待核验状态；自动审计不得填充人工结论。
+
+
+## 本地附件文件指纹清单（2026-11-05）
+
+新增 `tools/build_asset_evidence_manifest.py` 及单元测试。该工具在用户本地执行，不接入 GitHub CI，因为 CI runner 不包含用户本地 assets：
+
+```bash
+python tools/build_asset_review_queue.py --candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv --output catalog/generated --batch-size 25
+python tools/build_asset_evidence_manifest.py --queue catalog/generated/asset_review_queue.csv --assets-dir "本地assets目录" --output catalog/local-review/asset-evidence-2026-11-05
+```
+
+输出逐候选记录 `PRESENT/MISSING/UNSAFE_PATH/NO_CANDIDATE`、字节数、SHA-256、扩展名和根目录内相对路径。工具拒绝路径穿越及解析后越出 assets 根目录的符号链接；同一候选文件只计算一次指纹。指纹只代表字节级身份，不验证图片/文档内容，也不确认候选与思源引用的语义关系；不修改 `manual_status` 或任何来源核验状态。
+
+单元测试覆盖文件指纹、无候选、路径穿越、符号链接越界和候选表状态/数量不一致。此工具需用户本地运行后才会产生真实附件存在性与指纹结果；仓库 CI 只能验证代码测试，不能代替本地扫描。
+
+来源候选的核验仍使用 `source_review_queue.csv`：231 条候选默认 `UNVERIFIED`，非默认结论必须带可定位的 `evidence_reference`。书籍需扉页/版权页/目录/出版信息/版本页；《黄帝内经》分篇需明确版本、卷篇目录和正文页码；讲稿需原始课程记录、讲者身份依据、日期或期次及可定位原文。文件名和候选分类不构成来源证据。
