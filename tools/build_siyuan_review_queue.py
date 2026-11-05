@@ -130,6 +130,28 @@ def load_decisions(path: Path, known_documents: set[str]) -> dict[str, dict[str,
             )
             if changed and not decision.get("evidence_reference"):
                 raise ValueError(f"{document} 已填写人工结论但缺少 evidence_reference")
+            if changed and not decision.get("reviewer"):
+                raise ValueError(f"{document} 已填写人工结论但缺少 reviewer")
+
+            topic_status = decision.get("topic_review_status", "")
+            approved_topics = [item.strip() for item in decision.get("human_approved_topics", "").split(";") if item.strip()]
+            if topic_status and topic_status != "NOT_REVIEWED":
+                if not approved_topics:
+                    raise ValueError(f"{document} 已提交主题复核状态但缺少 human_approved_topics")
+                if len(approved_topics) != len(set(approved_topics)):
+                    raise ValueError(f"{document} 的 human_approved_topics 存在重复主题")
+                unknown_topics = set(approved_topics) - set(catalog.TOPICS)
+                if unknown_topics:
+                    raise ValueError(f"{document} 的 human_approved_topics 包含未知主题：{', '.join(sorted(unknown_topics))}")
+            elif approved_topics and not topic_status:
+                raise ValueError(f"{document} 填写 human_approved_topics 但未填写 topic_review_status")
+
+            title_status = decision.get("title_review_status", "")
+            corrected_title = decision.get("human_corrected_title", "")
+            if title_status == "RENAME_REQUIRED" and not corrected_title:
+                raise ValueError(f"{document} 标题状态为 RENAME_REQUIRED 但缺少 human_corrected_title")
+            if corrected_title and title_status != "RENAME_REQUIRED":
+                raise ValueError(f"{document} 填写 human_corrected_title 时 title_review_status 必须为 RENAME_REQUIRED")
             decisions[document] = decision
     return decisions
 
