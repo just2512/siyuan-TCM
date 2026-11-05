@@ -172,3 +172,16 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 CI 在所有索引和人工核验工作队列生成后，运行 `tools/validate_siyuan_catalog.py`。它会检查文档键、附件引用计数、逐篇核验记录、空正文集合、主题复核队列、附件候选队列和来源候选队列之间的一致性。
 
 若新增或调整生成字段，应同步更新校验器及其测试。门禁通过只表示表间结构和状态关系一致，不代表人工内容审核完成。
+
+
+## 11. 思源文档父子层级
+
+文件：`catalog/generated/document_hierarchy.csv`
+
+- 思源导出采用嵌套目录：子文档通常位于以父文档 ID 命名的目录中，父文档本身是该目录的同级 `.sy` 文件。
+- 目录索引仅在该父级 `.sy` 文件确实存在于当前扫描集合时建立父子关系；缺少对应文件时保留空父级，不根据笔记本目录名或标题猜测。
+- `document_depth` 从当前仓库可识别的顶层文档记为 0；`child_document_count` 只统计直接子文档；`structure_role` 的 CONTAINER/LEAF 仅表示是否有直接子文档。
+- `document_review.csv` 与 `empty_body_review.csv` 同时展示父文档、层级深度和直接子文档数，便于区分“容器文档自身无正文”与“无子文档的空白笔记”。
+- 该结构是基于导出路径的导航关系，不代表思源内部所有引用、块级嵌入或语义从属关系；也不证明父文档内容完整。
+- CI 会校验层级索引与 documents.csv 的文档集合、父级存在性、深度、直接子文档数及结构角色一致。
+
