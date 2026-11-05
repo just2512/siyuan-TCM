@@ -114,6 +114,62 @@ class NodeSemanticIndexTests(unittest.TestCase):
         self.assertEqual(len(unknown), 0)
 
 
+
+    def test_builds_resolvable_block_and_resource_relationship_edges(self):
+        payload = {"ID": "doc", "Type": "NodeDocument", "Children": [
+            {"ID": "source", "Type": "NodeParagraph", "Children": [
+                {"ID": "mark", "Type": "NodeTextMark",
+                 "TextMarkType": "block-ref",
+                 "TextMarkBlockRefID": "target",
+                 "TextMarkBlockRefSubtype": "d",
+                 "TextMarkAHref": "https://example.test/ref"},
+                {"ID": "dest", "Type": "NodeLinkDest",
+                 "Data": "assets/herb.png"},
+                {"ID": "media", "Type": "NodeVideo",
+                 "Data": "assets/lesson.mp4"}
+            ]},
+            {"ID": "target", "Type": "NodeParagraph", "Children": [
+                {"ID": "target-text", "Type": "NodeText", "Data": "目标块"}
+            ]}
+        ]}
+        rows = []
+        indexer.walk_nodes(payload, "book/doc.sy", "hash", rows, indexer.Counter())
+        edges = indexer.build_relationship_rows(rows)
+        block = next(edge for edge in edges if edge["relation_type"] == "BLOCK_REFERENCE")
+        self.assertEqual(block["target"], "target")
+        self.assertEqual(block["target_document"], "book/doc.sy")
+        self.assertEqual(block["resolution"], "RESOLVED_IN_CORPUS")
+        href = next(edge for edge in edges if edge["relation_type"] == "HYPERLINK")
+        self.assertEqual(href["resolution"], "EXTERNAL_URL")
+        asset = next(edge for edge in edges if edge["relation_type"] == "LINK_DESTINATION")
+        self.assertEqual(asset["resolution"], "ASSET_REFERENCE")
+        media = next(edge for edge in edges if edge["relation_type"] == "MEDIA_REFERENCE")
+        self.assertEqual(media["resolution"], "REFERENCE_RECORDED_NOT_FILE_VERIFIED")
+
+    def test_marks_missing_and_ambiguous_block_references_explicitly(self):
+        rows = [
+            {"document": "a.sy", "source_sha256": "a", "tree_position": "0",
+             "block_id": "duplicate", "parent_block_id": "", "node_type": "NodeParagraph",
+             "block_ref_id": "", "block_ref_subtype": "", "link_href": "",
+             "link_title": "", "raw_payload": ""},
+            {"document": "b.sy", "source_sha256": "b", "tree_position": "0",
+             "block_id": "duplicate", "parent_block_id": "", "node_type": "NodeParagraph",
+             "block_ref_id": "", "block_ref_subtype": "", "link_href": "",
+             "link_title": "", "raw_payload": ""},
+            {"document": "c.sy", "source_sha256": "c", "tree_position": "0.0",
+             "block_id": "", "parent_block_id": "source", "node_type": "NodeTextMark",
+             "block_ref_id": "duplicate", "block_ref_subtype": "d", "link_href": "",
+             "link_title": "", "raw_payload": ""},
+            {"document": "c.sy", "source_sha256": "c", "tree_position": "0.1",
+             "block_id": "", "parent_block_id": "source", "node_type": "NodeTextMark",
+             "block_ref_id": "missing", "block_ref_subtype": "d", "link_href": "",
+             "link_title": "", "raw_payload": ""},
+        ]
+        edges = indexer.build_relationship_rows(rows)
+        statuses = {edge["target"]: edge["resolution"] for edge in edges}
+        self.assertEqual(statuses["duplicate"], "AMBIGUOUS_BLOCK_ID")
+        self.assertEqual(statuses["missing"], "NOT_FOUND_IN_CORPUS")
+
     def test_builds_searchable_content_blocks_with_source_location(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "data"
@@ -169,6 +225,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
             self.assertEqual(docs[0]["node_count"], "3")
             self.assertTrue((output / "node_semantic_index.md").is_file())
             self.assertTrue((output / "node_field_mapping.csv").is_file())
+            self.assertTrue((output / "node_relationship_index.csv.gz").is_file())
 
 
 if __name__ == "__main__":

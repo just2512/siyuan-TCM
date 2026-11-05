@@ -13,6 +13,7 @@ import gzip
 import hashlib
 import io
 import json
+import re
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
@@ -215,6 +216,70 @@ def walk_nodes(node: Any, document: str, source_hash: str,
                    content_rows=content_rows)
 
 
+
+def build_relationship_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Convert inline references and resource targets into traceable graph edges."""
+    locations: dict[str, list[tuple[str, str]]] = {}
+    for row in rows:
+        block_id = str(row.get("block_id") or "")
+        if block_id:
+            locations.setdefault(block_id, []).append((
+                str(row.get("document") or ""), str(row.get("tree_position") or "")
+            ))
+
+    edges: list[dict[str, Any]] = []
+
+    def add(row: dict[str, Any], relation_type: str, target: str,
+            subtype: str = "", resolution: str = "NOT_CHECKED",
+            target_document: str = "") -> None:
+        edges.append({
+            "source_document": row["document"],
+            "source_sha256": row["source_sha256"],
+            "source_tree_position": row["tree_position"],
+            "source_block_id": row["block_id"] or row["parent_block_id"],
+            "source_node_type": row["node_type"],
+            "relation_type": relation_type,
+            "target": target,
+            "target_subtype": subtype,
+            "target_document": target_document,
+            "resolution": resolution,
+        })
+
+    for row in rows:
+        block_ref = str(row.get("block_ref_id") or "").strip()
+        if block_ref:
+            matches = locations.get(block_ref, [])
+            if len(matches) == 1:
+                resolution, target_document = "RESOLVED_IN_CORPUS", matches[0][0]
+            elif len(matches) > 1:
+                resolution, target_document = "AMBIGUOUS_BLOCK_ID", ""
+            else:
+                resolution, target_document = "NOT_FOUND_IN_CORPUS", ""
+            add(row, "BLOCK_REFERENCE", block_ref,
+                str(row.get("block_ref_subtype") or ""), resolution, target_document)
+
+        href = str(row.get("link_href") or "").strip()
+        if href:
+            resolution = "EXTERNAL_URL" if re.match(r"^https?://", href, re.I) else "URI_OR_LOCAL_TARGET"
+            add(row, "HYPERLINK", href, str(row.get("link_title") or ""), resolution)
+
+        if row["node_type"] == "NodeLinkDest" and row["raw_payload"]:
+            target = str(row["raw_payload"]).strip()
+            if target.lower().startswith(("assets/", "../assets/")):
+                resolution = "ASSET_REFERENCE"
+            elif re.match(r"^https?://", target, re.I):
+                resolution = "EXTERNAL_URL"
+            else:
+                resolution = "LOCAL_OR_UNCLASSIFIED_TARGET"
+            add(row, "LINK_DESTINATION", target, "", resolution)
+
+        if row["node_type"] in MEDIA_TYPES and row["raw_payload"]:
+            add(row, "MEDIA_REFERENCE", str(row["raw_payload"]).strip(),
+                row["node_type"], "REFERENCE_RECORDED_NOT_FILE_VERIFIED")
+
+    return edges
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.suffix == ".gz":
@@ -282,6 +347,12 @@ def build(root: Path, output: Path) -> dict[str, int]:
               "mark_type", "link_href", "link_title", "block_ref_id",
               "block_ref_subtype", "text", "container_text", "raw_payload"]
     write_csv(output / "node_semantic_index.csv.gz", rows, fields)
+    relationships = build_relationship_rows(rows)
+    write_csv(output / "node_relationship_index.csv.gz", relationships, [
+        "source_document", "source_sha256", "source_tree_position",
+        "source_block_id", "source_node_type", "relation_type", "target",
+        "target_subtype", "target_document", "resolution",
+    ])
     write_csv(output / "content_block_index.csv.gz", content_rows, [
         "document", "source_sha256", "tree_position", "block_id",
         "parent_block_id", "parent_node_type", "content_type", "heading_level",
@@ -332,6 +403,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         f"- JSON 解析失败：{parse_errors}",
         f"- 节点记录：{len(rows)}",
         f"- 可检索内容块：{len(content_rows)}",
+        f"- 可追溯关系边：{len(relationships)}",
         f"- 节点类型：{len(counts)}",
         f"- 有直接文本载荷的节点：{sum(bool(row['text']) for row in rows)}",
         f"- 已定义字段语义映射：{len(field_mapping)}",
@@ -345,6 +417,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "",
         "- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。",
         "- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，可直接用于检索和定位。",
+        "- node_relationship_index.csv.gz：gzip 压缩的块引用、超链接、附件目标和媒体引用关系边。",
         "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点和可检索内容块统计。",
         "- node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。",
         "- unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。",
@@ -359,8 +432,8 @@ def build(root: Path, output: Path) -> dict[str, int]:
     (output / "node_semantic_index.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"documents": len(files), "parse_errors": parse_errors,
             "nodes": len(rows), "content_blocks": len(content_rows),
-            "node_types": len(counts), "mapped_fields": len(field_mapping),
-            "unmapped_fields": len(unknown_rows)}
+            "relationships": len(relationships), "node_types": len(counts),
+            "mapped_fields": len(field_mapping), "unmapped_fields": len(unknown_rows)}
 
 
 def main() -> int:
