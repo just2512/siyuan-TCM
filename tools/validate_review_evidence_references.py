@@ -22,11 +22,6 @@ SOURCE_FIELDS = {
     "source_version_status", "source_version_evidence_reference",
     "collation_status", "collation_evidence_reference",
 }
-SOURCE_CONCLUSION_FIELDS = {
-    "source_identity_status": ("source_identity_evidence_reference", DECISION_EVIDENCE_KINDS["source_status"]),
-    "source_version_status": ("source_version_evidence_reference", DECISION_EVIDENCE_KINDS["source_version_status"]),
-    "collation_status": ("collation_evidence_reference", DECISION_EVIDENCE_KINDS["collation_status"]),
-}
 ASSET_FIELDS = {"reference", "manual_status", "content_evidence_reference"}
 DECISION_ACTIVE = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
@@ -43,6 +38,11 @@ DECISION_EVIDENCE_KINDS = {
     "collation_status": {"original_sy", "table_of_contents", "body_page", "lecture_record", "audio_timestamp", "other_primary_source"},
     "topic_review_status": {"original_sy"},
     "empty_body_status": {"original_sy"},
+}
+SOURCE_CONCLUSION_FIELDS = {
+    "source_identity_status": ("source_identity_evidence_reference", DECISION_EVIDENCE_KINDS["source_status"]),
+    "source_version_status": ("source_version_evidence_reference", DECISION_EVIDENCE_KINDS["source_version_status"]),
+    "collation_status": ("collation_evidence_reference", DECISION_EVIDENCE_KINDS["collation_status"]),
 }
 ASSET_EVIDENCE_KINDS = {"asset_content"}
 DECISION_SUBJECTS = {
