@@ -45,9 +45,10 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
     def test_rejects_duplicate_ids_but_allows_multiple_evidence_items_per_subject(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "ledger.csv"
-            self.write_ledger(path, [self.row(), self.row(evidence_id="EV-002")])
-            with self.assertRaisesRegex(ValueError, "同一 subject"):
-                validator.validate_ledger(path)
+            self.write_ledger(path, [self.row(), self.row(evidence_id="EV-002", locator="版权页 p.2")])
+            result = validator.validate_ledger(path)
+            self.assertEqual(result["evidence_rows"], 2)
+            self.assertEqual(result["unique_subjects"], 1)
             self.write_ledger(path, [self.row(), self.row(subject_key="other.sy")])
             with self.assertRaisesRegex(ValueError, "证据 ID 重复"):
                 validator.validate_ledger(path)
