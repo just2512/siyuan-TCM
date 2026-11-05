@@ -169,8 +169,11 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "topic_review.csv"
-            self.write(path, ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status"], [
-                {"document": "book/a.sy", "catalog_topics": "经典与理论;伤寒与温病", "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "CONFIRMED"},
+            self.write(path, ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms"], [
+                {"document": "book/a.sy", "catalog_topics": "经典与理论;伤寒与温病", "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "CONFIRMED",
+                 "catalog_matched_terms": "伤寒与温病:伤寒论;经典与理论:阴阳",
+                 "catalog_title_matched_terms": "伤寒与温病:伤寒论",
+                 "catalog_body_matched_terms": "经典与理论:阴阳"},
             ])
             with self.assertRaisesRegex(ValueError, "主题复核队列状态"):
                 validator.validate_catalogue(generated, source, assets)
