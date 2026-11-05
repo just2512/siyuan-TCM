@@ -31,6 +31,10 @@ jobs:
         run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
       - name: Audit real exported note text extraction coverage
         run: python tools/build_content_integrity_audit.py --output catalog/generated
+      - name: Audit content anomalies across exported notes
+        run: python tools/build_content_anomaly_audit.py --output catalog/generated
+      - name: Extract dosage-expression review candidates
+        run: python tools/build_dosage_expression_candidates.py --output catalog/generated
       - name: Build human review queues
         run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
       - name: Build topic and title extraction audits
