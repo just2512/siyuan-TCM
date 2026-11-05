@@ -43,7 +43,7 @@ class SourceReviewQueueTests(unittest.TestCase):
             rows = queue.read_candidates(source)
             result = queue.build_queue(rows, root / "out", batch_size=2)
             self.assertEqual(result, {
-                "candidates": 3, "batches": 2, "unverified": 3,
+                "candidates": 3, "batches": 2, "unverified": 3, "partial": 0,
                 "verified": 0, "conflict": 0, "unresolved": 0,
             })
             with (root / "out" / "source_review_queue.csv").open(encoding="utf-8-sig", newline="") as stream:
