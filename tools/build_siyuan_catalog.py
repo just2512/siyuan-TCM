@@ -121,11 +121,20 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         str(key) for key, value in properties.items()
         if str(key) and value is not None and value != "" and value != [] and value != {}
     ) if isinstance(properties, dict) else []
-    full_text = (title + "\n" + text).lower()
-    topic_matched_terms = ";".join(
-        f"{topic}:{'、'.join(term for term in terms if term.lower() in full_text)}"
+    title_text = title.lower()
+    body_text = text.lower()
+    title_topic_matched_terms = ";".join(
+        f"{topic}:{'、'.join(term for term in terms if term.lower() in title_text)}"
         for topic, terms in TOPICS.items()
-        if any(term.lower() in full_text for term in terms)
+        if any(term.lower() in title_text for term in terms)
+    )
+    body_topic_matched_terms = ";".join(
+        f"{topic}:{'、'.join(term for term in terms if term.lower() in body_text)}"
+        for topic, terms in TOPICS.items()
+        if any(term.lower() in body_text for term in terms)
+    )
+    topic_matched_terms = ";".join(
+        item for item in (title_topic_matched_terms, body_topic_matched_terms) if item
     )
     return {
         "path": rel, "notebook_id": notebook_id,
@@ -138,6 +147,8 @@ def parse_document(path: Path, root: Path, notebook_map: dict[str, str]) -> dict
         "child_node_count": sum(node_type_counts.values()),
         "properties_fields": properties_fields,
         "topic_matched_terms": topic_matched_terms,
+        "title_topic_matched_terms": title_topic_matched_terms,
+        "body_topic_matched_terms": body_topic_matched_terms,
         "search_text": re.sub(r"\s+", " ", text)[:2000],
     }
 
@@ -298,7 +309,8 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     write_csv(output / "documents.csv", docs, [
         "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
         "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count",
-        "properties_fields", "topic_matched_terms", "parent_document", "document_depth",
+        "properties_fields", "topic_matched_terms", "title_topic_matched_terms",
+        "body_topic_matched_terms", "parent_document", "document_depth",
         "child_document_count", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
