@@ -25,10 +25,14 @@ class CatalogueValidationTests(unittest.TestCase):
             "path": "book/a.sy", "title": "伤寒论", "title_source": "PROPERTY",
             "topics": "经典与理论;伤寒与温病", "parse_status": "PARSED",
             "asset_ref_count": "1", "parent_document": "", "document_depth": "0", "child_document_count": "0", "search_text": "太阳病",
+            "topic_matched_terms": "伤寒与温病:伤寒论;经典与理论:阴阳",
+            "title_topic_matched_terms": "伤寒与温病:伤寒论",
+            "body_topic_matched_terms": "经典与理论:阴阳",
         }, {
             "path": "book/b.sy", "title": "空白", "title_source": "PROPERTY",
             "topics": "其他与待归类", "parse_status": "PARSED",
             "asset_ref_count": "0", "parent_document": "", "document_depth": "0", "child_document_count": "0", "search_text": "",
+            "topic_matched_terms": "", "title_topic_matched_terms": "", "body_topic_matched_terms": "",
         }]
         self.write(generated / "documents.csv", list(docs[0]), docs)
         self.write(generated / "document_hierarchy.csv", [
@@ -52,8 +56,11 @@ class CatalogueValidationTests(unittest.TestCase):
              "parent_document": "", "document_depth": "0", "child_document_count": "0"},
         ])
         self.write(generated / "title_review_candidates.csv", ["document", "review_status"], [])
-        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status"], [
-            {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "NOT_REVIEWED"},
+        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms"], [
+            {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "NOT_REVIEWED",
+             "catalog_matched_terms": docs[0]["topic_matched_terms"],
+             "catalog_title_matched_terms": docs[0]["title_topic_matched_terms"],
+             "catalog_body_matched_terms": docs[0]["body_topic_matched_terms"]},
         ])
         self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size"], [
             {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1"},
@@ -82,6 +89,17 @@ class CatalogueValidationTests(unittest.TestCase):
                 "empty_body_review": 1, "title_review_candidates": 0,
                 "topic_review": 1, "asset_review_queue": 1, "source_review_queue": 1,
             })
+
+    def test_rejects_topic_evidence_source_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "documents.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["title_topic_matched_terms"] = ""
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "主题命中词汇总与标题/正文证据不一致"):
+                validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_asset_reference_count_mismatch(self):
         with tempfile.TemporaryDirectory() as temp:
