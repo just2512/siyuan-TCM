@@ -24,6 +24,13 @@ class CatalogueBuilderTests(unittest.TestCase):
         self.assertEqual(catalog.extract_title(payload, "fallback"), "伤寒论·太阳病")
         self.assertIn("太阳病，脉浮，头项强痛", catalog.extract_text(payload))
 
+    def test_extracts_inline_math_content_from_text_mark_nodes(self):
+        payload = {"Children": [{"Type": "NodeParagraph", "Children": [
+            {"Type": "NodeTextMark", "TextMarkType": "inline-math",
+             "TextMarkInlineMathContent": " \\(a^2+b^2=c^2\\) "}
+        ]}]}
+        self.assertIn("a^2+b^2=c^2", catalog.extract_text(payload))
+
     def test_excludes_image_span_and_link_destination_from_search_text(self):
         payload = {
             "Children": [{
