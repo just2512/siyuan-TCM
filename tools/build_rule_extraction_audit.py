@@ -51,6 +51,24 @@ def title_audit_reason(title: str, title_source: str) -> list[str]:
     return flags
 
 
+def make_context_excerpt(text: str, terms: list[str], radius: int = 90) -> str:
+    source = text or ""
+    folded = source.casefold()
+    pieces = []
+    for term in terms:
+        pos = folded.find(term.casefold())
+        if pos < 0:
+            continue
+        left = max(0, pos - radius)
+        right = min(len(source), pos + len(term) + radius)
+        excerpt = " ".join(source[left:right].split())
+        if excerpt and excerpt not in pieces:
+            pieces.append(excerpt)
+        if len(pieces) == 3:
+            break
+    return " ... ".join(pieces)
+
+
 def build_audits(documents: list[dict[str, str]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     title_rows = []
     topic_rows = []
@@ -92,6 +110,15 @@ def build_audits(documents: list[dict[str, str]]) -> tuple[list[dict[str, Any]],
                 flags.append("MULTI_TOPIC_DOCUMENT")
             if not flags:
                 flags.append("NO_STATIC_RISK_SIGNAL")
+            window_text = doc.get("search_text", "")
+            excerpt = make_context_excerpt(window_text, body_evidence.get(topic, []))
+            if topic in body_evidence:
+                excerpt_state = "FOUND_IN_SEARCH_WINDOW" if excerpt else "NOT_IN_SEARCH_WINDOW"
+            elif topic in title_evidence:
+                excerpt = title
+                excerpt_state = "TITLE_ONLY"
+            else:
+                excerpt_state = "NO_CONTEXT"
             topic_rows.append({
                 "document": path,
                 "notebook": doc.get("notebook", ""),
@@ -102,6 +129,8 @@ def build_audits(documents: list[dict[str, str]]) -> tuple[list[dict[str, Any]],
                 "other_matched_terms": "、".join(specific),
                 "title_matched_terms": "、".join(title_evidence.get(topic, [])),
                 "body_matched_terms": "、".join(body_evidence.get(topic, [])),
+                "context_excerpt": excerpt,
+                "context_state": excerpt_state,
                 "audit_flags": ";".join(flags),
                 "review_status": "NOT_REVIEWED",
                 "review_notes": "",
@@ -135,7 +164,8 @@ def build(documents_path: Path, output_dir: Path) -> dict[str, int]:
     write_csv(output_dir / "topic_rule_audit.csv", topic_rows, [
         "document", "notebook", "title", "topic", "all_matched_terms",
         "broad_matched_terms", "other_matched_terms", "title_matched_terms",
-        "body_matched_terms", "audit_flags", "review_status", "review_notes",
+        "body_matched_terms", "context_excerpt", "context_state", "audit_flags",
+        "review_status", "review_notes",
         "evidence_reference",
     ])
     report = [
@@ -155,6 +185,7 @@ def build(documents_path: Path, output_dir: Path) -> dict[str, int]:
         "- audit_flags 是复核线索，不是误报判定；不自动删除主题、不改写标题。",
         "- broad term 只是当前规则中相对宽泛的词，不代表该词在具体上下文中无效。",
         "- 本审计依赖完整正文生成阶段写入的命中证据字段，不以 2,000 字 search_text 代替完整正文。",
+        "- context_excerpt 仅从 search_text 检索窗口截取；完整正文命中而窗口未出现时标记 NOT_IN_SEARCH_WINDOW，必须回到原始 .sy 定位，不能据此判为误报。",
         "- 标题语义、主题相关性、附件内容和书目来源仍需查看原始资料；没有原始证据时保持 NOT_REVIEWED / UNVERIFIED。",
         "",
     ]
