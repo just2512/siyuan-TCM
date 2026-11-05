@@ -36,6 +36,14 @@
 
 正文首行回退、文件名回退和通用目录标签必须人工检查；不能直接当作正式书名或篇名。
 
+标题候选的 reason 进一步区分：
+- `NUMBER_ONLY_BODY_FALLBACK`：正文首行只有编号或编号标点，例如“1、”，不能作为有效标题。
+- `BODY_SENTENCE_USED_AS_TITLE`：正文首行包含明显句末/分句标点，或长度超过 60 个字符，疑似把正文句子当成标题。
+- `FALLBACK_TITLE_SOURCE`：其他非 Properties 标题回退，仍需查看原始笔记。
+- `POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE`：Properties 标题可能是目录标签或占位名。
+
+这些规则只增加人工复核提示，不自动改写标题；最终以原始笔记结构和上下文为准。
+
 ## 3. 主题核验
 
 文件：`topic_review.csv`
