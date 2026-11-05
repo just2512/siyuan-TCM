@@ -209,6 +209,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
 
     topic_rows = read_csv(generated / "topic_review.csv", {
         "document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status",
+        "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms",
     })
     topic = unique_index(topic_rows, "document", "topic_review.csv")
     for path, row in topic.items():
@@ -221,6 +222,13 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         expected = [item for item in docs[path]["topics"].split(";") if item]
         if row["catalog_topics"] != docs[path]["topics"] or int(row["catalog_topic_count"]) != len(expected):
             raise ValueError(f"{path} 的主题复核证据与 documents.csv 不一致")
+        for review_field, document_field in (
+            ("catalog_matched_terms", "topic_matched_terms"),
+            ("catalog_title_matched_terms", "title_topic_matched_terms"),
+            ("catalog_body_matched_terms", "body_topic_matched_terms"),
+        ):
+            if row[review_field] != docs[path][document_field]:
+                raise ValueError(f"{path} 的 topic_review.{review_field} 与 documents.csv 不一致")
         if len(expected) <= 1:
             raise ValueError(f"{path} 不应进入多主题复核队列")
 
