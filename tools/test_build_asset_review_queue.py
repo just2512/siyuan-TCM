@@ -14,7 +14,7 @@ SPEC.loader.exec_module(queue)
 FIELDS = [
     "reference", "candidate_class", "occurrence_count", "candidate_status",
     "candidate_count", "candidate_paths", "document_paths", "titles",
-    "candidate_basis", "manual_status", "manual_note",
+    "candidate_basis", "manual_status", "manual_note", "content_evidence_reference",
 ]
 
 
@@ -32,7 +32,7 @@ class AssetReviewQueueTests(unittest.TestCase):
             "candidate_count": str(count), "candidate_paths": paths,
             "document_paths": "notebook/doc.sy", "titles": "测试笔记",
             "candidate_basis": "ASSETS_DIRECTORY_FILENAME_ONLY_NOT_CONTENT_VERIFIED",
-            "manual_status": "NEEDS_INSPECTION", "manual_note": "",
+            "manual_status": "NEEDS_INSPECTION", "manual_note": "", "content_evidence_reference": "",
         }
 
     def test_builds_stable_batches_and_summary_without_promoting_matches(self):
@@ -89,6 +89,16 @@ class AssetReviewQueueTests(unittest.TestCase):
             ])
             with self.assertRaises(ValueError):
                 queue.read_candidates(source)
+
+    def test_rejects_content_conclusion_without_evidence_reference(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source = Path(temp) / "candidates.csv"
+            self.write_candidates(source, [{**self.row("assets/a", "ONE_CANDIDATE", 1, "assets/a.jpg"), "manual_status": "CONFIRMED_MATCH"}])
+            with self.assertRaisesRegex(ValueError, "缺少 content_evidence_reference"):
+                queue.read_candidates(source)
+            self.write_candidates(source, [{**self.row("assets/a", "ONE_CANDIDATE", 1, "assets/a.jpg"),
+                "manual_status": "CONFIRMED_MATCH", "content_evidence_reference": "catalog/local-review/asset-content-review.csv#A-001"}])
+            self.assertEqual(queue.read_candidates(source)[0]["manual_status"], "CONFIRMED_MATCH")
 
     def test_rejects_invalid_batch_size(self):
         with self.assertRaises(ValueError):
