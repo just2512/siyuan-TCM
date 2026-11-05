@@ -15,7 +15,7 @@
 
 ## 原始人工复核队列
 
-- 逐文档—主题审计：4783 条；NOT_REVIEWED: 4783
+- 逐文档—主题审计：4782 条；NOT_REVIEWED: 4782
 - 标题风险审计：22 条；NOT_REVIEWED: 22
 - 空正文候选：33 条；NEEDS_SOURCE_INSPECTION: 33
 
