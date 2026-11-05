@@ -102,6 +102,20 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         topics = [item for item in row["topics"].split(";") if item]
         if not topics or any(topic not in TOPIC_STATES for topic in topics):
             raise ValueError(f"{path} 的 topics 为空或包含未知主题")
+        evidence_fields = {"topic_matched_terms", "title_topic_matched_terms", "body_topic_matched_terms"}
+        if evidence_fields.issubset(row):
+            if row["topic_matched_terms"] != ";".join(
+                item for item in (row["title_topic_matched_terms"], row["body_topic_matched_terms"]) if item
+            ):
+                raise ValueError(f"{path} 的主题命中词汇总与标题/正文证据不一致")
+            evidence_topics = {
+                item.split(":", 1)[0]
+                for field in ("title_topic_matched_terms", "body_topic_matched_terms")
+                for item in row[field].split(";") if item
+            }
+            expected_topics = sorted(evidence_topics) if evidence_topics else ["其他与待归类"]
+            if sorted(topics) != expected_topics:
+                raise ValueError(f"{path} 的 topics 与标题/正文命中证据不一致")
         try:
             if int(row["asset_ref_count"]) < 0:
                 raise ValueError(f"{path} 的 asset_ref_count 不能为负数")
