@@ -22,13 +22,13 @@ class DosageExpressionCandidateTests(unittest.TestCase):
             output = root / "catalog" / "generated"
             result = build(root, output)
             self.assertEqual(result["documents"], 1)
-            self.assertEqual(result["candidates"], 3)
+            self.assertEqual(result["candidates"], 4)
             with (output / "dosage_expression_candidates.csv").open(
                 encoding="utf-8-sig", newline=""
             ) as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual([row["matched_expression"] for row in rows],
-                             ["三两", "二两", "七升"])
+                             ["三两", "二两", "七升", "三升"])
             self.assertTrue(all(row["document"] == "notebook/formula.sy" for row in rows))
             self.assertTrue(all(row["paragraph_index"] == "1" for row in rows))
             self.assertTrue(all(row["review_status"] == "NOT_REVIEWED" for row in rows))
