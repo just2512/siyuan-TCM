@@ -11,7 +11,7 @@ import csv
 from collections import Counter
 from pathlib import Path
 
-LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key"}
+LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key", "evidence_kind"}
 DECISION_FIELDS = {
     "document", "title_review_status", "source_status", "source_version_status",
     "collation_status", "topic_review_status", "empty_body_status",
@@ -27,6 +27,15 @@ DECISION_ACTIVE = {
     "topic_review_status": {"CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
     "empty_body_status": {"SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},
 }
+DECISION_EVIDENCE_KINDS = {
+    "title_review_status": {"original_sy"},
+    "source_status": {"title_page", "copyright_page", "catalogue_record", "lecture_record", "audio_timestamp", "other_primary_source"},
+    "source_version_status": {"title_page", "copyright_page", "table_of_contents", "catalogue_record", "lecture_record", "audio_timestamp", "other_primary_source"},
+    "collation_status": {"original_sy", "table_of_contents", "body_page", "lecture_record", "audio_timestamp", "other_primary_source"},
+    "topic_review_status": {"original_sy"},
+    "empty_body_status": {"original_sy"},
+}
+ASSET_EVIDENCE_KINDS = {"asset_content"}
 DECISION_SUBJECTS = {
     "title_review_status": {"document", "title_decision"},
     "source_status": {"document", "source_candidate"},
@@ -73,7 +82,8 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
         "source_conclusions": 0,
         "asset_conclusions": 0,
     })
-    def check(ids: list[str], expected_key: str, allowed_types: set[str], context: str) -> None:
+    def check(ids: list[str], expected_key: str, allowed_types: set[str],
+              allowed_kinds: set[str], context: str) -> None:
         for evidence_id in ids:
             record = ledger.get(evidence_id)
             if record is None:
@@ -85,8 +95,13 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                 )
             if record["subject_type"] not in allowed_types:
                 raise ValueError(
-                    f"{context} 的证据 {evidence_id} 类型不匹配："
+                    f"{context} 的证据 {evidence_id} 对象类型不匹配："
                     f"{record['subject_type']} 不属于 {sorted(allowed_types)}"
+                )
+            if record["evidence_kind"] not in allowed_kinds:
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 证据类型不匹配："
+                    f"{record['evidence_kind']} 不属于 {sorted(allowed_kinds)}"
                 )
             counts["validated_evidence_references"] += 1
 
@@ -97,7 +112,7 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                 if row[field] not in active:
                     continue
                 ids = evidence_tokens(row["evidence_reference"], f"决策表第 {line} 行 {document} {field}")
-                check(ids, document, DECISION_SUBJECTS[field], f"{document} {field}")
+                check(ids, document, DECISION_SUBJECTS[field], DECISION_EVIDENCE_KINDS[field], f"{document} {field}")
                 counts["decision_conclusions"] += 1
 
     if sources_path:
@@ -105,7 +120,7 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
             if row["verification_status"] == "UNVERIFIED":
                 continue
             ids = evidence_tokens(row["evidence_reference"], f"来源表第 {line} 行 {row['path']}")
-            check(ids, row["path"], {"source_candidate"}, f"{row['path']} verification_status")
+            check(ids, row["path"], {"source_candidate"}, DECISION_EVIDENCE_KINDS["source_status"] | DECISION_EVIDENCE_KINDS["source_version_status"] | DECISION_EVIDENCE_KINDS["collation_status"], f"{row['path']} verification_status")
             counts["source_conclusions"] += 1
 
     if assets_path:
@@ -113,7 +128,7 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
             if row["manual_status"] not in {"CONFIRMED_MATCH", "NOT_MATCH"}:
                 continue
             ids = evidence_tokens(row["content_evidence_reference"], f"附件队列第 {line} 行 {row['reference']}")
-            check(ids, row["reference"], {"asset_reference"}, f"{row['reference']} manual_status")
+            check(ids, row["reference"], {"asset_reference"}, ASSET_EVIDENCE_KINDS, f"{row['reference']} manual_status")
             counts["asset_conclusions"] += 1
 
     counts["evidence_records"] = len(ledger)
