@@ -82,7 +82,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 不能仅因宽泛关键词命中就删除主题；需要原文上下文支持。一个文档有多个主题也不自动代表误分类。
 
-## 5. 标题核验：48 条静态风险信号
+## 5. 标题核验：22 条静态风险信号（本次重算）
 
 查看 `catalog/generated/title_extraction_audit.csv`，逐条打开原始 `.sy`：
 
