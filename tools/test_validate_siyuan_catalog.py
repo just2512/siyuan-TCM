@@ -65,8 +65,8 @@ class CatalogueValidationTests(unittest.TestCase):
         self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size"], [
             {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1"},
         ])
-        self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status"], [
-            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION"},
+        self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
+            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
         self.write(generated / "source_review_queue.csv", ["path", "candidate_category", "verification_status", "evidence_reference"], [
             {"path": "assets/book.pdf", "candidate_category": "asset_file", "verification_status": "UNVERIFIED", "evidence_reference": ""},
@@ -76,8 +76,8 @@ class CatalogueValidationTests(unittest.TestCase):
             {"path": "assets/book.pdf", "candidate_category": "asset_file", "verification_status": "UNVERIFIED", "evidence_reference": ""},
         ])
         asset_candidates = root / "asset.csv"
-        self.write(asset_candidates, ["reference", "candidate_status", "candidate_count"], [
-            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1"},
+        self.write(asset_candidates, ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
+            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
         return generated, source_candidates, asset_candidates
 
