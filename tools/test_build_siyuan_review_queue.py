@@ -95,6 +95,24 @@ class ReviewQueueTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             review.assign_review_batches([], 0)
 
+    def test_title_fallback_flags_body_sentences_and_number_only_lines(self):
+        self.assertEqual(
+            review.title_candidate_reason("1、", "BODY_FIRST_LINE"),
+            "NUMBER_ONLY_BODY_FALLBACK",
+        )
+        self.assertEqual(
+            review.title_candidate_reason("1、伤寒，出自难经第五十八难；（伤于寒的五种病）", "BODY_FIRST_LINE"),
+            "BODY_SENTENCE_USED_AS_TITLE",
+        )
+        self.assertEqual(
+            review.title_candidate_reason("伤寒论", "BODY_FIRST_LINE"),
+            "FALLBACK_TITLE_SOURCE",
+        )
+        self.assertEqual(
+            review.title_candidate_reason("方剂", "PROPERTY"),
+            "POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE",
+        )
+
     def test_review_bucket_does_not_mislabel_single_catalog_topic(self):
         self.assertEqual(review.review_bucket(0), "0_TO_1_TOPICS")
         self.assertEqual(review.review_bucket(1), "0_TO_1_TOPICS")
