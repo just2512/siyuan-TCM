@@ -150,8 +150,8 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "asset_review_queue.csv"
-            self.write(path, ["reference", "candidate_status", "candidate_count", "manual_status"], [
-                {"reference": "assets/missing", "candidate_status": "NO_CANDIDATE", "candidate_count": "0", "manual_status": "NEEDS_INSPECTION"},
+            self.write(path, ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
+                {"reference": "assets/missing", "candidate_status": "NO_CANDIDATE", "candidate_count": "0", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
             ])
             with self.assertRaisesRegex(ValueError, "附件候选队列"):
                 validator.validate_catalogue(generated, source, assets)
