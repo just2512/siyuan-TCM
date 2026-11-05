@@ -13,9 +13,14 @@ class DosageExpressionCandidateTests(unittest.TestCase):
             root = Path(temporary)
             notebook = root / "notebook"
             notebook.mkdir()
-            payload = {"Children": [{"Type": "NodeParagraph", "Children": [
-                {"Type": "NodeText", "Data": "桂枝三两，芍药二两，水七升，煮取三升。"}
-            ]}]}
+            payload = {"Children": [
+                {"Type": "NodeParagraph", "Children": [
+                    {"Type": "NodeText", "Data": "桂枝三两，芍药二两，水七升，煮取三升。"}
+                ]},
+                {"Type": "NodeParagraph", "Children": [
+                    {"Type": "NodeText", "Data": "桌上有三枚邮票。"}
+                ]},
+            ]}
             (notebook / "formula.sy").write_text(
                 json.dumps(payload, ensure_ascii=False), encoding="utf-8"
             )
