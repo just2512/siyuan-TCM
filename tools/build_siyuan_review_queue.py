@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import importlib.util
+import re
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -51,6 +52,22 @@ def review_bucket(topic_count: int) -> str:
     if topic_count >= 3:
         return "3_TO_4_TOPICS"
     return "2_TOPICS"
+
+def title_candidate_reason(title: str, title_source: str) -> str:
+    """Flag risky navigational fallbacks without rewriting the extracted title."""
+    if title_source != "PROPERTY":
+        normalized = " ".join(title.split())
+        if title_source == "BODY_FIRST_LINE":
+            if re.fullmatch(r"\\d+[、.．)]?", normalized):
+                return "NUMBER_ONLY_BODY_FALLBACK"
+            if len(normalized) > 60 or re.search(r"[。！？；;]", normalized):
+                return "BODY_SENTENCE_USED_AS_TITLE"
+        return "FALLBACK_TITLE_SOURCE"
+    if title.lower() in GENERIC_TITLE_CANDIDATES:
+        return "POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE"
+    if not title:
+        return "EMPTY_TITLE"
+    return ""
 
 
 def read_documents(path: Path) -> list[dict[str, str]]:
@@ -165,14 +182,7 @@ def build_review_queues(documents_csv: Path, output: Path,
         title_source = doc.get("title_source", "UNKNOWN")
         title_sources[title_source] += 1
         title = doc.get("title", "").strip()
-        if title_source != "PROPERTY":
-            title_reason = "FALLBACK_TITLE_SOURCE"
-        elif title.lower() in GENERIC_TITLE_CANDIDATES:
-            title_reason = "POSSIBLE_SECTION_OR_PLACEHOLDER_TITLE"
-        elif not title:
-            title_reason = "EMPTY_TITLE"
-        else:
-            title_reason = ""
+        title_reason = title_candidate_reason(title, title_source)
         if title_reason:
             title_candidate_rows.append({
                 "document": doc.get("path", ""),
