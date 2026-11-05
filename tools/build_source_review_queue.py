@@ -16,7 +16,7 @@ ACTIONS = {
     "huangdi_neijing_chapter": "VERIFY_CHAPTER_AGAINST_IDENTIFIED_EDITION_AND_PAGE",
     "nihongxia_lecture": "VERIFY_ORIGINAL_LECTURE_SOURCE_AND_METADATA",
 }
-ALLOWED_STATUSES = {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"}
+ALLOWED_STATUSES = {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"}
 REQUIRED_FIELDS = {
     "candidate_category", "path", "candidate_note",
     "verification_status", "evidence_reference",
@@ -84,8 +84,9 @@ def build_queue(rows: list[dict[str, str]], output: Path, batch_size: int = 20) 
         "",
         f"- 候选总数：{len(ordered)}",
         f"- 每批：{batch_size} 条；批次数：{batch_count}",
-        f"- 当前 UNVERIFIED：{statuses['UNVERIFIED']}",
-        f"- 已核验 VERIFIED：{statuses['VERIFIED']}",
+        f"- 尚未核验 UNVERIFIED：{statuses['UNVERIFIED']}",
+        f"- 部分核验 PARTIAL：{statuses['PARTIAL']}",
+        f"- 已完成来源核验 VERIFIED：{statuses['VERIFIED']}",
         f"- 存在冲突 CONFLICT：{statuses['CONFLICT']}",
         f"- 尚无法确定 UNRESOLVED：{statuses['UNRESOLVED']}",
         "",
@@ -100,7 +101,8 @@ def build_queue(rows: list[dict[str, str]], output: Path, batch_size: int = 20) 
         "## 核验边界",
         "",
         "- 候选类别和文件名不是书目证据，不据此推断作者、讲者、出版机构、版本或底本。",
-        "- 只有能定位到具体原始材料及页码/期次的证据，才允许更新为 VERIFIED。",
+        "- PARTIAL 表示仅有部分身份线索或来源身份初步确认，版本/版权页/校勘仍未完成；它不是 VERIFIED。",
+        "- 只有能定位到具体原始材料及页码/期次的完整证据，才允许更新为 VERIFIED。",
         "- 来源身份确认与版本确认、文本校勘是不同结论；确认来源不代表已经完成校勘。",
         "- 缺少证据或证据冲突时，分别保留 UNVERIFIED、UNRESOLVED 或 CONFLICT。",
         "- 队列按类别和路径稳定排序，仅用于分批，不表示优先级或结论。",
@@ -113,6 +115,7 @@ def build_queue(rows: list[dict[str, str]], output: Path, batch_size: int = 20) 
         "candidates": len(ordered),
         "batches": batch_count,
         "unverified": statuses["UNVERIFIED"],
+        "partial": statuses["PARTIAL"],
         "verified": statuses["VERIFIED"],
         "conflict": statuses["CONFLICT"],
         "unresolved": statuses["UNRESOLVED"],
