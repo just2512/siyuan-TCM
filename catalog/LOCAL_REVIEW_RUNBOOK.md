@@ -47,11 +47,12 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 ## 3. 来源与版本核验：231 条候选
 
-按 `catalog/generated/source_review_queue.csv` 的 12 个批次处理。当前 231 条均为 `UNVERIFIED`。
+本次人工回传为 187 条 `PARTIAL`、44 条 `UNVERIFIED`。`PARTIAL` 仅表示已有部分身份线索或来源身份初步确认，版本/版权页/校勘仍未完成；不得升级为 `VERIFIED`。按 `catalog/generated/source_review_queue.csv` 的批次处理。
 
 逐条打开原始文件或可靠书目资料，填写 `catalog/source-review-candidates.csv`：
 
-- `verification_status` 只能使用 `UNVERIFIED`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
+- `verification_status` 使用 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
+- `PARTIAL` 不等于来源已完整核验，更不代表版本或校勘正确；保留其未完成边界。
 - 非 `UNVERIFIED` 必须填写 `evidence_reference`，指向仓库内可审阅的证据记录或明确页码/期次定位；不能填写本机绝对路径。
 - 书籍：记录书名页、版权页、作者/编者、出版社、出版年、版次/印次、ISBN（若有）、目录及对应正文页码。
 - 《黄帝内经》篇章候选：先确认所据版本，再记录卷/篇/章、目录位置和正文页码；不同版本篇名或编次冲突要保留冲突，不强行统一。
@@ -91,7 +92,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 - `TITLE_RESEMBLES_BODY_SENTENCE`：检查是否误把正文句子当标题；HTML 转义字符、目录命名风格可能造成静态误报。
 
 将结论写入 `catalog/review-decisions.csv`：
-- 确认原始标题：`title_review_status=CONFIRMED)。
+- 确认原始标题：`title_review_status=CONFIRMED`。
 - 确认需要改名：`title_review_status=RENAME_REQUIRED`，填写 `human_corrected_title` 并在备注中说明证据。
 - 证据不足：`title_review_status=UNRESOLVED`。
 
@@ -118,8 +119,8 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 ## 完成条件
 
 - 附件：每条引用都有人工结论或明确的未解决原因，且证据可追溯。
-- 来源：每条来源候选有 VERIFIED / CONFLICT / UNRESOLVED / UNVERIFIED 状态；所有非 UNVERIFIED 结论都有证据定位。
+- 来源：每条来源候选有 PARTIAL / VERIFIED / CONFLICT / UNRESOLVED / UNVERIFIED 状态；所有非 UNVERIFIED 结论都有证据定位，PARTIAL 不得计入 VERIFIED。
 - 主题：对审计记录作出人工结论，保留原始命中词和上下文证据。
-- 标题：对 48 条风险信号逐条确认、改名或标记未解决。
+- 标题：对本次重算后的 22 条风险信号逐条确认、改名或标记未解决。
 - 空正文：逐条检查原始思源内容和父子关系。
 - 所有未完成项保留未核验状态，不为追求清零而猜测。
