@@ -293,7 +293,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         source = persisted_source_index[path]
         if row["candidate_category"] != source["candidate_category"] or row["verification_status"] != source["verification_status"] or row["evidence_reference"] != source["evidence_reference"]:
             raise ValueError(f"{path} 的来源核验队列与原始候选表不一致")
-        if row["verification_status"] not in {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
+        if row["verification_status"] not in {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
             raise ValueError(f"{path} 的来源核验状态无效")
         if row["verification_status"] != "UNVERIFIED" and not row["evidence_reference"].strip():
             raise ValueError(f"{path} 已有来源核验结论但缺少 evidence_reference")
