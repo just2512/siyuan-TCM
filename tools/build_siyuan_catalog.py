@@ -38,7 +38,9 @@ def extract_text(data: Any) -> str:
         if "IAL" in current_type:
             return
         for key, value in node.items():
-            if key == "TextMarkTextContent" and isinstance(value, str) and value.strip():
+            if key in {"TextMarkTextContent", "TextMarkInlineMathContent"} and isinstance(value, str) and value.strip():
+                # Inline math is visible note content too; keep its source text
+                # searchable rather than silently dropping formulas.
                 parts.append(value.strip())
             elif key == "Data" and current_type in {"NodeText", "NodeLinkText"} and isinstance(value, str) and value.strip():
                 # Data is overloaded in SiYuan AST: NodeImage uses "span",
