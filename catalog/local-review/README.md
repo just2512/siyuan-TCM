@@ -39,7 +39,8 @@
 - 本目录下的人工记录必须作为持久化输入保留，CI 不得覆盖。
 - 新一轮核验请使用新日期文件，保留历史记录。
 - 若将单篇文档核验结果写入 `catalog/review-decisions.csv`，必须遵循 `catalog/REVIEW_GUIDE.md` 的状态与证据字段约束；不能仅凭汇总数字批量生成书目或校勘结论。
-- 附件候选核验目前保留在日期版本的候选清单中；只有核实了文件内容与引用关系，才允许记录确认结果。不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
+- 附件候选清单中的 544 条文件名/路径候选目前均为 `NEEDS_INSPECTION`，90 条无候选为 `UNRESOLVED`；路径命中和 SHA-256 不等于内容核验。
+- 只有核实文件内容与引用关系后，才允许将 `manual_status` 更新为 `CONFIRMED_MATCH` 或 `NOT_MATCH`，并填写 `content_evidence_reference`。不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
 
 ## 附件候选复核队列
 
@@ -53,7 +54,7 @@ CI 根据持久化的全量候选清单自动生成：
 
 文件：`catalog/source-review-candidates.csv`
 
-当前 231 条来源候选仍为 `UNVERIFIED`。候选路径或文件名不能证明其为原始底本、正式出版物或讲稿。只有找到可定位的版权页、扉页、目录页、出版信息或明确原始来源后，才能记录证据并更新人工核验覆盖层。
+当前 231 条来源候选为 187 条 `PARTIAL`、44 条 `UNVERIFIED`。`PARTIAL` 仅表示部分身份线索或来源身份初步确认，不代表版本/版权页/校勘已经核实。候选路径或文件名不能证明其为原始底本、正式出版物或讲稿。只有找到可定位的版权页、扉页、目录页、出版信息或明确原始来源后，才能记录证据并更新人工核验覆盖层。
 
 ## 来源资料核验队列
 
