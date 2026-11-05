@@ -25,6 +25,12 @@ class RuleExtractionAuditTests(unittest.TestCase):
         )
         self.assertIn("TITLE_IS_FALLBACK", title_audit_reason("1、", "BODY_FIRST_LINE"))
 
+    def test_encoded_html_entity_separator_is_not_sentence_punctuation(self):
+        self.assertNotIn(
+            "TITLE_RESEMBLES_BODY_SENTENCE",
+            title_audit_reason("牙痛（牙疼）&amp;&amp;牙齿再生", "PROPERTY"),
+        )
+
     def test_topic_audit_marks_broad_only_and_separates_title_body(self):
         docs = [{
             "path": "book/a.sy",
