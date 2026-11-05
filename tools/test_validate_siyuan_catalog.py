@@ -116,6 +116,20 @@ class CatalogueValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "缺少 evidence_reference"):
                 validator.validate_catalogue(generated, source, assets)
 
+    def test_rejects_confirmed_asset_match_without_content_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            queue_path = generated / "asset_review_queue.csv"
+            source_path = assets
+            for path in (queue_path, source_path):
+                with path.open(encoding="utf-8-sig", newline="") as stream:
+                    rows = list(csv.DictReader(stream))
+                rows[0]["manual_status"] = "CONFIRMED_MATCH"
+                rows[0]["content_evidence_reference"] = ""
+                self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "缺少 content_evidence_reference"):
+                validator.validate_catalogue(generated, source, assets)
+
     def test_rejects_topic_evidence_source_drift(self):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
