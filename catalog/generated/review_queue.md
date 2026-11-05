@@ -13,7 +13,7 @@
 - 人工核验状态、证据要求和附件本地检查方法见 catalog/REVIEW_GUIDE.md。
 - 人工结论从 catalog/review-decisions.csv 读取；该文件与自动生成产物分离，重建索引不会覆盖人工结论。
 - 已应用人工核验覆盖记录：33 篇；无覆盖记录时保持 NOT_REVIEWED / UNVERIFIED。
-- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态。
+- document_review.csv：逐篇标题、正文、来源、版本、校勘人工核验状态及父子文档上下文。
 - topic_review.csv：完整多主题复核清单。
 - topic_review_batches.csv：按文档仓库相对路径排序后每批 50 篇的人工工作包索引，共 29 批；批次只用于组织工作，不保存人工结论。
 - empty_body_review.csv：单独列出正文抽取为空的文档，等待回看原始 .sy。
