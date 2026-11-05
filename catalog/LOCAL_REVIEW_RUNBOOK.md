@@ -26,7 +26,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 ## 2. 附件核验：634 个引用
 
-队列基线：634 个唯一引用、742 条原始引用记录、836 条候选路径；309 个单候选、235 个多候选、90 个无候选。
+队列基线：634 个唯一引用、742 条原始引用记录、836 条候选路径；309 个单候选、235 个多候选、90 个无候选。当前 544 条此前仅凭文件名/路径候选匹配而被标记为确认的记录，已统一退回 `NEEDS_INSPECTION`；90 条无候选保留 `UNRESOLVED`。这些路径线索不代表内容已核验。
 
 先检查 `catalog/local-review/asset-evidence-2026-11-05/asset_evidence_manifest.md` 和 CSV：
 
@@ -40,10 +40,11 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 1. 打开引用对应的原始 `.sy`，定位附件引用及前后文字。
 2. 打开所有候选文件；多候选必须逐一比对，不能默认取第一项。
 3. 核对实际内容、文件类型、清晰度/完整性，以及它是否确实对应该条引用。
-4. 只有内容和引用关系均核实后，才把本地候选清单的 `manual_status` 改为 `CONFIRMED_MATCH`；明确不匹配用 `NOT_MATCH`；无法判断保留 `NEEDS_INSPECTION` 或 `UNRESOLVED`，并写明原因。
-5. 无候选时可在本地 assets 按文件名、文件 ID、原始文档上下文搜索。搜索不到只记录本次搜索范围和结果，不推断原附件已永久丢失。
+4. 建立本地内容核验记录（建议文件：`catalog/local-review/asset-content-review-2026-11-05.csv`），至少记录 `reference`、实际检查的候选路径、内容描述、文件类型、清晰度/完整性、对应原始 `.sy` 的上下文定位和核验人/日期。
+5. 只有内容和引用关系均核实后，才把本地候选清单的 `manual_status` 改为 `CONFIRMED_MATCH`；明确不匹配用 `NOT_MATCH`；两种结论都必须在 `content_evidence_reference` 填写指向上述记录的引用（例如该 CSV 中对应的 reference 键）。无法判断保留 `NEEDS_INSPECTION` 或 `UNRESOLVED`，并写明原因。
+6. 无候选时可在本地 assets 按文件名、文件 ID、原始文档上下文搜索。搜索不到只记录本次搜索范围和结果，不推断原附件已永久丢失。
 
-**禁止：** 仅凭文件名、扩展名、候选数量或 SHA-256 将附件标记为匹配；禁止将本地绝对路径或附件文件提交到仓库。
+**禁止：** 仅凭文件名、扩展名、候选数量、`.sy` 路径命中或 SHA-256 将附件标记为匹配；`CONFIRMED_MATCH` / `NOT_MATCH` 必须有 `content_evidence_reference`；禁止将本地绝对路径或附件文件提交到仓库。
 
 ## 3. 来源与版本核验：231 条候选
 
