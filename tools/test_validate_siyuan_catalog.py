@@ -43,12 +43,13 @@ class CatalogueValidationTests(unittest.TestCase):
                    ["document", "reference", "local_status", "local_path", "match_method"], [
             {"document": "book/a.sy", "reference": "assets/a.png", "local_status": "NOT_CHECKED", "local_path": "", "match_method": "NOT_CHECKED"},
         ])
-        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference"]
+        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference", "parent_document", "document_depth", "child_document_count"]
         self.write(generated / "document_review.csv", review_fields, [
-            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": ""} for d in docs
+            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": "", "parent_document": d["parent_document"], "document_depth": d["document_depth"], "child_document_count": d["child_document_count"]} for d in docs
         ])
-        self.write(generated / "empty_body_review.csv", ["document", "review_status"], [
-            {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION"},
+        self.write(generated / "empty_body_review.csv", ["document", "review_status", "parent_document", "document_depth", "child_document_count"], [
+            {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION",
+             "parent_document": "", "document_depth": "0", "child_document_count": "0"},
         ])
         self.write(generated / "title_review_candidates.csv", ["document", "review_status"], [])
         self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status"], [
@@ -97,7 +98,7 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "document_review.csv"
-            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference"], [])
+            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference", "parent_document", "document_depth", "child_document_count"], [])
             with self.assertRaisesRegex(ValueError, "文档集合不一致"):
                 validator.validate_catalogue(generated, source, assets)
 
@@ -138,8 +139,9 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "empty_body_review.csv"
-            self.write(path, ["document", "review_status"], [
-                {"document": "book/b.sy", "review_status": "MADE_UP"},
+            self.write(path, ["document", "review_status", "parent_document", "document_depth", "child_document_count"], [
+                {"document": "book/b.sy", "review_status": "MADE_UP",
+                 "parent_document": "", "document_depth": "0", "child_document_count": "0"},
             ])
             with self.assertRaisesRegex(ValueError, "review_status 无效"):
                 validator.validate_catalogue(generated, source, assets)
