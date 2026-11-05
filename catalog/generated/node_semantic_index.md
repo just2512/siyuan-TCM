@@ -40,10 +40,25 @@
 - NodeThematicBreak: 11179
 - NodeVideo: 15
 
+## 关系类型分布
+
+- BLOCK_REFERENCE: 72
+- HYPERLINK: 313
+- LINK_DESTINATION: 10101
+- MEDIA_REFERENCE: 16
+
+## 关系解析状态
+
+- ASSET_REFERENCE: 10100
+- EXTERNAL_URL: 243
+- REFERENCE_RECORDED_NOT_FILE_VERIFIED: 16
+- RESOLVED_IN_CORPUS: 72
+- URI_OR_LOCAL_TARGET: 71
+
 ## 生成文件
 
 - node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。
-- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，可直接用于检索和定位。
+- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，附带当前标题路径和标题块 ID，可直接用于检索和定位。
 - node_relationship_index.csv.gz：gzip 压缩的块引用、超链接、附件目标和媒体引用关系边。
 - document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点和可检索内容块统计。
 - node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。
