@@ -13,6 +13,12 @@
 | topic_review_status | 33 | NOT_REVIEWED: 33 |
 | empty_body_status | 33 | NEEDS_SOURCE_INSPECTION: 33 |
 
+## 原始人工复核队列
+
+- 逐文档—主题审计：4783 条；NOT_REVIEWED: 4783
+- 标题风险审计：22 条；NOT_REVIEWED: 22
+- 空正文候选：33 条；NEEDS_SOURCE_INSPECTION: 33
+
 ## 来源候选
 
 - 候选记录：231
