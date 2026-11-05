@@ -14,7 +14,11 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-EXTRACTED_FIELDS = {"TextMarkTextContent", "Data"}
+EXTRACTED_FIELDS = {
+    "NodeText": {"Data"},
+    "NodeLinkText": {"Data"},
+    "NodeTextMark": {"TextMarkTextContent"},
+}
 METADATA_FIELDS = {"Properties", "IAL", "Type", "ID", "Spec"}
 
 
@@ -46,7 +50,7 @@ def inspect_tree(value: Any, type_counts: Counter[str],
     payload_count = 0
     char_count = 0
     for key, item in value.items():
-        if key in EXTRACTED_FIELDS and isinstance(item, str) and item.strip():
+        if key in EXTRACTED_FIELDS.get(node_type, set()) and isinstance(item, str) and item.strip():
             payload_count += 1
             char_count += len(item.strip())
             type_stats[node_type]["extracted_payloads"] += 1
@@ -156,7 +160,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "", "## 判读限制", "",
         "- PARSED 只表示 JSON 语法有效，不代表正文提取无损。",
         "- 没有提取文本的节点不一定是错误；必须结合块类型和原始笔记上下文判断。",
-        "- 其他字符串字段可能是链接、样式、代码、元数据或正文，必须先建立字段语义映射，不能直接拼进正文。",
+        "- Data 字段在 SiYuan AST 中存在多种语义：NodeText/NodeLinkText 是可检索文字；NodeImage 的 span 和 NodeLinkDest 的资源路径不是正文。其他字段必须先建立块类型语义映射，不能直接拼进正文。",
         "- 本报告不修改任何原始 .sy 文件。",
     ]
     (output / "content_integrity_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
