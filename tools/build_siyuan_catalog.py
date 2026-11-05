@@ -262,14 +262,44 @@ def build_asset_prefix_candidates(
         })
     return result
 
+def attach_document_hierarchy(docs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Derive parent/child links from SiYuan's nested export directory layout."""
+    by_path = {str(doc["path"]): doc for doc in docs}
+    children: dict[str, list[str]] = defaultdict(list)
+    for doc in docs:
+        parts = Path(str(doc["path"])).parts
+        parent = ""
+        if len(parts) >= 3:
+            candidate = Path(*parts[:-2], parts[-2] + ".sy").as_posix()
+            if candidate in by_path:
+                parent = candidate
+        doc["parent_document"] = parent
+        if parent:
+            children[parent].append(str(doc["path"]))
+
+    def depth(path: str, seen: set[str] | None = None) -> int:
+        seen = set() if seen is None else seen
+        if path in seen:
+            raise ValueError(f"思源文档父子关系出现循环：{path}")
+        parent = str(by_path[path].get("parent_document", ""))
+        return 0 if not parent else 1 + depth(parent, seen | {path})
+
+    for doc in docs:
+        path = str(doc["path"])
+        doc["document_depth"] = depth(path)
+        doc["child_document_count"] = len(children.get(path, []))
+    return docs
+
+
 def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[str, str]):
     files = sorted(p for p in root.rglob("*.sy") if p.is_file() and "assets" not in p.parts)
-    docs = [parse_document(p, root, notebook_map) for p in files]
+    docs = attach_document_hierarchy([parse_document(p, root, notebook_map) for p in files])
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "documents.csv", docs, [
         "path", "notebook_id", "notebook", "title", "title_source", "topics", "parse_status",
         "bytes", "sha256", "asset_ref_count", "node_types", "child_node_count",
-        "properties_fields", "topic_matched_terms", "search_text"])
+        "properties_fields", "topic_matched_terms", "parent_document", "document_depth",
+        "child_document_count", "search_text"])
     topic_rows = [{"topic": topic, "title": d["title"], "path": d["path"], "notebook": d["notebook"]}
                   for d in docs for topic in d["topics"].split(";")]
     property_field_counts = Counter(
@@ -281,6 +311,17 @@ def build(root: Path, output: Path, assets_dir: Path | None, notebook_map: dict[
     ]
     write_csv(output / "metadata_inventory.csv", metadata_rows,
               ["property_field", "document_count"])
+    hierarchy_rows = [{
+        "document": d["path"], "parent_document": d["parent_document"],
+        "notebook": d["notebook"], "title": d["title"],
+        "document_depth": d["document_depth"],
+        "child_document_count": d["child_document_count"],
+        "structure_role": "CONTAINER" if d["child_document_count"] else "LEAF",
+    } for d in docs]
+    write_csv(output / "document_hierarchy.csv", hierarchy_rows, [
+        "document", "parent_document", "notebook", "title", "document_depth",
+        "child_document_count", "structure_role",
+    ])
     write_csv(output / "topic_index.csv", topic_rows, ["topic", "title", "path", "notebook"])
     asset_rows = []
     asset_lookup = build_asset_lookup(assets_dir) if assets_dir else None
