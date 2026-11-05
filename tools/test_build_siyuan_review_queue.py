@@ -206,6 +206,66 @@ class ReviewQueueTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 review.load_decisions(decisions, {"book/a.sy"})
 
+    def test_rejects_topic_decision_without_approved_topics(self):
+        with tempfile.TemporaryDirectory() as temp:
+            decisions = Path(temp) / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy", "reviewer": "reviewer-1",
+                    "topic_review_status": "CONFIRMED",
+                    "evidence_reference": "book/a.sy#topic-evidence",
+                })
+            with self.assertRaisesRegex(ValueError, "缺少 human_approved_topics"):
+                review.load_decisions(decisions, {"book/a.sy"})
+
+    def test_rejects_unknown_or_duplicate_approved_topics(self):
+        for topics, message in [
+            ("未知主题", "包含未知主题"),
+            ("伤寒与温病;伤寒与温病", "存在重复主题"),
+        ]:
+            with self.subTest(topics=topics), tempfile.TemporaryDirectory() as temp:
+                decisions = Path(temp) / "review-decisions.csv"
+                with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                    writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                    writer.writeheader()
+                    writer.writerow({
+                        "document": "book/a.sy", "reviewer": "reviewer-1",
+                        "topic_review_status": "CONFIRMED",
+                        "human_approved_topics": topics,
+                        "evidence_reference": "book/a.sy#topic-evidence",
+                    })
+                with self.assertRaisesRegex(ValueError, message):
+                    review.load_decisions(decisions, {"book/a.sy"})
+
+    def test_requires_corrected_title_for_rename_decision(self):
+        with tempfile.TemporaryDirectory() as temp:
+            decisions = Path(temp) / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy", "reviewer": "reviewer-1",
+                    "title_review_status": "RENAME_REQUIRED",
+                    "evidence_reference": "book/a.sy#title-evidence",
+                })
+            with self.assertRaisesRegex(ValueError, "缺少 human_corrected_title"):
+                review.load_decisions(decisions, {"book/a.sy"})
+
+    def test_rejects_human_decision_without_reviewer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            decisions = Path(temp) / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy", "title_review_status": "CONFIRMED",
+                    "evidence_reference": "book/a.sy#title-evidence",
+                })
+            with self.assertRaisesRegex(ValueError, "缺少 reviewer"):
+                review.load_decisions(decisions, {"book/a.sy"})
+
     def test_rejects_decision_without_evidence_or_unknown_document(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
