@@ -58,7 +58,7 @@ def title_candidate_reason(title: str, title_source: str) -> str:
     if title_source != "PROPERTY":
         normalized = " ".join(title.split())
         if title_source == "BODY_FIRST_LINE":
-            if re.fullmatch(r"\\d+[、.．)]?", normalized):
+            if re.fullmatch(r"\d+[、.．)]?", normalized):
                 return "NUMBER_ONLY_BODY_FALLBACK"
             if len(normalized) > 60 or re.search(r"[。！？；;]", normalized):
                 return "BODY_SENTENCE_USED_AS_TITLE"
