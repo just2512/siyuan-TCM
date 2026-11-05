@@ -70,6 +70,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | content_integrity_audit.md / block_type_inventory.csv | 按 SiYuan 块类型统计正文提取覆盖及未映射字段 |
 | content_anomaly_audit.csv / paragraph_anomaly_audit.csv | 逐篇内容异常信号、重复段落和超长段落候选 |
 | dosage_expression_candidates.csv | 带原笔记段落定位的剂量样式表达候选，不作医学判断 |
+| section_index.csv | 按标题块 ID、标题层级和正文段落建立的章节级导航索引 |
 
 仓库提供 catalog/notebook-map.json，工具默认读取该映射，将思源内部目录 ID 显示为可读笔记本名称。若扫描其他数据集，可通过 --notebook-map 指定自己的映射文件，格式为：
 
@@ -104,6 +105,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 - [x] 纳入 NodeTextMark 行内公式文本
 - [x] 对真实笔记运行内容异常初筛（短/长文本、乱码、控制字符、重复段落、超长段落）
 - [x] 建立带原笔记定位的剂量样式表达候选队列
+- [x] 建立章节级标题与正文导航索引
 - [x] 笔记本目录 ID 到显示名称映射
 - [x] 索引工具单元测试并接入 GitHub Actions
 - [x] 在仓库当前 master 的真实导出笔记上执行全量扫描（2,667 篇均被 JSON 解析器读取）
