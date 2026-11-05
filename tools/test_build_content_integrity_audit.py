@@ -18,7 +18,7 @@ class ContentIntegrityAuditTests(unittest.TestCase):
                 "Children": [
                     {"Type": "NodeText", "Data": "正文内容"},
                     {"Type": "NodeHeading", "Children": [
-                        {"Type": "NodeTextMark", "TextMarkTextContent": "标题文字"}
+                        {"Type": "NodeTextMark", "TextMarkTextContent": "标题文字", "TextMarkInlineMathContent": "x+y"}
                     ]},
                     {"Type": "NodeImage", "Attrs": {"src": "assets/example.png"}},
                 ],
@@ -36,8 +36,8 @@ class ContentIntegrityAuditTests(unittest.TestCase):
             ) as stream:
                 documents = list(csv.DictReader(stream))
             self.assertEqual(documents[0]["parse_status"], "PARSED")
-            self.assertEqual(documents[0]["extracted_payload_count"], "2")
-            self.assertEqual(documents[0]["extracted_char_count"], "8")
+            self.assertEqual(documents[0]["extracted_payload_count"], "3")
+            self.assertEqual(documents[0]["extracted_char_count"], "11")
             self.assertIn("src", documents[0]["unclassified_string_fields"])
 
             with (output / "block_type_inventory.csv").open(
