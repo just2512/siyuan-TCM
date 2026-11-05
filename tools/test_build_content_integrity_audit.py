@@ -16,7 +16,7 @@ class ContentIntegrityAuditTests(unittest.TestCase):
             (note_dir / "note.sy").write_text(json.dumps({
                 "Properties": {"title": "测试笔记"},
                 "Children": [
-                    {"Type": "NodeParagraph", "Data": "正文内容"},
+                    {"Type": "NodeText", "Data": "正文内容"},
                     {"Type": "NodeHeading", "Children": [
                         {"Type": "NodeText", "TextMarkTextContent": "标题文字"}
                     ]},
@@ -46,7 +46,7 @@ class ContentIntegrityAuditTests(unittest.TestCase):
                 inventory = {row["node_type"]: row for row in csv.DictReader(stream)}
             self.assertEqual(inventory["NodeImage"]["node_count"], "1")
             self.assertEqual(inventory["NodeImage"]["nodes_without_extracted_payload"], "1")
-            self.assertEqual(inventory["NodeParagraph"]["extracted_payload_count"], "1")
+            self.assertEqual(inventory["NodeText"]["extracted_payload_count"], "1")
 
     def test_parse_error_is_reported_and_returns_nonzero_summary(self):
         with tempfile.TemporaryDirectory() as temporary:
