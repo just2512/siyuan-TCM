@@ -67,7 +67,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | asset_references.csv | 文档引用的附件路径与本地映射状态 |
 | catalog.md | 本次扫描概况、目录统计和重复文件清单 |
 | asset_audit.md | 附件引用审计概况 |
-| content_integrity_audit.md / block_type_inventory.csv | 按 SiYuan 块类型统计正文提取覆盖及未映射字段 |
+| content_integrity_audit.md / block_type_inventory.csv | 按 SiYuan 块类型统计正文提取覆盖及未映射字段 |\n| node_semantic_index.csv | 逐节点语义索引，保留父子块、树位置、内容角色和原始文档哈希 |\n| document_semantic_summary.csv | 逐篇节点覆盖统计，分别统计文本、表格、列表、HTML 和媒体节点 |\n| unmapped_node_fields.csv | 未映射字符串字段清单，供解析规则扩展 |
 | content_anomaly_audit.csv / paragraph_anomaly_audit.csv | 逐篇内容异常信号、重复段落和超长段落候选 |
 | dosage_expression_candidates.csv | 带原笔记段落定位的剂量样式表达候选，不作医学判断 |
 | section_index.csv | 按标题块 ID、标题层级和正文段落建立的章节级导航索引 |
@@ -109,7 +109,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 - [x] 笔记本目录 ID 到显示名称映射
 - [x] 索引工具单元测试并接入 GitHub Actions
 - [x] 在仓库当前 master 的真实导出笔记上执行全量扫描（2,667 篇均被 JSON 解析器读取）
-- [ ] 完成剩余块类型的正文语义映射，特别是 HTML、表格、音视频及其他富文本节点
+- [x] 建立逐节点语义索引，保留文档哈希、块 ID、父子关系、树位置和字段角色\n- [x] 将 HTML 可见文本、表格/列表结构、音视频资源字段与正文分离\n- [ ] 继续扩展未映射字段和特殊节点语义，直到真实节点字段覆盖清单闭合
 - [ ] 复核自动异常候选，增加近似重复、章节级结构及主题漏检审计
 - [ ] 扩展知识主张队列至方剂组成、药物、证候、治法、经穴和经典原文，并按可靠底本逐项核查
 - [ ] 用户本地 assets 内容核查（需要本地 assets 目录参与，不上传附件）
