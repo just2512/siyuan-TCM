@@ -66,6 +66,8 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 查看 `catalog/generated/topic_rule_audit.csv`。本次静态审计有 4,783 条记录，全部初始为 `NOT_REVIEWED`。
 
+人工决策约束：每条结论必须填写 `reviewer` 和 `evidence_reference`；`topic_review_status` 一旦不是 `NOT_REVIEWED`，必须填写规范主题枚举中的 `human_approved_topics`（分号分隔、不得重复）；`RENAME_REQUIRED` 必须填写 `human_corrected_title`，且修正标题只能与该状态同时使用。
+
 **当前持久化状态核对：** `catalog/review-decisions.csv` 当前 33 行记录的 `topic_review_status` 全部为空，尚无主题人工结论被正式应用。提交说明中提到的 `BODY_CONFIRMED`、`BROAD_TERM_REVIEW` 等分类没有映射进当前人工决策字段，不能据此宣称主题复核已完成。请将逐条结论映射为 `CONFIRMED`、`REMOVE_TOPIC`、`ADD_TOPIC`、`SPLIT_REQUIRED` 或 `UNRESOLVED`，填写 `human_approved_topics`、理由和证据定位；否则保持 `NOT_REVIEWED`。
 
 优先按 `audit_flags` 筛选：
