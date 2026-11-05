@@ -297,5 +297,26 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertEqual(candidates[0]["candidate_paths"], "")
 
 
+    def test_derives_nested_document_parent_and_child_counts(self):
+        docs = [
+            {"path": "book/parent.sy"},
+            {"path": "book/parent/child.sy"},
+            {"path": "book/parent/child/grandchild.sy"},
+            {"path": "book/other.sy"},
+        ]
+        catalog.attach_document_hierarchy(docs)
+        by_path = {row["path"]: row for row in docs}
+        self.assertEqual(by_path["book/parent.sy"]["parent_document"], "")
+        self.assertEqual(by_path["book/parent.sy"]["document_depth"], 0)
+        self.assertEqual(by_path["book/parent.sy"]["child_document_count"], 1)
+        self.assertEqual(by_path["book/parent/child.sy"]["parent_document"], "book/parent.sy")
+        self.assertEqual(by_path["book/parent/child.sy"]["document_depth"], 1)
+        self.assertEqual(by_path["book/parent/child.sy"]["child_document_count"], 1)
+        self.assertEqual(by_path["book/parent/child/grandchild.sy"]["parent_document"], "book/parent/child.sy")
+        self.assertEqual(by_path["book/parent/child/grandchild.sy"]["document_depth"], 2)
+        self.assertEqual(by_path["book/other.sy"]["parent_document"], "")
+        self.assertEqual(by_path["book/other.sy"]["child_document_count"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
