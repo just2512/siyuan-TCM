@@ -47,7 +47,7 @@ def build_sections(root: Any, document: str) -> list[dict[str, Any]]:
                 stack.pop()
             section = {
                 "document": document,
-                "section_index": sum(1 for row in sections if row["document"] == document) + 1,
+                "section_index": sum(1 for row in sections if row["document"] == document and row["heading_block_id"]) + 1,
                 "heading_block_id": str(block.get("ID", "")),
                 "heading_level": level,
                 "heading_title": heading_text,
