@@ -56,8 +56,19 @@ class VisibleHTML(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.parts: list[str] = []
+        self.suppressed_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() in {"script", "style"}:
+            self.suppressed_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {"script", "style"} and self.suppressed_depth:
+            self.suppressed_depth -= 1
 
     def handle_data(self, data: str) -> None:
+        if self.suppressed_depth:
+            return
         value = " ".join(data.split())
         if value:
             self.parts.append(value)
@@ -125,11 +136,13 @@ def descendants_text(node: dict[str, Any]) -> str:
 def walk_nodes(node: Any, document: str, source_hash: str,
                rows: list[dict[str, Any]], unknown: Counter[str],
                parent_id: str = "", parent_type: str = "",
-               position: str = "0") -> None:
+               position: str = "0",
+               content_rows: list[dict[str, Any]] | None = None) -> None:
     if isinstance(node, list):
         for index, child in enumerate(node):
             walk_nodes(child, document, source_hash, rows, unknown,
-                       parent_id, parent_type, f"{position}.{index}")
+                       parent_id, parent_type, f"{position}.{index}",
+                       content_rows=content_rows)
         return
     if not isinstance(node, dict):
         return
@@ -138,7 +151,8 @@ def walk_nodes(node: Any, document: str, source_hash: str,
         for key, value in node.items():
             if key not in META_FIELDS and isinstance(value, (dict, list)):
                 walk_nodes(value, document, source_hash, rows, unknown,
-                           parent_id, parent_type, position)
+                           parent_id, parent_type, position,
+                           content_rows=content_rows)
         return
 
     block_id = str(node.get("ID") or "")
@@ -164,6 +178,26 @@ def walk_nodes(node: Any, document: str, source_hash: str,
         "raw_payload": raw_payload,
     })
 
+    if content_rows is not None and node_type in {
+        "NodeParagraph", "NodeHeading", "NodeTableCell", "NodeListItem", "NodeHTMLBlock"
+    }:
+        content_text = descendants_text(node)
+        if content_text:
+            content_rows.append({
+                "document": document, "source_sha256": source_hash,
+                "tree_position": position, "block_id": block_id,
+                "parent_block_id": parent_id, "parent_node_type": parent_type,
+                "content_type": {
+                    "NodeParagraph": "PARAGRAPH",
+                    "NodeHeading": "HEADING",
+                    "NodeTableCell": "TABLE_CELL",
+                    "NodeListItem": "LIST_ITEM",
+                    "NodeHTMLBlock": "HTML_BLOCK",
+                }[node_type],
+                "heading_level": node.get("HeadingLevel", "") if node_type == "NodeHeading" else "",
+                "characters": len(content_text), "content_text": content_text,
+            })
+
     mapped = set(TEXT_FIELDS.get(node_type, {}))
     if node_type == "NodeTextMark":
         mapped.update(MARK_METADATA_FIELDS)
@@ -177,7 +211,8 @@ def walk_nodes(node: Any, document: str, source_hash: str,
 
     for index, child in enumerate(node_children(node)):
         walk_nodes(child, document, source_hash, rows, unknown,
-                   block_id, node_type, f"{position}.{index}")
+                   block_id, node_type, f"{position}.{index}",
+                   content_rows=content_rows)
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
@@ -201,6 +236,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
                    if path.is_file() and "assets" not in path.parts
                    and output not in path.parents)
     rows: list[dict[str, Any]] = []
+    content_rows: list[dict[str, Any]] = []
     docs: list[dict[str, Any]] = []
     unknown: Counter[str] = Counter()
     parse_errors = 0
@@ -217,11 +253,14 @@ def build(root: Path, output: Path) -> dict[str, int]:
                          "text_node_count": 0, "text_characters": 0,
                          "table_count": 0, "list_count": 0,
                          "html_block_count": 0, "media_node_count": 0,
-                         "error": type(exc).__name__})
+                         "content_block_count": 0, "searchable_block_count": 0,
+                         "content_characters": 0, "error": type(exc).__name__})
             continue
         before = len(rows)
-        walk_nodes(data, relative, digest, rows, unknown)
+        content_before = len(content_rows)
+        walk_nodes(data, relative, digest, rows, unknown, content_rows=content_rows)
         doc_nodes = rows[before:]
+        doc_content = content_rows[content_before:]
         text_nodes = [row for row in doc_nodes if row["text"]]
         docs.append({
             "document": relative, "source_sha256": digest, "parse_status": "PARSED",
@@ -231,6 +270,9 @@ def build(root: Path, output: Path) -> dict[str, int]:
             "list_count": sum(row["node_type"] == "NodeList" for row in doc_nodes),
             "html_block_count": sum(row["node_type"] in HTML_TYPES for row in doc_nodes),
             "media_node_count": sum(row["node_type"] in MEDIA_TYPES for row in doc_nodes),
+            "content_block_count": len(doc_content),
+            "searchable_block_count": sum(bool(row["content_text"]) for row in doc_content),
+            "content_characters": sum(len(row["content_text"]) for row in doc_content),
             "error": "",
         })
     output.mkdir(parents=True, exist_ok=True)
@@ -240,10 +282,16 @@ def build(root: Path, output: Path) -> dict[str, int]:
               "mark_type", "link_href", "link_title", "block_ref_id",
               "block_ref_subtype", "text", "container_text", "raw_payload"]
     write_csv(output / "node_semantic_index.csv.gz", rows, fields)
+    write_csv(output / "content_block_index.csv.gz", content_rows, [
+        "document", "source_sha256", "tree_position", "block_id",
+        "parent_block_id", "parent_node_type", "content_type", "heading_level",
+        "characters", "content_text",
+    ])
     write_csv(output / "document_semantic_summary.csv", docs, [
         "document", "source_sha256", "parse_status", "node_count", "text_node_count",
         "text_characters", "table_count", "list_count", "html_block_count",
-        "media_node_count", "error",
+        "media_node_count", "content_block_count", "searchable_block_count",
+        "content_characters", "error",
     ])
     unknown_rows = [{"node_field": key, "occurrences": count}
                     for key, count in sorted(unknown.items())]
@@ -283,6 +331,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         f"- 扫描文档：{len(files)}",
         f"- JSON 解析失败：{parse_errors}",
         f"- 节点记录：{len(rows)}",
+        f"- 可检索内容块：{len(content_rows)}",
         f"- 节点类型：{len(counts)}",
         f"- 有直接文本载荷的节点：{sum(bool(row['text']) for row in rows)}",
         f"- 已定义字段语义映射：{len(field_mapping)}",
@@ -295,7 +344,8 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "## 生成文件",
         "",
         "- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。",
-        "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点统计。",
+        "- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，可直接用于检索和定位。",
+        "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点和可检索内容块统计。",
         "- node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。",
         "- unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。",
         "",
@@ -308,8 +358,9 @@ def build(root: Path, output: Path) -> dict[str, int]:
     ]
     (output / "node_semantic_index.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"documents": len(files), "parse_errors": parse_errors,
-            "nodes": len(rows), "node_types": len(counts),
-            "mapped_fields": len(field_mapping), "unmapped_fields": len(unknown_rows)}
+            "nodes": len(rows), "content_blocks": len(content_rows),
+            "node_types": len(counts), "mapped_fields": len(field_mapping),
+            "unmapped_fields": len(unknown_rows)}
 
 
 def main() -> int:

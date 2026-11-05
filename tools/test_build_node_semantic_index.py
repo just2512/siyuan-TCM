@@ -41,6 +41,15 @@ class NodeSemanticIndexTests(unittest.TestCase):
         self.assertEqual(by_id["d1"]["semantic_role"], "LINK_TARGET")
         self.assertEqual(by_id["d1"]["text"], "")
 
+
+    def test_html_index_omits_script_and_style_payloads(self):
+        payload = {"Type": "NodeHTMLBlock",
+                   "Data": "<p>可见内容<script>alert(1)</script><style>.x{}</style></p>"}
+        role, text, raw = indexer.direct_payload(payload)
+        self.assertEqual(role, "HTML")
+        self.assertEqual(text, "可见内容")
+        self.assertIn("alert(1)", raw)
+
     def test_preserves_parent_child_and_tree_position(self):
         payload = {"Children": [{"ID": "p", "Type": "NodeParagraph",
             "Children": [{"ID": "t", "Type": "NodeText", "Data": "内容"}]}]}
@@ -103,6 +112,37 @@ class NodeSemanticIndexTests(unittest.TestCase):
         self.assertEqual(by_id["escape"]["semantic_role"], "ESCAPED_CONTENT")
         self.assertTrue(all(not row["text"] for row in rows))
         self.assertEqual(len(unknown), 0)
+
+
+    def test_builds_searchable_content_blocks_with_source_location(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "data"
+            doc_dir = root / "book"
+            doc_dir.mkdir(parents=True)
+            (doc_dir / "doc.sy").write_text(json.dumps({
+                "ID": "doc", "Type": "NodeDocument", "Children": [
+                    {"ID": "p", "Type": "NodeParagraph", "Children": [
+                        {"ID": "t1", "Type": "NodeText", "Data": "桂枝汤"},
+                        {"ID": "t2", "Type": "NodeText", "Data": "主治太阳中风"}
+                    ]},
+                    {"ID": "cell", "Type": "NodeTableCell", "Children": [
+                        {"ID": "ct", "Type": "NodeText", "Data": "芍药"}
+                    ]}
+                ]
+            }, ensure_ascii=False), encoding="utf-8")
+            output = Path(temp) / "out"
+            result = indexer.build(root, output)
+            self.assertEqual(result["content_blocks"], 2)
+            with gzip.open(output / "content_block_index.csv.gz", "rt",
+                           encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            by_id = {row["block_id"]: row for row in rows}
+            self.assertEqual(by_id["p"]["content_text"], "桂枝汤 主治太阳中风")
+            self.assertEqual(by_id["p"]["content_type"], "PARAGRAPH")
+            self.assertEqual(by_id["cell"]["content_text"], "芍药")
+            self.assertEqual(by_id["cell"]["content_type"], "TABLE_CELL")
+            self.assertEqual(by_id["p"]["document"], "book/doc.sy")
+            self.assertTrue(by_id["p"]["source_sha256"])
 
     def test_build_writes_document_node_and_unmapped_field_indexes(self):
         with tempfile.TemporaryDirectory() as temp:
