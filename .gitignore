@@ -13,3 +13,7 @@ Thumbs.db
 # Python 缓存
 __pycache__/
 *.pyc
+# 本地 SQLite 搜索库（由压缩索引构建，不提交到仓库）
+catalog/generated/siyuan_search.sqlite3
+catalog/generated/siyuan_search.sqlite3-wal
+catalog/generated/siyuan_search.sqlite3-shm
