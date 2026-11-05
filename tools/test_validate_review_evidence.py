@@ -42,7 +42,7 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             self.assertEqual(result["unique_subjects"], 1)
             self.assertEqual(result["original_sy"], 1)
 
-    def test_rejects_duplicate_ids_and_subjects(self):
+    def test_rejects_duplicate_ids_but_allows_multiple_evidence_items_per_subject(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "ledger.csv"
             self.write_ledger(path, [self.row(), self.row(evidence_id="EV-002")])
