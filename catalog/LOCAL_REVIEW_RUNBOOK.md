@@ -151,3 +151,14 @@ python tools/validate_review_evidence_references.py --ledger catalog/review-evid
 - 本校验只证明引用存在、对象键一致、证据域兼容；不证明原始材料真实，也不证明观察内容正确。
 
 在本地完整原始资料不可提交的情况下，台账的 `source_reference` 可指向脱敏的本地证据索引条目，但该索引必须能由人工复核者在本地找到对应材料。
+
+
+## 8. 人工核验进度报告
+
+每次本地更新人工决策表、来源候选表或附件队列后，重新生成汇总：
+
+```bash
+python tools/build_review_progress_report.py --decisions catalog/review-decisions.csv --sources catalog/source-review-candidates.csv --assets catalog/generated/asset_review_queue.csv --evidence catalog/review-evidence.csv --output catalog/generated/review_progress.md
+```
+
+报告按标题、来源身份、来源版本、文本校勘、主题、空正文、附件和证据类型分别统计状态。空白按 NOT_REVIEWED 统计；UNRESOLVED、CONFLICT、PARTIAL 和未开始状态不会被合并成已完成。报告是持久化状态的计数，不是对原始材料的自动验真。
