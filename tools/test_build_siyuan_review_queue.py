@@ -26,6 +26,8 @@ class ReviewQueueTests(unittest.TestCase):
                     "title_source": "PROPERTY", "topics": "伤寒与温病;经典与理论", "parse_status": "PARSED",
                     "search_text": "伤寒论 太阳病 黄帝内经 阴阳",
                     "topic_matched_terms": "伤寒与温病:伤寒论;经典与理论:黄帝内经",
+                    "title_topic_matched_terms": "伤寒与温病:伤寒论",
+                    "body_topic_matched_terms": "经典与理论:黄帝内经",
                 })
                 writer.writerow({
                     "path": "book/b.sy", "notebook": "书籍", "title": "空白",
