@@ -131,3 +131,23 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 - 标题：对本次重算后的 22 条风险信号逐条确认、改名或标记未解决。
 - 空正文：逐条检查原始思源内容和父子关系。
 - 所有未完成项保留未核验状态，不为追求清零而猜测。
+
+
+## 跨表证据引用校验（新增）
+
+在人工决策表、来源候选表或附件队列中写入人工结论后，必须执行证据 ID 跨表校验：
+
+```bash
+python tools/validate_review_evidence.py --ledger catalog/review-evidence.csv
+python tools/validate_review_evidence_references.py --ledger catalog/review-evidence.csv --decisions catalog/review-decisions.csv --sources catalog/source-review-candidates.csv --assets catalog/generated/asset_review_queue.csv
+```
+
+约束：
+- 人工决策字段进入有效结论状态后，`evidence_reference` 必须是台账中存在的 evidence_id；多个 ID 使用英文分号分隔。
+- 决策证据必须属于同一文档键，且证据类型必须与结论域兼容。
+- 来源状态不再是 `UNVERIFIED` 时，证据必须属于相同候选 path 的 `source_candidate`。
+- 附件状态为 `CONFIRMED_MATCH` 或 `NOT_MATCH` 时，证据必须属于相同 reference 的 `asset_reference`。
+- 未核验记录可以保留历史线索文字，但不把它当成有效证据 ID，也不因此要求创建证据行。
+- 本校验只证明引用存在、对象键一致、证据域兼容；不证明原始材料真实，也不证明观察内容正确。
+
+在本地完整原始资料不可提交的情况下，台账的 `source_reference` 可指向脱敏的本地证据索引条目，但该索引必须能由人工复核者在本地找到对应材料。
