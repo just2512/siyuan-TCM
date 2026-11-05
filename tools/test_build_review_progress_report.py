@@ -11,6 +11,38 @@ SPEC.loader.exec_module(module)
 
 
 class ReviewProgressReportTests(unittest.TestCase):
+    def test_report_aggregates_parallel_content_audit_outputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            paths = {name: root / f"{name}.csv" for name in (
+                "decisions", "sources", "assets", "evidence", "anomalies",
+                "paragraphs", "dosages", "sections", "blocks"
+            )}
+            paths["decisions"].write_text("document\na.sy\n", encoding="utf-8")
+            paths["sources"].write_text("path\na.pdf\n", encoding="utf-8")
+            paths["assets"].write_text("reference\na.png\n", encoding="utf-8")
+            paths["evidence"].write_text("evidence_id\nEV-1\n", encoding="utf-8")
+            paths["anomalies"].write_text(
+                "document,anomaly_flags\na.sy,VERY_SHORT_EXTRACTED_TEXT\nb.sy,NO_STATIC_SIGNAL\n",
+                encoding="utf-8"
+            )
+            paths["paragraphs"].write_text("document,finding\na.sy,EXACT_DUPLICATE_PARAGRAPH\n", encoding="utf-8")
+            paths["dosages"].write_text("document,review_status\na.sy,NOT_REVIEWED\n", encoding="utf-8")
+            paths["sections"].write_text("document,heading_title\na.sy,第一章\n", encoding="utf-8")
+            paths["blocks"].write_text("node_type,node_count\nNodeText,2\n", encoding="utf-8")
+            report = module.render_report(
+                paths["decisions"], paths["sources"], paths["assets"], paths["evidence"],
+                content_anomalies=paths["anomalies"],
+                paragraph_anomalies=paths["paragraphs"],
+                dosage_candidates=paths["dosages"], sections=paths["sections"],
+                block_types=paths["blocks"],
+            )
+            self.assertIn("内容异常扫描文档：2；有静态信号：1", report)
+            self.assertIn("段落级异常候选：1", report)
+            self.assertIn("剂量样式表达候选：1", report)
+            self.assertIn("章节级索引记录：1", report)
+            self.assertIn("块类型覆盖记录：1", report)
+
     def test_report_keeps_pending_conflict_and_unresolved_separate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
