@@ -37,7 +37,12 @@ def count_column(rows: list[dict[str, str]], column: str) -> Counter:
 
 def render_report(decisions: Path, sources: Path, assets: Path,
                   evidence: Path, topics: Path | None = None,
-                  titles: Path | None = None, empty_body: Path | None = None) -> str:
+                  titles: Path | None = None, empty_body: Path | None = None,
+                  content_anomalies: Path | None = None,
+                  paragraph_anomalies: Path | None = None,
+                  dosage_candidates: Path | None = None,
+                  sections: Path | None = None,
+                  block_types: Path | None = None) -> str:
     decision_rows = read_rows(decisions)
     source_rows = read_rows(sources)
     asset_rows = read_rows(assets)
@@ -45,6 +50,11 @@ def render_report(decisions: Path, sources: Path, assets: Path,
     topic_rows = read_rows(topics) if topics else []
     title_rows = read_rows(titles) if titles else []
     empty_rows = read_rows(empty_body) if empty_body else []
+    anomaly_rows = read_rows(content_anomalies) if content_anomalies else []
+    paragraph_anomaly_rows = read_rows(paragraph_anomalies) if paragraph_anomalies else []
+    dosage_rows = read_rows(dosage_candidates) if dosage_candidates else []
+    section_rows = read_rows(sections) if sections else []
+    block_type_rows = read_rows(block_types) if block_types else []
 
     lines = [
         "# 人工核验进度报告", "",
@@ -69,6 +79,21 @@ def render_report(decisions: Path, sources: Path, assets: Path,
             lines.append(f"- {label}：{len(rows)} 条；{rendered}")
         else:
             lines.append(f"- {label}：未提供审计队列输入")
+
+    lines += ["", "## 真实笔记内容审计", ""]
+    if content_anomalies:
+        flagged = sum(row.get("anomaly_flags", "") != "NO_STATIC_SIGNAL" for row in anomaly_rows)
+        lines.append(f"- 内容异常扫描文档：{len(anomaly_rows)}；有静态信号：{flagged}")
+    if paragraph_anomalies:
+        lines.append(f"- 段落级异常候选：{len(paragraph_anomaly_rows)}")
+    if dosage_candidates:
+        lines.append(f"- 剂量样式表达候选：{len(dosage_rows)}（全部初始 NOT_REVIEWED）")
+    if sections:
+        lines.append(f"- 章节级索引记录：{len(section_rows)}")
+    if block_types:
+        lines.append(f"- 块类型覆盖记录：{len(block_type_rows)}")
+    if not any((content_anomalies, paragraph_anomalies, dosage_candidates, sections, block_types)):
+        lines.append("- 尚未提供内容审计输入。")
 
     lines += ["", "## 来源候选", "", f"- 候选记录：{len(source_rows)}"]
     for status_field in ("source_identity_status", "source_version_status", "collation_status"):
@@ -111,10 +136,17 @@ def main() -> int:
     parser.add_argument("--topics", type=Path)
     parser.add_argument("--titles", type=Path)
     parser.add_argument("--empty-body", type=Path)
+    parser.add_argument("--content-anomalies", type=Path)
+    parser.add_argument("--paragraph-anomalies", type=Path)
+    parser.add_argument("--dosage-candidates", type=Path)
+    parser.add_argument("--sections", type=Path)
+    parser.add_argument("--block-types", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = render_report(args.decisions, args.sources, args.assets, args.evidence,
-                           args.topics, args.titles, args.empty_body)
+                           args.topics, args.titles, args.empty_body,
+                           args.content_anomalies, args.paragraph_anomalies,
+                           args.dosage_candidates, args.sections, args.block_types)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
     print(f"Review progress report written: {args.output}")
