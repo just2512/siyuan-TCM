@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import hashlib
+import io
 import json
 from collections import Counter
 from html.parser import HTMLParser
@@ -133,7 +135,7 @@ def walk_nodes(node: Any, document: str, source_hash: str,
         "list_type": node.get("ListType", "") if node_type == "NodeList" else "",
         "child_count": child_count, "property_keys": ";".join(map(str, property_keys)),
         "text": own_text, "container_text": descendants_text(node)
-            if node_type in {"NodeParagraph", "NodeHeading", "NodeTableCell", "NodeListItem"} else "",
+            if node_type in {"NodeHeading", "NodeTableCell", "NodeListItem"} else "",
         "raw_payload": raw_payload,
     })
 
@@ -153,6 +155,14 @@ def walk_nodes(node: Any, document: str, source_hash: str,
 
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.suffix == ".gz":
+        with path.open("wb") as raw_stream:
+            with gzip.GzipFile(filename="", mode="wb", fileobj=raw_stream, mtime=0) as compressed:
+                with io.TextIOWrapper(compressed, encoding="utf-8-sig", newline="") as stream:
+                    writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
+                    writer.writeheader()
+                    writer.writerows(rows)
+        return
     with path.open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
@@ -201,7 +211,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
               "parent_block_id", "parent_node_type", "node_type", "semantic_role",
               "heading_level", "list_type", "child_count", "property_keys",
               "text", "container_text", "raw_payload"]
-    write_csv(output / "node_semantic_index.csv", rows, fields)
+    write_csv(output / "node_semantic_index.csv.gz", rows, fields)
     write_csv(output / "document_semantic_summary.csv", docs, [
         "document", "source_sha256", "parse_status", "node_count", "text_node_count",
         "text_characters", "table_count", "list_count", "html_block_count",
@@ -228,7 +238,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "",
         "## 生成文件",
         "",
-        "- node_semantic_index.csv：逐节点语义角色、块 ID、父节点、树位置、文本及非正文资源字段。",
+        "- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。",
         "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点统计。",
         "- unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。",
         "",

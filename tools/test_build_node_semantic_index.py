@@ -1,4 +1,5 @@
 import csv
+import gzip
 import importlib.util
 import json
 import tempfile
@@ -96,7 +97,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
             result = indexer.build(root, output)
             self.assertEqual(result["documents"], 1)
             self.assertEqual(result["parse_errors"], 0)
-            with (output / "node_semantic_index.csv").open(encoding="utf-8-sig", newline="") as stream:
+            with gzip.open(output / "node_semantic_index.csv.gz", "rt", encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual(len(rows), 3)
             self.assertEqual(next(row for row in rows if row["block_id"] == "t")["text"], "麻黄汤")
