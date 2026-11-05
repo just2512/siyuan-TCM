@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 from pathlib import Path
 from typing import Any
 
@@ -44,7 +45,8 @@ def title_audit_reason(title: str, title_source: str) -> list[str]:
         flags.append("TITLE_IS_FALLBACK")
     if normalized.lower() in GENERIC_TITLES:
         flags.append("GENERIC_OR_PLACEHOLDER_TITLE")
-    if len(normalized) > 60 or any(mark in normalized for mark in SENTENCE_MARKS):
+    punctuation_view = html.unescape(normalized)
+    if len(normalized) > 60 or any(mark in punctuation_view for mark in SENTENCE_MARKS):
         flags.append("TITLE_RESEMBLES_BODY_SENTENCE")
     if not normalized:
         flags.append("EMPTY_TITLE")
