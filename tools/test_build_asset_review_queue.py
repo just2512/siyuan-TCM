@@ -49,7 +49,8 @@ class AssetReviewQueueTests(unittest.TestCase):
             self.assertEqual(result, {
                 "references": 3, "occurrences": 4, "candidate_paths": 3,
                 "batches": 2, "one_candidate": 1, "multiple_candidates": 1,
-                "no_candidate": 1,
+                "no_candidate": 1, "needs_inspection": 3, "confirmed_match": 0,
+                "not_match": 0, "unresolved": 0,
             })
             with (root / "out" / "asset_review_queue.csv").open(encoding="utf-8-sig", newline="") as stream:
                 output = list(csv.DictReader(stream))
@@ -58,7 +59,9 @@ class AssetReviewQueueTests(unittest.TestCase):
             self.assertEqual(output[1]["batch_id"], "ASSET-001")
             self.assertEqual(output[2]["batch_id"], "ASSET-002")
             self.assertTrue(all(row["manual_status"] == "NEEDS_INSPECTION" for row in output))
-            self.assertIn("候选文件路径总数", (root / "out" / "asset_review_queue.md").read_text(encoding="utf-8"))
+            report = (root / "out" / "asset_review_queue.md").read_text(encoding="utf-8")
+            self.assertIn("候选文件路径总数", report)
+            self.assertIn("内容待检查 NEEDS_INSPECTION：3", report)
 
     def test_rejects_duplicate_references_and_inconsistent_candidate_counts(self):
         with tempfile.TemporaryDirectory() as temp:
