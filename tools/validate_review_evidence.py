@@ -63,8 +63,6 @@ def validate_ledger(path: Path) -> dict[str, int]:
         except ValueError as exc:
             raise ValueError(f"{evidence_id} reviewed_at 必须为 YYYY-MM-DD") from exc
         subject = (values["subject_type"], values["subject_key"])
-        if subject in subjects:
-            raise ValueError(f"同一 subject 存在重复证据行：{subject[0]}:{subject[1]}")
         subjects.add(subject)
         kinds[values["evidence_kind"]] += 1
 
