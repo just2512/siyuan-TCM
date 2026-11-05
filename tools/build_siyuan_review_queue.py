@@ -228,6 +228,9 @@ def build_review_queues(documents_csv: Path, output: Path,
         review_rows.append({
             "document": doc.get("path", ""),
             "notebook": doc.get("notebook", ""),
+            "parent_document": doc.get("parent_document", ""),
+            "document_depth": doc.get("document_depth", 0),
+            "child_document_count": doc.get("child_document_count", 0),
             "title": doc.get("title", ""),
             "title_source": title_source,
             "topics": doc.get("topics", ""),
@@ -296,7 +299,8 @@ def build_review_queues(documents_csv: Path, output: Path,
 
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / "document_review.csv", review_rows, [
-        "document", "notebook", "title", "title_source", "topics", "parse_status", "body_status",
+        "document", "notebook", "parent_document", "document_depth", "child_document_count",
+        "title", "title_source", "topics", "parse_status", "body_status",
         "title_review_status", "topic_review_status", "source_status", "source_version_status",
         "collation_status", "human_corrected_title", "human_approved_topics",
         "reviewer", "review_notes", "evidence_reference",
@@ -306,7 +310,8 @@ def build_review_queues(documents_csv: Path, output: Path,
         "review_status", "human_corrected_title", "review_notes", "evidence_reference",
     ])
     write_csv(output / "empty_body_review.csv", empty_rows, [
-        "document", "notebook", "title", "title_source", "parse_status",
+        "document", "notebook", "parent_document", "document_depth", "child_document_count",
+        "title", "title_source", "parse_status",
         "bytes", "asset_ref_count", "node_types", "child_node_count",
         "structure_status", "review_status", "review_notes", "evidence_reference",
     ])
