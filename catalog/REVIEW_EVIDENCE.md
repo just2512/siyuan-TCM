@@ -1,0 +1,48 @@
+# 人工核验证据台账规范
+
+本台账用于把人工结论关联到可复查的原始材料定位。它是审计索引，不是自动真实性认证。程序通过只说明字段结构合格，不说明来源内容真实。
+
+## 文件与校验
+
+- 台账：`catalog/review-evidence.csv`。
+- 校验：`python tools/validate_review_evidence.py --ledger catalog/review-evidence.csv`。
+- 当前模板只有表头；空台账可通过校验。人工完成后逐条增加记录。
+- 完整字段和允许值由 `tools/validate_review_evidence.py` 定义。
+
+## 字段填写
+
+| 字段 | 含义 | 要求 |
+|---|---|---|
+| evidence_id | 稳定证据编号 | 唯一，建议 EV-0001 |
+| subject_type | 被核验对象类型 | document / source_candidate / asset_reference / topic_decision / title_decision / empty_body_decision |
+| subject_key | 对象键 | 文档相对路径、来源候选 path、附件 reference |
+| evidence_kind | 证据类型 | original_sy / asset_content / title_page / copyright_page / table_of_contents / body_page / lecture_record / audio_timestamp / catalogue_record / other_primary_source |
+| source_reference | 材料引用 | 仓库内脱敏相对路径或可复核书目信息；不得写机器绝对路径 |
+| locator | 精确位置 | 页码、段落、块 ID、期次、时间戳或附件引用上下文 |
+| observation | 实际观察 | 只写检查到的事实，区分原文与推断 |
+| reviewer | 核验人 | 可追溯的人工身份标识 |
+| reviewed_at | 核验日期 | YYYY-MM-DD |
+
+## 结论门槛
+
+- `UNVERIFIED` / `NOT_REVIEWED`：尚未直接检查原始材料；不得创建虚假的人工证据行。
+- `PARTIAL`：至少有一处原始材料被直接检查，并有具体定位；必须明确未核验的部分。
+- `VERIFIED`：该字段所声明的核验范围全部有直接材料支撑。来源身份、版本身份、文本校勘是三个不同范围，不得相互代替。
+- `CONFLICT`：存在可定位且相互矛盾的材料；分别记录双方证据，不擅自消解。
+- `UNRESOLVED`：已执行明确检查但仍无法判断；记录检查范围、缺失信息和未解决原因。
+
+## 禁止事项
+
+1. 文件名、标题、关键词、搜索命中、自动提取片段不能单独成为原始来源证据。
+2. SHA-256、文件存在性、扩展名和路径匹配只说明文件属性，不说明内容与引用相符。
+3. 不得把自动化脚本、AI 输出或提交者身份写成实际人工核验人。
+4. 不上传本地 assets、整本书扫描件、版权讲义、私人信息或机器绝对路径。
+5. 不因字段齐全或 CI 通过就把人工内容核验标记为完成。
+
+## 示例（虚构格式示例，不是本仓库已核验结论）
+
+```csv
+EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.md,原始 .sy：标题属性与正文第 3 段,已直接检查标题属性及指定段落；此处仅示范记录格式,reviewer-1,2026-11-05
+```
+
+人工决策表当前的 `evidence_reference`、来源候选表的 `evidence_reference`、附件队列的 `content_evidence_reference` 仍由各自流程消费。本台账目前先建立统一记录格式和结构校验；在跨表 ID 引用校验接入之前，不要把普通文字引用误认为已经通过台账交叉验证。
