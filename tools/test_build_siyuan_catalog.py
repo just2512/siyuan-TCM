@@ -24,6 +24,21 @@ class CatalogueBuilderTests(unittest.TestCase):
         self.assertEqual(catalog.extract_title(payload, "fallback"), "伤寒论·太阳病")
         self.assertIn("太阳病，脉浮，头项强痛", catalog.extract_text(payload))
 
+    def test_excludes_image_span_and_link_destination_from_search_text(self):
+        payload = {
+            "Children": [{
+                "Type": "NodeImage", "Data": "span", "Children": [
+                    {"Type": "NodeBang"},
+                    {"Type": "NodeLinkText", "Data": "蒴翟4"},
+                    {"Type": "NodeLinkDest", "Data": "assets/蒴翟4.jpg"},
+                ],
+            }],
+        }
+        extracted = catalog.extract_text(payload)
+        self.assertEqual(extracted, "蒴翟4")
+        self.assertNotIn("span", extracted)
+        self.assertNotIn("assets/蒴翟4.jpg", extracted)
+
     def test_uses_first_visible_line_when_document_title_is_generic_and_ignores_ial(self):
         payload = {
             "Properties": {"title": "笔记"},
