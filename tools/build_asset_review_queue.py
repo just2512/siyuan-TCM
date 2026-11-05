@@ -14,7 +14,7 @@ from pathlib import Path
 REQUIRED_FIELDS = {
     "reference", "candidate_class", "occurrence_count", "candidate_status",
     "candidate_count", "candidate_paths", "document_paths", "titles",
-    "candidate_basis", "manual_status", "manual_note",
+    "candidate_basis", "manual_status", "manual_note", "content_evidence_reference",
 }
 ACTION_BY_STATUS = {
     "ONE_CANDIDATE": "INSPECT_SINGLE_CANDIDATE_CONTENT",
@@ -25,7 +25,7 @@ QUEUE_FIELDS = [
     "batch_id", "batch_position", "reference", "candidate_class",
     "occurrence_count", "candidate_status", "candidate_count",
     "candidate_paths", "document_paths", "titles", "recommended_action",
-    "manual_status", "manual_note", "candidate_basis",
+    "manual_status", "manual_note", "candidate_basis", "content_evidence_reference",
 ]
 
 
@@ -60,8 +60,11 @@ def read_candidates(path: Path) -> list[dict[str, str]]:
         expected = "NO_CANDIDATE" if count == 0 else "ONE_CANDIDATE" if count == 1 else "MULTIPLE_CANDIDATES"
         if status != expected:
             raise ValueError(f"{reference} 的 candidate_status 与候选数量不一致")
-        if row.get("manual_status") not in {"NEEDS_INSPECTION", "CONFIRMED_MATCH", "NOT_MATCH", "UNRESOLVED"}:
-            raise ValueError(f"{reference} 的 manual_status 无效：{row.get('manual_status')}")
+        manual_status = row.get("manual_status")
+        if manual_status not in {"NEEDS_INSPECTION", "CONFIRMED_MATCH", "NOT_MATCH", "UNRESOLVED"}:
+            raise ValueError(f"{reference} 的 manual_status 无效：{manual_status}")
+        if manual_status in {"CONFIRMED_MATCH", "NOT_MATCH"} and not (row.get("content_evidence_reference") or "").strip():
+            raise ValueError(f"{reference} 已有附件内容核验结论但缺少 content_evidence_reference")
     return rows
 
 
@@ -104,7 +107,7 @@ def build_queue(candidates: list[dict[str, str]], output: Path, batch_size: int 
         "- 单候选：打开候选文件，核对实际图像/内容与引用上下文；文件名相同不构成确认。",
         "- 多候选：逐个比较候选内容，不能按排序或首个候选自动选择。",
         "- 无候选：结合文档上下文在本地 assets 中搜索；无结果也不能仅凭本表判定附件丢失。",
-        "- 只有人工核对内容和引用关系后，才允许填写确认状态；候选清单本身不改变 FOUND/MISSING。",
+        "- CONFIRMED_MATCH / NOT_MATCH 必须附 content_evidence_reference，定位到内容核验记录；文件名、路径命中和 SHA-256 均不能替代内容核验。",
         "- 本队列按引用路径稳定排序，仅用于分批组织，不表示优先级或错误程度。",
         "",
         "## 候选类别",
