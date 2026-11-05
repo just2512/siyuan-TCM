@@ -1,0 +1,38 @@
+# 人工核验进度报告
+
+> 本报告只汇总持久化表格中的状态，不读取原始 .sy 或附件内容，不判定内容真实性。CI 通过不代表人工核验完成。
+
+## 人工决策表
+
+| 核验域 | 记录数 | 状态分布 |
+|---|---:|---|
+| title_review_status | 33 | NOT_REVIEWED: 33 |
+| source_status | 33 | NOT_REVIEWED: 33 |
+| source_version_status | 33 | NOT_REVIEWED: 33 |
+| collation_status | 33 | NOT_REVIEWED: 33 |
+| topic_review_status | 33 | NOT_REVIEWED: 33 |
+| empty_body_status | 33 | NEEDS_SOURCE_INSPECTION: 33 |
+
+## 来源候选
+
+- 候选记录：231
+- UNVERIFIED: 231
+
+## 附件引用
+
+- 唯一引用记录：634
+- NEEDS_INSPECTION: 544
+- UNRESOLVED: 90
+
+## 证据台账
+
+- 证据记录：0
+- 当前没有人工证据记录。
+
+## 状态解释
+
+- 空白状态按 NOT_REVIEWED 统计；不得把空白当作通过。
+- UNVERIFIED / NOT_REVIEWED / NEEDS_INSPECTION / NEEDS_SOURCE_INSPECTION / PENDING 均属于未完成。
+- UNRESOLVED 和 CONFLICT 单独保留，不并入已核验。
+- 本报告不把 PARTIAL 等同 VERIFIED，也不将机器扫描状态转换为人工结论。
+- 每个有效人工结论仍须通过证据台账结构校验和跨表引用校验，并由复核者确认原始材料确已检查。
