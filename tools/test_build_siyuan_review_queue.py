@@ -73,6 +73,8 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("matched_terms", topics[0])
             self.assertEqual(topics[0]["evidence_scope"], "TITLE_PLUS_FIRST_2000_BODY_CHARS")
             self.assertEqual(topics[0]["catalog_topics"], "伤寒与温病;经典与理论")
+            self.assertEqual(topics[0]["catalog_title_matched_terms"], "伤寒与温病:伤寒论")
+            self.assertEqual(topics[0]["catalog_body_matched_terms"], "经典与理论:黄帝内经")
             self.assertEqual(
                 topics[0]["catalog_matched_terms"],
                 "伤寒与温病:伤寒论;经典与理论:黄帝内经",
