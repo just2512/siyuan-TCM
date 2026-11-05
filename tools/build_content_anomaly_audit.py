@@ -129,7 +129,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         writer = csv.DictWriter(stream, fieldnames=[
             "document", "paragraph_index", "characters", "finding",
             "first_occurrence_index", "excerpt",
-        ])
+        ], extrasaction="ignore")
         writer.writeheader()
         writer.writerows(paragraph_findings)
 
