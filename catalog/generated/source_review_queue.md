@@ -2,8 +2,8 @@
 
 - 候选总数：231
 - 每批：20 条；批次数：12
-- 尚未核验 UNVERIFIED：44
-- 部分核验 PARTIAL：187
+- 尚未核验 UNVERIFIED：231
+- 部分核验 PARTIAL：0
 - 已完成来源核验 VERIFIED：0
 - 存在冲突 CONFLICT：0
 - 尚无法确定 UNRESOLVED：0
