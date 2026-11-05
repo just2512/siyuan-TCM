@@ -67,7 +67,12 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
             raise ValueError(f"证据 ID 重复：{evidence_id}")
         ledger[evidence_id] = row
 
-    counts = Counter()
+    counts = Counter({
+        "validated_evidence_references": 0,
+        "decision_conclusions": 0,
+        "source_conclusions": 0,
+        "asset_conclusions": 0,
+    })
     def check(ids: list[str], expected_key: str, allowed_types: set[str], context: str) -> None:
         for evidence_id in ids:
             record = ledger.get(evidence_id)
