@@ -30,6 +30,7 @@ class EvidenceReferenceTests(unittest.TestCase):
             {"evidence_id": "EV-002", "subject_type": "source_candidate", "subject_key": "assets/book.pdf"},
             {"evidence_id": "EV-003", "subject_type": "asset_reference", "subject_key": "assets/img-1.png"},
             {"evidence_id": "EV-004", "subject_type": "document", "subject_key": "book/a.sy"},
+            {"evidence_id": "EV-005", "subject_type": "source_candidate", "subject_key": "book/a.sy"},
         ])
         self.write(self.decisions, [
             "document", "title_review_status", "source_status", "source_version_status",
@@ -87,7 +88,7 @@ class EvidenceReferenceTests(unittest.TestCase):
             ])
             writer.writeheader()
             writer.writerow({"document": "book/a.sy", "topic_review_status": "CONFIRMED",
-                             "evidence_reference": "EV-004"})
+                             "evidence_reference": "EV-005"})
         with self.assertRaisesRegex(ValueError, "类型不匹配"):
             validator.validate_references(self.ledger, self.decisions)
 
