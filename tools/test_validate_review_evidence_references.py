@@ -26,11 +26,11 @@ class EvidenceReferenceTests(unittest.TestCase):
         self.sources = self.root / "sources.csv"
         self.assets = self.root / "assets.csv"
         self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind"], [
-            {"evidence_id": "EV-001", "subject_type": "topic_decision", "subject_key": "book/a.sy", "evidence_kind": "original_sy"},
-            {"evidence_id": "EV-002", "subject_type": "source_candidate", "subject_key": "assets/book.pdf", "evidence_kind": "copyright_page"},
-            {"evidence_id": "EV-003", "subject_type": "asset_reference", "subject_key": "assets/img-1.png", "evidence_kind": "asset_content"},
-            {"evidence_id": "EV-004", "subject_type": "document", "subject_key": "book/a.sy", "evidence_kind": "original_sy"},
-            {"evidence_id": "EV-005", "subject_type": "source_candidate", "subject_key": "book/a.sy", "evidence_kind": "asset_content"},
+            {"evidence_id": "EV-001", "subject_type": "topic_decision", "subject_key": "book/a.sy", "evidence_kind": "original_sy", "inspection_method": "HUMAN_DIRECT"},
+            {"evidence_id": "EV-002", "subject_type": "source_candidate", "subject_key": "assets/book.pdf", "evidence_kind": "copyright_page", "inspection_method": "HUMAN_DIRECT"},
+            {"evidence_id": "EV-003", "subject_type": "asset_reference", "subject_key": "assets/img-1.png", "evidence_kind": "asset_content", "inspection_method": "HUMAN_DIRECT"},
+            {"evidence_id": "EV-004", "subject_type": "document", "subject_key": "book/a.sy", "evidence_kind": "original_sy", "inspection_method": "HUMAN_DIRECT"},
+            {"evidence_id": "EV-005", "subject_type": "source_candidate", "subject_key": "book/a.sy", "evidence_kind": "asset_content", "inspection_method": "HUMAN_DIRECT"},
         ])
         self.write(self.decisions, [
             "document", "title_review_status", "source_status", "source_version_status",
@@ -95,7 +95,7 @@ class EvidenceReferenceTests(unittest.TestCase):
     def test_rejects_incompatible_evidence_kind(self):
         self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind"], [
             {"evidence_id": "EV-001", "subject_type": "topic_decision",
-             "subject_key": "book/a.sy", "evidence_kind": "asset_content"},
+             "subject_key": "book/a.sy", "evidence_kind": "asset_content", "inspection_method": "HUMAN_DIRECT"},
         ])
         with self.assertRaisesRegex(ValueError, "证据类型不匹配"):
             validator.validate_references(self.ledger, self.decisions)
@@ -103,7 +103,7 @@ class EvidenceReferenceTests(unittest.TestCase):
     def test_rejects_asset_reference_without_content_evidence(self):
         self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind"], [
             {"evidence_id": "EV-003", "subject_type": "asset_reference",
-             "subject_key": "assets/img-1.png", "evidence_kind": "original_sy"},
+             "subject_key": "assets/img-1.png", "evidence_kind": "original_sy", "inspection_method": "HUMAN_DIRECT"},
         ])
         with self.assertRaisesRegex(ValueError, "证据类型不匹配"):
             validator.validate_references(self.ledger, assets_path=self.assets)

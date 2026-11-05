@@ -14,13 +14,14 @@ from datetime import date
 from pathlib import Path
 
 FIELDS = [
-    "evidence_id", "subject_type", "subject_key", "evidence_kind",
+    "evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method",
     "source_reference", "locator", "observation", "reviewer", "reviewed_at",
 ]
 SUBJECT_TYPES = {
     "document", "source_candidate", "asset_reference",
     "topic_decision", "title_decision", "empty_body_decision",
 }
+INSPECTION_METHODS = {"HUMAN_DIRECT", "PROGRAMMATIC_STRUCTURE", "AUTOMATED_EXTRACTION", "SECONDARY_REFERENCE"}
 EVIDENCE_KINDS = {
     "original_sy", "asset_content", "title_page", "copyright_page",
     "table_of_contents", "body_page", "lecture_record", "audio_timestamp",
@@ -55,6 +56,10 @@ def validate_ledger(path: Path) -> dict[str, int]:
             raise ValueError(f"{evidence_id} subject_type 无效：{values['subject_type']}")
         if values["evidence_kind"] not in EVIDENCE_KINDS:
             raise ValueError(f"{evidence_id} evidence_kind 无效：{values['evidence_kind']}")
+        if values["inspection_method"] not in INSPECTION_METHODS:
+            raise ValueError(f"{evidence_id} inspection_method 无效：{values['inspection_method']}")
+        if values["inspection_method"] != "HUMAN_DIRECT" and not values["reviewer"].startswith(("automated-", "system-")):
+            raise ValueError(f"{evidence_id} 非人工检查记录不得伪装为人工核验人")
         source_ref = values["source_reference"].replace("\\", "/")
         if re.match(r"^[A-Za-z]:/", source_ref) or source_ref.startswith(("/", "//")):
             raise ValueError(f"{evidence_id} 不得记录本机绝对路径")

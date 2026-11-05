@@ -11,7 +11,7 @@ import csv
 from collections import Counter
 from pathlib import Path
 
-LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key", "evidence_kind"}
+LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method"}
 DECISION_FIELDS = {
     "document", "title_review_status", "source_status", "source_version_status",
     "collation_status", "topic_review_status", "empty_body_status",
@@ -102,6 +102,11 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                 raise ValueError(
                     f"{context} 的证据 {evidence_id} 证据类型不匹配："
                     f"{record['evidence_kind']} 不属于 {sorted(allowed_kinds)}"
+                )
+            if record["inspection_method"] != "HUMAN_DIRECT":
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
+                    f"{record['inspection_method']}"
                 )
             counts["validated_evidence_references"] += 1
 

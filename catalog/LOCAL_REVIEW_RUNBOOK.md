@@ -162,3 +162,8 @@ python tools/build_review_progress_report.py --decisions catalog/review-decision
 ```
 
 报告按标题、来源身份、来源版本、文本校勘、主题、空正文、附件和证据类型分别统计状态。空白按 NOT_REVIEWED 统计；UNRESOLVED、CONFLICT、PARTIAL 和未开始状态不会被合并成已完成。报告是持久化状态的计数，不是对原始材料的自动验真。
+
+
+## 9. 人工核验与程序结构观察必须分开
+
+证据台账新增 `inspection_method` 字段。只有 `HUMAN_DIRECT` 可用于有效人工结论；`PROGRAMMATIC_STRUCTURE`、`AUTOMATED_EXTRACTION` 和 `SECONDARY_REFERENCE` 只能记录辅助事实，不能把状态推进为人工已核验。当前 33 条结构扫描记录已保留为 `PROGRAMMATIC_STRUCTURE`，但不计入标题或空正文人工完成量。对应标题状态为 `NOT_REVIEWED`，空正文状态为 `NEEDS_SOURCE_INSPECTION`。这不是丢弃程序结果，而是将结构事实与人工判断分开。

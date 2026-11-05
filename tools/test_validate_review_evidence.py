@@ -24,6 +24,7 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             "subject_type": "document",
             "subject_key": "folder/note.sy",
             "evidence_kind": "original_sy",
+            "inspection_method": "HUMAN_DIRECT",
             "source_reference": "local-review/evidence-index.md",
             "locator": "原始 .sy；标题属性及正文第 3 段",
             "observation": "标题与正文内容一致；此处仅记录核验观察",
@@ -58,6 +59,7 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             ({"locator": ""}, "缺少必填字段"),
             ({"subject_type": "unknown"}, "subject_type 无效"),
             ({"evidence_kind": "filename_only"}, "evidence_kind 无效"),
+            ({"inspection_method": "AI_GUESS"}, "inspection_method 无效"),
             ({"reviewed_at": "yesterday"}, "YYYY-MM-DD"),
         ]
         with tempfile.TemporaryDirectory() as temp:
@@ -67,6 +69,15 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
                     self.write_ledger(path, [self.row(**updates)])
                     with self.assertRaisesRegex(ValueError, message):
                         validator.validate_ledger(path)
+
+    def test_programmatic_records_must_not_claim_a_human_reviewer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "ledger.csv"
+            self.write_ledger(path, [self.row(
+                inspection_method="PROGRAMMATIC_STRUCTURE", reviewer="jerry",
+            )])
+            with self.assertRaisesRegex(ValueError, "不得伪装为人工核验人"):
+                validator.validate_ledger(path)
 
     def test_rejects_absolute_machine_paths(self):
         with tempfile.TemporaryDirectory() as temp:

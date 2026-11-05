@@ -63,10 +63,12 @@ def render_report(decisions: Path, sources: Path, assets: Path,
 
     lines += ["", "## 证据台账", "", f"- 证据记录：{len(evidence_rows)}"]
     evidence_counts = count_column(evidence_rows, "evidence_kind") if evidence_rows else Counter()
+    method_counts = count_column(evidence_rows, "inspection_method") if evidence_rows else Counter()
     if evidence_counts:
-        lines += [f"- {kind}: {count}" for kind, count in sorted(evidence_counts.items())]
+        lines += [f"- 证据类型 {kind}: {count}" for kind, count in sorted(evidence_counts.items())]
+        lines += [f"- 检查方式 {method}: {count}" for method, count in sorted(method_counts.items())]
     else:
-        lines.append("- 当前没有人工证据记录。")
+        lines.append("- 当前没有证据记录。")
 
     lines += [
         "", "## 状态解释", "",

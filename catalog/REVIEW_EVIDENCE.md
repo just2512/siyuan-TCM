@@ -17,6 +17,7 @@
 | subject_type | 被核验对象类型 | document / source_candidate / asset_reference / topic_decision / title_decision / empty_body_decision |
 | subject_key | 对象键 | 文档相对路径、来源候选 path、附件 reference |
 | evidence_kind | 证据类型 | original_sy / asset_content / title_page / copyright_page / table_of_contents / body_page / lecture_record / audio_timestamp / catalogue_record / other_primary_source |
+| inspection_method | 检查方式 | HUMAN_DIRECT / PROGRAMMATIC_STRUCTURE / AUTOMATED_EXTRACTION / SECONDARY_REFERENCE；只有 HUMAN_DIRECT 可支撑人工结论。程序结构读取可以作为技术观察记录，但不能标记人工核验完成。 |
 | source_reference | 材料引用 | 仓库内脱敏相对路径或可复核书目信息；不得写机器绝对路径 |
 | locator | 精确位置 | 页码、段落、块 ID、期次、时间戳或附件引用上下文 |
 | observation | 实际观察 | 只写检查到的事实，区分原文与推断 |
@@ -68,3 +69,17 @@ EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.
 来源候选表目前使用一个 evidence_reference 字段承载来源身份、版本和校勘证据，因此可引用多条不同 evidence_kind 的证据；每条引用都必须属于同一 source_candidate/path。只完成其中一类核验，不得据此推导其他结论已经完成。证据不足时保持未核验或未解决状态。
 
 此映射只验证证据分类，不认证内容真实性。不得为了通过校验而更改 evidence_kind。
+
+
+## 检查方式与人工结论的边界（强制）
+
+证据台账新增 `inspection_method`：
+
+- `HUMAN_DIRECT`：核验者直接打开原始材料，检查与结论相关的内容并记录可复查定位。
+- `PROGRAMMATIC_STRUCTURE`：程序读取原始文件结构、节点类型、属性或子节点关系。
+- `AUTOMATED_EXTRACTION`：解析器、脚本或模型自动提取的文本/字段。
+- `SECONDARY_REFERENCE`：目录、二手书目或其他间接材料。
+
+只有 `HUMAN_DIRECT` 可以支撑人工决策表中的有效结论、来源状态和附件内容匹配结论。其他方式的证据可以保留，用于说明自动化观察到的事实，但不得用于人工结论交叉校验。
+
+2026-11-05 提交的 33 条记录属于 `PROGRAMMATIC_STRUCTURE`：它们记录原始 .sy 的 JSON 节点结构、标题属性和子文档数量。这些是可复核的结构事实，但不能单独证明内容完整性、标题语义正确性或人工已经检查。因此标题状态保持 `NOT_REVIEWED`，空正文状态保持 `NEEDS_SOURCE_INSPECTION`，直到完成直接人工检查。
