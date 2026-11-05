@@ -4,6 +4,7 @@
 - JSON 解析失败：0
 - 节点记录：727584
 - 可检索内容块：236987
+- 可追溯关系边：10502
 - 节点类型：27
 - 有直接文本载荷的节点：334657
 - 已定义字段语义映射：22
@@ -43,6 +44,7 @@
 
 - node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。
 - content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，可直接用于检索和定位。
+- node_relationship_index.csv.gz：gzip 压缩的块引用、超链接、附件目标和媒体引用关系边。
 - document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点和可检索内容块统计。
 - node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。
 - unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。
