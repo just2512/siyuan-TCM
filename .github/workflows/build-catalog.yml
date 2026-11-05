@@ -29,6 +29,8 @@ jobs:
         run: python -m unittest discover -s tools -p 'test_*.py' -v
       - name: Generate catalogue
         run: python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json
+      - name: Audit real exported note text extraction coverage
+        run: python tools/build_content_integrity_audit.py --output catalog/generated
       - name: Build human review queues
         run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
       - name: Build topic and title extraction audits
