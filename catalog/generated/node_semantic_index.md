@@ -1,0 +1,51 @@
+# SiYuan 节点语义索引
+
+- 扫描文档：2667
+- JSON 解析失败：0
+- 节点记录：727584
+- 节点类型：27
+- 有直接文本载荷的节点：334657
+- 未映射字符串字段：12
+
+## 节点类型分布
+
+- NodeAudio: 1
+- NodeBackslash: 254
+- NodeBackslashContent: 226
+- NodeBang: 10101
+- NodeBr: 9788
+- NodeCloseBracket: 10101
+- NodeCloseParen: 10101
+- NodeDocument: 2667
+- NodeHTMLBlock: 1
+- NodeHeading: 11861
+- NodeImage: 10101
+- NodeKramdownSpanIAL: 47795
+- NodeLinkDest: 10101
+- NodeLinkText: 10101
+- NodeList: 268
+- NodeListItem: 776
+- NodeOpenBracket: 10101
+- NodeOpenParen: 10101
+- NodeParagraph: 224107
+- NodeTable: 506
+- NodeTableCell: 5474
+- NodeTableHead: 506
+- NodeTableRow: 5248
+- NodeText: 249962
+- NodeTextMark: 76142
+- NodeThematicBreak: 11179
+- NodeVideo: 15
+
+## 生成文件
+
+- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。
+- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点统计。
+- unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。
+
+## 解析边界
+
+- 原始 .sy 文件只读；所有索引记录包含原文件 SHA-256、相对路径和块定位。
+- HTML 同时保留原始值和剥离标签后的可见文字；媒体地址、附件目标、图片布局不混入正文。
+- 表格、列表和标题保留节点层级及父子关系；容器聚合文本只作导航，不能替代单元格/列表项节点记录。
+- 未映射字段不会自动拼入正文，避免把样式、资源路径或内部元数据污染为可检索文本。
