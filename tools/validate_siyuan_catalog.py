@@ -135,14 +135,15 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     review_rows = read_csv(generated / "document_review.csv", {
         "document", "title", "topics", "parse_status", "title_review_status",
         "topic_review_status", "source_status", "source_version_status",
-        "collation_status", "evidence_reference",
+        "collation_status", "evidence_reference", "parent_document",
+        "document_depth", "child_document_count",
     })
     review = unique_index(review_rows, "document", "document_review.csv")
     if set(review) != set(docs):
         raise ValueError("document_review.csv 与 documents.csv 文档集合不一致")
     for path, row in review.items():
         source = docs[path]
-        for field in ("title", "topics", "parse_status"):
+        for field in ("title", "topics", "parse_status", "parent_document", "document_depth", "child_document_count"):
             if row[field] != source[field]:
                 raise ValueError(f"{path} 的 document_review.{field} 与 documents.csv 不一致")
         allowed_statuses = {
@@ -163,7 +164,10 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         if any(row[field] in conclusion_values for field in allowed_statuses) and not row["evidence_reference"].strip():
             raise ValueError(f"{path} 已有人工核验结论但缺少 evidence_reference")
 
-    empty_rows = read_csv(generated / "empty_body_review.csv", {"document", "review_status"})
+    empty_rows = read_csv(generated / "empty_body_review.csv", {
+        "document", "review_status", "parent_document", "document_depth",
+        "child_document_count",
+    })
     empty = unique_index(empty_rows, "document", "empty_body_review.csv")
     expected_empty = {path for path, row in docs.items() if not row["search_text"].strip()}
     if set(empty) != expected_empty:
@@ -175,6 +179,9 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     for path, row in empty.items():
         if row["review_status"] not in empty_statuses:
             raise ValueError(f"{path} 的 empty_body review_status 无效：{row['review_status']}")
+        for field in ("parent_document", "document_depth", "child_document_count"):
+            if row[field] != docs[path][field]:
+                raise ValueError(f"{path} 的 empty_body_review.{field} 与 documents.csv 不一致")
 
     title_rows = read_csv(generated / "title_review_candidates.csv", {"document", "review_status"})
     title = unique_index(title_rows, "document", "title_review_candidates.csv")
