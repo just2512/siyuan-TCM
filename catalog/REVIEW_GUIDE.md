@@ -237,3 +237,16 @@ python tools/build_asset_evidence_manifest.py --queue catalog/generated/asset_re
 - `NO_CANDIDATE`：候选清单没有文件路径，需回到原始引用和本地目录继续查找。
 
 **重要：** SHA-256 只能证明字节级一致性，不能证明图片/文档内容与引用相符，也不能确认书名、版本、作者或医学出处。单候选、多候选和 PRESENT 均不能自动升级为 `CONFIRMED_MATCH`。必须人工打开文件核对内容和对应 .sy 上下文，再将结论及证据位置记录在本地审计记录中；若需要持久化书目结论，应按第 7 节提交带证据的人工核验记录。不要上传 assets 文件或提交本机绝对路径。
+
+
+## 14. 本地完整核验工作包
+
+本地人工任务的统一入口见 [LOCAL_REVIEW_RUNBOOK.md](LOCAL_REVIEW_RUNBOOK.md)。该文件一次性列出附件、来源/版本、主题规则、标题、空正文与父子文档的操作步骤、命令、人工状态字段和完成条件。
+
+主题审计新增 `context_excerpt` / `context_state`：
+- `FOUND_IN_SEARCH_WINDOW`：在有限检索窗口中找到正文命中词附近的短片段。
+- `NOT_IN_SEARCH_WINDOW`：完整正文命中证据存在，但检索窗口未包含该词；必须打开原始 .sy 定位。
+- `TITLE_ONLY`：仅标题命中，不提供正文上下文。
+- `NO_CONTEXT`：没有可展示的上下文。
+
+这些字段是定位辅助，不改变主题标签，也不构成语义审核结论。
