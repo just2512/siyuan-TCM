@@ -92,7 +92,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 查看 `catalog/generated/title_extraction_audit.csv`，逐条打开原始 `.sy`。
 
-**当前持久化状态核对：** `title_review_candidates.csv` 当前 19 条：11 条 `CONFIRMED`、1 条 `UNRESOLVED`、7 条 `NOT_REVIEWED`；另有 22 条静态审计信号，其审计状态仍为 `NOT_REVIEWED`。提交说明中提到的 2 条 `RENAME_REQUIRED` 未出现在当前 `review-decisions.csv`，不能计入已落地结论；如确实已人工确认改名，必须补录对应文档、修正标题、理由和证据。
+**当前持久化状态核对：** 此前 11 条 `CONFIRMED` 和 1 条 `UNRESOLVED` 均来自 `local-programmatic-v2` 程序化结构扫描，并非原始 `.sy` 人工复核；现已全部退回 `NOT_REVIEWED`。重新生成后，19 条标题候选均应保持待人工复核，另有 22 条静态审计信号仍为 `NOT_REVIEWED`。此前提交说明中提到的 2 条 `RENAME_REQUIRED` 未进入正式决策表，不能计入已落地结论。
 
 - `TITLE_IS_FALLBACK`：当前标题不是 Properties.title，核对是否只是正文首行/文件名回退。
 - `GENERIC_OR_PLACEHOLDER_TITLE`：检查是否为目录标题、占位标题或有效的章节标题。
@@ -107,7 +107,7 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 ## 6. 空正文与父子文档检查
 
-查看 `catalog/generated/empty_body_review.csv`。逐条在思源中打开：
+查看 `catalog/generated/empty_body_review.csv`。此前 33 条 `SOURCE_EMPTY_CONFIRMED` 同样来自程序化结构扫描，没有逐篇检查原始 `.sy`；现已全部退回 `NEEDS_SOURCE_INSPECTION`。逐条在思源中打开：
 
 1. 确认文档本身确实为空，还是图片/附件型内容。
 2. 检查是否为父级目录容器，实际正文在子文档中。
