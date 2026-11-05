@@ -54,7 +54,8 @@ def validate_catalogue(generated: Path, source_candidates: Path,
                        asset_candidates: Path) -> dict[str, int]:
     documents = read_csv(generated / "documents.csv", {
         "path", "title", "title_source", "topics", "parse_status",
-        "asset_ref_count", "search_text",
+        "asset_ref_count", "parent_document", "document_depth",
+        "child_document_count", "search_text",
     })
     docs = unique_index(documents, "path", "documents.csv")
     hierarchy_rows = read_csv(generated / "document_hierarchy.csv", {
@@ -83,6 +84,9 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{path} 的文档层级数值字段无效") from exc
         if depth < 0 or child_count < 0:
             raise ValueError(f"{path} 的文档层级数值不能为负数")
+        expected_depth = 0 if not parent else int(docs[parent]["document_depth"]) + 1
+        if depth != expected_depth:
+            raise ValueError(f"{path} 的文档层级深度与父文档关系不一致")
         if int(row["document_depth"]) != depth or int(row["child_document_count"]) != child_count:
             raise ValueError(f"{path} 的层级索引与 documents.csv 不一致")
         if child_count != expected_children[path]:
