@@ -40,7 +40,11 @@ def extract_text(data: Any) -> str:
         for key, value in node.items():
             if key == "TextMarkTextContent" and isinstance(value, str) and value.strip():
                 parts.append(value.strip())
-            elif key == "Data" and isinstance(value, str) and value.strip():
+            elif key == "Data" and current_type in {"NodeText", "NodeLinkText"} and isinstance(value, str) and value.strip():
+                # Data is overloaded in SiYuan AST: NodeImage uses "span",
+                # NodeLinkDest stores asset/URL targets, and other block types
+                # may store structural markers. Only text-bearing node types
+                # are safe to add to the prose search index.
                 parts.append(value.strip())
             elif key == "Children":
                 visit(value, current_type)
