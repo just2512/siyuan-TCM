@@ -82,6 +82,28 @@ class SourceReviewQueueTests(unittest.TestCase):
             self.write_rows(source, [self.row("asset_file", "assets/a.pdf", "VERIFIED", "版权页 p.2")])
             self.assertEqual(queue.read_candidates(source)[0]["verification_status"], "VERIFIED")
 
+    def test_accepts_partial_status_without_promoting_to_verified(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source.csv"
+            self.write_rows(source, [self.row("asset_file", "assets/a.pdf", "PARTIAL", "文件名与首页线索；版本未核验")])
+            rows = queue.read_candidates(source)
+            result = queue.build_queue(rows, root / "out")
+            self.assertEqual(result["partial"], 1)
+            self.assertEqual(result["verified"], 0)
+            with (root / "out" / "source_review_queue.csv").open(encoding="utf-8-sig", newline="") as stream:
+                output = list(csv.DictReader(stream))
+            self.assertEqual(output[0]["verification_status"], "PARTIAL")
+            report = (root / "out" / "source_review_queue.md").read_text(encoding="utf-8")
+            self.assertIn("部分核验 PARTIAL：1", report)
+
+    def test_rejects_partial_status_without_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source = Path(temp) / "source.csv"
+            self.write_rows(source, [self.row("asset_file", "assets/a.pdf", "PARTIAL")])
+            with self.assertRaisesRegex(ValueError, "缺少 evidence_reference"):
+                queue.read_candidates(source)
+
     def test_rejects_invalid_batch_size(self):
         with self.assertRaises(ValueError):
             queue.build_queue([], Path("unused"), 0)
