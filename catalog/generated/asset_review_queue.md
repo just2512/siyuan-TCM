@@ -7,6 +7,10 @@
 - 单候选：309
 - 多候选：235
 - 无候选：90
+- 内容待检查 NEEDS_INSPECTION：544
+- 内容已确认匹配 CONFIRMED_MATCH：0
+- 内容已确认不匹配 NOT_MATCH：0
+- 未解决 UNRESOLVED：90
 - 无扩展名引用：614
 - 图片引用：20
 
