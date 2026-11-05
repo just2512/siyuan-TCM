@@ -131,7 +131,7 @@ class CatalogueBuilderTests(unittest.TestCase):
             self.assertIn("针灸与经穴:针灸", csv_text)
             self.assertIn("title_topic_matched_terms", csv_text)
             self.assertIn("body_topic_matched_terms", csv_text)
-            self.assertIn("经典与理论:神农本草经", csv_text)
+            self.assertIn("中药与本草:神农本草经", csv_text)
             self.assertIn("针灸与经穴:针灸", csv_text)
             self.assertIn("author;title", csv_text)
             metadata_text = (output / "metadata_inventory.csv").read_text(encoding="utf-8-sig")
