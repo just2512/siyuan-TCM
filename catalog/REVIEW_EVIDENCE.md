@@ -46,3 +46,8 @@ EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.
 ```
 
 人工决策表当前的 `evidence_reference`、来源候选表的 `evidence_reference`、附件队列的 `content_evidence_reference` 仍由各自流程消费。本台账目前先建立统一记录格式和结构校验；在跨表 ID 引用校验接入之前，不要把普通文字引用误认为已经通过台账交叉验证。
+
+
+## 跨表引用校验
+
+使用 `tools/validate_review_evidence_references.py` 检查人工决策、来源候选和附件队列中的证据 ID 是否存在、对象键是否一致、证据类型是否属于相应结论域。多个 evidence ID 使用英文分号分隔。该工具不校验原始材料真实性或人工观察正确性；未核验状态保留的旧文本线索不视为证据 ID。
