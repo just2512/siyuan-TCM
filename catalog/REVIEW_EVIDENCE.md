@@ -83,3 +83,14 @@ EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.
 只有 `HUMAN_DIRECT` 可以支撑人工决策表中的有效结论、来源状态和附件内容匹配结论。其他方式的证据可以保留，用于说明自动化观察到的事实，但不得用于人工结论交叉校验。
 
 2026-11-05 提交的 33 条记录属于 `PROGRAMMATIC_STRUCTURE`：它们记录原始 .sy 的 JSON 节点结构、标题属性和子文档数量。这些是可复核的结构事实，但不能单独证明内容完整性、标题语义正确性或人工已经检查。因此标题状态保持 `NOT_REVIEWED`，空正文状态保持 `NEEDS_SOURCE_INSPECTION`，直到完成直接人工检查。
+
+
+## 来源候选表的独立状态字段
+
+`catalog/source-review-candidates.csv` 不再使用一个聚合 `verification_status` 表示三个不同问题。每条候选分别维护：
+
+- `source_identity_status` / `source_identity_evidence_reference`
+- `source_version_status` / `source_version_evidence_reference`
+- `collation_status` / `collation_evidence_reference`
+
+每个状态均使用 UNVERIFIED / PARTIAL / VERIFIED / CONFLICT / UNRESOLVED。每个非 UNVERIFIED 状态必须引用其自身的证据 ID；不能用来源身份的证据替代版本或校勘证据。证据类型和检查方式仍由跨表校验执行。

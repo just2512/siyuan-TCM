@@ -68,13 +68,20 @@ class CatalogueValidationTests(unittest.TestCase):
         self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
             {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
-        self.write(generated / "source_review_queue.csv", ["path", "candidate_category", "verification_status", "evidence_reference"], [
-            {"path": "assets/book.pdf", "candidate_category": "asset_file", "verification_status": "UNVERIFIED", "evidence_reference": ""},
-        ])
+        source_fields = [
+            "path", "candidate_category", "source_identity_status", "source_identity_evidence_reference",
+            "source_version_status", "source_version_evidence_reference",
+            "collation_status", "collation_evidence_reference",
+        ]
+        source_row = {
+            "path": "assets/book.pdf", "candidate_category": "asset_file",
+            "source_identity_status": "UNVERIFIED", "source_identity_evidence_reference": "",
+            "source_version_status": "UNVERIFIED", "source_version_evidence_reference": "",
+            "collation_status": "UNVERIFIED", "collation_evidence_reference": "",
+        }
+        self.write(generated / "source_review_queue.csv", source_fields, [source_row])
         source_candidates = root / "source.csv"
-        self.write(source_candidates, ["path", "candidate_category", "verification_status", "evidence_reference"], [
-            {"path": "assets/book.pdf", "candidate_category": "asset_file", "verification_status": "UNVERIFIED", "evidence_reference": ""},
-        ])
+        self.write(source_candidates, source_fields, [source_row])
         asset_candidates = root / "asset.csv"
         self.write(asset_candidates, ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
             {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
@@ -90,30 +97,27 @@ class CatalogueValidationTests(unittest.TestCase):
                 "topic_review": 1, "asset_review_queue": 1, "source_review_queue": 1,
             })
 
-    def test_accepts_partial_source_status_when_queue_and_input_match_with_evidence(self):
+    def test_accepts_independent_source_identity_status_when_queue_and_input_match(self):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             with source.open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            rows[0]["verification_status"] = "PARTIAL"
-            rows[0]["evidence_reference"] = "文件名及首页线索；版本待核验"
+            rows[0]["source_identity_status"] = "PARTIAL"
+            rows[0]["source_identity_evidence_reference"] = "EV-001"
             self.write(source, list(rows[0]), rows)
-            self.write(generated / "source_review_queue.csv", ["path", "candidate_category", "verification_status", "evidence_reference"], [{
-                "path": rows[0]["path"], "candidate_category": rows[0]["candidate_category"],
-                "verification_status": "PARTIAL", "evidence_reference": rows[0]["evidence_reference"]}])
+            queue_fields = list(rows[0])
+            self.write(generated / "source_review_queue.csv", queue_fields, rows)
             self.assertEqual(validator.validate_catalogue(generated, source, assets)["source_review_queue"], 1)
 
-    def test_rejects_partial_source_status_without_evidence(self):
+    def test_rejects_source_status_without_its_own_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             with source.open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            rows[0]["verification_status"] = "PARTIAL"
+            rows[0]["source_version_status"] = "PARTIAL"
             self.write(source, list(rows[0]), rows)
-            self.write(generated / "source_review_queue.csv", ["path", "candidate_category", "verification_status", "evidence_reference"], [{
-                "path": rows[0]["path"], "candidate_category": rows[0]["candidate_category"],
-                "verification_status": "PARTIAL", "evidence_reference": ""}])
-            with self.assertRaisesRegex(ValueError, "缺少 evidence_reference"):
+            self.write(generated / "source_review_queue.csv", list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "source_version_status 已有结论但缺少"):
                 validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_confirmed_asset_match_without_content_evidence(self):

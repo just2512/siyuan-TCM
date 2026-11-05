@@ -71,8 +71,11 @@ def render_report(decisions: Path, sources: Path, assets: Path,
             lines.append(f"- {label}：未提供审计队列输入")
 
     lines += ["", "## 来源候选", "", f"- 候选记录：{len(source_rows)}"]
-    source_counts = count_column(source_rows, "verification_status")
-    lines += [f"- {status}: {count}" for status, count in sorted(source_counts.items())]
+    for status_field in ("source_identity_status", "source_version_status", "collation_status"):
+        counts = count_column(source_rows, status_field)
+        lines.append(f"- {status_field}: " + "；".join(
+            f"{status}: {counts[status]}" for status in sorted(counts)
+        ))
 
     lines += ["", "## 附件引用", "", f"- 唯一引用记录：{len(asset_rows)}"]
     asset_counts = count_column(asset_rows, "manual_status")

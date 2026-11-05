@@ -283,24 +283,28 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         if row["candidate_status"] != expected_status:
             raise ValueError(f"{reference} 的附件候选状态与候选数不一致")
 
-    source_queue = read_csv(generated / "source_review_queue.csv", {
-        "path", "candidate_category", "verification_status", "evidence_reference",
-    })
+    source_status_fields = {
+        "source_identity_status": "source_identity_evidence_reference",
+        "source_version_status": "source_version_evidence_reference",
+        "collation_status": "collation_evidence_reference",
+    }
+    source_required = {"path", "candidate_category", *source_status_fields.keys(), *source_status_fields.values()}
+    source_queue = read_csv(generated / "source_review_queue.csv", source_required)
     source_queue_index = unique_index(source_queue, "path", "source_review_queue.csv")
-    persisted_sources = read_csv(source_candidates, {
-        "path", "candidate_category", "verification_status", "evidence_reference",
-    })
+    persisted_sources = read_csv(source_candidates, source_required)
     persisted_source_index = unique_index(persisted_sources, "path", "source candidate source")
     if set(source_queue_index) != set(persisted_source_index):
         raise ValueError("source_review_queue.csv 与来源候选输入集合不一致")
     for path, row in source_queue_index.items():
         source = persisted_source_index[path]
-        if row["candidate_category"] != source["candidate_category"] or row["verification_status"] != source["verification_status"] or row["evidence_reference"] != source["evidence_reference"]:
-            raise ValueError(f"{path} 的来源核验队列与原始候选表不一致")
-        if row["verification_status"] not in {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
-            raise ValueError(f"{path} 的来源核验状态无效")
-        if row["verification_status"] != "UNVERIFIED" and not row["evidence_reference"].strip():
-            raise ValueError(f"{path} 已有来源核验结论但缺少 evidence_reference")
+        for field in ("candidate_category", *source_status_fields.keys(), *source_status_fields.values()):
+            if row[field] != source[field]:
+                raise ValueError(f"{path} 的来源核验队列 {field} 与原始候选表不一致")
+        for status_field, evidence_field in source_status_fields.items():
+            if row[status_field] not in {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"}:
+                raise ValueError(f"{path} 的 {status_field} 状态无效")
+            if row[status_field] != "UNVERIFIED" and not row[evidence_field].strip():
+                raise ValueError(f"{path} 的 {status_field} 已有结论但缺少 {evidence_field}")
 
     return {
         "documents": len(docs),

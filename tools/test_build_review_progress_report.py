@@ -27,7 +27,9 @@ class ReviewProgressReportTests(unittest.TestCase):
                 "b.sy,UNRESOLVED,\n", encoding="utf-8"
             )
             sources.write_text(
-                "path,verification_status\na.pdf,UNVERIFIED\nb.pdf,CONFLICT\n",
+                "path,source_identity_status,source_identity_evidence_reference,source_version_status,source_version_evidence_reference,collation_status,collation_evidence_reference\n"
+                "a.pdf,UNVERIFIED,,UNVERIFIED,,UNVERIFIED,\n"
+                "b.pdf,CONFLICT,EV-001,UNRESOLVED,EV-002,UNVERIFIED,\n",
                 encoding="utf-8"
             )
             assets.write_text(

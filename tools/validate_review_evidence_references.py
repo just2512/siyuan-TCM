@@ -17,7 +17,16 @@ DECISION_FIELDS = {
     "collation_status", "topic_review_status", "empty_body_status",
     "evidence_reference",
 }
-SOURCE_FIELDS = {"path", "verification_status", "evidence_reference"}
+SOURCE_FIELDS = {
+    "path", "source_identity_status", "source_identity_evidence_reference",
+    "source_version_status", "source_version_evidence_reference",
+    "collation_status", "collation_evidence_reference",
+}
+SOURCE_CONCLUSION_FIELDS = {
+    "source_identity_status": ("source_identity_evidence_reference", DECISION_EVIDENCE_KINDS["source_status"]),
+    "source_version_status": ("source_version_evidence_reference", DECISION_EVIDENCE_KINDS["source_version_status"]),
+    "collation_status": ("collation_evidence_reference", DECISION_EVIDENCE_KINDS["collation_status"]),
+}
 ASSET_FIELDS = {"reference", "manual_status", "content_evidence_reference"}
 DECISION_ACTIVE = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
@@ -122,11 +131,12 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
 
     if sources_path:
         for line, row in enumerate(read_csv(sources_path, SOURCE_FIELDS), start=2):
-            if row["verification_status"] == "UNVERIFIED":
-                continue
-            ids = evidence_tokens(row["evidence_reference"], f"来源表第 {line} 行 {row['path']}")
-            check(ids, row["path"], {"source_candidate"}, DECISION_EVIDENCE_KINDS["source_status"] | DECISION_EVIDENCE_KINDS["source_version_status"] | DECISION_EVIDENCE_KINDS["collation_status"], f"{row['path']} verification_status")
-            counts["source_conclusions"] += 1
+            for status_field, (evidence_field, allowed_kinds) in SOURCE_CONCLUSION_FIELDS.items():
+                if row[status_field] == "UNVERIFIED":
+                    continue
+                ids = evidence_tokens(row[evidence_field], f"来源表第 {line} 行 {row['path']} {status_field}")
+                check(ids, row["path"], {"source_candidate"}, allowed_kinds, f"{row['path']} {status_field}")
+                counts["source_conclusions"] += 1
 
     if assets_path:
         for line, row in enumerate(read_csv(assets_path, ASSET_FIELDS), start=2):

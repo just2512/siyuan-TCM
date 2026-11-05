@@ -46,21 +46,28 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 **禁止：** 仅凭文件名、扩展名、候选数量、`.sy` 路径命中或 SHA-256 将附件标记为匹配；`CONFIRMED_MATCH` / `NOT_MATCH` 必须有 `content_evidence_reference`；禁止将本地绝对路径或附件文件提交到仓库。
 
-## 3. 来源与版本核验：231 条候选
+## 3. 来源身份、版本与文本校勘：231 条候选
 
-当前 231 条来源候选均为 `UNVERIFIED`。此前 187 条 `PARTIAL` 只有文件名、文档标题或关键词线索，没有定位到原始来源证据，已全部退回 `UNVERIFIED`。按 `catalog/generated/source_review_queue.csv` 的批次处理。
+来源候选必须拆分为三个互不替代的核验结论。当前 231 条候选在三个字段中均为 `UNVERIFIED`：
 
-逐条打开原始文件或可靠书目资料，填写 `catalog/source-review-candidates.csv`：
+| 核验域 | 状态字段 | 证据字段 |
+|---|---|---|
+| 来源身份 | `source_identity_status` | `source_identity_evidence_reference` |
+| 版本身份 | `source_version_status` | `source_version_evidence_reference` |
+| 文本校勘 | `collation_status` | `collation_evidence_reference` |
 
-- `verification_status` 使用 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
-- `PARTIAL` 只有在直接检查过原始来源材料、能提供具体页码/段落/期次/时间戳定位时才允许使用；文件名、文档标题、关键词命中或自动提取首页文字不能单独支撑 `PARTIAL`。
-- 非 `UNVERIFIED` 必须填写 `evidence_reference`，指向仓库内可审阅的证据记录或明确页码/段落/期次/时间戳定位；不能填写本机绝对路径。
-- 书籍：记录书名页、版权页、作者/编者、出版社、出版年、版次/印次、ISBN（若有）、目录及对应正文页码。
-- 《黄帝内经》篇章候选：先确认所据版本，再记录卷/篇/章、目录位置和正文页码；不同版本篇名或编次冲突要保留冲突，不强行统一。
-- 课程/讲座：记录原始课程载体、讲者身份依据、日期/期次、原文定位；整理稿、转录稿不能自动视为讲者原始讲稿。
-- 来源身份、版本身份、文本校勘是不同结论。来源 VERIFIED 不代表版本和校勘也 VERIFIED。
+每个状态分别使用 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。每个非 `UNVERIFIED` 状态必须填写对应证据字段，不能共用一条来源身份证据替代版本或校勘证据。
 
-证据记录应保存在 `catalog/local-review/` 下，采用稳定文件名和可定位页码/截图编号；如证据含版权材料，只记录必要的书目信息和定位，不复制整本受版权保护内容。
+- **来源身份**：确认材料究竟是什么、作者/讲者/出版机构是谁，依据书名页、版权页、原始课程载体或可靠目录记录。
+- **版本身份**：确认版次、印次、出版年、卷篇编次或课程期次；必须有对应版本材料。
+- **文本校勘**：对照已确认版本的目录与正文，记录具体页码、段落、音频时间戳及异文。版本身份确认不等于校勘完成。
+- `PARTIAL` 只有在直接检查原始材料且有具体页码/段落/期次/时间戳定位时才允许使用。
+- `CONFLICT` 保留双方可定位证据；`UNRESOLVED` 记录已执行的检查范围和缺失信息。
+- 只有 `HUMAN_DIRECT` 检查方式的证据可支撑人工结论。文件名、标题、关键词、自动提取片段和程序结构扫描均不能支撑 `VERIFIED`。
+
+书籍应记录书名页、版权页、作者/编者、出版社、出版年、版次/印次、ISBN（若有）、目录及正文页码。《黄帝内经》篇章先确认底本，再记录卷/篇/章、目录位置和正文页码。课程/讲座应记录原始载体、讲者身份依据、日期/期次和原文或录音定位。
+
+证据记录保存在 `catalog/local-review/` 下，采用稳定文件名和可定位页码/截图编号；只记录必要书目信息和定位，不复制整本受版权保护内容。
 
 ## 4. 主题规则复核：4,783 条文档-主题记录
 

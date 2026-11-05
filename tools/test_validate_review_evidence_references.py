@@ -39,8 +39,15 @@ class EvidenceReferenceTests(unittest.TestCase):
             "document": "book/a.sy", "topic_review_status": "CONFIRMED",
             "evidence_reference": "EV-001",
         }])
-        self.write(self.sources, ["path", "verification_status", "evidence_reference"], [{
-            "path": "assets/book.pdf", "verification_status": "VERIFIED", "evidence_reference": "EV-002",
+        self.write(self.sources, [
+            "path", "source_identity_status", "source_identity_evidence_reference",
+            "source_version_status", "source_version_evidence_reference",
+            "collation_status", "collation_evidence_reference",
+        ], [{
+            "path": "assets/book.pdf",
+            "source_identity_status": "VERIFIED", "source_identity_evidence_reference": "EV-002",
+            "source_version_status": "UNVERIFIED", "source_version_evidence_reference": "",
+            "collation_status": "UNVERIFIED", "collation_evidence_reference": "",
         }])
         self.write(self.assets, ["reference", "manual_status", "content_evidence_reference"], [{
             "reference": "assets/img-1.png", "manual_status": "CONFIRMED_MATCH",
@@ -100,6 +107,34 @@ class EvidenceReferenceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "证据类型不匹配"):
             validator.validate_references(self.ledger, self.decisions)
 
+    def test_rejects_source_version_evidence_used_for_identity(self):
+        self.write(self.sources, [
+            "path", "source_identity_status", "source_identity_evidence_reference",
+            "source_version_status", "source_version_evidence_reference",
+            "collation_status", "collation_evidence_reference",
+        ], [{
+            "path": "assets/book.pdf",
+            "source_identity_status": "VERIFIED", "source_identity_evidence_reference": "EV-002",
+            "source_version_status": "UNVERIFIED", "source_version_evidence_reference": "",
+            "collation_status": "UNVERIFIED", "collation_evidence_reference": "",
+        }])
+        self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method"], [
+            {"evidence_id": "EV-002", "subject_type": "source_candidate",
+             "subject_key": "assets/book.pdf", "evidence_kind": "body_page",
+             "inspection_method": "HUMAN_DIRECT"},
+        ])
+        with self.assertRaisesRegex(ValueError, "证据类型不匹配"):
+            validator.validate_references(self.ledger, sources_path=self.sources)
+
+    def test_rejects_programmatic_evidence_for_human_conclusion(self):
+        self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method"], [
+            {"evidence_id": "EV-001", "subject_type": "topic_decision",
+             "subject_key": "book/a.sy", "evidence_kind": "original_sy",
+             "inspection_method": "PROGRAMMATIC_STRUCTURE"},
+        ])
+        with self.assertRaisesRegex(ValueError, "不是人工直接核验记录"):
+            validator.validate_references(self.ledger, self.decisions)
+
     def test_rejects_asset_reference_without_content_evidence(self):
         self.write(self.ledger, ["evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method"], [
             {"evidence_id": "EV-003", "subject_type": "asset_reference",
@@ -109,9 +144,15 @@ class EvidenceReferenceTests(unittest.TestCase):
             validator.validate_references(self.ledger, assets_path=self.assets)
 
     def test_ignores_unverified_source_and_unreviewed_asset(self):
-        self.write(self.sources, ["path", "verification_status", "evidence_reference"], [{
-            "path": "assets/book.pdf", "verification_status": "UNVERIFIED",
-            "evidence_reference": "old filename-only note",
+        self.write(self.sources, [
+            "path", "source_identity_status", "source_identity_evidence_reference",
+            "source_version_status", "source_version_evidence_reference",
+            "collation_status", "collation_evidence_reference",
+        ], [{
+            "path": "assets/book.pdf",
+            "source_identity_status": "UNVERIFIED", "source_identity_evidence_reference": "old filename-only note",
+            "source_version_status": "UNVERIFIED", "source_version_evidence_reference": "",
+            "collation_status": "UNVERIFIED", "collation_evidence_reference": "",
         }])
         self.write(self.assets, ["reference", "manual_status", "content_evidence_reference"], [{
             "reference": "assets/img-1.png", "manual_status": "NEEDS_INSPECTION",
