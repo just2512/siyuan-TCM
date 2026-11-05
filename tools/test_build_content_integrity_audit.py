@@ -18,7 +18,7 @@ class ContentIntegrityAuditTests(unittest.TestCase):
                 "Children": [
                     {"Type": "NodeText", "Data": "正文内容"},
                     {"Type": "NodeHeading", "Children": [
-                        {"Type": "NodeText", "TextMarkTextContent": "标题文字"}
+                        {"Type": "NodeTextMark", "TextMarkTextContent": "标题文字"}
                     ]},
                     {"Type": "NodeImage", "Attrs": {"src": "assets/example.png"}},
                 ],
