@@ -14,4 +14,5 @@
 - audit_flags 是复核线索，不是误报判定；不自动删除主题、不改写标题。
 - broad term 只是当前规则中相对宽泛的词，不代表该词在具体上下文中无效。
 - 本审计依赖完整正文生成阶段写入的命中证据字段，不以 2,000 字 search_text 代替完整正文。
+- context_excerpt 仅从 search_text 检索窗口截取；完整正文命中而窗口未出现时标记 NOT_IN_SEARCH_WINDOW，必须回到原始 .sy 定位，不能据此判为误报。
 - 标题语义、主题相关性、附件内容和书目来源仍需查看原始资料；没有原始证据时保持 NOT_REVIEWED / UNVERIFIED。
