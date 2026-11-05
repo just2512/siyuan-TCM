@@ -24,13 +24,21 @@ class CatalogueValidationTests(unittest.TestCase):
         docs = [{
             "path": "book/a.sy", "title": "伤寒论", "title_source": "PROPERTY",
             "topics": "经典与理论;伤寒与温病", "parse_status": "PARSED",
-            "asset_ref_count": "1", "search_text": "太阳病",
+            "asset_ref_count": "1", "parent_document": "", "document_depth": "0", "child_document_count": "0", "search_text": "太阳病",
         }, {
             "path": "book/b.sy", "title": "空白", "title_source": "PROPERTY",
             "topics": "其他与待归类", "parse_status": "PARSED",
-            "asset_ref_count": "0", "search_text": "",
+            "asset_ref_count": "0", "parent_document": "", "document_depth": "0", "child_document_count": "0", "search_text": "",
         }]
         self.write(generated / "documents.csv", list(docs[0]), docs)
+        self.write(generated / "document_hierarchy.csv", [
+            "document", "parent_document", "document_depth", "child_document_count",
+            "structure_role",
+        ], [
+            {"document": d["path"], "parent_document": "", "document_depth": "0",
+             "child_document_count": "0", "structure_role": "LEAF"}
+            for d in docs
+        ])
         self.write(generated / "asset_references.csv",
                    ["document", "reference", "local_status", "local_path", "match_method"], [
             {"document": "book/a.sy", "reference": "assets/a.png", "local_status": "NOT_CHECKED", "local_path": "", "match_method": "NOT_CHECKED"},
