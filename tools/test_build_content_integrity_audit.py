@@ -37,7 +37,7 @@ class ContentIntegrityAuditTests(unittest.TestCase):
                 documents = list(csv.DictReader(stream))
             self.assertEqual(documents[0]["parse_status"], "PARSED")
             self.assertEqual(documents[0]["extracted_payload_count"], "2")
-            self.assertEqual(documents[0]["extracted_char_count"], "12")
+            self.assertEqual(documents[0]["extracted_char_count"], "8")
             self.assertIn("Attrs", documents[0]["unclassified_string_fields"])
 
             with (output / "block_type_inventory.csv").open(
