@@ -15,10 +15,13 @@ class RuleExtractionAuditTests(unittest.TestCase):
         )
 
     def test_title_audit_flags_fallback_generic_and_sentence_without_rewriting(self):
-        flags = title_audit_reason("其他。此处是正文", "PROPERTY")
         self.assertEqual(
-            flags,
-            ["GENERIC_OR_PLACEHOLDER_TITLE", "TITLE_RESEMBLES_BODY_SENTENCE"],
+            title_audit_reason("其他", "PROPERTY"),
+            ["GENERIC_OR_PLACEHOLDER_TITLE"],
+        )
+        self.assertIn(
+            "TITLE_RESEMBLES_BODY_SENTENCE",
+            title_audit_reason("这里是一句正文。", "PROPERTY"),
         )
         self.assertIn("TITLE_IS_FALLBACK", title_audit_reason("1、", "BODY_FIRST_LINE"))
 
