@@ -149,10 +149,11 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 文件：`catalog/source-review-candidates.csv`
 
 - 该表是本地整理出的来源核验候选，不是已验证书目。
-- `candidate_category` 仅表示候选分组；`verification_status` 当前统一为 `UNVERIFIED`。
+- `candidate_category` 仅表示候选分组；`verification_status` 可为 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT` 或 `UNRESOLVED`。
 - `asset_file` 只表示附件候选，不证明它是原始底本、正式出版物或讲稿。
 - `huangdi_neijing_chapter` 和 `nihongxia_lecture` 是按笔记标题/目录整理的候选归类，不能据此确认作者、讲者、出处或版本。
-- 找到版权页、扉页、目录页或明确的原始来源后，才填写 `evidence_reference` 并更新正式人工核验记录。
+- `PARTIAL` 仅表示部分身份线索或来源身份初步确认，不能代表版本/版权页/校勘已经完成；不得计入 `VERIFIED`。
+- 找到可定位的原始来源后填写 `evidence_reference`；只有证据足以支持完整来源结论时才更新为 `VERIFIED`。
 - 不要将本地附件上传到 GitHub；只提交必要的相对路径、人工核验说明和可定位证据。
 
 ### 文件名候选分析（仅用于缩小人工搜索范围）
