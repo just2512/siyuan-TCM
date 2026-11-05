@@ -42,6 +42,25 @@ class RuleExtractionAuditTests(unittest.TestCase):
         self.assertEqual(formula["title_matched_terms"], "方剂")
         self.assertEqual(formula["body_matched_terms"], "用药")
 
+    def test_context_excerpt_records_search_window_limit(self):
+        docs = [{
+            "path": "book/context.sy",
+            "title": "测试",
+            "title_source": "PROPERTY",
+            "topics": "诊断与辨证",
+            "title_topic_matched_terms": "",
+            "body_topic_matched_terms": "诊断与辨证:问诊",
+            "search_text": "前文提及问诊，随后记录脉象。",
+        }]
+        _, rows = build_audits(docs)
+        self.assertEqual(rows[0]["context_state"], "FOUND_IN_SEARCH_WINDOW")
+        self.assertIn("问诊", rows[0]["context_excerpt"])
+
+        docs[0]["search_text"] = "当前窗口没有对应词。"
+        _, rows = build_audits(docs)
+        self.assertEqual(rows[0]["context_state"], "NOT_IN_SEARCH_WINDOW")
+        self.assertEqual(rows[0]["context_excerpt"], "")
+
     def test_topic_audit_does_not_call_static_signal_a_false_positive(self):
         docs = [{
             "path": "book/b.sy",
