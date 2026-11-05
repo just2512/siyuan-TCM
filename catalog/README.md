@@ -67,6 +67,9 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | asset_references.csv | 文档引用的附件路径与本地映射状态 |
 | catalog.md | 本次扫描概况、目录统计和重复文件清单 |
 | asset_audit.md | 附件引用审计概况 |
+| content_integrity_audit.md / block_type_inventory.csv | 按 SiYuan 块类型统计正文提取覆盖及未映射字段 |
+| content_anomaly_audit.csv / paragraph_anomaly_audit.csv | 逐篇内容异常信号、重复段落和超长段落候选 |
+| dosage_expression_candidates.csv | 带原笔记段落定位的剂量样式表达候选，不作医学判断 |
 
 仓库提供 catalog/notebook-map.json，工具默认读取该映射，将思源内部目录 ID 显示为可读笔记本名称。若扫描其他数据集，可通过 --notebook-map 指定自己的映射文件，格式为：
 
@@ -97,12 +100,16 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 - [x] 顶层目录/笔记本文档数量及字节数统计
 - [x] 仓库内可重复运行的逐篇索引工具
 - [x] SiYuan 文本节点提取、通用标题回退与 IAL 样式噪声过滤
+- [x] 排除图片 span、附件目标路径等非正文结构字段
+- [x] 纳入 NodeTextMark 行内公式文本
+- [x] 对真实笔记运行内容异常初筛（短/长文本、乱码、控制字符、重复段落、超长段落）
+- [x] 建立带原笔记定位的剂量样式表达候选队列
 - [x] 笔记本目录 ID 到显示名称映射
 - [x] 索引工具单元测试并接入 GitHub Actions
 - [x] 在仓库当前 master 的真实导出笔记上执行全量扫描（2,667 篇均被 JSON 解析器读取）
-- [ ] 验证所有思源块类型的正文提取覆盖率，识别静默丢失的内容
-- [ ] 对全部笔记执行内容异常、重复/近似内容、标题正文错位和检索质量审计
-- [ ] 生成方剂、药物、剂量、证候、治法、经穴和经典原文等知识主张核查队列
+- [ ] 完成剩余块类型的正文语义映射，特别是 HTML、表格、音视频及其他富文本节点
+- [ ] 复核自动异常候选，增加近似重复、章节级结构及主题漏检审计
+- [ ] 扩展知识主张队列至方剂组成、药物、证候、治法、经穴和经典原文，并按可靠底本逐项核查
 - [ ] 用户本地 assets 内容核查（需要本地 assets 目录参与，不上传附件）
 
 上述未完成项不得因 CI 通过而标记完成。来源身份、版本和校勘队列属于知识主张核查的辅助证据工作，不是内容审计的替代品。
