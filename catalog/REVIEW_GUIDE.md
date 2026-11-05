@@ -213,3 +213,27 @@ CI 在所有索引和人工核验工作队列生成后，运行 `tools/validate_
 4. 不得把静态审计标记直接转换为误报或确认状态。
 
 附件与来源证据仍遵循第 6 节和第 4 节：附件候选必须打开文件确认内容与引用关系；来源候选必须取得原始书目或讲稿证据。文件名、候选数量、关键词和 CI 通过均不能代替原始证据。
+
+
+## 13. 本地附件候选文件指纹核验
+
+工具：`tools/build_asset_evidence_manifest.py`
+
+先在本地生成当前附件复核队列（若已有最新队列可跳过）：
+
+```bash
+python tools/build_asset_review_queue.py --candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv --output catalog/generated --batch-size 25
+python tools/build_asset_evidence_manifest.py --queue catalog/generated/asset_review_queue.csv --assets-dir "本地assets目录" --output catalog/local-review/asset-evidence-2026-11-05
+```
+
+输出：
+- `asset_evidence_manifest.csv`：逐引用、逐候选记录文件存在状态、字节数、SHA-256、扩展名和相对路径。
+- `asset_evidence_manifest.md`：本次扫描汇总及证据边界。
+
+状态解释：
+- `PRESENT`：候选文件在指定 assets 根目录下存在，且已计算字节级指纹。
+- `MISSING`：候选路径在本次指定目录下不存在；不等于附件已丢失。
+- `UNSAFE_PATH`：路径不符合 `assets/` 相对路径约束或解析后越过根目录；文件未被读取。
+- `NO_CANDIDATE`：候选清单没有文件路径，需回到原始引用和本地目录继续查找。
+
+**重要：** SHA-256 只能证明字节级一致性，不能证明图片/文档内容与引用相符，也不能确认书名、版本、作者或医学出处。单候选、多候选和 PRESENT 均不能自动升级为 `CONFIRMED_MATCH`。必须人工打开文件核对内容和对应 .sy 上下文，再将结论及证据位置记录在本地审计记录中；若需要持久化书目结论，应按第 7 节提交带证据的人工核验记录。不要上传 assets 文件或提交本机绝对路径。
