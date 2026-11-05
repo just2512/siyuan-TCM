@@ -44,6 +44,12 @@ python tools/build_siyuan_catalog.py
 
 # 运行索引工具单元测试
 python -m unittest discover -s tools -p 'test_*.py' -v
+
+# 从压缩块索引建立本地 SQLite 全文检索库（数据库只保存在本地，不提交到仓库）
+python tools/build_siyuan_search_db.py --build
+
+# 搜索三字及以上短语使用 FTS5 trigram；一至两个字符使用精确子串检索
+python tools/build_siyuan_search_db.py --query '桂枝汤'
 ```
 
 指定思源数据目录：
@@ -71,6 +77,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | node_semantic_index.csv.gz | 逐节点语义索引，保留父子块、树位置、内容角色和原始文档哈希 |
 | content_block_index.csv.gz | 段落、标题、表格单元格、列表项和 HTML 块全文检索索引，附带章节路径 |
 | node_relationship_index.csv.gz | 块引用、超链接、附件目标和媒体引用关系边 |
+| build_siyuan_search_db.py | 从压缩块索引生成本地 SQLite 全文检索库，并按原笔记/块/章节路径返回结果 |
 | node_field_mapping.csv | 已识别节点字段到语义角色的映射，并标明是否进入正文索引 |
 | document_semantic_summary.csv | 逐篇节点覆盖统计，分别统计文本、表格、列表、HTML 和媒体节点 |
 | unmapped_node_fields.csv | 未映射字符串字段清单，供解析规则扩展 |
