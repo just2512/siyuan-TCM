@@ -17,13 +17,13 @@ from build_siyuan_catalog import extract_text
 
 NUMERAL = r"(?:\d+(?:\.\d+)?|[零〇一二三四五六七八九十百千万两半]+)"
 UNIT = r"(?:毫克|毫升|克|公斤|千克|斤|两|钱|分|枚|片|粒|滴|升|合|盅|碗|杯|g|mg|ml|kg)"
-DOSE_RE = re.compile(NUMERAL + r"\\s*" + UNIT, re.IGNORECASE)
+DOSE_RE = re.compile(NUMERAL + r"\s*" + UNIT, re.IGNORECASE)
 # A bare number+unit is too noisy; require nearby medicinal/prescription context.
 DOSE_CONTEXT_RE = re.compile(
     r"(?:药|方|煎|服|汤|丸|散|剂|煮|药材|药味|药物|剂量|每次|每日|一剂|桂枝|芍药|甘草|大枣|附子|人参|黄芪|当归|白术|茯苓|半夏|柴胡|麻黄|石膏|干姜|细辛|大黄|黄连|黄芩|陈皮|川芎)",
     re.IGNORECASE,
 )
-SPACE_RE = re.compile(r"\\s+")
+SPACE_RE = re.compile(r"\s+")
 
 
 def walk_nodes(value: Any):
