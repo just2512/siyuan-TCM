@@ -280,6 +280,28 @@ def build_relationship_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return edges
 
 
+
+def assign_section_context(content_rows: list[dict[str, Any]]) -> None:
+    """Attach the active heading ancestry to each searchable content block."""
+    active_document = ""
+    stack: list[tuple[int, str, str]] = []
+    for row in content_rows:
+        document = str(row["document"])
+        if document != active_document:
+            active_document = document
+            stack = []
+        if row["content_type"] == "HEADING":
+            try:
+                level = int(row.get("heading_level") or 0)
+            except (TypeError, ValueError):
+                level = 0
+            while stack and stack[-1][0] >= level:
+                stack.pop()
+            stack.append((level, row["content_text"], row["block_id"]))
+        row["section_path"] = " / ".join(item[1] for item in stack)
+        row["section_heading_block_ids"] = ";".join(item[2] for item in stack if item[2])
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.suffix == ".gz":
@@ -340,6 +362,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
             "content_characters": sum(len(row["content_text"]) for row in doc_content),
             "error": "",
         })
+    assign_section_context(content_rows)
     output.mkdir(parents=True, exist_ok=True)
     fields = ["document", "source_sha256", "tree_position", "block_id",
               "parent_block_id", "parent_node_type", "node_type", "semantic_role",
@@ -356,7 +379,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
     write_csv(output / "content_block_index.csv.gz", content_rows, [
         "document", "source_sha256", "tree_position", "block_id",
         "parent_block_id", "parent_node_type", "content_type", "heading_level",
-        "characters", "content_text",
+        "section_path", "section_heading_block_ids", "characters", "content_text",
     ])
     write_csv(output / "document_semantic_summary.csv", docs, [
         "document", "source_sha256", "parse_status", "node_count", "text_node_count",
@@ -396,6 +419,8 @@ def build(root: Path, output: Path) -> dict[str, int]:
     write_csv(output / "node_field_mapping.csv", field_mapping,
               ["node_type", "field", "semantic_role", "indexed_as_text"])
     counts = Counter(row["node_type"] for row in rows)
+    relation_counts = Counter(row["relation_type"] for row in relationships)
+    resolution_counts = Counter(row["resolution"] for row in relationships)
     report = [
         "# SiYuan 节点语义索引",
         "",
@@ -413,10 +438,18 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "",
         *[f"- {kind}: {count}" for kind, count in sorted(counts.items())],
         "",
+        "## 关系类型分布",
+        "",
+        *[f"- {kind}: {count}" for kind, count in sorted(relation_counts.items())],
+        "",
+        "## 关系解析状态",
+        "",
+        *[f"- {kind}: {count}" for kind, count in sorted(resolution_counts.items())],
+        "",
         "## 生成文件",
         "",
         "- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。",
-        "- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，可直接用于检索和定位。",
+        "- content_block_index.csv.gz：gzip 压缩的段落/标题/表格单元格/列表项/HTML 块全文索引，附带当前标题路径和标题块 ID，可直接用于检索和定位。",
         "- node_relationship_index.csv.gz：gzip 压缩的块引用、超链接、附件目标和媒体引用关系边。",
         "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点和可检索内容块统计。",
         "- node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。",

@@ -69,7 +69,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 | asset_audit.md | 附件引用审计概况 |
 | content_integrity_audit.md / block_type_inventory.csv | 按 SiYuan 块类型统计正文提取覆盖及未映射字段 |
 | node_semantic_index.csv.gz | 逐节点语义索引，保留父子块、树位置、内容角色和原始文档哈希 |
-| content_block_index.csv.gz | 段落、标题、表格单元格、列表项和 HTML 块的全文检索索引 |
+| content_block_index.csv.gz | 段落、标题、表格单元格、列表项和 HTML 块全文检索索引，附带章节路径 |
 | node_relationship_index.csv.gz | 块引用、超链接、附件目标和媒体引用关系边 |
 | node_field_mapping.csv | 已识别节点字段到语义角色的映射，并标明是否进入正文索引 |
 | document_semantic_summary.csv | 逐篇节点覆盖统计，分别统计文本、表格、列表、HTML 和媒体节点 |
@@ -118,7 +118,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 - [x] 建立逐节点语义索引，保留文档哈希、块 ID、父子关系、树位置和字段角色
 - [x] 将 HTML 可见文本、表格/列表结构、音视频资源字段与正文分离
 - [x] 对当前真实仓库观察到的 27 种节点类型建立字段语义映射；当前未映射字符串字段为 0
-- [x] 建立段落、标题、表格单元格、列表项和 HTML 的全文检索块索引
+- [x] 建立段落、标题、表格单元格、列表项和 HTML 的全文检索块索引，并为每个内容块附加标题层级路径
 - [ ] 建立块引用、超链接、附件和媒体资源的关系图，并检查块引用在仓库内的可解析情况
 - [ ] 复核自动异常候选，增加近似重复、章节级结构及主题漏检审计
 - [ ] 扩展知识主张队列至方剂组成、药物、证候、治法、经穴和经典原文，并按可靠底本逐项核查

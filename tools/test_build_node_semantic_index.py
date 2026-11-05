@@ -115,6 +115,28 @@ class NodeSemanticIndexTests(unittest.TestCase):
 
 
 
+
+    def test_assigns_heading_ancestry_to_searchable_blocks(self):
+        rows = [
+            {"document": "d.sy", "content_type": "HEADING", "heading_level": 1,
+             "content_text": "经方总论", "block_id": "h1"},
+            {"document": "d.sy", "content_type": "PARAGRAPH", "heading_level": "",
+             "content_text": "正文一", "block_id": "p1"},
+            {"document": "d.sy", "content_type": "HEADING", "heading_level": 2,
+             "content_text": "桂枝汤", "block_id": "h2"},
+            {"document": "d.sy", "content_type": "TABLE_CELL", "heading_level": "",
+             "content_text": "芍药", "block_id": "c1"},
+            {"document": "d.sy", "content_type": "HEADING", "heading_level": 1,
+             "content_text": "中药", "block_id": "h3"},
+            {"document": "d.sy", "content_type": "PARAGRAPH", "heading_level": "",
+             "content_text": "正文二", "block_id": "p2"},
+        ]
+        indexer.assign_section_context(rows)
+        self.assertEqual(rows[1]["section_path"], "经方总论")
+        self.assertEqual(rows[3]["section_path"], "经方总论 / 桂枝汤")
+        self.assertEqual(rows[3]["section_heading_block_ids"], "h1;h2")
+        self.assertEqual(rows[5]["section_path"], "中药")
+
     def test_builds_resolvable_block_and_resource_relationship_edges(self):
         payload = {"ID": "doc", "Type": "NodeDocument", "Children": [
             {"ID": "source", "Type": "NodeParagraph", "Children": [
@@ -177,6 +199,8 @@ class NodeSemanticIndexTests(unittest.TestCase):
             doc_dir.mkdir(parents=True)
             (doc_dir / "doc.sy").write_text(json.dumps({
                 "ID": "doc", "Type": "NodeDocument", "Children": [
+                    {"ID": "h", "Type": "NodeHeading", "HeadingLevel": 1,
+                     "Children": [{"ID": "ht", "Type": "NodeText", "Data": "经方"}]},
                     {"ID": "p", "Type": "NodeParagraph", "Children": [
                         {"ID": "t1", "Type": "NodeText", "Data": "桂枝汤"},
                         {"ID": "t2", "Type": "NodeText", "Data": "主治太阳中风"}
@@ -188,13 +212,14 @@ class NodeSemanticIndexTests(unittest.TestCase):
             }, ensure_ascii=False), encoding="utf-8")
             output = Path(temp) / "out"
             result = indexer.build(root, output)
-            self.assertEqual(result["content_blocks"], 2)
+            self.assertEqual(result["content_blocks"], 3)
             with gzip.open(output / "content_block_index.csv.gz", "rt",
                            encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             by_id = {row["block_id"]: row for row in rows}
             self.assertEqual(by_id["p"]["content_text"], "桂枝汤 主治太阳中风")
             self.assertEqual(by_id["p"]["content_type"], "PARAGRAPH")
+            self.assertEqual(by_id["p"]["section_path"], "经方")
             self.assertEqual(by_id["cell"]["content_text"], "芍药")
             self.assertEqual(by_id["cell"]["content_type"], "TABLE_CELL")
             self.assertEqual(by_id["p"]["document"], "book/doc.sy")
