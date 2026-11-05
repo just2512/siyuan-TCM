@@ -83,10 +83,13 @@ def build(root: Path, output: Path) -> dict[str, int]:
             flags.append("CONTROL_CHARACTER_IN_TEXT")
 
         seen: dict[str, int] = {}
+        duplicate_found = False
+        long_paragraph_found = False
         for paragraph in paragraphs:
             value = paragraph["normalized_text"]
             if len(value) >= 30:
                 if value in seen:
+                    duplicate_found = True
                     paragraph_findings.append({
                         **paragraph,
                         "finding": "EXACT_DUPLICATE_PARAGRAPH",
@@ -96,17 +99,16 @@ def build(root: Path, output: Path) -> dict[str, int]:
                 else:
                     seen[value] = paragraph["paragraph_index"]
             if len(value) > 3000:
+                long_paragraph_found = True
                 paragraph_findings.append({
                     **paragraph,
                     "finding": "VERY_LONG_PARAGRAPH",
                     "first_occurrence_index": "",
                     "excerpt": value[:240],
                 })
-        if any(row["document"] == relative and row["finding"] == "EXACT_DUPLICATE_PARAGRAPH"
-               for row in paragraph_findings):
+        if duplicate_found:
             flags.append("EXACT_DUPLICATE_PARAGRAPH")
-        if any(row["document"] == relative and row["finding"] == "VERY_LONG_PARAGRAPH"
-               for row in paragraph_findings):
+        if long_paragraph_found:
             flags.append("VERY_LONG_PARAGRAPH")
 
         total_chars += len(text)
