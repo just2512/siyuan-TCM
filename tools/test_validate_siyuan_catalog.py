@@ -176,5 +176,27 @@ class CatalogueValidationTests(unittest.TestCase):
                 validator.validate_catalogue(generated, source, assets)
 
 
+    def test_rejects_hierarchy_context_drift_in_review_exports(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "document_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["parent_document"] = "book/missing-parent.sy"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "document_review.parent_document"):
+                validator.validate_catalogue(generated, source, assets)
+
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "empty_body_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["child_document_count"] = "1"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "empty_body_review.child_document_count"):
+                validator.validate_catalogue(generated, source, assets)
+
+
 if __name__ == "__main__":
     unittest.main()
