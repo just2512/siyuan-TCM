@@ -23,6 +23,6 @@ NodeTableCell,5474,50,0,Data
 NodeTableHead,506,1,0,Data
 NodeTableRow,5248,11,0,Data
 NodeText,249962,1093,248869,
-NodeTextMark,76142,457,75685,TextMarkAHref;TextMarkATitle;TextMarkBlockRefID;TextMarkBlockRefSubtype;TextMarkInlineMathContent;TextMarkType
+NodeTextMark,76142,453,75689,TextMarkAHref;TextMarkATitle;TextMarkBlockRefID;TextMarkBlockRefSubtype;TextMarkType
 NodeThematicBreak,11179,11179,0,
 NodeVideo,15,15,0,Data
