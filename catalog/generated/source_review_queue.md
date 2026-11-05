@@ -2,27 +2,38 @@
 
 - 候选总数：231
 - 每批：20 条；批次数：12
-- 尚未核验 UNVERIFIED：231
-- 部分核验 PARTIAL：0
-- 已完成来源核验 VERIFIED：0
-- 存在冲突 CONFLICT：0
-- 尚无法确定 UNRESOLVED：0
 
-## 候选类别
+## source_identity_status
 
-| 类别 | 数量 |
-|---|---:|
-| 本地附件文件 | 57 |
-| 《黄帝内经》篇章候选 | 160 |
-| 课程/讲座来源候选 | 14 |
+- CONFLICT: 0
+- PARTIAL: 0
+- UNRESOLVED: 0
+- UNVERIFIED: 231
+- VERIFIED: 0
+
+## source_version_status
+
+- CONFLICT: 0
+- PARTIAL: 0
+- UNRESOLVED: 0
+- UNVERIFIED: 231
+- VERIFIED: 0
+
+## collation_status
+
+- CONFLICT: 0
+- PARTIAL: 0
+- UNRESOLVED: 0
+- UNVERIFIED: 231
+- VERIFIED: 0
 
 ## 核验边界
 
-- 候选类别和文件名不是书目证据，不据此推断作者、讲者、出版机构、版本或底本。
-- PARTIAL 仅允许用于已直接检查原始来源材料且记录了具体页码/段落/期次/时间戳的部分核验；文件名、标题、关键词或自动提取片段不构成原始来源证据。
-- 只有能定位到具体原始材料及页码/期次的完整证据，才允许更新为 VERIFIED；来源身份、版本身份、文本校勘须分别记录。
-- 来源身份确认与版本确认、文本校勘是不同结论；确认来源不代表已经完成校勘。
-- 缺少证据或证据冲突时，分别保留 UNVERIFIED、UNRESOLVED 或 CONFLICT。
-- 队列按类别和路径稳定排序，仅用于分批，不表示优先级或结论。
+- 来源身份、版本身份、文本校勘是三个独立结论，必须分别填写状态和证据引用。
+- 来源身份 VERIFIED 不代表版本 VERIFIED；版本 VERIFIED 不代表校勘完成。
+- PARTIAL 仅用于已直接检查原始材料且有页码/段落/期次/时间戳定位的部分核验。
+- 文件名、标题、关键词和自动提取片段不能支撑任何 VERIFIED 结论。
+- 只有 HUMAN_DIRECT 类型证据可以通过人工结论交叉校验。
+- 冲突和未解决状态必须保留，不得为了清零而强行统一。
 
 详细项目见 `source_review_queue.csv`。

@@ -22,7 +22,9 @@
 ## 来源候选
 
 - 候选记录：231
-- UNVERIFIED: 231
+- source_identity_status: UNVERIFIED: 231
+- source_version_status: UNVERIFIED: 231
+- collation_status: UNVERIFIED: 231
 
 ## 附件引用
 
