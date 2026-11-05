@@ -47,7 +47,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
         child = next(row for row in rows if row["block_id"] == "t")
         self.assertEqual(child["parent_block_id"], "p")
         self.assertEqual(child["parent_node_type"], "NodeParagraph")
-        self.assertEqual(child["tree_position"], "0.0")
+        self.assertEqual(child["tree_position"], "0.0.0")
 
     def test_table_and_list_containers_keep_structure_and_aggregate_text(self):
         payload = {"Children": [
