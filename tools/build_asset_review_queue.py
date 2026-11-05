@@ -85,6 +85,7 @@ def build_queue(candidates: list[dict[str, str]], output: Path, batch_size: int 
         writer.writerows(ordered)
 
     counts = Counter(row["candidate_status"] for row in ordered)
+    manual_counts = Counter(row["manual_status"] for row in ordered)
     classes = Counter(row["candidate_class"] for row in ordered)
     total_occurrences = sum(int(row["occurrence_count"]) for row in ordered)
     total_candidates = sum(int(row["candidate_count"]) for row in ordered)
@@ -99,6 +100,10 @@ def build_queue(candidates: list[dict[str, str]], output: Path, batch_size: int 
         f"- 单候选：{counts['ONE_CANDIDATE']}",
         f"- 多候选：{counts['MULTIPLE_CANDIDATES']}",
         f"- 无候选：{counts['NO_CANDIDATE']}",
+        f"- 内容待检查 NEEDS_INSPECTION：{manual_counts['NEEDS_INSPECTION']}",
+        f"- 内容已确认匹配 CONFIRMED_MATCH：{manual_counts['CONFIRMED_MATCH']}",
+        f"- 内容已确认不匹配 NOT_MATCH：{manual_counts['NOT_MATCH']}",
+        f"- 未解决 UNRESOLVED：{manual_counts['UNRESOLVED']}",
         f"- 无扩展名引用：{classes['NO_EXTENSION_REFERENCE']}",
         f"- 图片引用：{classes['IMAGE_REFERENCE']}",
         "",
@@ -129,6 +134,10 @@ def build_queue(candidates: list[dict[str, str]], output: Path, batch_size: int 
         "one_candidate": counts["ONE_CANDIDATE"],
         "multiple_candidates": counts["MULTIPLE_CANDIDATES"],
         "no_candidate": counts["NO_CANDIDATE"],
+        "needs_inspection": manual_counts["NEEDS_INSPECTION"],
+        "confirmed_match": manual_counts["CONFIRMED_MATCH"],
+        "not_match": manual_counts["NOT_MATCH"],
+        "unresolved": manual_counts["UNRESOLVED"],
     }
 
 
