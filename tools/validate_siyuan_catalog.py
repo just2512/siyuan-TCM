@@ -57,6 +57,39 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         "asset_ref_count", "search_text",
     })
     docs = unique_index(documents, "path", "documents.csv")
+    hierarchy_rows = read_csv(generated / "document_hierarchy.csv", {
+        "document", "parent_document", "document_depth", "child_document_count",
+        "structure_role",
+    })
+    hierarchy = unique_index(hierarchy_rows, "document", "document_hierarchy.csv")
+    if set(hierarchy) != set(docs):
+        raise ValueError("document_hierarchy.csv 与 documents.csv 文档集合不一致")
+    expected_children: Counter[str] = Counter()
+    for path, row in docs.items():
+        parent = row.get("parent_document", "")
+        if parent:
+            if parent not in docs:
+                raise ValueError(f"{path} 的父文档不存在：{parent}")
+            expected_children[parent] += 1
+    for path, row in hierarchy.items():
+        source = docs[path]
+        parent = source.get("parent_document", "")
+        if row["parent_document"] != parent:
+            raise ValueError(f"{path} 的层级父文档与 documents.csv 不一致")
+        try:
+            depth = int(source["document_depth"])
+            child_count = int(source["child_document_count"])
+        except (KeyError, ValueError) as exc:
+            raise ValueError(f"{path} 的文档层级数值字段无效") from exc
+        if depth < 0 or child_count < 0:
+            raise ValueError(f"{path} 的文档层级数值不能为负数")
+        if int(row["document_depth"]) != depth or int(row["child_document_count"]) != child_count:
+            raise ValueError(f"{path} 的层级索引与 documents.csv 不一致")
+        if child_count != expected_children[path]:
+            raise ValueError(f"{path} 的直接子文档数与父子关系不一致")
+        expected_role = "CONTAINER" if child_count else "LEAF"
+        if row["structure_role"] != expected_role:
+            raise ValueError(f"{path} 的结构角色与子文档数不一致")
     for path, row in docs.items():
         if row["parse_status"] not in PARSE_STATES:
             raise ValueError(f"{path} 的 parse_status 无效：{row['parse_status']}")
