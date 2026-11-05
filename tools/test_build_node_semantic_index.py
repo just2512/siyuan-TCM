@@ -23,6 +23,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
                 {"ID": "h1", "Type": "NodeHTMLBlock",
                  "Data": "<p>可见<strong>HTML</strong>文本</p>"},
                 {"ID": "v1", "Type": "NodeVideo", "Data": "assets/lesson.mp4"},
+                {"ID": "i1", "Type": "NodeImage", "Data": "span"},
                 {"ID": "d1", "Type": "NodeLinkDest", "Data": "https://example.test"},
             ]}
         ]}
@@ -36,6 +37,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
         self.assertEqual(by_id["h1"]["raw_payload"], "<p>可见<strong>HTML</strong>文本</p>")
         self.assertEqual(by_id["v1"]["semantic_role"], "MEDIA_REFERENCE")
         self.assertEqual(by_id["v1"]["text"], "")
+        self.assertEqual(by_id["i1"]["semantic_role"], "IMAGE_LAYOUT")
         self.assertEqual(by_id["d1"]["semantic_role"], "LINK_TARGET")
         self.assertEqual(by_id["d1"]["text"], "")
 
@@ -78,8 +80,29 @@ class NodeSemanticIndexTests(unittest.TestCase):
         unknown = indexer.Counter()
         indexer.walk_nodes(payload, "d.sy", "hash", rows, unknown)
         self.assertEqual(rows[0]["text"], "正文")
-        self.assertEqual(unknown["NodeTextMark.TextMarkType"], 1)
-        self.assertEqual(unknown["NodeTextMark.TextMarkBlockRefID"], 1)
+        self.assertEqual(rows[0]["mark_type"], "text")
+        self.assertEqual(rows[0]["block_ref_id"], "target-id")
+        self.assertEqual(unknown["NodeTextMark.TextMarkType"], 0)
+        self.assertEqual(unknown["NodeTextMark.TextMarkBlockRefID"], 0)
+
+
+    def test_structural_fields_are_classified_without_becoming_prose(self):
+        payload = {"Children": [
+            {"ID": "br", "Type": "NodeBr", "Data": "br"},
+            {"ID": "ial", "Type": "NodeKramdownSpanIAL", "Data": "{: style=color-red}"},
+            {"ID": "cell", "Type": "NodeTableCell", "Data": "span"},
+            {"ID": "escape", "Type": "NodeBackslashContent", "Data": "*"},
+        ]}
+        rows = []
+        unknown = indexer.Counter()
+        indexer.walk_nodes(payload, "d.sy", "hash", rows, unknown)
+        by_id = {row["block_id"]: row for row in rows}
+        self.assertEqual(by_id["br"]["semantic_role"], "LINE_BREAK")
+        self.assertEqual(by_id["ial"]["semantic_role"], "INLINE_STYLE_METADATA")
+        self.assertEqual(by_id["cell"]["semantic_role"], "TABLE_CELL_LAYOUT")
+        self.assertEqual(by_id["escape"]["semantic_role"], "ESCAPED_CONTENT")
+        self.assertTrue(all(not row["text"] for row in rows))
+        self.assertEqual(len(unknown), 0)
 
     def test_build_writes_document_node_and_unmapped_field_indexes(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -105,6 +128,7 @@ class NodeSemanticIndexTests(unittest.TestCase):
                 docs = list(csv.DictReader(stream))
             self.assertEqual(docs[0]["node_count"], "3")
             self.assertTrue((output / "node_semantic_index.md").is_file())
+            self.assertTrue((output / "node_field_mapping.csv").is_file())
 
 
 if __name__ == "__main__":

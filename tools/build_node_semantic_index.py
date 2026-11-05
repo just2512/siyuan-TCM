@@ -26,13 +26,29 @@ TEXT_FIELDS = {
         "TextMarkInlineMathContent": "INLINE_MATH",
     },
 }
+MARK_METADATA_FIELDS = {
+    "TextMarkType": "MARK_TYPE",
+    "TextMarkAHref": "LINK_HREF",
+    "TextMarkATitle": "LINK_TITLE",
+    "TextMarkBlockRefID": "BLOCK_REFERENCE_ID",
+    "TextMarkBlockRefSubtype": "BLOCK_REFERENCE_SUBTYPE",
+}
+DATA_FIELD_ROLES = {
+    "NodeBackslash": "ESCAPE_MARKER",
+    "NodeBackslashContent": "ESCAPED_CONTENT",
+    "NodeBr": "LINE_BREAK",
+    "NodeKramdownSpanIAL": "INLINE_STYLE_METADATA",
+    "NodeTableCell": "TABLE_CELL_LAYOUT",
+    "NodeTableHead": "TABLE_HEADER_LAYOUT",
+    "NodeTableRow": "TABLE_ROW_LAYOUT",
+}
 META_FIELDS = {"Properties", "IAL", "Type", "ID", "Spec"}
 STRUCTURAL_TYPES = {
     "NodeDocument", "NodeParagraph", "NodeHeading", "NodeList",
     "NodeListItem", "NodeTable", "NodeTableHead", "NodeTableRow",
     "NodeTableCell", "NodeBlockquote", "NodeSuperBlock",
 }
-MEDIA_TYPES = {"NodeImage", "NodeAudio", "NodeVideo", "NodeIFrame"}
+MEDIA_TYPES = {"NodeAudio", "NodeVideo", "NodeIFrame"}
 HTML_TYPES = {"NodeHTMLBlock"}
 
 
@@ -85,6 +101,10 @@ def direct_payload(node: dict[str, Any]) -> tuple[str, str, str]:
         raw = node.get("Data")
         if isinstance(raw, str) and raw.strip():
             return "IMAGE_LAYOUT", "", raw.strip()
+    if node_type in DATA_FIELD_ROLES:
+        raw = node.get("Data")
+        if isinstance(raw, str) and raw.strip():
+            return DATA_FIELD_ROLES[node_type], "", raw.strip()
     if values:
         return "+".join(roles), " ".join(values), ""
     return ("STRUCTURE" if node_type in STRUCTURAL_TYPES else "NON_TEXT"), "", ""
@@ -134,13 +154,20 @@ def walk_nodes(node: Any, document: str, source_hash: str,
         "heading_level": node.get("HeadingLevel", "") if node_type == "NodeHeading" else "",
         "list_type": node.get("ListType", "") if node_type == "NodeList" else "",
         "child_count": child_count, "property_keys": ";".join(map(str, property_keys)),
+        "mark_type": node.get("TextMarkType", "") if node_type == "NodeTextMark" else "",
+        "link_href": node.get("TextMarkAHref", "") if node_type == "NodeTextMark" else "",
+        "link_title": node.get("TextMarkATitle", "") if node_type == "NodeTextMark" else "",
+        "block_ref_id": node.get("TextMarkBlockRefID", "") if node_type == "NodeTextMark" else "",
+        "block_ref_subtype": node.get("TextMarkBlockRefSubtype", "") if node_type == "NodeTextMark" else "",
         "text": own_text, "container_text": descendants_text(node)
             if node_type in {"NodeHeading", "NodeTableCell", "NodeListItem"} else "",
         "raw_payload": raw_payload,
     })
 
     mapped = set(TEXT_FIELDS.get(node_type, {}))
-    if node_type in MEDIA_TYPES | HTML_TYPES | {"NodeLinkDest", "NodeImage"}:
+    if node_type == "NodeTextMark":
+        mapped.update(MARK_METADATA_FIELDS)
+    if node_type in MEDIA_TYPES | HTML_TYPES | {"NodeLinkDest", "NodeImage"} | set(DATA_FIELD_ROLES):
         mapped.add("Data")
     for key, value in node.items():
         if key in META_FIELDS or key == "Children" or not isinstance(value, str) or not value.strip():
@@ -210,7 +237,8 @@ def build(root: Path, output: Path) -> dict[str, int]:
     fields = ["document", "source_sha256", "tree_position", "block_id",
               "parent_block_id", "parent_node_type", "node_type", "semantic_role",
               "heading_level", "list_type", "child_count", "property_keys",
-              "text", "container_text", "raw_payload"]
+              "mark_type", "link_href", "link_title", "block_ref_id",
+              "block_ref_subtype", "text", "container_text", "raw_payload"]
     write_csv(output / "node_semantic_index.csv.gz", rows, fields)
     write_csv(output / "document_semantic_summary.csv", docs, [
         "document", "source_sha256", "parse_status", "node_count", "text_node_count",
@@ -221,6 +249,33 @@ def build(root: Path, output: Path) -> dict[str, int]:
                     for key, count in sorted(unknown.items())]
     write_csv(output / "unmapped_node_fields.csv", unknown_rows,
               ["node_field", "occurrences"])
+    field_mapping = []
+    for node_type, field_roles in TEXT_FIELDS.items():
+        field_mapping.extend({
+            "node_type": node_type, "field": field, "semantic_role": role,
+            "indexed_as_text": "YES",
+        } for field, role in field_roles.items())
+    field_mapping.extend({
+        "node_type": "NodeTextMark", "field": field, "semantic_role": role,
+        "indexed_as_text": "NO",
+    } for field, role in MARK_METADATA_FIELDS.items())
+    field_mapping.extend({
+        "node_type": node_type, "field": "Data", "semantic_role": role,
+        "indexed_as_text": "NO",
+    } for node_type, role in DATA_FIELD_ROLES.items())
+    field_mapping.extend([
+        {"node_type": "NodeHTMLBlock", "field": "Data",
+         "semantic_role": "HTML_VISIBLE_TEXT", "indexed_as_text": "YES"},
+        *[{"node_type": node_type, "field": "Data",
+           "semantic_role": "MEDIA_REFERENCE", "indexed_as_text": "NO"}
+          for node_type in sorted(MEDIA_TYPES)],
+        {"node_type": "NodeImage", "field": "Data",
+         "semantic_role": "IMAGE_LAYOUT", "indexed_as_text": "NO"},
+        {"node_type": "NodeLinkDest", "field": "Data",
+         "semantic_role": "LINK_TARGET", "indexed_as_text": "NO"},
+    ])
+    write_csv(output / "node_field_mapping.csv", field_mapping,
+              ["node_type", "field", "semantic_role", "indexed_as_text"])
     counts = Counter(row["node_type"] for row in rows)
     report = [
         "# SiYuan 节点语义索引",
@@ -230,6 +285,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         f"- 节点记录：{len(rows)}",
         f"- 节点类型：{len(counts)}",
         f"- 有直接文本载荷的节点：{sum(bool(row['text']) for row in rows)}",
+        f"- 已定义字段语义映射：{len(field_mapping)}",
         f"- 未映射字符串字段：{len(unknown_rows)}",
         "",
         "## 节点类型分布",
@@ -240,6 +296,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
         "",
         "- node_semantic_index.csv.gz：gzip 压缩的逐节点语义索引；解压后为 UTF-8 CSV，保留块 ID、父节点、树位置、文本及非正文资源字段。",
         "- document_semantic_summary.csv：逐文档节点覆盖、文本载荷、表格/列表/HTML/媒体节点统计。",
+        "- node_field_mapping.csv：已知节点字段到语义角色的映射及是否进入正文索引。",
         "- unmapped_node_fields.csv：尚未映射的字符串字段，供继续扩展解析器。",
         "",
         "## 解析边界",
@@ -252,7 +309,7 @@ def build(root: Path, output: Path) -> dict[str, int]:
     (output / "node_semantic_index.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"documents": len(files), "parse_errors": parse_errors,
             "nodes": len(rows), "node_types": len(counts),
-            "unmapped_fields": len(unknown_rows)}
+            "mapped_fields": len(field_mapping), "unmapped_fields": len(unknown_rows)}
 
 
 def main() -> int:
