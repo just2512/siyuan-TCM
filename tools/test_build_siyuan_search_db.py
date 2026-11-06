@@ -25,6 +25,16 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             content = root / "content.csv.gz"
             relations = root / "relations.csv.gz"
             db = root / "search.sqlite3"
+            entities = root / "entities.csv.gz"
+            self._write_gzip_csv(entities, search_db.ENTITY_FIELDS, [
+                {"mention_id": "m1", "unit_id": "u1", "entity_type": "FORMULA",
+                 "matched_text": "桂枝汤", "character_start": 0, "character_end": 3,
+                 "document": "book/a.sy", "source_sha256": "hash-a",
+                 "tree_position": "0.0", "block_id": "p1", "content_type": "PARAGRAPH",
+                 "section_path": "经方 / 桂枝汤", "lexicon_version": "1.0.0",
+                 "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+            ])
             self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [
                 {"document": "book/a.sy", "source_sha256": "hash-a",
                  "tree_position": "0.0", "block_id": "p1",
@@ -46,9 +56,10 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                  "target": "target-id", "target_subtype": "d",
                  "target_document": "book/b.sy", "resolution": "RESOLVED_IN_CORPUS"}
             ])
-            result = search_db.build_database(content, relations, db)
+            result = search_db.build_database(content, relations, db, entities)
             self.assertEqual(result["content_blocks"], 2)
             self.assertEqual(result["relationships"], 1)
+            self.assertEqual(result["entity_mentions"], 1)
             self.assertTrue(db.is_file())
             # Three-character Chinese phrase uses trigram FTS when available.
             results = search_db.search_database(db, "桂枝汤")
@@ -61,7 +72,11 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(results[0]["document"], "book/b.sy")
             with sqlite3.connect(db) as connection:
                 count = connection.execute("SELECT COUNT(*) FROM node_relationships").fetchone()[0]
+                entity = connection.execute(
+                    "SELECT entity_type, matched_text, document, resolution_status FROM entity_mentions"
+                ).fetchone()
             self.assertEqual(count, 1)
+            self.assertEqual(entity, ("FORMULA", "桂枝汤", "book/a.sy", "UNRESOLVED_CANDIDATE"))
 
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
