@@ -65,3 +65,20 @@
 ## 本阶段边界
 
 本契约完成的是“机器可定位、可传输、可检索”的中间表示。下一阶段再基于独立的术语词表和可追溯规则，生成实体候选与关系候选；每个候选都必须携带原文跨度和来源定位。候选不是医学结论，也不能覆盖原文。
+
+
+## 实体提及候选（扩展阶段）
+
+词典文件：`catalog/entity-lexicon.csv`，当前词典版本为 `1.0.0`。
+
+生成文件：`catalog/generated/entity_mention_candidates.csv.gz`。
+
+每条候选记录包含：
+- `mention_id`：由知识单元、实体类型、字符区间和词条生成的稳定 ID。
+- `unit_id`：对应知识单元 ID。
+- `entity_type`：当前词典定义的类型（药物、方剂、脏腑、证候、穴位）。
+- `matched_text`、`character_start`、`character_end`：原文精确命中及字符区间。
+- 来源文档、源哈希、树位置、块 ID、章节路径。
+- `lexicon_version`、`extraction_method`、`resolution_status`。
+
+当前提取方法为精确词典匹配。允许嵌套和重叠提及，例如方剂名与方剂名中包含的药名同时保留。候选统一标记为 `UNRESOLVED_CANDIDATE`；不执行同义词扩展、否定识别、实体消歧或关系推断。词典是第一版启动词表，不代表全量覆盖。
