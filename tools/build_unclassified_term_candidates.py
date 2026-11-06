@@ -69,10 +69,12 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     continue
                 item = stats.get(term)
                 if item is None:
-                    item = {"occurrences": 0, "units": set(), "documents": set(), "samples": []}
+                    item = {"occurrences": 0, "units": 0, "documents": set(), "samples": []}
                     stats[term] = item
                 item["occurrences"] += 1
-                item["units"].add(unit_id)
+                if term not in seen_in_unit:
+                    item["units"] += 1
+                    seen_in_unit.add(term)
                 item["documents"].add(document)
                 if len(item["samples"]) < sample_limit:
                     item["samples"].append({
@@ -103,7 +105,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                 "term": term,
                 "ngram_length": len(term),
                 "occurrence_count": item["occurrences"],
-                "unit_count": len(item["units"]),
+                "unit_count": item["units"],
                 "document_count": len(item["documents"]),
                 "sample_evidence": json.dumps(item["samples"], ensure_ascii=False, sort_keys=True),
                 "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
