@@ -94,7 +94,6 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     expected_relations.update(row[0] for row in connection.execute(
         "SELECT relation_id FROM semantic_relation_candidates"
     ))
-    connection.close()
     seen_entities, seen_relations = set(), set()
     edge_count = 0
     with gzip.open(graph_path, "rt", encoding="utf-8") as stream:
@@ -121,7 +120,6 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"invalid evidence span at line {line}")
                 if len(evidence["text"]) != end - start:
                     raise ValueError(f"evidence span length mismatch at line {line}")
-                connection = sqlite3.connect(database_path)
                 source_row = connection.execute("""
                     SELECT content_text FROM content_blocks
                     WHERE document = ? AND source_sha256 = ?
@@ -129,13 +127,13 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     LIMIT 1
                 """, (evidence["document"], evidence["source_sha256"],
                       evidence["tree_position"], evidence["block_id"])).fetchone()
-                connection.close()
                 if source_row is None or source_row[0][start:end] != evidence["text"]:
                     raise ValueError(f"evidence does not match source block at line {line}")
                 seen_relations.add(relation_id)
                 edge_count += 1
             else:
                 raise ValueError(f"unknown graph record type at line {line}")
+    connection.close()
     if seen_entities != expected_entities:
         raise ValueError("entity node coverage does not match SQLite catalog")
     if seen_relations != expected_relations:
