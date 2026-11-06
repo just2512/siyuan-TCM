@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Extract explicit formula-herb composition relation candidates with source evidence.
+"""Extract explicit formula-herb relation candidates with source evidence.
 
-Only narrowly matched textual constructions are emitted. This is not a
-confirmed pharmacological or medical relation; every row retains its sentence
-and source span and remains UNRESOLVED_CANDIDATE.
+Supports direct composition wording and a narrowly bounded nearby-block
+composition-list pattern. All relations remain unresolved candidates.
 """
 from __future__ import annotations
 
@@ -23,7 +22,7 @@ FIELDS = [
     "tree_position", "block_id", "sentence_start", "sentence_end",
     "evidence_text", "extraction_rule", "resolution_status",
 ]
-SENTENCE_END = re.compile(r"[^。！？\n]+[。！？]?|\n+")
+SENTENCE_END = re.compile(r"[^。！？；\n]+[。！？；]?|；+|\n+")
 
 
 def read_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
@@ -42,7 +41,7 @@ def sentence_ranges(text: str):
 
 def explicit_composition(formula: dict[str, str], herbs: list[dict[str, str]],
                          sentence: str, sentence_start: int) -> list[dict[str, str]]:
-    """Return only herbs inside a tightly bounded, explicit ingredient phrase."""
+    """Return herbs inside a tightly bounded, explicit ingredient phrase."""
     fs = int(formula["character_start"]) - sentence_start
     fe = int(formula["character_end"]) - sentence_start
     if fs < 0 or fe > len(sentence):
@@ -89,26 +88,103 @@ def explicit_composition(formula: dict[str, str], herbs: list[dict[str, str]],
     return selected if not residual else []
 
 
+def position_parts(value: str) -> tuple[int, ...]:
+    try:
+        return tuple(int(part) for part in value.split("."))
+    except ValueError:
+        return ()
+
+
+def nearby_formula(formula_mentions: list[dict[str, str]],
+                   evidence_unit: dict[str, Any]) -> dict[str, str] | None:
+    """Choose one unambiguous formula mention in a nearby sibling block."""
+    evidence_pos = position_parts(evidence_unit["source"]["tree_position"])
+    if len(evidence_pos) < 2:
+        return None
+    candidates = []
+    for mention in formula_mentions:
+        if mention["unit_id"] == evidence_unit["unit_id"]:
+            candidates.append((0, mention))
+            continue
+        other_pos = position_parts(mention["tree_position"])
+        if len(other_pos) < 2 or other_pos[:-1] != evidence_pos[:-1]:
+            continue
+        distance = abs(other_pos[-1] - evidence_pos[-1])
+        if 1 <= distance <= 5:
+            candidates.append((distance, mention))
+    if not candidates:
+        return None
+    min_distance = min(distance for distance, _ in candidates)
+    nearest = [mention for distance, mention in candidates if distance == min_distance]
+    terms = {mention["matched_text"] for mention in nearest}
+    if len(terms) != 1:
+        return None
+    return sorted(nearest, key=lambda item: item["mention_id"])[0]
+
+
+def make_relation(writer, seen: set[str], formula: dict[str, str],
+                  herb: dict[str, str], evidence_unit: dict[str, Any],
+                  start: int, end: int, evidence_text: str,
+                  rule: str) -> bool:
+    source = evidence_unit["source"]
+    identity = "\0".join((
+        formula["mention_id"], "FORMULA_CONTAINS_HERB",
+        herb["mention_id"], evidence_unit["unit_id"], str(start), str(end), rule,
+    ))
+    relation_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+    if relation_id in seen:
+        return False
+    seen.add(relation_id)
+    writer.writerow({
+        "relation_id": relation_id,
+        "unit_id": evidence_unit["unit_id"],
+        "subject_mention_id": formula["mention_id"],
+        "subject_text": formula["matched_text"],
+        "predicate": "FORMULA_CONTAINS_HERB",
+        "object_mention_id": herb["mention_id"],
+        "object_text": herb["matched_text"],
+        "document": source["document"],
+        "source_sha256": source["sha256"],
+        "tree_position": source["tree_position"],
+        "block_id": source.get("block_id", ""),
+        "sentence_start": start,
+        "sentence_end": end,
+        "evidence_text": evidence_text,
+        "extraction_rule": rule,
+        "resolution_status": "UNRESOLVED_CANDIDATE",
+    })
+    return True
+
+
 def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[str, int]:
     if not mentions_path.is_file() or not units_path.is_file():
         raise FileNotFoundError("entity mentions and knowledge units are both required")
     mentions = read_mentions(mentions_path)
+    units = []
+    formulas_by_document: dict[str, list[dict[str, str]]] = defaultdict(list)
+    with gzip.open(units_path, "rt", encoding="utf-8", newline="") as source:
+        for raw in source:
+            unit = json.loads(raw)
+            units.append(unit)
+            for mention in mentions.get(unit["unit_id"], []):
+                if mention["entity_type"] == "FORMULA":
+                    formulas_by_document[mention["document"]].append(mention)
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     seen: set[str] = set()
-    with gzip.open(units_path, "rt", encoding="utf-8", newline="") as source, output_path.open(
-        "w", encoding="utf-8", newline=""
-    ) as destination:
+    with output_path.open("w", encoding="utf-8", newline="") as destination:
         writer = csv.DictWriter(destination, fieldnames=FIELDS)
         writer.writeheader()
-        for raw in source:
-            unit = json.loads(raw)
+        for unit in units:
             unit_id = unit["unit_id"]
             text = unit["content"]["source_text"]
-            source_info = unit["source"]
+            source = unit["source"]
             unit_mentions = mentions.get(unit_id, [])
             formulas = [m for m in unit_mentions if m["entity_type"] == "FORMULA"]
             herbs = [m for m in unit_mentions if m["entity_type"] == "HERB"]
+
+            # Direct formula-to-ingredient constructions within one source block.
             for start, end in sentence_ranges(text):
                 sentence = text[start:end]
                 sentence_formulas = [m for m in formulas
@@ -117,33 +193,24 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                     if start <= int(m["character_start"]) and int(m["character_end"]) <= end]
                 for formula in sentence_formulas:
                     for herb in explicit_composition(formula, sentence_herbs, sentence, start):
-                        identity = "\0".join((
-                            formula["mention_id"], "FORMULA_CONTAINS_HERB",
-                            herb["mention_id"], str(start), str(end),
-                        ))
-                        relation_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
-                        if relation_id in seen:
-                            continue
-                        seen.add(relation_id)
-                        writer.writerow({
-                            "relation_id": relation_id,
-                            "unit_id": unit_id,
-                            "subject_mention_id": formula["mention_id"],
-                            "subject_text": formula["matched_text"],
-                            "predicate": "FORMULA_CONTAINS_HERB",
-                            "object_mention_id": herb["mention_id"],
-                            "object_text": herb["matched_text"],
-                            "document": source_info["document"],
-                            "source_sha256": source_info["sha256"],
-                            "tree_position": source_info["tree_position"],
-                            "block_id": source_info.get("block_id", ""),
-                            "sentence_start": start,
-                            "sentence_end": end,
-                            "evidence_text": sentence,
-                            "extraction_rule": "FORMULA_COMPOSITION_EXPLICIT_V1",
-                            "resolution_status": "UNRESOLVED_CANDIDATE",
-                        })
-                        count += 1
+                        if make_relation(writer, seen, formula, herb, unit, start, end,
+                                         sentence, "FORMULA_COMPOSITION_EXPLICIT_V1"):
+                            count += 1
+
+            # Many source notes store "组成：药物列表" separately from the
+            # nearby formula title or indication block. Link only when the
+            # composition header and formula mention share a document and
+            # adjacent sibling position, with a unique nearest formula name.
+            if re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", text) and herbs:
+                formula = nearby_formula(
+                    formulas_by_document.get(source["document"], []), unit
+                )
+                if formula is not None:
+                    for herb in herbs:
+                        if make_relation(writer, seen, formula, herb, unit, 0, len(text),
+                                         text, "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"):
+                            count += 1
+
     return {"relation_candidates": count, "unique_relation_ids": len(seen)}
 
 
@@ -167,22 +234,23 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
             unit = units.get(row["unit_id"])
             if unit is None:
                 raise ValueError(f"row {line}: source unit not found")
-            source_info = unit["source"]
-            if (source_info["document"] != row["document"]
-                or source_info["sha256"] != row["source_sha256"]
-                or source_info["tree_position"] != row["tree_position"]
-                or source_info.get("block_id", "") != row["block_id"]):
+            source = unit["source"]
+            if (source["document"] != row["document"]
+                or source["sha256"] != row["source_sha256"]
+                or source["tree_position"] != row["tree_position"]
+                or source.get("block_id", "") != row["block_id"]):
                 raise ValueError(f"row {line}: source provenance mismatch")
             if mentions_path is not None:
                 subject = mentions.get(row["subject_mention_id"])
                 obj = mentions.get(row["object_mention_id"])
                 if subject is None or obj is None:
                     raise ValueError(f"row {line}: relation mention reference not found")
-                if (subject["unit_id"] != row["unit_id"] or obj["unit_id"] != row["unit_id"]
-                    or subject["entity_type"] != "FORMULA" or obj["entity_type"] != "HERB"
+                if (subject["entity_type"] != "FORMULA" or obj["entity_type"] != "HERB"
                     or subject["matched_text"] != row["subject_text"]
-                    or obj["matched_text"] != row["object_text"]):
-                    raise ValueError(f"row {line}: relation endpoints do not match entity mentions")
+                    or obj["matched_text"] != row["object_text"]
+                    or subject["document"] != row["document"]
+                    or obj["unit_id"] != row["unit_id"]):
+                    raise ValueError(f"row {line}: relation endpoints do not match source mentions")
             text = unit["content"]["source_text"]
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
