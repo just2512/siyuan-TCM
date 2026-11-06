@@ -35,6 +35,63 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             [],
         )
 
+    def test_links_composition_list_to_unique_nearby_formula_block(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            units = root / "units.jsonl.gz"
+            mentions = root / "mentions.csv.gz"
+            output = root / "relations.csv"
+            source_hash = "b" * 64
+            unit_rows = [
+                {
+                    "unit_id": "composition",
+                    "source": {"document": "book/a.sy", "sha256": source_hash,
+                               "tree_position": "0.0", "block_id": "b1"},
+                    "content": {"source_text": "组成：桂枝、芍药"},
+                },
+                {
+                    "unit_id": "formula",
+                    "source": {"document": "book/a.sy", "sha256": source_hash,
+                               "tree_position": "0.2", "block_id": "b2"},
+                    "content": {"source_text": "桂枝汤主之"},
+                },
+            ]
+            with gzip.open(units, "wt", encoding="utf-8") as stream:
+                for unit in unit_rows:
+                    stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id", "content_type", "section_path",
+                "lexicon_version", "extraction_method", "resolution_status",
+            ]
+            rows = [
+                ("formula-m", "formula", "FORMULA", "桂枝汤", 0, 3, "0.2", "b2"),
+                ("herb-1", "composition", "HERB", "桂枝", 3, 5, "0.0", "b1"),
+                ("herb-2", "composition", "HERB", "芍药", 6, 8, "0.0", "b1"),
+            ]
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, unit_id, kind, term, start, end, position, block_id in rows:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": unit_id, "entity_type": kind,
+                        "matched_text": term, "character_start": start, "character_end": end,
+                        "document": "book/a.sy", "source_sha256": source_hash,
+                        "tree_position": position, "block_id": block_id,
+                        "content_type": "PARAGRAPH", "section_path": "",
+                        "lexicon_version": "1.0.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                        "resolution_status": "UNRESOLVED_CANDIDATE",
+                    })
+            result = module.extract(mentions, units, output)
+            self.assertEqual(result["relation_candidates"], 2)
+            self.assertEqual(module.validate(output, units, mentions), 2)
+            with output.open("r", encoding="utf-8", newline="") as stream:
+                found = list(csv.DictReader(stream))
+            self.assertTrue(all(row["subject_mention_id"] == "formula-m" for row in found))
+            self.assertTrue(all(row["unit_id"] == "composition" for row in found))
+            self.assertTrue(all(row["extraction_rule"] == "FORMULA_COMPOSITION_NEARBY_BLOCK_V1" for row in found))
+
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
