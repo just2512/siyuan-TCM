@@ -40,6 +40,28 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             self.assertIn("太阳中风", samples[0]["evidence_text"])
             self.assertEqual(samples[0]["matched_text"], "太阳中风")
 
+
+    def test_excludes_terms_already_present_in_entity_lexicon(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "units.jsonl.gz"
+            output = root / "terms.csv.gz"
+            lexicon = root / "lexicon.csv"
+            records = [
+                {"unit_id": "u1", "source": {"document": "a.sy"}, "content": {"source_text": "桂枝汤太阳中风"}},
+                {"unit_id": "u2", "source": {"document": "b.sy"}, "content": {"source_text": "桂枝汤太阳中风"}},
+            ]
+            with gzip.open(source, "wt", encoding="utf-8") as stream:
+                for record in records:
+                    stream.write(json.dumps(record, ensure_ascii=False) + "\\n")
+            lexicon.write_text("entity_type,term,lexicon_version\\nFORMULA,桂枝汤,1.3.0\\n", encoding="utf-8")
+            result = module.mine(source, output, min_occurrences=2, min_documents=2, lexicon_path=lexicon)
+            with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
+                terms = {row["term"] for row in csv.DictReader(stream)}
+            self.assertNotIn("桂枝汤", terms)
+            self.assertIn("太阳中风", terms)
+            self.assertGreater(result["known_lexicon_occurrences_skipped"], 0)
+
     def test_ignores_terms_seen_in_only_one_document(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
