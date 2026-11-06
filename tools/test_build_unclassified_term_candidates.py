@@ -89,7 +89,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             self.assertEqual(len(samples), 2)
             self.assertEqual([item["document"] for item in samples], ["a.sy", "b.sy"])
 
-    def test_rejects_non_monotonic_document_order(self):
+    def test_accepts_non_monotonic_document_order_and_counts_unique_documents(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             source = root / "units.jsonl.gz"
@@ -100,8 +100,41 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
                 make_unit("u3", "a.sy", "经络辨证"),
             ]
             write_units(source, records)
-            with self.assertRaisesRegex(ValueError, "ordered by source document"):
-                module.mine(source, output, min_occurrences=2, min_documents=1)
+            result = module.mine(
+                source, output, min_occurrences=3, min_documents=2, sample_limit=2
+            )
+            self.assertEqual(result["knowledge_units_scanned"], 3)
+            self.assertEqual(result["aggregation_strategy"], "sqlite_term_document_upsert")
+            with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
+                row = next(item for item in csv.DictReader(stream) if item["term"] == "经络辨证")
+            self.assertEqual(row["occurrence_count"], "3")
+            self.assertEqual(row["unit_count"], "3")
+            self.assertEqual(row["document_count"], "2")
+            samples = json.loads(row["sample_evidence"])
+            self.assertEqual(len(samples), 2)
+            self.assertEqual({item["document"] for item in samples}, {"a.sy", "b.sy"})
+
+    def test_sample_limit_one_is_exact_across_repeated_and_out_of_order_documents(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "units.jsonl.gz"
+            output = root / "terms.csv.gz"
+            records = [
+                make_unit("u1", "z.sy", "经络辨证"),
+                make_unit("u2", "a.sy", "经络辨证"),
+                make_unit("u3", "z.sy", "经络辨证"),
+                make_unit("u4", "m.sy", "经络辨证"),
+            ]
+            write_units(source, records)
+            module.mine(source, output, min_occurrences=4, min_documents=3, sample_limit=1)
+            with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
+                row = next(item for item in csv.DictReader(stream) if item["term"] == "经络辨证")
+            self.assertEqual(row["occurrence_count"], "4")
+            self.assertEqual(row["unit_count"], "4")
+            self.assertEqual(row["document_count"], "3")
+            samples = json.loads(row["sample_evidence"])
+            self.assertEqual(len(samples), 1)
+            self.assertEqual(samples[0]["document"], "a.sy")
 
     def test_excludes_terms_already_present_in_entity_lexicon(self):
         with tempfile.TemporaryDirectory() as temp:
