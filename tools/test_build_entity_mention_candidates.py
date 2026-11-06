@@ -47,7 +47,8 @@ class EntityMentionCandidateTests(unittest.TestCase):
             }
             unit = {
                 "unit_id": module.unit_id(source_row),
-                "source": {**source_row},
+                "source": {"document": "notes/a.sy", "sha256": "a" * 64,
+                           "tree_position": "0.1", "block_id": "b1"},
                 "content": {"source_text": "桂枝汤由桂枝、芍药组成。"},
             }
             with gzip.open(units_path, "wt", encoding="utf-8") as stream:
