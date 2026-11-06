@@ -72,6 +72,46 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertTrue(all(row["resolution_status"] == "UNRESOLVED_CANDIDATE" for row in rows))
             self.assertTrue(all(row["evidence_text"] == source_text for row in rows))
 
+    def test_rejects_negated_predicate_and_preserves_direction(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "症见头痛，不宜辨证为太阳中风。"
+            terms = [("s1", "头痛", "SYMPTOM"), ("z1", "太阳中风", "SYNDROME")]
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                    "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                    "character_end", "evidence_start", "evidence_text", "classification_status",
+                ])
+                writer.writeheader()
+                for cid, term, typ in terms:
+                    start = source_text.index(term)
+                    writer.writerow({
+                        "candidate_id": cid, "term": term, "candidate_type": typ, "rule_id": "R1",
+                        "evidence_document": "a.sy", "source_sha256": "sha", "tree_position": "0",
+                        "block_id": "b", "unit_id": "u", "character_start": start,
+                        "character_end": start + len(term), "evidence_start": 0,
+                        "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE",
+                    })
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                    "character_end", "document", "source_sha256", "tree_position", "block_id",
+                ])
+                writer.writeheader()
+            unit = {"unit_id": "u", "source": {"document": "a.sy", "sha256": "sha",
+                    "tree_position": "0", "block_id": "b"},
+                    "content": {"source_text": source_text}}
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+            result = extract(context, mentions, units, output)
+            self.assertEqual(result["contextual_relation_candidates"], 0)
+            self.assertEqual(validate(output, units), 0)
+
     def test_does_not_infer_relation_from_cooccurrence_without_predicate(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
