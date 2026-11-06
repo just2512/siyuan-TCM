@@ -51,9 +51,13 @@ class CatalogueValidationTests(unittest.TestCase):
         self.write(generated / "document_review.csv", review_fields, [
             {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": "", "parent_document": d["parent_document"], "document_depth": d["document_depth"], "child_document_count": d["child_document_count"]} for d in docs
         ])
-        self.write(generated / "empty_body_review.csv", ["document", "review_status", "parent_document", "document_depth", "child_document_count"], [
+        self.write(generated / "empty_body_review.csv", [
+            "document", "review_status", "parent_document", "document_depth",
+            "child_document_count", "reviewer", "review_notes", "evidence_reference",
+        ], [
             {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION",
-             "parent_document": "", "document_depth": "0", "child_document_count": "0"},
+             "parent_document": "", "document_depth": "0", "child_document_count": "0",
+             "reviewer": "", "review_notes": "", "evidence_reference": ""},
         ])
         self.write(generated / "title_review_candidates.csv", ["document", "review_status", "human_corrected_title", "reviewer", "review_notes", "evidence_reference"], [
             {"document": "book/a.sy", "review_status": "NOT_REVIEWED", "human_corrected_title": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
@@ -89,6 +93,107 @@ class CatalogueValidationTests(unittest.TestCase):
             {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
         return generated, source_candidates, asset_candidates
+
+    def test_rejects_decision_table_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            generated, source, assets = self.fixture(root)
+            decisions = root / "review-decisions.csv"
+            fields = [
+                "document", "reviewer", "title_review_status", "human_corrected_title",
+                "source_status", "source_version_status", "collation_status",
+                "topic_review_status", "human_approved_topics", "empty_body_status",
+                "review_notes", "evidence_reference",
+            ]
+            self.write(decisions, fields, [{
+                "document": "book/a.sy", "reviewer": "reviewer-1",
+                "title_review_status": "CONFIRMED", "evidence_reference": "EV-001",
+            }])
+            with self.assertRaisesRegex(ValueError, "document_review.title_review_status 与 review-decisions.csv 不一致"):
+                validator.validate_catalogue(generated, source, assets, decisions)
+
+    def test_rejects_empty_body_decision_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            generated, source, assets = self.fixture(root)
+            decisions = root / "review-decisions.csv"
+            fields = [
+                "document", "reviewer", "title_review_status", "human_corrected_title",
+                "source_status", "source_version_status", "collation_status",
+                "topic_review_status", "human_approved_topics", "empty_body_status",
+                "review_notes", "evidence_reference",
+            ]
+            self.write(decisions, fields, [{
+                "document": "book/b.sy", "reviewer": "reviewer-2",
+                "empty_body_status": "UNRESOLVED", "review_notes": "原始 .sy 待检查",
+                "evidence_reference": "EV-002",
+            }])
+            with self.assertRaisesRegex(ValueError, "empty_body_review.review_status 与 review-decisions.csv 不一致"):
+                validator.validate_catalogue(generated, source, assets, decisions)
+
+    def test_accepts_persisted_decisions_projected_to_review_queues(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            generated, source, assets = self.fixture(root)
+            decisions = root / "review-decisions.csv"
+            fields = [
+                "document", "reviewer", "title_review_status", "human_corrected_title",
+                "source_status", "source_version_status", "collation_status",
+                "topic_review_status", "human_approved_topics", "empty_body_status",
+                "review_notes", "evidence_reference",
+            ]
+            self.write(decisions, fields, [
+                {
+                    "document": "book/a.sy", "reviewer": "reviewer-1",
+                    "title_review_status": "CONFIRMED", "source_status": "PARTIAL",
+                    "source_version_status": "VERIFIED", "collation_status": "COLLATION_CONFIRMED",
+                    "topic_review_status": "CONFIRMED", "human_approved_topics": "伤寒与温病",
+                    "review_notes": "人工核验完成", "evidence_reference": "EV-001",
+                },
+                {
+                    "document": "book/b.sy", "reviewer": "reviewer-2",
+                    "empty_body_status": "UNRESOLVED",
+                    "review_notes": "原始 .sy 待检查", "evidence_reference": "EV-002",
+                },
+            ])
+
+            def update_rows(path, key, key_value, updates):
+                file_path = generated / path
+                with file_path.open(encoding="utf-8-sig", newline="") as stream:
+                    rows = list(csv.DictReader(stream))
+                target = next(row for row in rows if row[key] == key_value)
+                target.update(updates)
+                self.write(file_path, list(target), rows)
+
+            update_rows("document_review.csv", "document", "book/a.sy", {
+                "title_review_status": "CONFIRMED", "source_status": "PARTIAL",
+                "source_version_status": "VERIFIED", "collation_status": "COLLATION_CONFIRMED",
+                "topic_review_status": "CONFIRMED", "human_approved_topics": "伤寒与温病",
+                "reviewer": "reviewer-1", "review_notes": "人工核验完成",
+                "evidence_reference": "EV-001",
+            })
+            update_rows("document_review.csv", "document", "book/b.sy", {
+                "reviewer": "reviewer-2", "review_notes": "原始 .sy 待检查",
+                "evidence_reference": "EV-002",
+            })
+            shared = {
+                "reviewer": "reviewer-1", "review_notes": "人工核验完成",
+                "evidence_reference": "EV-001",
+            }
+            update_rows("title_review_candidates.csv", "document", "book/a.sy", {
+                "review_status": "CONFIRMED", **shared,
+            })
+            update_rows("topic_review.csv", "document", "book/a.sy", {
+                "review_status": "CONFIRMED", "human_approved_topics": "伤寒与温病", **shared,
+            })
+            update_rows("topic_review_batches.csv", "document", "book/a.sy", {
+                "review_status": "CONFIRMED", "human_approved_topics": "伤寒与温病", **shared,
+            })
+            update_rows("empty_body_review.csv", "document", "book/b.sy", {
+                "review_status": "UNRESOLVED", "reviewer": "reviewer-2",
+                "review_notes": "原始 .sy 待检查", "evidence_reference": "EV-002",
+            })
+            validator.validate_catalogue(generated, source, assets, decisions)
 
     def test_accepts_consistent_catalogue_and_review_queues(self):
         with tempfile.TemporaryDirectory() as temp:
