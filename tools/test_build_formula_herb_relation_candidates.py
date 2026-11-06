@@ -38,7 +38,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 ("f1", "FORMULA", "桂枝汤", 0, 3),
                 ("h1", "HERB", "桂枝", 4, 6),
                 ("h2", "HERB", "芍药", 7, 9),
-                ("f2", "FORMULA", "麻黄汤", 13, 16),
+                ("f2", "FORMULA", "麻黄汤", 14, 17),
             ]
             with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=fields)
