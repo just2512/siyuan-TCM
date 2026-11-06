@@ -64,6 +64,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             if not unit_id or not document:
                 raise ValueError(f"line {line_number}: missing unit/source identity")
             unit_total += 1
+            seen_in_unit: set[str] = set()
             for term, start, end in iter_ngrams(text, min_length, max_length):
                 if term in STOP_TERMS:
                     continue
