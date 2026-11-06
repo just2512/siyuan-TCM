@@ -56,6 +56,36 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
         }
         self.assertEqual(module.nearby_formula([explicit], evidence_unit), explicit)
 
+    def test_secondary_main_indication_is_explicit_but_two_formulas_are_ambiguous(self):
+        evidence_unit = {
+            "unit_id": "composition",
+            "source": {"tree_position": "0.0"},
+        }
+        text = "柏叶汤主之；黄土汤亦主之"
+        baiye = {
+            "mention_id": "baiye", "unit_id": "indication", "tree_position": "0.2",
+            "character_start": "0", "character_end": "3",
+            "matched_text": "柏叶汤", "_source_text": text,
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        huangtu = {
+            "mention_id": "huangtu", "unit_id": "indication", "tree_position": "0.2",
+            "character_start": "6", "character_end": "9",
+            "matched_text": "黄土汤", "_source_text": text,
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        self.assertTrue(module.has_explicit_formula_context(baiye))
+        self.assertTrue(module.has_explicit_formula_context(huangtu))
+        self.assertIsNone(module.nearby_formula([baiye, huangtu], evidence_unit))
+
+        incidental = {
+            "mention_id": "white-tiger", "unit_id": "context", "tree_position": "0.2",
+            "character_start": "0", "character_end": "3",
+            "matched_text": "白虎汤", "_source_text": "白虎汤证对不对",
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        self.assertFalse(module.has_explicit_formula_context(incidental))
+
     def test_links_composition_list_to_unique_nearby_formula_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
