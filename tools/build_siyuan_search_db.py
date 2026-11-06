@@ -352,12 +352,19 @@ def search_relation_candidates(database_path: Path, query: str, limit: int = 20)
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
-        SELECT relation_id, predicate, subject_text, object_text, document,
-               tree_position, block_id, sentence_start, sentence_end,
-               evidence_text, extraction_rule, resolution_status, unit_id
-        FROM semantic_relation_candidates
-        WHERE instr(subject_text, ?) > 0 OR instr(object_text, ?) > 0
-        ORDER BY document, tree_position, sentence_start
+        SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,
+               r.document AS evidence_document, r.tree_position AS evidence_tree_position,
+               r.block_id AS evidence_block_id, r.sentence_start, r.sentence_end,
+               r.evidence_text, r.extraction_rule, r.resolution_status, r.unit_id,
+               s.document AS subject_document, s.tree_position AS subject_tree_position,
+               s.block_id AS subject_block_id, s.section_path AS subject_section_path,
+               o.document AS object_document, o.tree_position AS object_tree_position,
+               o.block_id AS object_block_id, o.section_path AS object_section_path
+        FROM semantic_relation_candidates r
+        LEFT JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
+        LEFT JOIN entity_mentions o ON o.mention_id = r.object_mention_id
+        WHERE instr(r.subject_text, ?) > 0 OR instr(r.object_text, ?) > 0
+        ORDER BY r.document, r.tree_position, r.sentence_start
         LIMIT ?
     """, (query, query, limit)).fetchall()
     results = [dict(row) for row in rows]
