@@ -38,6 +38,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             self.assertEqual(row["candidate_status"], "UNCLASSIFIED_TERM_CANDIDATE")
             samples = json.loads(row["sample_evidence"])
             self.assertIn("太阳中风", samples[0]["evidence_text"])
+            self.assertEqual(samples[0]["matched_text"], "太阳中风")
 
     def test_ignores_terms_seen_in_only_one_document(self):
         with tempfile.TemporaryDirectory() as temp:
