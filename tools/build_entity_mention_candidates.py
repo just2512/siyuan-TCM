@@ -71,8 +71,8 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
     blocks = 0
     mentions = 0
     seen_ids: set[str] = set()
-    with gzip.open(content_index, "rt", encoding="utf-8-sig", newline="") as source, \\
-         gzip.open(target, "wt", encoding="utf-8", newline="") as destination:
+    with (gzip.open(content_index, "rt", encoding="utf-8-sig", newline="") as source,
+          gzip.open(target, "wt", encoding="utf-8", newline="") as destination):
         reader = csv.DictReader(source)
         missing = REQUIRED_CONTENT_FIELDS - set(reader.fieldnames or [])
         if missing:
