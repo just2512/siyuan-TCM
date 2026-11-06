@@ -23,6 +23,8 @@ SUBJECT_TYPES = {
     "topic_decision", "title_decision", "empty_body_decision",
 }
 INSPECTION_METHODS = {"HUMAN_DIRECT", "PROGRAMMATIC_STRUCTURE", "AUTOMATED_EXTRACTION", "SECONDARY_REFERENCE"}
+AUTOMATED_METHODS = {"PROGRAMMATIC_STRUCTURE", "AUTOMATED_EXTRACTION"}
+HUMAN_ACTOR_METHODS = {"HUMAN_DIRECT", "SECONDARY_REFERENCE"}
 EVIDENCE_KINDS = {
     "original_sy", "asset_content", "title_page", "copyright_page",
     "table_of_contents", "body_page", "lecture_record", "audio_timestamp",
@@ -68,8 +70,11 @@ def validate_ledger(path: Path) -> dict[str, int]:
             raise ValueError(f"{evidence_id} evidence_kind 无效：{values['evidence_kind']}")
         if values["inspection_method"] not in INSPECTION_METHODS:
             raise ValueError(f"{evidence_id} inspection_method 无效：{values['inspection_method']}")
-        if values["inspection_method"] != "HUMAN_DIRECT" and not values["reviewer"].startswith(("automated-", "system-")):
+        automated_actor = values["reviewer"].startswith(("automated-", "system-"))
+        if values["inspection_method"] in AUTOMATED_METHODS and not automated_actor:
             raise ValueError(f"{evidence_id} 非人工检查记录不得伪装为人工核验人")
+        if values["inspection_method"] in HUMAN_ACTOR_METHODS and automated_actor:
+            raise ValueError(f"{evidence_id} {values['inspection_method']} 不得使用自动化核验人标识")
         source_ref = values["source_reference"].replace("\\", "/")
         if re.match(r"^[A-Za-z]:/", source_ref) or source_ref.startswith(("/", "//")):
             raise ValueError(f"{evidence_id} 不得记录本机绝对路径")

@@ -112,6 +112,18 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "不得伪装为人工核验人"):
                 validator.validate_ledger(path)
 
+    def test_human_direct_records_must_not_claim_an_automated_reviewer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "ledger.csv"
+            for method in ("HUMAN_DIRECT", "SECONDARY_REFERENCE"):
+                with self.subTest(method=method):
+                    self.write_ledger(path, [self.row(
+                        inspection_method=method,
+                        reviewer="automated-structure-scan",
+                    )])
+                    with self.assertRaisesRegex(ValueError, "不得使用自动化核验人标识"):
+                        validator.validate_ledger(path)
+
     def test_rejects_absolute_machine_paths(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "ledger.csv"
