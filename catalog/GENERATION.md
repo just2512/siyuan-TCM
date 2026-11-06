@@ -40,3 +40,20 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 索引生成工具和工作流配置已经提交。当前尚未取得成功的 GitHub Actions 运行记录，因此 catalog/generated/ 中的全量逐篇索引仍待实际执行后验收；不要将仓库盘点基线误认为逐篇索引已完成。
 
 机器可读知识单元的数据契约见 [KNOWLEDGE_UNIT_SCHEMA.md](KNOWLEDGE_UNIT_SCHEMA.md)。该步骤只标准化结构与来源定位，不自动解释或改写医学内容。
+
+## 可查询 SQLite 索引
+
+全量生成后，可在本地执行：
+
+```bash
+python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz
+python tools/build_siyuan_search_db.py --query "桂枝汤" --limit 20
+```
+
+数据库包含：
+- `content_blocks`：带原文、章节、块定位的全文检索数据。
+- `node_relationships`：笔记内部引用、链接及附件关系。
+- `entity_mentions`：词典匹配实体提及、精确字符区间和来源定位。
+- `index_metadata`：索引记录数和实际检索后端。
+
+GitHub Actions 会将 SQLite 数据库作为 `siyuan-tcm-search-index` 工作流产物发布，保留 30 天；数据库本身不提交进 Git，以免把可重建的大型二进制文件放入版本历史。实体提及表中的记录仍然只是词典候选，不是已确认的医学关系。
