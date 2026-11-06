@@ -54,13 +54,15 @@ python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generat
 python tools/build_siyuan_search_db.py --query "桂枝汤" --limit 20
 python tools/build_siyuan_search_db.py --entity-query "桂枝汤" --limit 20
 python tools/build_siyuan_search_db.py --relation-query "桂枝汤" --limit 20
+python tools/export_semantic_graph.py
+python tools/export_semantic_graph.py --validate
 ```
 
 数据库包含：
 - `content_blocks`：带原文、章节、块定位的全文检索数据。
 - `node_relationships`：笔记内部引用、链接及附件关系。
 - `entity_catalog`：由词典词面生成的稳定实体标识；当前仅保证“类型+词面”唯一，不做同义词归并。\n- `entity_mentions`：词典匹配实体提及、精确字符区间、稳定实体 ID 和来源定位。
-- `semantic_relation_candidates`：从明确的“方剂由药物组成”等句式中提取的关系候选，保留完整证据句和字符范围；仍标记为候选，不作为医学事实。
+- `semantic_relation_candidates`：从明确的“方剂由药物组成”等句式中提取的关系候选，保留完整证据句和字符范围；仍标记为候选，不作为医学事实。\n- `semantic_graph.jsonl.gz`：将实体词面节点与关系候选边导出为 JSONL，边保留原文、文件哈希、块位置和字符跨度；可供其他程序直接消费。
 - `index_metadata`：索引记录数和实际检索后端。
 
 GitHub Actions 会将 SQLite 数据库作为 `siyuan-tcm-search-index` 工作流产物发布，保留 30 天；数据库本身不提交进 Git，以免把可重建的大型二进制文件放入版本历史。实体提及表中的记录仍然只是词典候选，不是已确认的医学关系。
