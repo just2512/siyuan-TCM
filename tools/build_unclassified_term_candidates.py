@@ -7,6 +7,7 @@ Every candidate retains occurrence counts and a small set of exact source spans.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 import gzip
 import hashlib
@@ -29,13 +30,20 @@ FIELDS = [
 ]
 
 
-def iter_ngrams(text: str, min_length: int = 2, max_length: int = 6):
+NGRAM_PATTERNS = {
+    length: re.compile(rf"(?=([\\u3400-\\u4dbf\\u4e00-\\u9fff]{{{length}}}))")
+    for length in range(2, 7)
+}
+
+
+def count_ngrams(text: str, min_length: int = 2, max_length: int = 6) -> Counter[str]:
+    """Count overlapping Han n-grams using regex scanning and a per-unit Counter."""
+    counts: Counter[str] = Counter()
     for match in HAN_RUN.finditer(text):
         run = match.group(0)
         for length in range(min_length, min(max_length, len(run)) + 1):
-            for offset in range(0, len(run) - length + 1):
-                start = match.start() + offset
-                yield run[offset:offset + length], start, start + length
+            counts.update(NGRAM_PATTERNS[length].findall(run))
+    return counts
 
 
 def candidate_id(term: str) -> str:
@@ -71,35 +79,36 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             if not unit_id or not document:
                 raise ValueError(f"line {line_number}: missing unit/source identity")
             unit_total += 1
-            seen_in_unit: set[str] = set()
-            for term, start, end in iter_ngrams(text, min_length, max_length):
+            for term, occurrences in count_ngrams(text, min_length, max_length).items():
                 if term in STOP_TERMS:
                     continue
                 if term in known_terms:
-                    known_term_occurrences += 1
+                    known_term_occurrences += occurrences
                     continue
                 item = stats.get(term)
                 if item is None:
                     item = {"occurrences": 0, "units": 0, "documents": set(), "samples": []}
                     stats[term] = item
-                item["occurrences"] += 1
-                if term not in seen_in_unit:
-                    item["units"] += 1
-                    seen_in_unit.add(term)
-                item["documents"].add(document)
-                if len(item["samples"]) < sample_limit:
-                    item["samples"].append({
-                        "unit_id": unit_id,
-                        "document": document,
-                        "source_sha256": str(source.get("sha256") or ""),
-                        "tree_position": str(source.get("tree_position") or ""),
-                        "block_id": str(source.get("block_id") or ""),
-                        "character_start": start,
-                        "character_end": end,
-                        "evidence_start": max(0, start - 12),
-                        "matched_text": term,
-                        "evidence_text": text[max(0, start - 12):min(len(text), end + 12)],
-                    })
+                item["occurrences"] += occurrences
+                item["units"] += 1
+                if document not in item["documents"]:
+                    item["documents"].add(document)
+                    if len(item["samples"]) < sample_limit:
+                        start = text.find(term)
+                        end = start + len(term)
+                        evidence_start = max(0, start - 12)
+                        item["samples"].append({
+                            "unit_id": unit_id,
+                            "document": document,
+                            "source_sha256": str(source.get("sha256") or ""),
+                            "tree_position": str(source.get("tree_position") or ""),
+                            "block_id": str(source.get("block_id") or ""),
+                            "character_start": start,
+                            "character_end": end,
+                            "evidence_start": evidence_start,
+                            "matched_text": term,
+                            "evidence_text": text[evidence_start:min(len(text), end + 12)],
+                        })
 
     eligible = [
         (term, item) for term, item in stats.items()
