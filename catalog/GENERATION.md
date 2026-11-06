@@ -85,3 +85,19 @@ CI 会从知识单元原文中并行挖掘跨文档重复出现的中文连续�
 ```bash
 python tools/build_siyuan_search_db.py --term-query 太阳中风 --db catalog/generated/siyuan_search.sqlite3
 ```
+
+
+## Candidate discovery and provenance boundaries
+
+Corpus-driven term discovery excludes exact lexical forms already present in
+`catalog/entity-lexicon.csv`. Its remaining output is a vocabulary-discovery
+queue, not a medical ontology: each row remains
+`UNCLASSIFIED_TERM_CANDIDATE`, and sample spans are checked against the
+captured source snippet. This is a programmatic discovery and indexing stage;
+it does not require the notebook author to re-approve the original note text.
+
+Relation validation independently verifies both endpoint mentions against
+their own source knowledge units, then verifies that the object mention belongs
+to the evidence block and that the formula mention belongs to the same source
+document and source revision. Invalid or cross-document endpoints are rejected
+before SQLite and graph export.
