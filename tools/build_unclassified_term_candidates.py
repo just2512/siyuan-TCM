@@ -86,6 +86,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         "block_id": str(source.get("block_id") or ""),
                         "character_start": start,
                         "character_end": end,
+                        "evidence_start": max(0, start - 12),
                         "matched_text": term,
                         "evidence_text": text[max(0, start - 12):min(len(text), end + 12)],
                     })
@@ -145,6 +146,11 @@ def validate(path: Path) -> int:
                     raise ValueError(f"line {line_number}: evidence span length mismatch")
                 if sample.get("matched_text") != row["term"]:
                     raise ValueError(f"line {line_number}: evidence text does not match candidate")
+                evidence_start = int(sample.get("evidence_start", -1))
+                relative_start = int(sample["character_start"]) - evidence_start
+                relative_end = int(sample["character_end"]) - evidence_start
+                if evidence_start < 0 or sample["evidence_text"][relative_start:relative_end] != row["term"]:
+                    raise ValueError(f"line {line_number}: candidate does not match evidence snippet")
             seen.add(row["candidate_id"])
             count += 1
     return count
