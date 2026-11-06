@@ -139,38 +139,62 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     sample_evidence TEXT NOT NULL,
                     PRIMARY KEY (term_id, sample_index)
                 ) WITHOUT ROWID;
-                CREATE TEMP TABLE unit_ngrams (
-                    term TEXT PRIMARY KEY,
-                    occurrence_count INTEGER NOT NULL
-                ) WITHOUT ROWID;
                 CREATE TEMP TABLE current_document_terms (
-                    term_id INTEGER PRIMARY KEY,
-                    sample_index INTEGER,
-                    sample_evidence TEXT
+                    term TEXT PRIMARY KEY,
+                    occurrence_count INTEGER NOT NULL,
+                    unit_count INTEGER NOT NULL,
+                    sample_evidence TEXT NOT NULL
                 ) WITHOUT ROWID;
             """)
             active_document: str | None = None
+            document_terms: dict[str, list[Any]] = {}
+            last_commit_unit = 0
 
             def flush_document_terms() -> None:
-                if active_document is None:
+                nonlocal document_terms, last_commit_unit
+                if not document_terms:
                     return
+                connection.execute("DELETE FROM current_document_terms")
+                connection.executemany("""
+                    INSERT INTO current_document_terms(
+                        term, occurrence_count, unit_count, sample_evidence
+                    ) VALUES (?, ?, ?, ?)
+                """, [
+                    (term, values[0], values[1], values[2])
+                    for term, values in document_terms.items()
+                ])
+                connection.execute("""
+                    INSERT INTO term_stats (term, occurrence_count, unit_count)
+                    SELECT term, occurrence_count, unit_count
+                    FROM current_document_terms WHERE 1
+                    ON CONFLICT(term) DO UPDATE SET
+                        occurrence_count = occurrence_count + excluded.occurrence_count,
+                        unit_count = unit_count + excluded.unit_count
+                """)
                 connection.execute("""
                     INSERT INTO term_samples(term_id, sample_index, sample_evidence)
-                    SELECT term_id, sample_index, sample_evidence
-                    FROM current_document_terms
-                    WHERE sample_evidence IS NOT NULL
-                """)
+                    SELECT stats.term_id, stats.sample_count, current.sample_evidence
+                    FROM current_document_terms AS current
+                    JOIN term_stats AS stats ON stats.term = current.term
+                    WHERE current.sample_evidence IS NOT NULL
+                      AND stats.sample_count < ?
+                """, (sample_limit,))
                 connection.execute("""
                     UPDATE term_stats
                     SET document_count = document_count + 1,
-                        sample_count = sample_count + CASE WHEN EXISTS (
-                            SELECT 1 FROM current_document_terms AS current
-                            WHERE current.term_id = term_stats.term_id
-                              AND current.sample_evidence IS NOT NULL
-                        ) THEN 1 ELSE 0 END
-                    WHERE term_id IN (SELECT term_id FROM current_document_terms)
-                """)
+                        sample_count = sample_count + CASE
+                            WHEN sample_count < ? AND EXISTS (
+                                SELECT 1 FROM current_document_terms AS current
+                                WHERE current.term = term_stats.term
+                                  AND current.sample_evidence IS NOT NULL
+                            ) THEN 1 ELSE 0 END
+                    WHERE term IN (SELECT term FROM current_document_terms)
+                """, (sample_limit,))
                 connection.execute("DELETE FROM current_document_terms")
+                document_terms.clear()
+                if unit_total - last_commit_unit >= COMMIT_EVERY_UNITS:
+                    connection.commit()
+                    last_commit_unit = unit_total
 
             with gzip.open(units_path, "rt", encoding="utf-8") as stream:
                 for line_number, line in enumerate(stream, 1):
@@ -194,61 +218,24 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         active_document = document
                     unit_total += 1
 
-                    filtered_terms = []
                     for term, occurrences in count_ngrams(text, min_length, max_length).items():
                         if term in STOP_TERMS:
                             continue
                         if term in known_terms:
                             known_term_occurrences += occurrences
                             continue
-                        filtered_terms.append((term, occurrences))
+                        aggregate = document_terms.get(term)
+                        if aggregate is None:
+                            document_terms[term] = [
+                                occurrences, 1,
+                                _sample_evidence(
+                                    unit, document, text, term, unit_id, line_number
+                                ),
+                            ]
+                        else:
+                            aggregate[0] += occurrences
+                            aggregate[1] += 1
 
-                    if filtered_terms:
-                        connection.execute("DELETE FROM unit_ngrams")
-                        connection.executemany(
-                            "INSERT INTO unit_ngrams(term, occurrence_count) VALUES (?, ?)",
-                            filtered_terms,
-                        )
-                        connection.execute("""
-                            INSERT INTO term_stats (term, occurrence_count, unit_count)
-                            SELECT term, occurrence_count, 1 FROM unit_ngrams WHERE 1
-                            ON CONFLICT(term) DO UPDATE SET
-                                occurrence_count = occurrence_count + excluded.occurrence_count,
-                                unit_count = unit_count + 1
-                        """)
-
-                        # The upstream content-block index is emitted in sorted
-                        # document order. Keep only the current document's unique
-                        # term IDs in a compact temporary B-tree; this avoids
-                        # probing a corpus-wide (term_id, document_id) table for
-                        # every knowledge unit.
-                        new_terms = connection.execute("""
-                            SELECT stats.term_id, unit.term, stats.sample_count
-                            FROM unit_ngrams AS unit
-                            JOIN term_stats AS stats ON stats.term = unit.term
-                            LEFT JOIN current_document_terms AS seen
-                              ON seen.term_id = stats.term_id
-                            WHERE seen.term_id IS NULL
-                        """).fetchall()
-
-                        if new_terms:
-                            staged_rows = []
-                            for term_id, term, sample_count in new_terms:
-                                if sample_count < sample_limit:
-                                    sample = _sample_evidence(
-                                        unit, document, text, term, unit_id, line_number
-                                    )
-                                    staged_rows.append((term_id, sample_count, sample))
-                                else:
-                                    staged_rows.append((term_id, None, None))
-                            connection.executemany("""
-                                INSERT INTO current_document_terms(
-                                    term_id, sample_index, sample_evidence
-                                ) VALUES (?, ?, ?)
-                            """, staged_rows)
-
-                    if unit_total % COMMIT_EVERY_UNITS == 0:
-                        connection.commit()
                     if unit_total % PROGRESS_EVERY_UNITS == 0:
                         distinct_so_far = connection.execute(
                             "SELECT COUNT(*) FROM term_stats"
@@ -256,7 +243,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         database_bytes = database_path.stat().st_size if database_path.exists() else 0
                         print(
                             f"[term-mining] scanned_units={unit_total} "
-                            f"distinct_terms={distinct_so_far} database_bytes={database_bytes}",
+                            f"committed_distinct_terms={distinct_so_far} "
+                            f"active_document_terms={len(document_terms)} "
+                            f"database_bytes={database_bytes}",
                             file=sys.stderr,
                             flush=True,
                         )
