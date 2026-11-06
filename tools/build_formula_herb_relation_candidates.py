@@ -40,26 +40,53 @@ def sentence_ranges(text: str):
             yield match.start(), match.end()
 
 
-def explicit_composition(formula: dict[str, str], herb: dict[str, str],
-                         sentence: str, sentence_start: int) -> bool:
-    fs, fe = int(formula["character_start"]), int(formula["character_end"])
-    hs, he = int(herb["character_start"]), int(herb["character_end"])
-    if fs < sentence_start or hs < sentence_start:
-        return False
-    if fs < he and hs < fe:
-        return False
-    if fe <= hs:
-        before_herb = sentence[fe - sentence_start:hs - sentence_start]
-        after_herb = sentence[he - sentence_start:]
-        if re.search(r"由|含有|包含|含", before_herb) and re.search(r"组成|构成", after_herb):
-            return True
-        if re.search(r"含有|包含|含", before_herb):
-            return True
-    elif he <= fs:
-        between = sentence[he - sentence_start:fs - sentence_start]
-        if re.search(r"组成|构成", between):
-            return True
-    return False
+def explicit_composition(formula: dict[str, str], herbs: list[dict[str, str]],
+                         sentence: str, sentence_start: int) -> list[dict[str, str]]:
+    """Return only herbs inside a tightly bounded, explicit ingredient phrase."""
+    fs = int(formula["character_start"]) - sentence_start
+    fe = int(formula["character_end"]) - sentence_start
+    if fs < 0 or fe > len(sentence):
+        return []
+
+    ingredient_start = ingredient_end = None
+    tail = sentence[fe:]
+    forward = re.match(
+        r"^\s*(?:中|的)?由(?P<ingredients>[^。！？；\n]{1,80}?)(?:组成|构成)",
+        tail,
+    )
+    if forward is None:
+        forward = re.match(
+            r"^\s*(?:中|的)?(?:含有|包含|含)(?P<ingredients>[^。！？；\n]{1,80})",
+            tail,
+        )
+    if forward is not None:
+        ingredient_start = fe + forward.start("ingredients")
+        ingredient_end = fe + forward.end("ingredients")
+    else:
+        reverse = re.search(
+            r"(?P<ingredients>[^。！？；\n]{1,80}?)(?:组成|构成)(?:了)?\s*$",
+            sentence[:fs],
+        )
+        if reverse is None:
+            return []
+        ingredient_start = reverse.start("ingredients")
+        ingredient_end = reverse.end("ingredients")
+
+    selected = []
+    residual = sentence[ingredient_start:ingredient_end]
+    replacements = []
+    for herb in herbs:
+        hs = int(herb["character_start"]) - sentence_start
+        he = int(herb["character_end"]) - sentence_start
+        if ingredient_start <= hs and he <= ingredient_end:
+            selected.append(herb)
+            replacements.append((hs - ingredient_start, he - ingredient_start))
+    if not selected:
+        return []
+    for left, right in sorted(replacements, reverse=True):
+        residual = residual[:left] + residual[right:]
+    residual = re.sub(r"[\s、，,及和与并等]+", "", residual)
+    return selected if not residual else []
 
 
 def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[str, int]:
@@ -89,9 +116,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                 sentence_herbs = [m for m in herbs
                     if start <= int(m["character_start"]) and int(m["character_end"]) <= end]
                 for formula in sentence_formulas:
-                    for herb in sentence_herbs:
-                        if not explicit_composition(formula, herb, sentence, start):
-                            continue
+                    for herb in explicit_composition(formula, sentence_herbs, sentence, start):
                         identity = "\0".join((
                             formula["mention_id"], "FORMULA_CONTAINS_HERB",
                             herb["mention_id"], str(start), str(end),
