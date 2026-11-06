@@ -142,6 +142,7 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"unknown relation endpoint at line {line}")
                 if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                     raise ValueError(f"unsafe relation status at line {line}")
+                evidence = row["evidence"]
                 start, end = evidence["character_start"], evidence["character_end"]
                 source = connection.execute("""SELECT content_text FROM content_blocks
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
