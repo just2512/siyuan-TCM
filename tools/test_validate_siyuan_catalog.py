@@ -280,6 +280,13 @@ class CatalogueValidationTests(unittest.TestCase):
             rows[0]["reviewer"] = "reviewer-1"
             rows[0]["evidence_reference"] = "EV-001"
             self.write(path, list(rows[0]), rows)
+            for queue_name in ("title_review_candidates.csv", "topic_review.csv", "topic_review_batches.csv"):
+                queue_path = generated / queue_name
+                with queue_path.open(encoding="utf-8-sig", newline="") as stream:
+                    queue_rows = list(csv.DictReader(stream))
+                queue_rows[0]["reviewer"] = "reviewer-1"
+                queue_rows[0]["evidence_reference"] = "EV-001"
+                self.write(queue_path, list(queue_rows[0]), queue_rows)
             validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_topic_queue_status_drift(self):
