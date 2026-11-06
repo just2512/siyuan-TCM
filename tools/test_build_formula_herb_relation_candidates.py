@@ -35,6 +35,27 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             [],
         )
 
+    def test_nearby_formula_requires_an_explicit_formula_anchor(self):
+        evidence_unit = {
+            "unit_id": "composition",
+            "source": {"tree_position": "0.0"},
+        }
+        incidental = {
+            "unit_id": "context", "tree_position": "0.2",
+            "character_start": "0", "character_end": "3",
+            "matched_text": "真武汤", "_source_text": "真武汤在少阴篇会有包含小便不利",
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        self.assertIsNone(module.nearby_formula([incidental], evidence_unit))
+
+        explicit = {
+            "unit_id": "indication", "tree_position": "0.2",
+            "character_start": "8", "character_end": "11",
+            "matched_text": "黄土汤", "_source_text": "【15.6】下血，黄土汤主之",
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        self.assertEqual(module.nearby_formula([explicit], evidence_unit), explicit)
+
     def test_links_composition_list_to_unique_nearby_formula_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
