@@ -121,7 +121,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             connection.execute("PRAGMA journal_mode=OFF")
             connection.execute("PRAGMA synchronous=OFF")
             connection.execute("PRAGMA temp_store=MEMORY")
-            connection.execute("PRAGMA cache_size=-32768")
+            # Give the large term/document B-trees enough page cache to avoid excessive
+            # random disk reads during corpus-wide UPSERT and provenance joins.
+            connection.execute("PRAGMA cache_size=-131072")
             connection.executescript("""
                 CREATE TABLE term_stats (
                     term_id INTEGER PRIMARY KEY,
