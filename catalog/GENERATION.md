@@ -70,3 +70,18 @@ python tools/export_semantic_graph.py --validate
 - `index_metadata`：索引记录数和实际检索后端。
 
 GitHub Actions 会将 SQLite 数据库作为 `siyuan-tcm-search-index` 工作流产物发布，保留 30 天；数据库本身不提交进 Git，以免把可重建的大型二进制文件放入版本历史。实体提及表中的记录仍然只是词典候选，不是已确认的医学关系。
+
+
+## 机器术语发现与查询
+
+CI 会从知识单元原文中并行挖掘跨文档重复出现的中文连续词片段，生成
+`catalog/generated/unclassified_term_candidates.csv.gz`。默认要求至少出现 3 次且覆盖 2 篇文档，
+每条候选保留出现次数、知识单元数、文档数以及最多 5 条原文位置和字符跨度证据。
+
+这一步不依赖逐篇人工审批，也不自动把词片段判定为中医实体。候选统一标记为
+`UNCLASSIFIED_TERM_CANDIDATE`，供后续按症状、脉象、舌象、证候、治法、方剂、药物等类别
+进行程序化归类。SQLite 同时保存这些候选，可用：
+
+```bash
+python tools/build_siyuan_search_db.py --term-query 太阳中风 --db catalog/generated/siyuan_search.sqlite3
+```
