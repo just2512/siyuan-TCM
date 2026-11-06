@@ -12,7 +12,6 @@ import gzip
 import hashlib
 import json
 import re
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -65,7 +64,6 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             if not unit_id or not document:
                 raise ValueError(f"line {line_number}: missing unit/source identity")
             unit_total += 1
-            seen_in_unit: set[str] = set()
             for term, start, end in iter_ngrams(text, min_length, max_length):
                 if term in STOP_TERMS:
                     continue
@@ -85,9 +83,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         "block_id": str(source.get("block_id") or ""),
                         "character_start": start,
                         "character_end": end,
+                        "matched_text": term,
                         "evidence_text": text[max(0, start - 12):min(len(text), end + 12)],
                     })
-                seen_in_unit.add(term)
 
     eligible = [
         (term, item) for term, item in stats.items()
@@ -142,6 +140,8 @@ def validate(path: Path) -> int:
             for sample in samples:
                 if int(sample["character_end"]) - int(sample["character_start"]) != len(row["term"]):
                     raise ValueError(f"line {line_number}: evidence span length mismatch")
+                if sample.get("matched_text") != row["term"]:
+                    raise ValueError(f"line {line_number}: evidence text does not match candidate")
             seen.add(row["candidate_id"])
             count += 1
     return count
