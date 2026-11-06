@@ -67,8 +67,9 @@
 
 文件：`document_review.csv`
 
-- `source_status`：只有找到可定位的原始出处或书目记录后才能标为 `VERIFIED`。
-- `source_version_status`：需要确认具体版本、出版信息或底本；只知道讲者/课程名称不够。
+- `source_status` 与 `source_version_status` 均使用 `UNVERIFIED`、`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
+- `PARTIAL` 仅表示已直接检查部分原始材料并留下具体定位；它不等于 `VERIFIED`，也不得计入完整核验量。
+- `source_version_status` 需要确认具体版本、出版信息或底本；只知道讲者/课程名称不够。
 - `collation_status`：只有完成与明确底本的逐段/逐页比对后才可标为已校勘。未比对时保留 `NOT_REVIEWED`。
 - `review_notes` 应写清书名、作者/编者、出版社或版本、出版年份、卷册/页码，以及证据位置；缺项时明确标注未知。
 
@@ -114,7 +115,7 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `reviewer`：核验人。
 - `title_review_status`：`CONFIRMED`、`RENAME_REQUIRED`、`UNRESOLVED`。
 - `human_corrected_title`：人工确认后的标题建议，不覆盖机器原始标题。
-- `source_status` / `source_version_status`：`VERIFIED`、`CONFLICT`、`UNRESOLVED`。
+- `source_status` / `source_version_status`：`PARTIAL`、`VERIFIED`、`CONFLICT`、`UNRESOLVED`；`PARTIAL` 不得等同或折算为 `VERIFIED`。
 - `collation_status`：`COLLATION_CONFIRMED`、`CORRECTION_REQUIRED`、`UNRESOLVED`。
 - `topic_review_status`：`CONFIRMED`、`REMOVE_TOPIC`、`ADD_TOPIC`、`SPLIT_REQUIRED`、`UNRESOLVED`。
 - `human_approved_topics`：人工确认的主题标签，以分号分隔；不会覆盖自动生成的 `topics`。
@@ -123,6 +124,8 @@ python tools/build_siyuan_catalog.py --notebook-map catalog/notebook-map.json --
 - `evidence_reference`：必须可定位到原始资料、书目、版本或校勘底本。填写任何非默认人工结论时必填。
 
 生成器会检查重复文档键、仓库中不存在的路径、非法状态和缺少证据引用；发现问题即失败，不会静默忽略。人工结论输出到生成核验表的对应字段，机器原始标签仍保留，避免把人工判断与算法结果混为一谈。
+
+主题结论在 `topic_review.csv` 和 `topic_review_batches.csv` 中同时回写 `human_approved_topics`、`reviewer`、`review_notes`、`evidence_reference`；标题结论在 `title_review_candidates.csv` 中回写 `human_corrected_title`、`reviewer`、`review_notes`、`evidence_reference`。CI 会逐字段与 `document_review.csv` 对照，防止只回写状态而丢失人工主题、核验人或证据。
 
 
 ## 8. 多主题核验分批工作包
@@ -251,3 +254,15 @@ python tools/build_asset_evidence_manifest.py --queue catalog/generated/asset_re
 - `NO_CONTEXT`：没有可展示的上下文。
 
 这些字段是定位辅助，不改变主题标签，也不构成语义审核结论。
+
+
+## 15. 附件内容证据结构门槛
+
+`catalog/review-evidence.csv` 为 `asset_content` 增加两个字段：
+
+- `context_reference`：对应原始思源文档的仓库相对路径，可附 `#block-id`，例如 `notebook/note.sy#20261106123400-xxxxxxx`。
+- `content_basis`：必须选择 `VISUAL_CONTENT_AND_NOTE_CONTEXT`、`TEXT_CONTENT_AND_NOTE_CONTEXT`、`DOCUMENT_PAGE_AND_NOTE_CONTEXT` 或 `MULTIMODAL_CONTENT_AND_NOTE_CONTEXT`。
+
+附件内容证据还必须填写候选附件的相对 `source_reference`、具体页码/区域/时间戳 `locator`、描述实际可见或可读内容及其与原始笔记引用关系的 `observation`、核验人和日期。只有 `HUMAN_DIRECT` 可用于 `CONFIRMED_MATCH` / `NOT_MATCH`。文件名、文件路径、候选数量、SHA-256、关键词或 CI 通过只能作为检索/字节级线索，不能替代内容比对。
+
+`content_evidence_reference` 必须填写该证据行的 `evidence_id`，不能填写本地 CSV 行号或任意说明文字。校验器只能验证字段、对象键、证据类型和引用关系；它不能证明观察内容真实，仍需人工实际打开附件和原始 `.sy`。

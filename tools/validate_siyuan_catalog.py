@@ -149,7 +149,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     review_rows = read_csv(generated / "document_review.csv", {
         "document", "title", "topics", "parse_status", "title_review_status",
         "topic_review_status", "source_status", "source_version_status",
-        "collation_status", "evidence_reference", "parent_document",
+        "collation_status", "human_corrected_title", "human_approved_topics", "reviewer", "review_notes", "evidence_reference", "parent_document",
         "document_depth", "child_document_count",
     })
     review = unique_index(review_rows, "document", "document_review.csv")
@@ -163,20 +163,37 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         allowed_statuses = {
             "title_review_status": {"NOT_REVIEWED", "CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
             "topic_review_status": {"NOT_REVIEWED", "CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
-            "source_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
-            "source_version_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+            "source_status": {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+            "source_version_status": {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
             "collation_status": {"NOT_REVIEWED", "COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
         }
         for field, allowed in allowed_statuses.items():
             if row[field] not in allowed:
                 raise ValueError(f"{path} 的 {field} 无效：{row[field]}")
         conclusion_values = {
-            "CONFIRMED", "RENAME_REQUIRED", "REMOVE_TOPIC", "ADD_TOPIC",
+            "CONFIRMED", "RENAME_REQUIRED", "REMOVE_TOPIC", "ADD_TOPIC", "PARTIAL",
             "SPLIT_REQUIRED", "VERIFIED", "CONFLICT", "UNRESOLVED",
             "COLLATION_CONFIRMED", "CORRECTION_REQUIRED",
         }
-        if any(row[field] in conclusion_values for field in allowed_statuses) and not row["evidence_reference"].strip():
+        has_conclusion = any(row[field] in conclusion_values for field in allowed_statuses)
+        if has_conclusion and not row["reviewer"].strip():
+            raise ValueError(f"{path} 已有人工核验结论但缺少 reviewer")
+        if has_conclusion and not row["evidence_reference"].strip():
             raise ValueError(f"{path} 已有人工核验结论但缺少 evidence_reference")
+
+        approved_topics = [item.strip() for item in row["human_approved_topics"].split(";") if item.strip()]
+        if row["topic_review_status"] == "NOT_REVIEWED" and approved_topics:
+            raise ValueError(f"{path} topic_review_status 为 NOT_REVIEWED 时不得回写 human_approved_topics")
+        if row["topic_review_status"] != "NOT_REVIEWED" and not approved_topics:
+            raise ValueError(f"{path} 已有主题人工结论但缺少 human_approved_topics")
+        if len(approved_topics) != len(set(approved_topics)) or any(topic not in TOPIC_STATES for topic in approved_topics):
+            raise ValueError(f"{path} 的 human_approved_topics 存在重复项或未知主题")
+
+        corrected_title = row["human_corrected_title"].strip()
+        if row["title_review_status"] == "RENAME_REQUIRED" and not corrected_title:
+            raise ValueError(f"{path} 标题状态为 RENAME_REQUIRED 但缺少 human_corrected_title")
+        if corrected_title and row["title_review_status"] != "RENAME_REQUIRED":
+            raise ValueError(f"{path} 填写 human_corrected_title 时 title_review_status 必须为 RENAME_REQUIRED")
 
     empty_rows = read_csv(generated / "empty_body_review.csv", {
         "document", "review_status", "parent_document", "document_depth",
@@ -197,7 +214,9 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             if row[field] != docs[path][field]:
                 raise ValueError(f"{path} 的 empty_body_review.{field} 与 documents.csv 不一致")
 
-    title_rows = read_csv(generated / "title_review_candidates.csv", {"document", "review_status"})
+    title_rows = read_csv(generated / "title_review_candidates.csv", {
+        "document", "review_status", "human_corrected_title", "reviewer", "review_notes", "evidence_reference",
+    })
     title = unique_index(title_rows, "document", "title_review_candidates.csv")
     if not set(title).issubset(docs):
         raise ValueError("title_review_candidates.csv 引用了未知文档")
@@ -206,10 +225,14 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{path} 的标题复核状态无效")
         if row["review_status"] != review[path]["title_review_status"]:
             raise ValueError(f"{path} 的标题复核队列状态与逐篇核验状态不一致")
+        for field in ("human_corrected_title", "reviewer", "review_notes", "evidence_reference"):
+            if row[field] != review[path][field]:
+                raise ValueError(f"{path} 的标题复核队列 {field} 与逐篇核验状态不一致")
 
     topic_rows = read_csv(generated / "topic_review.csv", {
         "document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status",
         "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms",
+        "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
     })
     topic = unique_index(topic_rows, "document", "topic_review.csv")
     for path, row in topic.items():
@@ -219,6 +242,9 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{path} 的主题复核状态无效")
         if row["review_status"] != review[path]["topic_review_status"]:
             raise ValueError(f"{path} 的主题复核队列状态与逐篇核验状态不一致")
+        for field in ("human_approved_topics", "reviewer", "review_notes", "evidence_reference"):
+            if row[field] != review[path][field]:
+                raise ValueError(f"{path} 的主题复核队列 {field} 与逐篇核验状态不一致")
         expected = [item for item in docs[path]["topics"].split(";") if item]
         if row["catalog_topics"] != docs[path]["topics"] or int(row["catalog_topic_count"]) != len(expected):
             raise ValueError(f"{path} 的主题复核证据与 documents.csv 不一致")
@@ -232,10 +258,17 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         if len(expected) <= 1:
             raise ValueError(f"{path} 不应进入多主题复核队列")
 
-    batches = read_csv(generated / "topic_review_batches.csv", {"document", "batch_id", "batch_position", "batch_size"})
+    batches = read_csv(generated / "topic_review_batches.csv", {
+        "document", "batch_id", "batch_position", "batch_size", "review_status",
+        "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
+    })
     batch_doc_index = unique_index(batches, "document", "topic_review_batches.csv")
     if set(batch_doc_index) != set(topic):
         raise ValueError("topic_review_batches.csv 与 topic_review.csv 文档集合不一致")
+    for path, row in batch_doc_index.items():
+        for field in ("review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"):
+            if row[field] != topic[path][field]:
+                raise ValueError(f"{path} 的主题批次 {field} 与主题复核队列不一致")
     batch_positions: dict[str, list[int]] = {}
     for row in batches:
         if not row["batch_id"]:

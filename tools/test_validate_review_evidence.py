@@ -30,6 +30,8 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             "observation": "标题与正文内容一致；此处仅记录核验观察",
             "reviewer": "reviewer-1",
             "reviewed_at": "2026-11-05",
+            "context_reference": "",
+            "content_basis": "",
         }
         result.update(updates)
         return result
@@ -67,6 +69,37 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             for updates, message in cases:
                 with self.subTest(updates=updates):
                     self.write_ledger(path, [self.row(**updates)])
+                    with self.assertRaisesRegex(ValueError, message):
+                        validator.validate_ledger(path)
+
+    def test_asset_content_requires_direct_inspection_and_note_context(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "ledger.csv"
+            base = {
+                "subject_type": "asset_reference",
+                "subject_key": "assets/image.png",
+                "evidence_kind": "asset_content",
+                "source_reference": "assets/image.png",
+                "locator": "图像第 1 页中央区域",
+                "observation": "图中可见的药材标签与原始笔记该附件引用上下文逐项对应",
+                "context_reference": "folder/note.sy#block-123",
+                "content_basis": "VISUAL_CONTENT_AND_NOTE_CONTEXT",
+            }
+            self.write_ledger(path, [self.row(**base)])
+            result = validator.validate_ledger(path)
+            self.assertEqual(result["asset_content"], 1)
+
+            for updates, message in [
+                ({"context_reference": ""}, "原始 .sy 上下文定位"),
+                ({"content_basis": ""}, "有效 content_basis"),
+                ({"content_basis": "FILENAME_AND_HASH_ONLY"}, "content_basis 无效"),
+                ({"inspection_method": "PROGRAMMATIC_STRUCTURE", "reviewer": "automated-test"}, "必须来自 HUMAN_DIRECT"),
+                ({"context_reference": "/home/user/note.sy"}, "绝对路径或路径穿越"),
+            ]:
+                with self.subTest(updates=updates):
+                    candidate = dict(base)
+                    candidate.update(updates)
+                    self.write_ledger(path, [self.row(**candidate)])
                     with self.assertRaisesRegex(ValueError, message):
                         validator.validate_ledger(path)
 

@@ -108,6 +108,29 @@ class SourceReviewQueueTests(unittest.TestCase):
             self.assertEqual(output[0]["source_version_status"], "UNVERIFIED")
             self.assertEqual(output[0]["collation_status"], "UNVERIFIED")
 
+    def test_preserves_partial_and_verified_as_separate_source_states(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source.csv"
+            self.write_rows(source, [
+                self.row("asset_file", "assets/partial.pdf",
+                         source_identity_status="PARTIAL",
+                         source_identity_evidence_reference="EV-PARTIAL"),
+                self.row("asset_file", "assets/verified.pdf",
+                         source_identity_status="VERIFIED",
+                         source_identity_evidence_reference="EV-VERIFIED"),
+            ])
+            rows = queue.read_candidates(source)
+            queue.build_queue(rows, root / "out")
+            with (root / "out" / "source_review_queue.csv").open(encoding="utf-8-sig", newline="") as stream:
+                output = {row["path"]: row for row in csv.DictReader(stream)}
+            self.assertEqual(output["assets/partial.pdf"]["source_identity_status"], "PARTIAL")
+            self.assertEqual(output["assets/verified.pdf"]["source_identity_status"], "VERIFIED")
+            self.assertNotEqual(
+                output["assets/partial.pdf"]["source_identity_status"],
+                output["assets/verified.pdf"]["source_identity_status"],
+            )
+
     def test_rejects_invalid_batch_size(self):
         with self.assertRaises(ValueError):
             queue.build_queue([], Path("unused"), 0)

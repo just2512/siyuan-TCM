@@ -85,8 +85,8 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None
 
 DECISION_FIELDS = {
     "title_review_status": {"NOT_REVIEWED", "CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
-    "source_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
-    "source_version_status": {"UNVERIFIED", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_status": {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_version_status": {"UNVERIFIED", "PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
     "collation_status": {"NOT_REVIEWED", "COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
     "topic_review_status": {"NOT_REVIEWED", "CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
     "empty_body_status": {"NEEDS_SOURCE_INSPECTION", "SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},
@@ -143,8 +143,8 @@ def load_decisions(path: Path, known_documents: set[str]) -> dict[str, dict[str,
                 unknown_topics = set(approved_topics) - set(catalog.TOPICS)
                 if unknown_topics:
                     raise ValueError(f"{document} 的 human_approved_topics 包含未知主题：{', '.join(sorted(unknown_topics))}")
-            elif approved_topics and not topic_status:
-                raise ValueError(f"{document} 填写 human_approved_topics 但未填写 topic_review_status")
+            elif approved_topics and topic_status in {"", "NOT_REVIEWED"}:
+                raise ValueError(f"{document} 填写 human_approved_topics 但 topic_review_status 仍为 NOT_REVIEWED")
 
             title_status = decision.get("title_review_status", "")
             corrected_title = decision.get("human_corrected_title", "")
@@ -317,7 +317,10 @@ def build_review_queues(documents_csv: Path, output: Path,
         "title_review_status": "review_status",
         "human_corrected_title": "human_corrected_title",
     })
-    apply_decisions(topic_rows, decisions, {"topic_review_status": "review_status"})
+    apply_decisions(topic_rows, decisions, {
+        "topic_review_status": "review_status",
+        "human_approved_topics": "human_approved_topics",
+    })
     apply_decisions(empty_rows, decisions, {"empty_body_status": "review_status"})
     topic_rows = assign_review_batches(topic_rows)
 
@@ -331,7 +334,7 @@ def build_review_queues(documents_csv: Path, output: Path,
     ])
     write_csv(output / "title_review_candidates.csv", title_candidate_rows, [
         "document", "notebook", "title", "title_source", "reason",
-        "review_status", "human_corrected_title", "review_notes", "evidence_reference",
+        "review_status", "human_corrected_title", "reviewer", "review_notes", "evidence_reference",
     ])
     write_csv(output / "empty_body_review.csv", empty_rows, [
         "document", "notebook", "parent_document", "document_depth", "child_document_count",
@@ -344,7 +347,7 @@ def build_review_queues(documents_csv: Path, output: Path,
         "catalog_title_matched_terms", "catalog_body_matched_terms", "catalog_topic_count", "excerpt_topic_count", "topic_count", "review_bucket",
         "excerpt_topics", "title_matched_terms", "body_excerpt_matched_terms",
         "matched_terms", "evidence_scope",
-        "search_text", "review_status", "review_notes", "evidence_reference",
+        "search_text", "review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
     ])
     write_csv(output / "topic_review_batches.csv", topic_rows, [
         "batch_id", "batch_position", "batch_size", "document", "notebook", "title",
@@ -352,7 +355,7 @@ def build_review_queues(documents_csv: Path, output: Path,
         "catalog_body_matched_terms", "catalog_topic_count",
         "excerpt_topic_count", "topic_count", "review_bucket", "excerpt_topics",
         "title_matched_terms", "body_excerpt_matched_terms", "matched_terms",
-        "evidence_scope", "search_text", "review_status", "review_notes", "evidence_reference",
+        "evidence_scope", "search_text", "review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
     ])
     batch_counts = Counter(row["batch_id"] for row in topic_rows)
     report = [

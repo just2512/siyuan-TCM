@@ -40,7 +40,7 @@
 - 新一轮核验请使用新日期文件，保留历史记录。
 - 若将单篇文档核验结果写入 `catalog/review-decisions.csv`，必须遵循 `catalog/REVIEW_GUIDE.md` 的状态与证据字段约束；不能仅凭汇总数字批量生成书目或校勘结论。
 - 附件候选清单中的 544 条文件名/路径候选目前均为 `NEEDS_INSPECTION`，90 条无候选为 `UNRESOLVED`；路径命中和 SHA-256 不等于内容核验。
-- 只有核实文件内容与引用关系后，才允许将 `manual_status` 更新为 `CONFIRMED_MATCH` 或 `NOT_MATCH`，并填写 `content_evidence_reference`。不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
+- 只有核实文件内容与引用关系后，才允许将 `manual_status` 更新为 `CONFIRMED_MATCH` 或 `NOT_MATCH`。此时必须在 `catalog/review-evidence.csv` 新增 `asset_content` / `HUMAN_DIRECT` 证据行，填写原始 `.sy` 的 `context_reference` 和 `content_basis`；`content_evidence_reference` 只能填写该行的 `evidence_id`，不能填写文件名、哈希或本地 CSV 行号。不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
 
 ## 附件候选复核队列
 
@@ -62,7 +62,7 @@ CI 根据 `catalog/source-review-candidates.csv` 自动生成：
 - `catalog/generated/source_review_queue.csv`：231 条候选，按类别和路径排序、每 20 条一批。
 - `catalog/generated/source_review_queue.md`：类别数量、当前核验状态及证据要求。
 
-队列将本地附件文件、《黄帝内经》篇章候选、课程/讲座来源候选分开组织。只有能定位到具体原始材料及页码/期次的证据，才允许更新为 `VERIFIED`；来源身份、版本确认和文本校勘必须分别判断。
+队列将本地附件文件、《黄帝内经》篇章候选、课程/讲座来源候选分开组织。只有能定位到具体原始材料及页码/期次的直接证据，才允许更新为 `PARTIAL` 或 `VERIFIED`；`PARTIAL` 只表示有限范围已核验，不计入 `VERIFIED`。来源身份、版本确认和文本校勘必须分别判断。
 
 ## 下一步处理边界
 

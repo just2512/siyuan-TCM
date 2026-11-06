@@ -11,7 +11,7 @@ import csv
 from collections import Counter
 from pathlib import Path
 
-LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method"}
+LEDGER_FIELDS = {"evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method", "context_reference", "content_basis"}
 DECISION_FIELDS = {
     "document", "title_review_status", "source_status", "source_version_status",
     "collation_status", "topic_review_status", "empty_body_status",
@@ -25,8 +25,8 @@ SOURCE_FIELDS = {
 ASSET_FIELDS = {"reference", "manual_status", "content_evidence_reference"}
 DECISION_ACTIVE = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
-    "source_status": {"VERIFIED", "CONFLICT", "UNRESOLVED"},
-    "source_version_status": {"VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_version_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
     "collation_status": {"COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
     "topic_review_status": {"CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
     "empty_body_status": {"SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},
@@ -45,6 +45,12 @@ SOURCE_CONCLUSION_FIELDS = {
     "collation_status": ("collation_evidence_reference", DECISION_EVIDENCE_KINDS["collation_status"]),
 }
 ASSET_EVIDENCE_KINDS = {"asset_content"}
+ASSET_CONTENT_BASES = {
+    "VISUAL_CONTENT_AND_NOTE_CONTEXT",
+    "TEXT_CONTENT_AND_NOTE_CONTEXT",
+    "DOCUMENT_PAGE_AND_NOTE_CONTEXT",
+    "MULTIMODAL_CONTENT_AND_NOTE_CONTEXT",
+}
 DECISION_SUBJECTS = {
     "title_review_status": {"document", "title_decision"},
     "source_status": {"document", "source_candidate"},
@@ -117,6 +123,17 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                     f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
                     f"{record['inspection_method']}"
                 )
+            if "asset_content" in allowed_kinds and record["evidence_kind"] == "asset_content":
+                context_reference = record["context_reference"].replace("\\", "/")
+                context_document = context_reference.split("#", 1)[0]
+                if (
+                    not context_document.endswith(".sy")
+                    or context_reference.startswith(("/", "//"))
+                    or ".." in context_reference.split("/")
+                ):
+                    raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少安全的原始 .sy 上下文定位")
+                if record["content_basis"] not in ASSET_CONTENT_BASES:
+                    raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少有效 content_basis")
             counts["validated_evidence_references"] += 1
 
     if decisions_path:

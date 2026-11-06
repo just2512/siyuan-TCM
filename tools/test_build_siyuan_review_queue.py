@@ -144,8 +144,8 @@ class ReviewQueueTests(unittest.TestCase):
                 writer.writeheader()
                 writer.writerow({
                     "path": "book/a.sy", "notebook": "书籍", "title": "伤寒论",
-                    "title_source": "PROPERTY", "topics": "伤寒与温病",
-                    "parse_status": "PARSED", "search_text": "伤寒论",
+                    "title_source": "BODY_FIRST_LINE", "topics": "伤寒与温病;经典与理论",
+                    "parse_status": "PARSED", "search_text": "伤寒论 黄帝内经",
                 })
             decisions = root / "review-decisions.csv"
             with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
@@ -154,25 +154,44 @@ class ReviewQueueTests(unittest.TestCase):
                 writer.writerow({
                     "document": "book/a.sy", "reviewer": "reviewer-1",
                     "title_review_status": "CONFIRMED",
-                    "source_status": "VERIFIED", "source_version_status": "VERIFIED",
+                    "source_status": "PARTIAL", "source_version_status": "VERIFIED",
                     "collation_status": "COLLATION_CONFIRMED",
                     "topic_review_status": "CONFIRMED",
                     "human_approved_topics": "伤寒与温病",
                     "review_notes": "与底本目录一致",
-                    "evidence_reference": "书名页 p.1；目录 p.3",
+                    "evidence_reference": "EV-001;EV-002",
                 })
             output = root / "out"
             review.build_review_queues(source, output, decisions)
             with (output / "document_review.csv").open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            self.assertEqual(rows[0]["source_status"], "VERIFIED")
+            self.assertEqual(rows[0]["source_status"], "PARTIAL")
+            self.assertEqual(rows[0]["source_version_status"], "VERIFIED")
             self.assertEqual(rows[0]["title_review_status"], "CONFIRMED")
+            self.assertEqual(rows[0]["reviewer"], "reviewer-1")
             self.assertEqual(rows[0]["topic_review_status"], "CONFIRMED")
             self.assertEqual(rows[0]["human_approved_topics"], "伤寒与温病")
-            self.assertEqual(rows[0]["evidence_reference"], "书名页 p.1；目录 p.3")
+            self.assertEqual(rows[0]["evidence_reference"], "EV-001;EV-002")
+            with (output / "title_review_candidates.csv").open(encoding="utf-8-sig", newline="") as stream:
+                title_rows = list(csv.DictReader(stream))
+            self.assertEqual(title_rows[0]["review_status"], "CONFIRMED")
+            self.assertEqual(title_rows[0]["reviewer"], "reviewer-1")
+            self.assertEqual(title_rows[0]["human_corrected_title"], "")
+            self.assertEqual(title_rows[0]["evidence_reference"], "EV-001;EV-002")
+            with (output / "topic_review.csv").open(encoding="utf-8-sig", newline="") as stream:
+                topic_rows = list(csv.DictReader(stream))
+            self.assertEqual(topic_rows[0]["review_status"], "CONFIRMED")
+            self.assertEqual(topic_rows[0]["human_approved_topics"], "伤寒与温病")
+            self.assertEqual(topic_rows[0]["reviewer"], "reviewer-1")
+            self.assertEqual(topic_rows[0]["review_notes"], "与底本目录一致")
+            self.assertEqual(topic_rows[0]["evidence_reference"], "EV-001;EV-002")
+            with (output / "topic_review_batches.csv").open(encoding="utf-8-sig", newline="") as stream:
+                batch_rows = list(csv.DictReader(stream))
+            self.assertEqual(batch_rows[0]["human_approved_topics"], "伤寒与温病")
+            self.assertEqual(batch_rows[0]["reviewer"], "reviewer-1")
             with source.open("r", encoding="utf-8-sig", newline="") as stream:
                 original = list(csv.DictReader(stream))
-            self.assertEqual(original[0]["topics"], "伤寒与温病")
+            self.assertEqual(original[0]["topics"], "伤寒与温病;经典与理论")
 
     def test_rejects_duplicate_decision_rows_and_invalid_status(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -218,6 +237,21 @@ class ReviewQueueTests(unittest.TestCase):
                     "evidence_reference": "book/a.sy#topic-evidence",
                 })
             with self.assertRaisesRegex(ValueError, "缺少 human_approved_topics"):
+                review.load_decisions(decisions, {"book/a.sy"})
+
+    def test_rejects_approved_topics_with_unreviewed_topic_status(self):
+        with tempfile.TemporaryDirectory() as temp:
+            decisions = Path(temp) / "review-decisions.csv"
+            with decisions.open("w", encoding="utf-8-sig", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=review.DECISION_COLUMNS)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "book/a.sy", "reviewer": "reviewer-1",
+                    "topic_review_status": "NOT_REVIEWED",
+                    "human_approved_topics": "伤寒与温病",
+                    "evidence_reference": "book/a.sy#topic-evidence",
+                })
+            with self.assertRaisesRegex(ValueError, "仍为 NOT_REVIEWED"):
                 review.load_decisions(decisions, {"book/a.sy"})
 
     def test_rejects_unknown_or_duplicate_approved_topics(self):

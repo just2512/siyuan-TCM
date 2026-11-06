@@ -40,8 +40,8 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 1. 打开引用对应的原始 `.sy`，定位附件引用及前后文字。
 2. 打开所有候选文件；多候选必须逐一比对，不能默认取第一项。
 3. 核对实际内容、文件类型、清晰度/完整性，以及它是否确实对应该条引用。
-4. 建立本地内容核验记录（建议文件：`catalog/local-review/asset-content-review-2026-11-05.csv`），至少记录 `reference`、实际检查的候选路径、内容描述、文件类型、清晰度/完整性、对应原始 `.sy` 的上下文定位和核验人/日期。
-5. 只有内容和引用关系均核实后，才把本地候选清单的 `manual_status` 改为 `CONFIRMED_MATCH`；明确不匹配用 `NOT_MATCH`；两种结论都必须在 `content_evidence_reference` 填写指向上述记录的引用（例如该 CSV 中对应的 reference 键）。无法判断保留 `NEEDS_INSPECTION` 或 `UNRESOLVED`，并写明原因。
+4. 建立本地内容核验记录（建议文件：`catalog/local-review/asset-content-review-2026-11-05.csv`），记录 `reference`、实际检查的候选相对路径、内容描述、文件类型、清晰度/完整性、原始 `.sy` 上下文定位、核验人和日期。随后在 `catalog/review-evidence.csv` 为该引用新增证据行：`subject_type=asset_reference`、`subject_key=<reference>`、`evidence_kind=asset_content`、`inspection_method=HUMAN_DIRECT`、`source_reference=<候选附件相对路径>`、`locator=<页码/区域/时间戳>`、`observation=<实际内容与笔记引用关系>`、`context_reference=<相对.sy路径#block-id>`、`content_basis=<规定枚举>`、`reviewer` 和 `reviewed_at`。
+5. 只有内容和引用关系均核实后，才把本地候选清单的 `manual_status` 改为 `CONFIRMED_MATCH`；明确不匹配用 `NOT_MATCH`。两种结论的 `content_evidence_reference` 都必须填写上一步证据台账中的 `evidence_id`，不能填写本地内容 CSV 的行号、reference 键或自由文本。无法判断保留 `NEEDS_INSPECTION` 或 `UNRESOLVED`，并写明原因。
 6. 无候选时可在本地 assets 按文件名、文件 ID、原始文档上下文搜索。搜索不到只记录本次搜索范围和结果，不推断原附件已永久丢失。
 
 **禁止：** 仅凭文件名、扩展名、候选数量、`.sy` 路径命中或 SHA-256 将附件标记为匹配；`CONFIRMED_MATCH` / `NOT_MATCH` 必须有 `content_evidence_reference`；禁止将本地绝对路径或附件文件提交到仓库。
@@ -69,9 +69,9 @@ python tools/build_siyuan_review_queue.py --documents catalog/generated/document
 
 证据记录保存在 `catalog/local-review/` 下，采用稳定文件名和可定位页码/截图编号；只记录必要书目信息和定位，不复制整本受版权保护内容。
 
-## 4. 主题规则复核：4,783 条文档-主题记录
+## 4. 主题规则复核：4,782 条文档-主题记录
 
-查看 `catalog/generated/topic_rule_audit.csv`。本次静态审计有 4,783 条记录，全部初始为 `NOT_REVIEWED`。
+查看 `catalog/generated/topic_rule_audit.csv`。本次静态审计有 4,782 条记录，全部初始为 `NOT_REVIEWED`。
 
 人工决策约束：每条结论必须填写 `reviewer` 和 `evidence_reference`；`topic_review_status` 一旦不是 `NOT_REVIEWED`，必须填写规范主题枚举中的 `human_approved_topics`（分号分隔、不得重复）；`RENAME_REQUIRED` 必须填写 `human_corrected_title`，且修正标题只能与该状态同时使用。
 
@@ -153,7 +153,7 @@ python tools/validate_review_evidence_references.py --ledger catalog/review-evid
 - 人工决策字段进入有效结论状态后，`evidence_reference` 必须是台账中存在的 evidence_id；多个 ID 使用英文分号分隔。
 - 决策证据必须属于同一文档键，且证据类型必须与结论域兼容。
 - 来源状态不再是 `UNVERIFIED` 时，证据必须属于相同候选 path 的 `source_candidate`。
-- 附件状态为 `CONFIRMED_MATCH` 或 `NOT_MATCH` 时，证据必须属于相同 reference 的 `asset_reference`。
+- 附件状态为 `CONFIRMED_MATCH` 或 `NOT_MATCH` 时，证据必须属于相同 reference 的 `asset_reference`，且必须为 `asset_content` + `HUMAN_DIRECT`，并具有 `context_reference`（原始 `.sy` 路径/块定位）和有效 `content_basis`。
 - 未核验记录可以保留历史线索文字，但不把它当成有效证据 ID，也不因此要求创建证据行。
 - 本校验只证明引用存在、对象键一致、证据域兼容；不证明原始材料真实，也不证明观察内容正确。
 

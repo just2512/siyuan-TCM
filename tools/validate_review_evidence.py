@@ -16,6 +16,7 @@ from pathlib import Path
 FIELDS = [
     "evidence_id", "subject_type", "subject_key", "evidence_kind", "inspection_method",
     "source_reference", "locator", "observation", "reviewer", "reviewed_at",
+    "context_reference", "content_basis",
 ]
 SUBJECT_TYPES = {
     "document", "source_candidate", "asset_reference",
@@ -28,6 +29,13 @@ EVIDENCE_KINDS = {
     "catalogue_record", "other_primary_source",
 }
 ID_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9_-]{2,63}$")
+OPTIONAL_FIELDS = {"context_reference", "content_basis"}
+ASSET_CONTENT_BASES = {
+    "VISUAL_CONTENT_AND_NOTE_CONTEXT",
+    "TEXT_CONTENT_AND_NOTE_CONTEXT",
+    "DOCUMENT_PAGE_AND_NOTE_CONTEXT",
+    "MULTIMODAL_CONTENT_AND_NOTE_CONTEXT",
+}
 
 
 def validate_ledger(path: Path) -> dict[str, int]:
@@ -50,6 +58,8 @@ def validate_ledger(path: Path) -> dict[str, int]:
             raise ValueError(f"证据 ID 重复：{evidence_id}")
         seen.add(evidence_id)
         for field in FIELDS[1:]:
+            if field in OPTIONAL_FIELDS:
+                continue
             if not values[field]:
                 raise ValueError(f"{evidence_id} 缺少必填字段：{field}")
         if values["subject_type"] not in SUBJECT_TYPES:
@@ -63,6 +73,25 @@ def validate_ledger(path: Path) -> dict[str, int]:
         source_ref = values["source_reference"].replace("\\", "/")
         if re.match(r"^[A-Za-z]:/", source_ref) or source_ref.startswith(("/", "//")):
             raise ValueError(f"{evidence_id} 不得记录本机绝对路径")
+        context_ref = values["context_reference"].replace("\\", "/")
+        if context_ref and (
+            re.match(r"^[A-Za-z]:/", context_ref)
+            or context_ref.startswith(("/", "//"))
+            or ".." in context_ref.split("/")
+        ):
+            raise ValueError(f"{evidence_id} context_reference 不得使用绝对路径或路径穿越")
+        if values["content_basis"] and values["content_basis"] not in ASSET_CONTENT_BASES:
+            raise ValueError(f"{evidence_id} content_basis 无效：{values['content_basis']}")
+        if values["evidence_kind"] == "asset_content":
+            if values["inspection_method"] != "HUMAN_DIRECT":
+                raise ValueError(f"{evidence_id} asset_content 必须来自 HUMAN_DIRECT 检查")
+            context_document = context_ref.split("#", 1)[0]
+            if not context_document.endswith(".sy"):
+                raise ValueError(f"{evidence_id} asset_content 缺少原始 .sy 上下文定位")
+            if values["content_basis"] not in ASSET_CONTENT_BASES:
+                raise ValueError(f"{evidence_id} asset_content 缺少有效 content_basis")
+        elif values["content_basis"]:
+            raise ValueError(f"{evidence_id} 只有 asset_content 可以填写 content_basis")
         try:
             date.fromisoformat(values["reviewed_at"])
         except ValueError as exc:

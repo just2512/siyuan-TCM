@@ -17,8 +17,8 @@ UNRESOLVED_VALUES = {"UNRESOLVED"}
 CONFLICT_VALUES = {"CONFLICT"}
 ACTIVE_VALUES = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
-    "source_status": {"VERIFIED", "CONFLICT", "UNRESOLVED"},
-    "source_version_status": {"VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_version_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
     "collation_status": {"COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
     "topic_review_status": {"CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
     "empty_body_status": {"SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},

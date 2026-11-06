@@ -47,7 +47,7 @@ class CatalogueValidationTests(unittest.TestCase):
                    ["document", "reference", "local_status", "local_path", "match_method"], [
             {"document": "book/a.sy", "reference": "assets/a.png", "local_status": "NOT_CHECKED", "local_path": "", "match_method": "NOT_CHECKED"},
         ])
-        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference", "parent_document", "document_depth", "child_document_count"]
+        review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "human_corrected_title", "human_approved_topics", "reviewer", "review_notes", "evidence_reference", "parent_document", "document_depth", "child_document_count"]
         self.write(generated / "document_review.csv", review_fields, [
             {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": "", "parent_document": d["parent_document"], "document_depth": d["document_depth"], "child_document_count": d["child_document_count"]} for d in docs
         ])
@@ -55,15 +55,17 @@ class CatalogueValidationTests(unittest.TestCase):
             {"document": "book/b.sy", "review_status": "NEEDS_SOURCE_INSPECTION",
              "parent_document": "", "document_depth": "0", "child_document_count": "0"},
         ])
-        self.write(generated / "title_review_candidates.csv", ["document", "review_status"], [])
-        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms"], [
+        self.write(generated / "title_review_candidates.csv", ["document", "review_status", "human_corrected_title", "reviewer", "review_notes", "evidence_reference"], [
+            {"document": "book/a.sy", "review_status": "NOT_REVIEWED", "human_corrected_title": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
+        ])
+        self.write(generated / "topic_review.csv", ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"], [
             {"document": "book/a.sy", "catalog_topics": docs[0]["topics"], "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "NOT_REVIEWED",
              "catalog_matched_terms": docs[0]["topic_matched_terms"],
              "catalog_title_matched_terms": docs[0]["title_topic_matched_terms"],
              "catalog_body_matched_terms": docs[0]["body_topic_matched_terms"]},
         ])
-        self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size"], [
-            {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1"},
+        self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size", "review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"], [
+            {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1", "review_status": "NOT_REVIEWED", "human_approved_topics": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
         ])
         self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
             {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
@@ -93,7 +95,7 @@ class CatalogueValidationTests(unittest.TestCase):
             paths = self.fixture(Path(temp))
             self.assertEqual(validator.validate_catalogue(*paths), {
                 "documents": 2, "asset_references": 1, "document_review": 2,
-                "empty_body_review": 1, "title_review_candidates": 0,
+                "empty_body_review": 1, "title_review_candidates": 1,
                 "topic_review": 1, "asset_review_queue": 1, "source_review_queue": 1,
             })
 
@@ -160,7 +162,7 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "document_review.csv"
-            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "evidence_reference", "parent_document", "document_depth", "child_document_count"], [])
+            self.write(path, ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "human_corrected_title", "human_approved_topics", "reviewer", "review_notes", "evidence_reference", "parent_document", "document_depth", "child_document_count"], [])
             with self.assertRaisesRegex(ValueError, "文档集合不一致"):
                 validator.validate_catalogue(generated, source, assets)
 
@@ -182,6 +184,7 @@ class CatalogueValidationTests(unittest.TestCase):
             with path.open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             rows[0]["source_status"] = "VERIFIED"
+            rows[0]["reviewer"] = "reviewer-1"
             self.write(path, list(rows[0]), rows)
             with self.assertRaisesRegex(ValueError, "缺少 evidence_reference"):
                 validator.validate_catalogue(generated, source, assets)
@@ -190,9 +193,9 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "topic_review_batches.csv"
-            self.write(path, ["document", "batch_id", "batch_position", "batch_size"], [
-                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "2"},
-                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "2", "batch_size": "2"},
+            self.write(path, ["document", "batch_id", "batch_position", "batch_size", "review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"], [
+                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "2", "review_status": "NOT_REVIEWED", "human_approved_topics": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
+                {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "2", "batch_size": "2", "review_status": "NOT_REVIEWED", "human_approved_topics": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
             ])
             with self.assertRaisesRegex(ValueError, "重复 document"):
                 validator.validate_catalogue(generated, source, assets)
@@ -209,11 +212,81 @@ class CatalogueValidationTests(unittest.TestCase):
                 validator.validate_catalogue(generated, source, assets)
 
 
+    def test_rejects_title_queue_reviewer_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "title_review_candidates.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["reviewer"] = "reviewer-1"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "标题复核队列 reviewer"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_topic_queue_approved_topics_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "topic_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["human_approved_topics"] = "伤寒与温病"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "主题复核队列 human_approved_topics"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_topic_batch_reviewer_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "topic_review_batches.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["reviewer"] = "reviewer-1"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "主题批次 reviewer"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_active_document_conclusion_without_reviewer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "document_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["source_status"] = "PARTIAL"
+            rows[0]["evidence_reference"] = "EV-001"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "缺少 reviewer"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_topic_conclusion_without_approved_topics(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "document_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["topic_review_status"] = "CONFIRMED"
+            rows[0]["reviewer"] = "reviewer-1"
+            rows[0]["evidence_reference"] = "EV-001"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "缺少 human_approved_topics"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_accepts_partial_document_source_status_with_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "document_review.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["source_status"] = "PARTIAL"
+            rows[0]["reviewer"] = "reviewer-1"
+            rows[0]["evidence_reference"] = "EV-001"
+            self.write(path, list(rows[0]), rows)
+            validator.validate_catalogue(generated, source, assets)
+
     def test_rejects_topic_queue_status_drift(self):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "topic_review.csv"
-            self.write(path, ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms"], [
+            self.write(path, ["document", "catalog_topics", "catalog_topic_count", "review_bucket", "review_status", "catalog_matched_terms", "catalog_title_matched_terms", "catalog_body_matched_terms", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"], [
                 {"document": "book/a.sy", "catalog_topics": "经典与理论;伤寒与温病", "catalog_topic_count": "2", "review_bucket": "2_TOPICS", "review_status": "CONFIRMED",
                  "catalog_matched_terms": "伤寒与温病:伤寒论;经典与理论:阴阳",
                  "catalog_title_matched_terms": "伤寒与温病:伤寒论",

@@ -61,7 +61,9 @@ class ReviewProgressReportTests(unittest.TestCase):
             sources.write_text(
                 "path,source_identity_status,source_identity_evidence_reference,source_version_status,source_version_evidence_reference,collation_status,collation_evidence_reference\n"
                 "a.pdf,UNVERIFIED,,UNVERIFIED,,UNVERIFIED,\n"
-                "b.pdf,CONFLICT,EV-001,UNRESOLVED,EV-002,UNVERIFIED,\n",
+                "b.pdf,CONFLICT,EV-001,UNRESOLVED,EV-002,UNVERIFIED,\n"
+                "c.pdf,PARTIAL,EV-003,UNVERIFIED,,UNVERIFIED,\n"
+                "d.pdf,VERIFIED,EV-004,UNVERIFIED,,UNVERIFIED,\n",
                 encoding="utf-8"
             )
             assets.write_text(
@@ -88,6 +90,8 @@ class ReviewProgressReportTests(unittest.TestCase):
             self.assertIn("NOT_REVIEWED: 1", report)
             self.assertIn("NEEDS_SOURCE_INSPECTION: 1", report)
             self.assertIn("CONFLICT: 1", report)
+            self.assertIn("PARTIAL: 1", report)
+            self.assertIn("VERIFIED: 1", report)
             self.assertIn("UNRESOLVED: 1", report)
             self.assertIn("NOT_MATCH: 1", report)
             self.assertIn("逐文档—主题审计：2 条", report)
