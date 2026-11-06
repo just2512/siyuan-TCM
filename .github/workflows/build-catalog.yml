@@ -42,11 +42,12 @@ jobs:
           python tools/build_section_index.py --output catalog/generated > "$RUNNER_TEMP/section-index.log" 2>&1 & section_pid=$!
           python tools/build_knowledge_units.py --output catalog/generated > "$RUNNER_TEMP/knowledge-units.log" 2>&1 & units_pid=$!
           python tools/build_entity_mention_candidates.py --output catalog/generated > "$RUNNER_TEMP/entity-mentions.log" 2>&1 & mentions_pid=$!
+          python tools/build_entity_registry.py --output catalog/generated/entity_registry.csv > "$RUNNER_TEMP/entity-registry.log" 2>&1 & registry_pid=$!
           status=0
-          for pid in "$anomaly_pid" "$dosage_pid" "$section_pid" "$units_pid" "$mentions_pid"; do
+          for pid in "$anomaly_pid" "$dosage_pid" "$section_pid" "$units_pid" "$mentions_pid" "$registry_pid"; do
             wait "$pid" || status=1
           done
-          for log in "$RUNNER_TEMP/content-anomaly.log" "$RUNNER_TEMP/dosage-candidates.log" "$RUNNER_TEMP/section-index.log" "$RUNNER_TEMP/knowledge-units.log" "$RUNNER_TEMP/entity-mentions.log"; do
+          for log in "$RUNNER_TEMP/content-anomaly.log" "$RUNNER_TEMP/dosage-candidates.log" "$RUNNER_TEMP/section-index.log" "$RUNNER_TEMP/knowledge-units.log" "$RUNNER_TEMP/entity-mentions.log" "$RUNNER_TEMP/entity-registry.log"; do
             echo "::group::$(basename "$log")"
             cat "$log"
             echo "::endgroup::"
@@ -58,18 +59,21 @@ jobs:
           set -uo pipefail
           python tools/build_knowledge_units.py --validate --output catalog/generated > "$RUNNER_TEMP/validate-units.log" 2>&1 & units_pid=$!
           python tools/build_entity_mention_candidates.py --validate --output catalog/generated > "$RUNNER_TEMP/validate-mentions.log" 2>&1 & mentions_pid=$!
+          python tools/build_entity_registry.py --validate --output catalog/generated/entity_registry.csv > "$RUNNER_TEMP/validate-registry.log" 2>&1 & registry_pid=$!
           status=0
           wait "$units_pid" || status=1
           wait "$mentions_pid" || status=1
+          wait "$registry_pid" || status=1
           cat "$RUNNER_TEMP/validate-units.log"
           cat "$RUNNER_TEMP/validate-mentions.log"
+          cat "$RUNNER_TEMP/validate-registry.log"
           exit "$status"
       - name: Extract explicit formula-herb relation candidates
         run: python tools/build_formula_herb_relation_candidates.py
       - name: Validate formula-herb relation candidate provenance
         run: python tools/build_formula_herb_relation_candidates.py --validate
       - name: Build SQLite full-text, entity and relation index
-        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv
+        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv
       - name: Publish queryable SQLite index artifact
         uses: actions/upload-artifact@v4
         with:
