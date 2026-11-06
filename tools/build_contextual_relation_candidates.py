@@ -41,7 +41,7 @@ OBJECT_TYPES = {
     "SYNDROME_TO_TREATMENT": {"TREATMENT"},
     "TREATMENT_TO_FORMULA": {"FORMULA"},
 }
-NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁|未|非)\\s*$")
+NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁|未|非)\s*$")
 
 
 def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
