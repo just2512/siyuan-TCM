@@ -47,7 +47,8 @@ def read_gzip_csv(path: Path):
 
 def build_database(content_index: Path, relationship_index: Path | None,
                    database_path: Path, entity_mentions_path: Path | None = None,
-                   relation_candidates_path: Path | None = None,\n                   entity_registry_path: Path | None = None) -> dict[str, Any]:
+                   relation_candidates_path: Path | None = None,
+                   entity_registry_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
@@ -270,7 +271,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
             if entity_registry_path is not None and registry_row is None:
                 raise ValueError(f"entity mention missing from registry: {key}")
             if registry_row is None:
-                identity = "\\0".join(key)
+                identity = "\0".join(key)
                 entity_id = "lex_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:24]
                 registry_row = {
                     "entity_id": entity_id,
@@ -388,7 +389,8 @@ def search_entity_mentions(database_path: Path, query: str, limit: int = 20) -> 
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
-        SELECT e.entity_id, ec.preferred_label, ec.identity_status,\n               e.entity_type, e.matched_text, e.character_start, e.character_end,
+        SELECT e.entity_id, ec.preferred_label, ec.identity_status,
+               e.entity_type, e.matched_text, e.character_start, e.character_end,
                e.document, e.tree_position, e.block_id, e.section_path,
                e.lexicon_version, e.resolution_status, e.unit_id, c.content_text
         FROM entity_mentions e
