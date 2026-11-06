@@ -41,7 +41,8 @@ def read_gzip_csv(path: Path):
 
 
 def build_database(content_index: Path, relationship_index: Path | None,
-                   database_path: Path, entity_mentions_path: Path | None = None,\n                   relation_candidates_path: Path | None = None) -> dict[str, Any]:
+                   database_path: Path, entity_mentions_path: Path | None = None,
+                   relation_candidates_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
