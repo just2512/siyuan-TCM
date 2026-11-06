@@ -22,7 +22,10 @@ class EvidenceReferenceTests(unittest.TestCase):
                 **row,
                 "context_reference": row.get("context_reference", ""),
                 "content_basis": row.get("content_basis", ""),
-                "source_reference": row.get("source_reference", ""),
+                "source_reference": row.get(
+                    "source_reference",
+                    row.get("subject_key", "") if row.get("evidence_kind") == "original_sy" else "",
+                ),
             } for row in rows]
         if path == self.assets:
             if "document_paths" not in fields:
@@ -103,6 +106,31 @@ class EvidenceReferenceTests(unittest.TestCase):
         result = validator.validate_references(self.ledger, self.decisions)
         self.assertEqual(result["decision_conclusions"], 3)
         self.assertEqual(result["validated_evidence_references"], 2)
+
+    def test_rejects_original_sy_evidence_pointing_to_another_document(self):
+        self.write(self.ledger, [
+            "evidence_id", "subject_type", "subject_key", "evidence_kind",
+            "inspection_method", "source_reference",
+        ], [{
+            "evidence_id": "EV-001", "subject_type": "topic_decision",
+            "subject_key": "book/a.sy", "evidence_kind": "original_sy",
+            "inspection_method": "HUMAN_DIRECT", "source_reference": "book/other.sy",
+        }])
+        with self.assertRaisesRegex(ValueError, "source_reference 与 subject_key 不一致"):
+            validator.validate_references(self.ledger, self.decisions)
+
+    def test_rejects_original_sy_context_pointing_to_another_document(self):
+        self.write(self.ledger, [
+            "evidence_id", "subject_type", "subject_key", "evidence_kind",
+            "inspection_method", "source_reference", "context_reference",
+        ], [{
+            "evidence_id": "EV-001", "subject_type": "topic_decision",
+            "subject_key": "book/a.sy", "evidence_kind": "original_sy",
+            "inspection_method": "HUMAN_DIRECT", "source_reference": "book/a.sy",
+            "context_reference": "book/other.sy#block-1",
+        }])
+        with self.assertRaisesRegex(ValueError, "context_reference 指向其他文档"):
+            validator.validate_references(self.ledger, self.decisions)
 
     def test_rejects_asset_evidence_context_from_unrelated_document(self):
         self.write(self.ledger, [

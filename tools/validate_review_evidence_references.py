@@ -51,6 +51,36 @@ ASSET_CONTENT_BASES = {
     "DOCUMENT_PAGE_AND_NOTE_CONTEXT",
     "MULTIMODAL_CONTENT_AND_NOTE_CONTEXT",
 }
+DOCUMENT_SUBJECT_TYPES = {
+    "document", "topic_decision", "title_decision", "empty_body_decision",
+}
+
+
+def validate_original_sy_source(record: dict[str, str], context: str) -> None:
+    """Bind original-.sy evidence to the exact document named by its subject key."""
+    if record["evidence_kind"] != "original_sy" or record["subject_type"] not in DOCUMENT_SUBJECT_TYPES:
+        return
+    subject_key = record["subject_key"].replace("\\", "/")
+    source_reference = (record.get("source_reference") or "").replace("\\", "/")
+    if (
+        not subject_key.endswith(".sy")
+        or subject_key.startswith(("/", "//"))
+        or ".." in subject_key.split("/")
+    ):
+        raise ValueError(f"{context} 的 original_sy 证据对象键不是安全的 .sy 相对路径")
+    if source_reference != subject_key:
+        raise ValueError(
+            f"{context} 的 original_sy 证据 source_reference 与 subject_key 不一致："
+            f"{source_reference!r} != {subject_key!r}"
+        )
+    context_reference = (record.get("context_reference") or "").replace("\\", "/")
+    if context_reference and context_reference.partition("#")[0] != subject_key:
+        raise ValueError(
+            f"{context} 的 original_sy 证据 context_reference 指向其他文档："
+            f"{context_reference!r}"
+        )
+
+
 DECISION_SUBJECTS = {
     "title_review_status": {"document", "title_decision"},
     "source_status": {"document", "source_candidate"},
@@ -119,6 +149,7 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                     f"{context} 的证据 {evidence_id} 证据类型不匹配："
                     f"{record['evidence_kind']} 不属于 {sorted(allowed_kinds)}"
                 )
+            validate_original_sy_source(record, f"{context} 的证据 {evidence_id}")
             if record["inspection_method"] != "HUMAN_DIRECT":
                 raise ValueError(
                     f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
@@ -176,6 +207,7 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                     f"{context} 的证据 {evidence_id} 证据类型不匹配："
                     f"{record['evidence_kind']} 不属于 {sorted(allowed_kinds)}"
                 )
+            validate_original_sy_source(record, f"{context} 的证据 {evidence_id}")
             if record["inspection_method"] != "HUMAN_DIRECT":
                 raise ValueError(
                     f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
