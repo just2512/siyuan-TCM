@@ -16,8 +16,8 @@ class ContextualTermCandidateTests(unittest.TestCase):
             output = root / "typed.csv.gz"
             sample = {
                 "unit_id": "unit-1", "document": "note.sy", "source_sha256": "abc",
-                "tree_position": "1.2", "block_id": "b1", "character_start": 5,
-                "character_end": 7, "evidence_start": 0,
+                "tree_position": "1.2", "block_id": "b1", "character_start": 2,
+                "character_end": 4, "evidence_start": 0,
                 "evidence_text": "症见头痛，舌红苔黄",
             }
             with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
