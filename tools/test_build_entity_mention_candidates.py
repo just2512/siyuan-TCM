@@ -56,7 +56,7 @@ class EntityMentionCandidateTests(unittest.TestCase):
             self.assertEqual(module.validate(path, units_path), 4)
             with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            self.assertEqual([r["matched_text"] for r in rows], ["桂枝汤", "桂枝", "桂枝", "芍药"])
+            self.assertEqual([r["matched_text"] for r in rows], ["桂枝", "桂枝汤", "桂枝", "芍药"])
             formula = next(r for r in rows if r["entity_type"] == "FORMULA")
             self.assertEqual((formula["character_start"], formula["character_end"]), ("0", "3"))
             self.assertEqual(formula["document"], "notes/a.sy")
