@@ -22,7 +22,7 @@ SOURCE_FIELDS = {
     "source_version_status", "source_version_evidence_reference",
     "collation_status", "collation_evidence_reference",
 }
-ASSET_FIELDS = {"reference", "manual_status", "content_evidence_reference"}
+ASSET_FIELDS = {"reference", "document_paths", "manual_status", "content_evidence_reference"}
 DECISION_ACTIVE = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
     "source_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
@@ -98,7 +98,8 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
         "asset_conclusions": 0,
     })
     def check(ids: list[str], expected_key: str, allowed_types: set[str],
-              allowed_kinds: set[str], context: str) -> None:
+              allowed_kinds: set[str], context: str,
+              context_documents: set[str] | None = None) -> None:
         for evidence_id in ids:
             record = ledger.get(evidence_id)
             if record is None:
@@ -123,28 +124,85 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                     f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
                     f"{record['inspection_method']}"
                 )
-            if "asset_content" in allowed_kinds and record["evidence_kind"] == "asset_content":
+            if record["evidence_kind"] == "asset_content":
                 context_reference = record["context_reference"].replace("\\", "/")
-                context_document = context_reference.split("#", 1)[0]
+                context_document, separator, context_anchor = context_reference.partition("#")
                 if (
-                    not context_document.endswith(".sy")
+                    not separator or not context_anchor
+                    or not context_document.endswith(".sy")
                     or context_reference.startswith(("/", "//"))
                     or ".." in context_reference.split("/")
                 ):
-                    raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少安全的原始 .sy 上下文定位")
+                    raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少安全的原始 .sy 上下文/块定位")
+                if context_documents is not None and context_document not in context_documents:
+                    raise ValueError(
+                        f"{context} 的附件内容证据 {evidence_id} 上下文文档不属于该附件引用的文档集合："
+                        f"{context_document}"
+                    )
+                source_reference = (record.get("source_reference") or "").replace("\\", "/")
+                if (
+                    not source_reference.startswith("assets/")
+                    or source_reference.startswith(("/", "//"))
+                    or ".." in source_reference.split("/")
+                ):
+                    raise ValueError(
+                        f"{context} 的附件内容证据 {evidence_id} 必须引用 assets/ 下的安全相对附件路径"
+                    )
                 if record["content_basis"] not in ASSET_CONTENT_BASES:
                     raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少有效 content_basis")
             counts["validated_evidence_references"] += 1
 
+    def check_decision(ids: list[str], expected_key: str,
+                       fields: list[str], context: str) -> None:
+        allowed_types = set().union(*(DECISION_SUBJECTS[field] for field in fields))
+        allowed_kinds = set().union(*(DECISION_EVIDENCE_KINDS[field] for field in fields))
+        records = []
+        for evidence_id in ids:
+            record = ledger.get(evidence_id)
+            if record is None:
+                raise ValueError(f"{context} 引用了不存在的证据 ID：{evidence_id}")
+            if record["subject_key"] != expected_key:
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 对象不匹配："
+                    f"期望 {expected_key!r}，实际 {record['subject_key']!r}"
+                )
+            if record["subject_type"] not in allowed_types:
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 对象类型不匹配："
+                    f"{record['subject_type']} 不属于 {sorted(allowed_types)}"
+                )
+            if record["evidence_kind"] not in allowed_kinds:
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 证据类型不匹配："
+                    f"{record['evidence_kind']} 不属于 {sorted(allowed_kinds)}"
+                )
+            if record["inspection_method"] != "HUMAN_DIRECT":
+                raise ValueError(
+                    f"{context} 的证据 {evidence_id} 不是人工直接核验记录："
+                    f"{record['inspection_method']}"
+                )
+            records.append(record)
+        for field in fields:
+            if not any(
+                record["subject_type"] in DECISION_SUBJECTS[field]
+                and record["evidence_kind"] in DECISION_EVIDENCE_KINDS[field]
+                for record in records
+            ):
+                raise ValueError(f"{context} {field} 缺少与结论域匹配的 HUMAN_DIRECT 证据")
+        counts["validated_evidence_references"] += len(records)
+
     if decisions_path:
         for line, row in enumerate(read_csv(decisions_path, DECISION_FIELDS), start=2):
             document = row["document"]
-            for field, active in DECISION_ACTIVE.items():
-                if row[field] not in active:
-                    continue
-                ids = evidence_tokens(row["evidence_reference"], f"决策表第 {line} 行 {document} {field}")
-                check(ids, document, DECISION_SUBJECTS[field], DECISION_EVIDENCE_KINDS[field], f"{document} {field}")
-                counts["decision_conclusions"] += 1
+            active_fields = [
+                field for field, active in DECISION_ACTIVE.items()
+                if row[field] in active
+            ]
+            if not active_fields:
+                continue
+            ids = evidence_tokens(row["evidence_reference"], f"决策表第 {line} 行 {document}")
+            check_decision(ids, document, active_fields, document)
+            counts["decision_conclusions"] += len(active_fields)
 
     if sources_path:
         for line, row in enumerate(read_csv(sources_path, SOURCE_FIELDS), start=2):
@@ -160,7 +218,15 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
             if row["manual_status"] not in {"CONFIRMED_MATCH", "NOT_MATCH"}:
                 continue
             ids = evidence_tokens(row["content_evidence_reference"], f"附件队列第 {line} 行 {row['reference']}")
-            check(ids, row["reference"], {"asset_reference"}, ASSET_EVIDENCE_KINDS, f"{row['reference']} manual_status")
+            context_documents = {
+                item.strip() for item in row["document_paths"].split(";") if item.strip()
+            }
+            if not context_documents:
+                raise ValueError(f"附件队列第 {line} 行 {row['reference']} 缺少关联原始 .sy 文档路径")
+            check(
+                ids, row["reference"], {"asset_reference"}, ASSET_EVIDENCE_KINDS,
+                f"{row['reference']} manual_status", context_documents=context_documents,
+            )
             counts["asset_conclusions"] += 1
 
     counts["evidence_records"] = len(ledger)
