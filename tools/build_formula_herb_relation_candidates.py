@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 FIELDS = [
-    "relation_id", "subject_mention_id", "subject_text", "predicate",
+    "relation_id", "unit_id", "subject_mention_id", "subject_text", "predicate",
     "object_mention_id", "object_text", "document", "source_sha256",
     "tree_position", "block_id", "sentence_start", "sentence_end",
     "evidence_text", "extraction_rule", "resolution_status",
@@ -102,6 +102,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                         seen.add(relation_id)
                         writer.writerow({
                             "relation_id": relation_id,
+                            "unit_id": unit_id,
                             "subject_mention_id": formula["mention_id"],
                             "subject_text": formula["matched_text"],
                             "predicate": "FORMULA_CONTAINS_HERB",
@@ -134,18 +135,16 @@ def validate(path: Path, units_path: Path) -> int:
                 raise ValueError(f"row {line}: invalid resolution status")
             if row["predicate"] != "FORMULA_CONTAINS_HERB":
                 raise ValueError(f"row {line}: unsupported predicate")
-            unit_id = None
-            for candidate_id, unit in units.items():
-                source = unit["source"]
-                if (source["document"] == row["document"]
-                    and source["sha256"] == row["source_sha256"]
-                    and source["tree_position"] == row["tree_position"]
-                    and source.get("block_id", "") == row["block_id"]):
-                    unit_id = candidate_id
-                    break
-            if unit_id is None:
+            unit = units.get(row["unit_id"])
+            if unit is None:
                 raise ValueError(f"row {line}: source unit not found")
-            text = units[unit_id]["content"]["source_text"]
+            source_info = unit["source"]
+            if (source_info["document"] != row["document"]
+                or source_info["sha256"] != row["source_sha256"]
+                or source_info["tree_position"] != row["tree_position"]
+                or source_info.get("block_id", "") != row["block_id"]):
+                raise ValueError(f"row {line}: source provenance mismatch")
+            text = unit["content"]["source_text"]
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
                 raise ValueError(f"row {line}: evidence span mismatch")
