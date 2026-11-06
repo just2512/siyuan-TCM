@@ -88,6 +88,7 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             root = Path(temp)
             content = root / "content.csv.gz"
             relations = root / "relation_candidates.csv"
+            entities = root / "entities.csv.gz"
             db = root / "search.sqlite3"
             self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
                 "document": "book/a.sy", "source_sha256": "hash-a",
@@ -95,6 +96,22 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                 "content_type": "PARAGRAPH", "characters": 12,
                 "content_text": "桂枝汤由桂枝组成。",
             }])
+            self._write_gzip_csv(entities, search_db.ENTITY_FIELDS, [
+                {"mention_id": "m1", "unit_id": "u2", "entity_type": "FORMULA",
+                 "matched_text": "桂枝汤", "character_start": 0, "character_end": 3,
+                 "document": "book/a.sy", "source_sha256": "hash-a",
+                 "tree_position": "0.2", "block_id": "p2", "content_type": "PARAGRAPH",
+                 "section_path": "", "lexicon_version": "1.1.0",
+                 "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+                {"mention_id": "m2", "unit_id": "u1", "entity_type": "HERB",
+                 "matched_text": "桂枝", "character_start": 3, "character_end": 5,
+                 "document": "book/a.sy", "source_sha256": "hash-a",
+                 "tree_position": "0.0", "block_id": "p1", "content_type": "PARAGRAPH",
+                 "section_path": "", "lexicon_version": "1.1.0",
+                 "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+            ])
             with relations.open("w", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=search_db.RELATION_CANDIDATE_FIELDS)
                 writer.writeheader()
@@ -109,12 +126,15 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                     "extraction_rule": "FORMULA_COMPOSITION_EXPLICIT_V1",
                     "resolution_status": "UNRESOLVED_CANDIDATE",
                 })
-            result = search_db.build_database(content, None, db, None, relations)
+            result = search_db.build_database(content, None, db, entities, relations)
             self.assertEqual(result["relation_candidates"], 1)
             found = search_db.search_relation_candidates(db, "桂枝汤")
             self.assertEqual(len(found), 1)
             self.assertEqual(found[0]["object_text"], "桂枝")
             self.assertEqual(found[0]["evidence_text"], "桂枝汤由桂枝组成。")
+            self.assertEqual(found[0]["subject_tree_position"], "0.2")
+            self.assertEqual(found[0]["object_tree_position"], "0.0")
+            self.assertEqual(found[0]["evidence_tree_position"], "0.0")
 
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
