@@ -269,6 +269,29 @@ def search_database(database_path: Path, query: str, limit: int = 20) -> list[di
     return result
 
 
+def search_entity_mentions(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
+    """Return entity candidates with exact spans and source block context."""
+    if not query.strip():
+        raise ValueError("entity query must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    rows = connection.execute("""
+        SELECT e.entity_type, e.matched_text, e.character_start, e.character_end,
+               e.document, e.tree_position, e.block_id, e.section_path,
+               e.lexicon_version, e.resolution_status, e.unit_id, c.content_text
+        FROM entity_mentions e
+        LEFT JOIN content_blocks c
+          ON c.document = e.document AND c.source_sha256 = e.source_sha256
+         AND c.tree_position = e.tree_position AND c.block_id = e.block_id
+        WHERE instr(e.matched_text, ?) > 0
+        ORDER BY e.document, e.tree_position, e.character_start
+        LIMIT ?
+    """, (query, limit)).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", action="store_true", help="build the local SQLite index")
@@ -279,7 +302,8 @@ def main() -> int:
     parser.add_argument("--db", type=Path, default=Path("catalog/generated/siyuan_search.sqlite3"))
     parser.add_argument("--entity-mentions", type=Path, default=None,
                         help="optional dictionary-backed entity mention candidate index")
-    parser.add_argument("--query", help="search a built database")
+    parser.add_argument("--query", help="search source text in a built database")
+    parser.add_argument("--entity-query", help="search entity mentions with exact source spans")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
 
@@ -287,11 +311,17 @@ def main() -> int:
         print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions),
                          ensure_ascii=False, sort_keys=True))
         return 0
+    if args.query and args.entity_query:
+        parser.error("choose only one of --query or --entity-query")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
-    parser.error("choose --build or provide --query")
+    if args.entity_query:
+        results = search_entity_mentions(args.db, args.entity_query, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    parser.error("choose --build or provide --query/--entity-query")
     return 2
 
 
