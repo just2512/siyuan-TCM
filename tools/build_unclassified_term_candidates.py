@@ -162,7 +162,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                 connection.execute("""
                     INSERT INTO term_stats (term, occurrence_count, unit_count)
                     SELECT term, SUM(occurrence_count), SUM(unit_count)
-                    FROM batch_terms GROUP BY term
+                    FROM batch_terms WHERE 1 GROUP BY term
                     ON CONFLICT(term) DO UPDATE SET
                         occurrence_count = occurrence_count + excluded.occurrence_count,
                         unit_count = unit_count + excluded.unit_count
