@@ -3,6 +3,7 @@
 
 This is an unsupervised vocabulary-discovery stage, not medical interpretation.
 Every candidate retains occurrence counts and a small set of exact source spans.
+Aggregation is disk-backed so a large corpus cannot exhaust runner memory.
 """
 from __future__ import annotations
 
@@ -13,6 +14,9 @@ import gzip
 import hashlib
 import json
 import re
+import sqlite3
+import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -28,12 +32,12 @@ FIELDS = [
     "candidate_id", "term", "ngram_length", "occurrence_count",
     "unit_count", "document_count", "sample_evidence", "candidate_status",
 ]
-
-
 NGRAM_PATTERNS = {
     length: re.compile(rf"(?=([\u3400-\u4dbf\u4e00-\u9fff]{{{length}}}))")
     for length in range(2, 7)
 }
+COMMIT_EVERY_UNITS = 500
+PROGRESS_EVERY_UNITS = 25000
 
 
 def count_ngrams(text: str, min_length: int = 2, max_length: int = 6) -> Counter[str]:
@@ -42,12 +46,39 @@ def count_ngrams(text: str, min_length: int = 2, max_length: int = 6) -> Counter
     for match in HAN_RUN.finditer(text):
         run = match.group(0)
         for length in range(min_length, min(max_length, len(run)) + 1):
-            counts.update(NGRAM_PATTERNS[length].findall(run))
+            pattern = NGRAM_PATTERNS.get(length)
+            if pattern is None:
+                pattern = re.compile(rf"(?=([\u3400-\u4dbf\u4e00-\u9fff]{{{length}}}))")
+                NGRAM_PATTERNS[length] = pattern
+            counts.update(pattern.findall(run))
     return counts
 
 
 def candidate_id(term: str) -> str:
     return "term_" + hashlib.sha256(term.encode("utf-8")).hexdigest()[:24]
+
+
+def _sample_evidence(unit: dict[str, Any], document: str, text: str,
+                     term: str, unit_id: str, line_number: int) -> str:
+    start = text.find(term)
+    if start < 0:
+        raise ValueError(f"line {line_number}: mined term not found in source text")
+    end = start + len(term)
+    evidence_start = max(0, start - 12)
+    source = unit.get("source") or {}
+    sample = {
+        "unit_id": unit_id,
+        "document": document,
+        "source_sha256": str(source.get("sha256") or ""),
+        "tree_position": str(source.get("tree_position") or ""),
+        "block_id": str(source.get("block_id") or ""),
+        "character_start": start,
+        "character_end": end,
+        "evidence_start": evidence_start,
+        "matched_text": term,
+        "evidence_text": text[evidence_start:min(len(text), end + 12)],
+    }
+    return json.dumps(sample, ensure_ascii=False, sort_keys=True)
 
 
 def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
@@ -57,85 +88,218 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
         raise FileNotFoundError(units_path)
     if min_occurrences < 1 or min_documents < 1:
         raise ValueError("minimum counts must be positive")
+    if min_length < 1 or max_length < min_length:
+        raise ValueError("invalid n-gram length range")
+    if sample_limit < 1:
+        raise ValueError("sample_limit must be positive")
+
     known_terms: set[str] = set()
     if lexicon_path is not None:
         if not lexicon_path.is_file():
             raise FileNotFoundError(lexicon_path)
         with lexicon_path.open("r", encoding="utf-8-sig", newline="") as lexicon_stream:
-            known_terms = {row["term"].strip() for row in csv.DictReader(lexicon_stream) if row.get("term", "").strip()}
-    stats: dict[str, dict[str, Any]] = {}
+            known_terms = {
+                row["term"].strip()
+                for row in csv.DictReader(lexicon_stream)
+                if row.get("term", "").strip()
+            }
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     unit_total = 0
     known_term_occurrences = 0
-    with gzip.open(units_path, "rt", encoding="utf-8") as stream:
-        for line_number, line in enumerate(stream, 1):
-            unit = json.loads(line)
-            source = unit.get("source") or {}
-            content = unit.get("content") or {}
-            text = content.get("source_text", "")
-            if not isinstance(text, str) or not text:
-                continue
-            unit_id = str(unit.get("unit_id") or "")
-            document = str(source.get("document") or "")
-            if not unit_id or not document:
-                raise ValueError(f"line {line_number}: missing unit/source identity")
-            unit_total += 1
-            for term, occurrences in count_ngrams(text, min_length, max_length).items():
-                if term in STOP_TERMS:
-                    continue
-                if term in known_terms:
-                    known_term_occurrences += occurrences
-                    continue
-                item = stats.get(term)
-                if item is None:
-                    item = {"occurrences": 0, "units": 0, "documents": set(), "samples": []}
-                    stats[term] = item
-                item["occurrences"] += occurrences
-                item["units"] += 1
-                if document not in item["documents"]:
-                    item["documents"].add(document)
-                    if len(item["samples"]) < sample_limit:
-                        start = text.find(term)
-                        end = start + len(term)
-                        evidence_start = max(0, start - 12)
-                        item["samples"].append({
-                            "unit_id": unit_id,
-                            "document": document,
-                            "source_sha256": str(source.get("sha256") or ""),
-                            "tree_position": str(source.get("tree_position") or ""),
-                            "block_id": str(source.get("block_id") or ""),
-                            "character_start": start,
-                            "character_end": end,
-                            "evidence_start": evidence_start,
-                            "matched_text": term,
-                            "evidence_text": text[evidence_start:min(len(text), end + 12)],
-                        })
+    distinct_ngrams_seen = 0
+    eligible_count = 0
 
-    eligible = [
-        (term, item) for term, item in stats.items()
-        if item["occurrences"] >= min_occurrences
-        and len(item["documents"]) >= min_documents
-    ]
-    eligible.sort(key=lambda pair: (-len(pair[1]["documents"]), -pair[1]["occurrences"], pair[0]))
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(output_path, "wt", encoding="utf-8", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=FIELDS)
-        writer.writeheader()
-        for term, item in eligible:
-            writer.writerow({
-                "candidate_id": candidate_id(term),
-                "term": term,
-                "ngram_length": len(term),
-                "occurrence_count": item["occurrences"],
-                "unit_count": item["units"],
-                "document_count": len(item["documents"]),
-                "sample_evidence": json.dumps(item["samples"], ensure_ascii=False, sort_keys=True),
-                "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
-            })
+    with tempfile.TemporaryDirectory(
+        prefix="tcm-term-mining-", dir=output_path.parent
+    ) as temp_dir:
+        database_path = Path(temp_dir) / "term-stats.sqlite3"
+        connection = sqlite3.connect(database_path)
+        try:
+            # Keep corpus-wide term/document aggregation on disk. The only
+            # in-memory Counter is for the current knowledge unit.
+            connection.execute("PRAGMA journal_mode=OFF")
+            connection.execute("PRAGMA synchronous=OFF")
+            connection.execute("PRAGMA temp_store=FILE")
+            connection.execute("PRAGMA cache_size=-8192")
+            connection.executescript("""
+                CREATE TABLE term_stats (
+                    term TEXT PRIMARY KEY,
+                    occurrence_count INTEGER NOT NULL,
+                    unit_count INTEGER NOT NULL,
+                    document_count INTEGER NOT NULL DEFAULT 0,
+                    sample_count INTEGER NOT NULL DEFAULT 0
+                ) WITHOUT ROWID;
+                CREATE TABLE term_documents (
+                    term TEXT NOT NULL,
+                    document TEXT NOT NULL,
+                    PRIMARY KEY (term, document)
+                ) WITHOUT ROWID;
+                CREATE TABLE term_samples (
+                    term TEXT NOT NULL,
+                    sample_index INTEGER NOT NULL,
+                    sample_evidence TEXT NOT NULL,
+                    PRIMARY KEY (term, sample_index)
+                ) WITHOUT ROWID;
+                CREATE TEMP TABLE unit_ngrams (
+                    term TEXT PRIMARY KEY,
+                    occurrence_count INTEGER NOT NULL
+                ) WITHOUT ROWID;
+                CREATE TEMP TABLE new_document_terms (
+                    term TEXT PRIMARY KEY,
+                    sample_index INTEGER,
+                    sample_evidence TEXT
+                ) WITHOUT ROWID;
+            """)
+            upsert_term = """
+                INSERT INTO term_stats (term, occurrence_count, unit_count)
+                VALUES (?, ?, 1)
+                ON CONFLICT(term) DO UPDATE SET
+                    occurrence_count = occurrence_count + excluded.occurrence_count,
+                    unit_count = unit_count + 1
+            """
+
+            with gzip.open(units_path, "rt", encoding="utf-8") as stream:
+                for line_number, line in enumerate(stream, 1):
+                    unit = json.loads(line)
+                    source = unit.get("source") or {}
+                    content = unit.get("content") or {}
+                    text = content.get("source_text", "")
+                    if not isinstance(text, str) or not text:
+                        continue
+                    unit_id = str(unit.get("unit_id") or "")
+                    document = str(source.get("document") or "")
+                    if not unit_id or not document:
+                        raise ValueError(f"line {line_number}: missing unit/source identity")
+                    unit_total += 1
+
+                    filtered_terms = []
+                    for term, occurrences in count_ngrams(text, min_length, max_length).items():
+                        if term in STOP_TERMS:
+                            continue
+                        if term in known_terms:
+                            known_term_occurrences += occurrences
+                            continue
+                        filtered_terms.append((term, occurrences))
+
+                    if filtered_terms:
+                        connection.execute("DELETE FROM unit_ngrams")
+                        connection.execute("DELETE FROM new_document_terms")
+                        connection.executemany(
+                            "INSERT INTO unit_ngrams(term, occurrence_count) VALUES (?, ?)",
+                            filtered_terms,
+                        )
+                        connection.executemany(upsert_term, filtered_terms)
+
+                        # Deduplicate by the true (term, document) key. This is
+                        # independent of input ordering and handles multiple
+                        # blocks from the same document without inflating counts.
+                        new_terms = connection.execute("""
+                            SELECT unit.term, stats.sample_count
+                            FROM unit_ngrams AS unit
+                            JOIN term_stats AS stats ON stats.term = unit.term
+                            LEFT JOIN term_documents AS seen
+                              ON seen.term = unit.term AND seen.document = ?
+                            WHERE seen.term IS NULL
+                        """, (document,)).fetchall()
+
+                        if new_terms:
+                            staged_rows = []
+                            for term, sample_count in new_terms:
+                                if sample_count < sample_limit:
+                                    sample = _sample_evidence(
+                                        unit, document, text, term, unit_id, line_number
+                                    )
+                                    staged_rows.append((term, sample_count, sample))
+                                else:
+                                    staged_rows.append((term, None, None))
+
+                            connection.executemany("""
+                                INSERT INTO new_document_terms(
+                                    term, sample_index, sample_evidence
+                                ) VALUES (?, ?, ?)
+                            """, staged_rows)
+                            connection.execute("""
+                                INSERT INTO term_documents(term, document)
+                                SELECT term, ? FROM new_document_terms
+                            """, (document,))
+                            connection.execute("""
+                                INSERT INTO term_samples(term, sample_index, sample_evidence)
+                                SELECT term, sample_index, sample_evidence
+                                FROM new_document_terms
+                                WHERE sample_evidence IS NOT NULL
+                            """)
+                            connection.execute("""
+                                UPDATE term_stats
+                                SET document_count = document_count + 1,
+                                    sample_count = sample_count
+                                        + CASE WHEN sample_count < ? THEN 1 ELSE 0 END
+                                WHERE term IN (SELECT term FROM new_document_terms)
+                            """, (sample_limit,))
+
+                    if unit_total % COMMIT_EVERY_UNITS == 0:
+                        connection.commit()
+                    if unit_total % PROGRESS_EVERY_UNITS == 0:
+                        distinct_so_far = connection.execute(
+                            "SELECT COUNT(*) FROM term_stats"
+                        ).fetchone()[0]
+                        database_bytes = database_path.stat().st_size if database_path.exists() else 0
+                        print(
+                            f"[term-mining] scanned_units={unit_total} "
+                            f"distinct_terms={distinct_so_far} database_bytes={database_bytes}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+
+            connection.commit()
+            distinct_ngrams_seen = connection.execute(
+                "SELECT COUNT(*) FROM term_stats"
+            ).fetchone()[0]
+            eligible_count = connection.execute("""
+                SELECT COUNT(*)
+                FROM term_stats
+                WHERE occurrence_count >= ? AND document_count >= ?
+            """, (min_occurrences, min_documents)).fetchone()[0]
+
+            with gzip.open(output_path, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=FIELDS)
+                writer.writeheader()
+                candidates = connection.execute("""
+                    SELECT term, occurrence_count, unit_count, document_count
+                    FROM term_stats
+                    WHERE occurrence_count >= ? AND document_count >= ?
+                    ORDER BY document_count DESC, occurrence_count DESC, term ASC
+                """, (min_occurrences, min_documents))
+                for term, occurrences, units, documents in candidates:
+                    samples = [
+                        json.loads(row[0])
+                        for row in connection.execute("""
+                            SELECT sample_evidence
+                            FROM term_samples
+                            WHERE term = ?
+                            ORDER BY sample_index
+                        """, (term,))
+                    ]
+                    writer.writerow({
+                        "candidate_id": candidate_id(term),
+                        "term": term,
+                        "ngram_length": len(term),
+                        "occurrence_count": occurrences,
+                        "unit_count": units,
+                        "document_count": documents,
+                        "sample_evidence": json.dumps(
+                            samples, ensure_ascii=False, sort_keys=True
+                        ),
+                        "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
+                    })
+        finally:
+            connection.close()
+
     return {
         "knowledge_units_scanned": unit_total,
-        "distinct_ngrams_seen": len(stats),
+        "distinct_ngrams_seen": distinct_ngrams_seen,
         "known_lexicon_occurrences_skipped": known_term_occurrences,
-        "unclassified_term_candidates": len(eligible),
+        "unclassified_term_candidates": eligible_count,
         "minimum_occurrences": min_occurrences,
         "minimum_documents": min_documents,
     }
@@ -190,8 +354,10 @@ def main() -> int:
     if args.validate:
         result = {"validated_candidates": validate(args.output)}
     else:
-        result = mine(args.units, args.output, args.min_occurrences, args.min_documents,
-                      args.min_length, args.max_length, lexicon_path=args.lexicon)
+        result = mine(
+            args.units, args.output, args.min_occurrences, args.min_documents,
+            args.min_length, args.max_length, lexicon_path=args.lexicon
+        )
         result["validated_candidates"] = validate(args.output)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0

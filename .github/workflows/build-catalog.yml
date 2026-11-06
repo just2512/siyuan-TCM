@@ -55,9 +55,11 @@ jobs:
           if [ "$status" -ne 0 ]; then
             exit "$status"
           fi
-          python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
-          python tools/build_contextual_term_candidates.py | tee "$RUNNER_TEMP/contextual-terms.log"
-      - name: Validate knowledge units and entity mentions in parallel
+      - name: Build corpus-derived unclassified term candidates
+        run: python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
+      - name: Classify corpus terms from exact source context
+        run: python tools/build_contextual_term_candidates.py | tee "$RUNNER_TEMP/contextual-terms.log"
+      - name: Validate knowledge units, entity mentions, and term candidates in parallel
         shell: bash
         run: |
           set -uo pipefail
