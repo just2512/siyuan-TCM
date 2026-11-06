@@ -47,6 +47,15 @@ jobs:
         run: python tools/build_entity_mention_candidates.py --output catalog/generated
       - name: Validate entity mention candidate index
         run: python tools/build_entity_mention_candidates.py --validate --output catalog/generated
+      - name: Build SQLite full-text and entity index
+        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz
+      - name: Publish queryable SQLite index artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: siyuan-tcm-search-index
+          path: catalog/generated/siyuan_search.sqlite3
+          if-no-files-found: error
+          retention-days: 30
       - name: Build human review queues
         run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
       - name: Build topic and title extraction audits
