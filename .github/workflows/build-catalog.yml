@@ -74,11 +74,17 @@ jobs:
         run: python tools/build_formula_herb_relation_candidates.py --validate
       - name: Build SQLite full-text, entity and relation index
         run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv
-      - name: Publish queryable SQLite index artifact
+      - name: Export machine-readable semantic graph
+        run: python tools/export_semantic_graph.py
+      - name: Validate semantic graph nodes and source evidence
+        run: python tools/export_semantic_graph.py --validate
+      - name: Publish queryable SQLite and semantic graph artifacts
         uses: actions/upload-artifact@v4
         with:
           name: siyuan-tcm-search-index
-          path: catalog/generated/siyuan_search.sqlite3
+          path: |
+            catalog/generated/siyuan_search.sqlite3
+            catalog/generated/semantic_graph.jsonl.gz
           if-no-files-found: error
           retention-days: 30
       - name: Build independent review queues in parallel
