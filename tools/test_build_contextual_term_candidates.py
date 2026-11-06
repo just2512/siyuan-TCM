@@ -58,8 +58,8 @@ class ContextualTermCandidateTests(unittest.TestCase):
         }
         syndrome = {
             "unit_id": "unit-4", "document": "note.sy", "source_sha256": "abc",
-            "tree_position": "1.5", "block_id": "b4", "character_start": 4,
-            "character_end": 7, "evidence_start": 0,
+            "tree_position": "1.5", "block_id": "b4", "character_start": 3,
+            "character_end": 6, "evidence_start": 0,
             "matched_text": "少阳证", "evidence_text": "辨证属少阳证",
         }
         self.assertIn(("SYMPTOM", "SYMPTOM_CONTEXT_01"), classify_sample(symptom))
