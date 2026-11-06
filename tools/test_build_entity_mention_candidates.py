@@ -75,6 +75,22 @@ class EntityMentionCandidateTests(unittest.TestCase):
              (7, 9, "芍药"), (10, 12, "桂枝")],
         )
 
+    def test_longer_formula_name_suppresses_nested_formula_but_keeps_herbs(self):
+        lexicon = [
+            {"entity_type": "FORMULA", "term": "芍药甘草汤", "lexicon_version": "1.2.0"},
+            {"entity_type": "FORMULA", "term": "乌头麻黄黄芪芍药甘草汤", "lexicon_version": "1.2.0"},
+            {"entity_type": "HERB", "term": "乌头", "lexicon_version": "1.2.0"},
+            {"entity_type": "HERB", "term": "芍药", "lexicon_version": "1.2.0"},
+            {"entity_type": "HERB", "term": "甘草", "lexicon_version": "1.2.0"},
+        ]
+        matches = module.find_matches(
+            "乌头麻黄黄芪芍药甘草汤主之", module.build_matcher(lexicon)
+        )
+        formulas = [item["term"] for _, _, item in matches if item["entity_type"] == "FORMULA"]
+        herbs = [item["term"] for _, _, item in matches if item["entity_type"] == "HERB"]
+        self.assertEqual(formulas, ["乌头麻黄黄芪芍药甘草汤"])
+        self.assertEqual(herbs, ["乌头", "芍药", "甘草"])
+
     def test_rejects_missing_content_fields(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
