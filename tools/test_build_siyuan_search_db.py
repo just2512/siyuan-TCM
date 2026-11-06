@@ -181,7 +181,7 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(first[0]["entity_id"], "id-黄芪")
             self.assertEqual(second[0]["entity_id"], "id-黄耆")
             self.assertNotEqual(first[0]["entity_id"], second[0]["entity_id"])
-            with self.assertRaises(ValueError):
+            with self.assertRaises(FileNotFoundError):
                 search_db.build_database(content, None, root / "bad.sqlite3", entities,
                                           None, root / "missing-registry.csv")
 
