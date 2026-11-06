@@ -62,6 +62,19 @@ class EntityMentionCandidateTests(unittest.TestCase):
             self.assertEqual(formula["document"], "notes/a.sy")
             self.assertEqual(formula["resolution_status"], "UNRESOLVED_CANDIDATE")
 
+    def test_aho_corasick_retains_nested_and_repeated_matches(self):
+        lexicon = [
+            {"entity_type": "FORMULA", "term": "桂枝汤", "lexicon_version": "1.0.0"},
+            {"entity_type": "HERB", "term": "桂枝", "lexicon_version": "1.0.0"},
+            {"entity_type": "HERB", "term": "芍药", "lexicon_version": "1.0.0"},
+        ]
+        matches = module.find_matches("桂枝汤与桂枝、芍药；桂枝", module.build_matcher(lexicon))
+        self.assertEqual(
+            [(start, end, item["term"]) for start, end, item in matches],
+            [(0, 2, "桂枝"), (0, 3, "桂枝汤"), (4, 6, "桂枝"),
+             (7, 9, "芍药"), (10, 12, "桂枝")],
+        )
+
     def test_rejects_missing_content_fields(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
