@@ -41,6 +41,7 @@ OBJECT_TYPES = {
     "SYNDROME_TO_TREATMENT": {"TREATMENT"},
     "TREATMENT_TO_FORMULA": {"FORMULA"},
 }
+NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁|未|非)\\s*$")
 
 
 def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
@@ -124,6 +125,16 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                 src = unit["source"]
                 unit_candidates = candidates.pop(unit_id, [])
                 unit_formulas = formulas.get(unit_id, [])
+                for candidate in unit_candidates + unit_formulas:
+                    left = int(candidate["character_start"])
+                    right = int(candidate["character_end"])
+                    if (candidate["document"] != src["document"]
+                        or candidate["source_sha256"] != src["sha256"]
+                        or candidate["tree_position"] != src["tree_position"]
+                        or candidate["block_id"] != src.get("block_id", "")):
+                        raise ValueError(f"candidate source provenance mismatch: {unit_id}")
+                    if left < 0 or right <= left or right > len(text) or text[left:right] != candidate["term"]:
+                        raise ValueError(f"candidate span mismatch: {unit_id}:{left}-{right}")
                 if not unit_candidates and not unit_formulas:
                     continue
                 for start, end in sentence_ranges(text):
@@ -150,6 +161,8 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                                 between = text[subject_end:object_start]
                                 match = marker.search(between)
                                 if match is None:
+                                    continue
+                                if NEGATION_PREFIX.search(between[:match.start()]):
                                     continue
                                 relation_id = relation_identity(predicate, subject, obj, unit_id, start, end)
                                 writer.writerow({
@@ -226,9 +239,11 @@ def validate(path: Path, units_path: Path) -> int:
                 raise ValueError(f"row {line}: subject span does not match source")
             if text[object_start:object_end] != row["object_text"]:
                 raise ValueError(f"row {line}: object span does not match source")
-            predicate_match = PREDICATES[predicate].search(text[subject_end:object_start])
-            if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
-                raise ValueError(f"row {line}: predicate evidence missing between endpoints")
+            between = text[subject_end:object_start]
+            predicate_match = PREDICATES[predicate].search(between)
+            if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
+                or NEGATION_PREFIX.search(between[:predicate_match.start()])):
+                raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
             identity = (row["relation_id"], row["unit_id"])
             if identity in seen:
                 raise ValueError(f"row {line}: duplicate relation")
