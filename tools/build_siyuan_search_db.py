@@ -346,7 +346,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
 
     term_candidate_count = 0
     if term_candidates_path is not None:
-        with gzip.open(term_candidates_path, "rt", encoding="utf-8", newline="") as stream:
+        with gzip.open(term_candidates_path, "rt", encoding="utf-8-sig", newline="") as stream:
             batch = []
             for row in csv.DictReader(stream):
                 batch.append((
