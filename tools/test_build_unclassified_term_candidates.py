@@ -55,7 +55,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             with gzip.open(source, "wt", encoding="utf-8") as stream:
                 for record in records:
                     stream.write(json.dumps(record, ensure_ascii=False) + "\n")
-            lexicon.write_text("entity_type,term,lexicon_version\\nFORMULA,桂枝汤,1.3.0\n", encoding="utf-8")
+            lexicon.write_text("entity_type,term,lexicon_version\nFORMULA,桂枝汤,1.3.0\n", encoding="utf-8")
             result = module.mine(source, output, min_occurrences=2, min_documents=2, lexicon_path=lexicon)
             with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
                 terms = {row["term"] for row in csv.DictReader(stream)}
