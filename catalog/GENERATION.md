@@ -116,3 +116,12 @@ CI 将这些记录同步写入 SQLite 的 `contextual_term_type_candidates` 表�
 python tools/build_siyuan_search_db.py --context-query 头痛 --db catalog/generated/siyuan_search.sqlite3
 python tools/build_siyuan_search_db.py --context-query SYMPTOM --db catalog/generated/siyuan_search.sqlite3
 ```
+
+
+## 显式症状—证候—治法—方剂关系候选
+
+`build_contextual_relation_candidates.py` 从上下文分类候选与方剂实体提及中抽取三类有明确谓词的关系：
+`SYMPTOM_TO_SYNDROME`、`SYNDROME_TO_TREATMENT` 和 `TREATMENT_TO_FORMULA`。
+仅当主体、客体在同一知识单元、同一分句中，且支持关系的谓词位于两个原文跨度之间时才生成候选。
+单纯共现不会生成关系。每条记录保留双方候选 ID、原文句子、谓词、文档 SHA、块定位和字符范围，
+并保持 `UNRESOLVED_CANDIDATE` 状态。该文件随 CI artifact 发布，后续纳入统一关系查询表。
