@@ -407,13 +407,38 @@ def search_entity_mentions(database_path: Path, query: str, limit: int = 20) -> 
     return results
 
 
+def search_entity_by_id(database_path: Path, entity_id: str, limit: int = 100) -> list[dict[str, Any]]:
+    """Resolve a stable lexical entity ID to all traceable source mentions."""
+    if not entity_id.strip():
+        raise ValueError("entity_id must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    rows = connection.execute("""
+        SELECT e.entity_id, ec.entity_type, ec.preferred_label, ec.identity_status,
+               e.matched_text, e.character_start, e.character_end,
+               e.document, e.source_sha256, e.tree_position, e.block_id,
+               e.section_path, e.unit_id, c.content_text
+        FROM entity_mentions e
+        JOIN entity_catalog ec ON ec.entity_id = e.entity_id
+        LEFT JOIN content_blocks c
+          ON c.document = e.document AND c.source_sha256 = e.source_sha256
+         AND c.tree_position = e.tree_position AND c.block_id = e.block_id
+        WHERE e.entity_id = ?
+        ORDER BY e.document, e.tree_position, e.character_start
+        LIMIT ?
+    """, (entity_id, limit)).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def search_relation_candidates(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
     if not query.strip():
         raise ValueError("relation query must not be empty")
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
-        SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,
+        SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,\n               s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id,
                r.document AS evidence_document, r.tree_position AS evidence_tree_position,
                r.block_id AS evidence_block_id, r.sentence_start, r.sentence_end,
                r.evidence_text, r.extraction_rule, r.resolution_status, r.unit_id,
@@ -450,6 +475,7 @@ def main() -> int:
     parser.add_argument("--relation-query", help="query formula-herb relation candidates")
     parser.add_argument("--query", help="search source text in a built database")
     parser.add_argument("--entity-query", help="search entity mentions with exact source spans")
+    parser.add_argument("--entity-id", help="resolve a stable lexical entity ID to source mentions")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
 
@@ -457,7 +483,7 @@ def main() -> int:
         print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry),
                          ensure_ascii=False, sort_keys=True))
         return 0
-    if sum(bool(value) for value in (args.query, args.entity_query, args.relation_query)) > 1:
+    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query)) > 1:
         parser.error("choose only one query mode")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
@@ -465,6 +491,10 @@ def main() -> int:
         return 0
     if args.entity_query:
         results = search_entity_mentions(args.db, args.entity_query, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    if args.entity_id:
+        results = search_entity_by_id(args.db, args.entity_id, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     if args.relation_query:
