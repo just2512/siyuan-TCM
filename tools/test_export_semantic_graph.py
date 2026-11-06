@@ -157,5 +157,11 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(edge["subject_text"], "头痛")
             self.assertEqual(edge["object_text"], "太阳中风")
             self.assertEqual(edge["evidence"]["text"], source_text)
+            edge["subject_candidate_id"] = "missing-candidate"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            with self.assertRaisesRegex(ValueError, "graph/SQLite mismatch"):
+                module.validate(database, output)
 if __name__ == "__main__":
     unittest.main()

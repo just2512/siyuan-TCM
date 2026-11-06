@@ -16,6 +16,10 @@ import json
 import re
 import sqlite3
 import sys
+try:
+    import resource
+except ImportError:  # pragma: no cover - unavailable on Windows
+    resource = None
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -110,19 +114,18 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
     distinct_ngrams_seen = 0
     eligible_count = 0
 
+    max_unit_distinct_terms = 0
     with tempfile.TemporaryDirectory(
         prefix="tcm-term-mining-", dir=output_path.parent
     ) as temp_dir:
         database_path = Path(temp_dir) / "term-stats.sqlite3"
         connection = sqlite3.connect(database_path)
         try:
-            # Keep corpus-wide term/document aggregation on disk. The only
-            # in-memory Counter is for the current knowledge unit.
+            # Aggregation is keyed by (term, document), not input ordering.
+            # Only the current unit's n-gram Counter is held in Python memory.
             connection.execute("PRAGMA journal_mode=OFF")
             connection.execute("PRAGMA synchronous=OFF")
             connection.execute("PRAGMA temp_store=MEMORY")
-            # Give the large term/document B-trees enough page cache to avoid excessive
-            # random disk reads during corpus-wide UPSERT and provenance joins.
             connection.execute("PRAGMA cache_size=-131072")
             connection.executescript("""
                 CREATE TABLE term_stats (
@@ -133,68 +136,56 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     document_count INTEGER NOT NULL DEFAULT 0,
                     sample_count INTEGER NOT NULL DEFAULT 0
                 );
+                CREATE TABLE term_document_terms (
+                    term_id INTEGER NOT NULL,
+                    document TEXT NOT NULL,
+                    occurrence_count INTEGER NOT NULL,
+                    unit_count INTEGER NOT NULL,
+                    sample_evidence TEXT NOT NULL,
+                    PRIMARY KEY (term_id, document)
+                ) WITHOUT ROWID;
                 CREATE TABLE term_samples (
                     term_id INTEGER NOT NULL,
                     sample_index INTEGER NOT NULL,
                     sample_evidence TEXT NOT NULL,
                     PRIMARY KEY (term_id, sample_index)
                 ) WITHOUT ROWID;
-                CREATE TEMP TABLE current_document_terms (
-                    term TEXT PRIMARY KEY,
+                CREATE TEMP TABLE batch_terms (
+                    term TEXT NOT NULL,
+                    document TEXT NOT NULL,
                     occurrence_count INTEGER NOT NULL,
                     unit_count INTEGER NOT NULL,
-                    sample_evidence TEXT NOT NULL
+                    sample_evidence TEXT NOT NULL,
+                    PRIMARY KEY (term, document)
                 ) WITHOUT ROWID;
             """)
-            active_document: str | None = None
-            document_terms: dict[str, list[Any]] = {}
-            last_commit_unit = 0
 
-            def flush_document_terms() -> None:
-                nonlocal document_terms, last_commit_unit
-                if not document_terms:
+            def flush_batch() -> None:
+                if connection.execute("SELECT 1 FROM batch_terms LIMIT 1").fetchone() is None:
                     return
-                connection.execute("DELETE FROM current_document_terms")
-                connection.executemany("""
-                    INSERT INTO current_document_terms(
-                        term, occurrence_count, unit_count, sample_evidence
-                    ) VALUES (?, ?, ?, ?)
-                """, [
-                    (term, values[0], values[1], values[2])
-                    for term, values in document_terms.items()
-                ])
                 connection.execute("""
                     INSERT INTO term_stats (term, occurrence_count, unit_count)
-                    SELECT term, occurrence_count, unit_count
-                    FROM current_document_terms WHERE 1
+                    SELECT term, SUM(occurrence_count), SUM(unit_count)
+                    FROM batch_terms WHERE 1 GROUP BY term
                     ON CONFLICT(term) DO UPDATE SET
                         occurrence_count = occurrence_count + excluded.occurrence_count,
                         unit_count = unit_count + excluded.unit_count
                 """)
                 connection.execute("""
-                    INSERT INTO term_samples(term_id, sample_index, sample_evidence)
-                    SELECT stats.term_id, stats.sample_count, current.sample_evidence
-                    FROM current_document_terms AS current
-                    JOIN term_stats AS stats ON stats.term = current.term
-                    WHERE current.sample_evidence IS NOT NULL
-                      AND stats.sample_count < ?
-                """, (sample_limit,))
-                connection.execute("""
-                    UPDATE term_stats
-                    SET document_count = document_count + 1,
-                        sample_count = sample_count + CASE
-                            WHEN sample_count < ? AND EXISTS (
-                                SELECT 1 FROM current_document_terms AS current
-                                WHERE current.term = term_stats.term
-                                  AND current.sample_evidence IS NOT NULL
-                            ) THEN 1 ELSE 0 END
-                    WHERE term IN (SELECT term FROM current_document_terms)
-                """, (sample_limit,))
-                connection.execute("DELETE FROM current_document_terms")
-                document_terms.clear()
-                if unit_total - last_commit_unit >= COMMIT_EVERY_UNITS:
-                    connection.commit()
-                    last_commit_unit = unit_total
+                    INSERT INTO term_document_terms (
+                        term_id, document, occurrence_count, unit_count, sample_evidence
+                    )
+                    SELECT stats.term_id, batch.document,
+                           batch.occurrence_count, batch.unit_count, batch.sample_evidence
+                    FROM batch_terms AS batch
+                    JOIN term_stats AS stats ON stats.term = batch.term
+                    WHERE 1
+                    ON CONFLICT(term_id, document) DO UPDATE SET
+                        occurrence_count = occurrence_count + excluded.occurrence_count,
+                        unit_count = unit_count + excluded.unit_count
+                """)
+                connection.execute("DELETE FROM batch_terms")
+                connection.commit()
 
             with gzip.open(units_path, "rt", encoding="utf-8") as stream:
                 for line_number, line in enumerate(stream, 1):
@@ -208,50 +199,77 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     document = str(source.get("document") or "")
                     if not unit_id or not document:
                         raise ValueError(f"line {line_number}: missing unit/source identity")
-                    if active_document is not None and document < active_document:
-                        raise ValueError(
-                            "knowledge units must be ordered by source document; "
-                            f"line {line_number} moved from {active_document!r} to {document!r}"
-                        )
-                    if document != active_document:
-                        flush_document_terms()
-                        active_document = document
                     unit_total += 1
-
-                    for term, occurrences in count_ngrams(text, min_length, max_length).items():
+                    unit_counts = count_ngrams(text, min_length, max_length)
+                    max_unit_distinct_terms = max(max_unit_distinct_terms, len(unit_counts))
+                    batch_rows = []
+                    for term, occurrences in unit_counts.items():
                         if term in STOP_TERMS:
                             continue
                         if term in known_terms:
                             known_term_occurrences += occurrences
                             continue
-                        aggregate = document_terms.get(term)
-                        if aggregate is None:
-                            document_terms[term] = [
-                                occurrences, 1,
-                                _sample_evidence(
-                                    unit, document, text, term, unit_id, line_number
-                                ),
-                            ]
-                        else:
-                            aggregate[0] += occurrences
-                            aggregate[1] += 1
+                        evidence = _sample_evidence(
+                            unit, document, text, term, unit_id, line_number
+                        )
+                        batch_rows.append((term, document, occurrences, 1, evidence))
+                    if batch_rows:
+                        connection.executemany("""
+                            INSERT INTO batch_terms (
+                                term, document, occurrence_count, unit_count, sample_evidence
+                            ) VALUES (?, ?, ?, ?, ?)
+                            ON CONFLICT(term, document) DO UPDATE SET
+                                occurrence_count = occurrence_count + excluded.occurrence_count,
+                                unit_count = unit_count + excluded.unit_count
+                        """, batch_rows)
 
+                    if unit_total % COMMIT_EVERY_UNITS == 0:
+                        flush_batch()
                     if unit_total % PROGRESS_EVERY_UNITS == 0:
                         distinct_so_far = connection.execute(
                             "SELECT COUNT(*) FROM term_stats"
                         ).fetchone()[0]
                         database_bytes = database_path.stat().st_size if database_path.exists() else 0
+                        batch_rows_count = connection.execute(
+                            "SELECT COUNT(*) FROM batch_terms"
+                        ).fetchone()[0]
                         print(
                             f"[term-mining] scanned_units={unit_total} "
-                            f"committed_distinct_terms={distinct_so_far} "
-                            f"active_document_terms={len(document_terms)} "
+                            f"distinct_terms={distinct_so_far} "
+                            f"pending_term_documents={batch_rows_count} "
+                            f"max_unit_distinct_terms={max_unit_distinct_terms} "
                             f"database_bytes={database_bytes}",
                             file=sys.stderr,
                             flush=True,
                         )
 
-            flush_document_terms()
-
+            flush_batch()
+            connection.execute("""
+                UPDATE term_stats
+                SET document_count = (
+                    SELECT COUNT(*) FROM term_document_terms AS docs
+                    WHERE docs.term_id = term_stats.term_id
+                )
+            """)
+            connection.execute("""
+                INSERT INTO term_samples(term_id, sample_index, sample_evidence)
+                SELECT term_id, sample_rank - 1, sample_evidence
+                FROM (
+                    SELECT term_id, sample_evidence,
+                           ROW_NUMBER() OVER (
+                               PARTITION BY term_id ORDER BY document, sample_evidence
+                           ) AS sample_rank
+                    FROM term_document_terms
+                )
+                WHERE sample_rank <= ?
+            """, (sample_limit,))
+            connection.execute("""
+                UPDATE term_stats
+                SET sample_count = (
+                    SELECT COUNT(*) FROM term_samples AS samples
+                    WHERE samples.term_id = term_stats.term_id
+                )
+            """)
             connection.commit()
             distinct_ngrams_seen = connection.execute(
                 "SELECT COUNT(*) FROM term_stats"
@@ -296,6 +314,12 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
         finally:
             connection.close()
 
+    peak_rss_kib = None
+    if resource is not None:
+        peak_rss_kib = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        if sys.platform == "darwin":
+            peak_rss_kib //= 1024
+
     return {
         "knowledge_units_scanned": unit_total,
         "distinct_ngrams_seen": distinct_ngrams_seen,
@@ -303,6 +327,10 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
         "unclassified_term_candidates": eligible_count,
         "minimum_occurrences": min_occurrences,
         "minimum_documents": min_documents,
+        "max_unit_distinct_terms": max_unit_distinct_terms,
+        "aggregation_strategy": "sqlite_term_document_upsert",
+        "peak_rss_kib": peak_rss_kib,
+
     }
 
 

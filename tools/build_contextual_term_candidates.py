@@ -54,13 +54,20 @@ def classify_sample(sample: dict[str, str]) -> list[tuple[str, str]]:
     end = start + len(term)
     if start < 0 or end > len(text) or text[start:end] != term:
         raise ValueError("candidate term does not match its source evidence span")
-    before = text[max(0, start - 10):start]
-    after = text[end:min(len(text), end + 10)]
-    local = before + term + after
+    # Context must belong to the candidate phrase, not an adjacent clause.
+    # Restrict the left context to the current punctuation-delimited clause.
+    left_boundary = max(
+        text.rfind(mark, 0, start) for mark in "，。！？；、\n"
+    ) + 1
+    before = text[max(left_boundary, start - 10):start]
     found = []
     for candidate_type, rules in RULES.items():
         for rule_id, pattern in rules:
-            if re.search(pattern, local):
+            # Prefix cues (症见/辨证为/治宜/方用/舌/脉) must precede
+            # the candidate. Intrinsic cues such as 疼痛/舌红/脉弦 may
+            # be part of the candidate itself. Do not borrow cues after
+            # the candidate: they may describe a neighboring concept.
+            if re.search(pattern, before + term):
                 found.append((candidate_type, rule_id))
     return found
 
