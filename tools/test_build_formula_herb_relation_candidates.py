@@ -167,7 +167,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=fields)
                 writer.writeheader()
                 writer.writerows(corrupted)
-            with self.assertRaisesRegex(ValueError, "formula mention belongs to a different source document"):
+            with self.assertRaisesRegex(ValueError, "subject mention provenance mismatch"):
                 module.validate(output, units, mentions)
 
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
