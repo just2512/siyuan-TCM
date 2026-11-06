@@ -69,7 +69,7 @@
 
 ## 实体提及候选（扩展阶段）
 
-词典文件：`catalog/entity-lexicon.csv`，当前词典版本为 `1.0.0`。
+词典文件：`catalog/entity-lexicon.csv`，当前词典版本为 `1.3.0`（以 `catalog/entity-lexicon.csv` 中各条记录为准）。
 
 生成文件：`catalog/generated/entity_mention_candidates.csv.gz`。
 
