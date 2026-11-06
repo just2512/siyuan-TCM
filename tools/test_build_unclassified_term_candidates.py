@@ -1,3 +1,4 @@
+import csv
 import gzip
 import importlib.util
 import json
