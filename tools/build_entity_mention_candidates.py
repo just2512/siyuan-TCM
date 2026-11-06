@@ -136,7 +136,7 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
         "- 所有记录标记为 UNRESOLVED_CANDIDATE，不代表已经确认实体或医学事实。",
         "- 扩充词典只增加候选覆盖，不修改原始笔记。",
     ]
-    (output / "entity_mention_candidates.md").write_text("\\n".join(report) + "\\n", encoding="utf-8")
+    (output / "entity_mention_candidates.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"content_blocks": blocks, "lexicon_terms": len(lexicon), "mentions": mentions, **{f"type_{k.lower()}": v for k, v in sorted(counts.items())}}
 
 
