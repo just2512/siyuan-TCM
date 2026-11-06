@@ -140,7 +140,13 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
     return {"content_blocks": blocks, "lexicon_terms": len(lexicon), "mentions": mentions, **{f"type_{k.lower()}": v for k, v in sorted(counts.items())}}
 
 
-def validate(path: Path) -> int:
+def validate(path: Path, knowledge_units_path: Path | None = None) -> int:
+    units: dict[str, dict[str, Any]] = {}
+    if knowledge_units_path is not None:
+        with gzip.open(knowledge_units_path, "rt", encoding="utf-8", newline="") as source:
+            for unit_line, raw in enumerate(source, 1):
+                unit = json.loads(raw)
+                units[unit["unit_id"]] = unit
     count = 0
     with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
         for line, row in enumerate(csv.DictReader(stream), 2):
@@ -153,6 +159,19 @@ def validate(path: Path) -> int:
                 raise ValueError(f"row {line}: unexpected extraction method")
             if not row["mention_id"] or not row["unit_id"] or not row["document"]:
                 raise ValueError(f"row {line}: missing identity or provenance")
+            if knowledge_units_path is not None:
+                unit = units.get(row["unit_id"])
+                if unit is None:
+                    raise ValueError(f"row {line}: unit_id not found in knowledge units")
+                source = unit["source"]
+                text = unit["content"]["source_text"]
+                if text[start:end] != row["matched_text"]:
+                    raise ValueError(f"row {line}: source span does not match knowledge unit text")
+                if (source["document"] != row["document"]
+                    or source["sha256"] != row["source_sha256"]
+                    or source["tree_position"] != row["tree_position"]
+                    or source.get("block_id", "") != row["block_id"]):
+                    raise ValueError(f"row {line}: provenance differs from knowledge unit")
             count += 1
     return count
 
@@ -162,14 +181,15 @@ def main() -> int:
     parser.add_argument("--content-index", type=Path, default=Path("catalog/generated/content_block_index.csv.gz"))
     parser.add_argument("--lexicon", type=Path, default=Path("catalog/entity-lexicon.csv"))
     parser.add_argument("--output", type=Path, default=Path("catalog/generated"))
+    parser.add_argument("--knowledge-units", type=Path, default=Path("catalog/generated/knowledge_units.jsonl.gz"))
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
     if args.validate:
-        count = validate(args.output / "entity_mention_candidates.csv.gz")
+        count = validate(args.output / "entity_mention_candidates.csv.gz", args.knowledge_units)
         print(json.dumps({"validated_mentions": count}, ensure_ascii=False))
     else:
         result = extract(args.content_index, args.lexicon, args.output)
-        validate(args.output / "entity_mention_candidates.csv.gz")
+        validate(args.output / "entity_mention_candidates.csv.gz", args.knowledge_units)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
