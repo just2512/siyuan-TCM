@@ -327,6 +327,19 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
     })
     topic = unique_index(topic_rows, "document", "topic_review.csv")
+    expected_topic_documents = {
+        path for path, row in docs.items()
+        if len([item for item in row["topics"].split(";") if item]) > 1
+    }
+    if set(topic) != expected_topic_documents:
+        missing = sorted(expected_topic_documents - set(topic))
+        unexpected = sorted(set(topic) - expected_topic_documents)
+        details = []
+        if missing:
+            details.append("缺少多主题文档：" + ", ".join(missing))
+        if unexpected:
+            details.append("多出非多主题文档：" + ", ".join(unexpected))
+        raise ValueError("topic_review.csv 与多主题文档集合不一致：" + "；".join(details))
     for path, row in topic.items():
         if path not in docs:
             raise ValueError(f"topic_review.csv 引用了未知文档：{path}")

@@ -321,6 +321,22 @@ class CatalogueValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "重复 document"):
                 validator.validate_catalogue(generated, source, assets)
 
+    def test_rejects_missing_multi_topic_document_from_topic_queue(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            self.write(generated / "topic_review.csv", [
+                "document", "catalog_topics", "catalog_topic_count", "review_bucket",
+                "review_status", "catalog_matched_terms", "catalog_title_matched_terms",
+                "catalog_body_matched_terms", "human_approved_topics", "reviewer",
+                "review_notes", "evidence_reference",
+            ], [])
+            self.write(generated / "topic_review_batches.csv", [
+                "document", "batch_id", "batch_position", "batch_size", "review_status",
+                "human_approved_topics", "reviewer", "review_notes", "evidence_reference",
+            ], [])
+            with self.assertRaisesRegex(ValueError, "topic_review.csv 与多主题文档集合不一致"):
+                validator.validate_catalogue(generated, source, assets)
+
     def test_rejects_invalid_empty_body_review_status(self):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
