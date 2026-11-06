@@ -22,7 +22,7 @@ class CatalogueValidationTests(unittest.TestCase):
         generated = root / "generated"
         generated.mkdir()
         docs = [{
-            "path": "book/a.sy", "title": "伤寒论", "title_source": "PROPERTY",
+            "path": "book/a.sy", "title": "伤寒论", "title_source": "BODY_FIRST_LINE",
             "topics": "经典与理论;伤寒与温病", "parse_status": "PARSED",
             "asset_ref_count": "1", "parent_document": "", "document_depth": "0", "child_document_count": "0", "search_text": "太阳病",
             "topic_matched_terms": "伤寒与温病:伤寒论;经典与理论:阴阳",
@@ -349,6 +349,16 @@ class CatalogueValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "review_status 无效"):
                 validator.validate_catalogue(generated, source, assets)
 
+
+    def test_rejects_missing_title_candidate_from_title_queue(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            self.write(generated / "title_review_candidates.csv", [
+                "document", "review_status", "human_corrected_title",
+                "reviewer", "review_notes", "evidence_reference",
+            ], [])
+            with self.assertRaisesRegex(ValueError, "title_review_candidates.csv 与标题候选文档集合不一致"):
+                validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_title_queue_reviewer_projection_drift(self):
         with tempfile.TemporaryDirectory() as temp:

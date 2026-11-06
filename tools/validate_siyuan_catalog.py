@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import importlib.util
 from collections import Counter
 from pathlib import Path
 
@@ -17,6 +18,14 @@ TOPIC_STATES = {
     "经典与理论", "伤寒与温病", "方剂与用药", "中药与本草",
     "针灸与经穴", "诊断与辨证", "医家与课程", "其他与待归类",
 }
+
+REVIEW_QUEUE_PATH = Path(__file__).with_name("build_siyuan_review_queue.py")
+REVIEW_QUEUE_SPEC = importlib.util.spec_from_file_location(
+    "build_siyuan_review_queue", REVIEW_QUEUE_PATH
+)
+review_queue = importlib.util.module_from_spec(REVIEW_QUEUE_SPEC)
+assert REVIEW_QUEUE_SPEC.loader is not None
+REVIEW_QUEUE_SPEC.loader.exec_module(review_queue)
 
 
 def read_csv(path: Path, required: set[str]) -> list[dict[str, str]]:
@@ -310,6 +319,21 @@ def validate_catalogue(generated: Path, source_candidates: Path,
         "document", "review_status", "human_corrected_title", "reviewer", "review_notes", "evidence_reference",
     })
     title = unique_index(title_rows, "document", "title_review_candidates.csv")
+    expected_title_documents = {
+        path for path, row in docs.items()
+        if review_queue.title_candidate_reason(row["title"], row["title_source"])
+    }
+    if set(title) != expected_title_documents:
+        missing = sorted(expected_title_documents - set(title))
+        unexpected = sorted(set(title) - expected_title_documents)
+        details = []
+        if missing:
+            details.append("缺少标题候选：" + ", ".join(missing))
+        if unexpected:
+            details.append("多出非标题候选：" + ", ".join(unexpected))
+        raise ValueError(
+            "title_review_candidates.csv 与标题候选文档集合不一致：" + "；".join(details)
+        )
     if not set(title).issubset(docs):
         raise ValueError("title_review_candidates.csv 引用了未知文档")
     for path, row in title.items():
