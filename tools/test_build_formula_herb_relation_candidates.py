@@ -13,6 +13,28 @@ SPEC.loader.exec_module(module)
 
 
 class FormulaHerbRelationCandidateTests(unittest.TestCase):
+    def test_requires_ingredient_phrase_and_supports_reverse_composition_order(self):
+        formula = {"character_start": "7", "character_end": "10"}
+        herbs = [
+            {"character_start": "0", "character_end": "2", "matched_text": "桂枝"},
+            {"character_start": "3", "character_end": "5", "matched_text": "芍药"},
+        ]
+        reverse = "桂枝、芍药组成桂枝汤"
+        selected = module.explicit_composition(formula, herbs, reverse, 0)
+        self.assertEqual([item["matched_text"] for item in selected], ["桂枝", "芍药"])
+
+        misleading = "真武汤在少阴篇会有包含小便不利，而我们通常是麻黄发汗之后"
+        distant_formula = {"character_start": "0", "character_end": "3"}
+        distant_herb = {
+            "character_start": str(misleading.index("麻黄")),
+            "character_end": str(misleading.index("麻黄") + 2),
+            "matched_text": "麻黄",
+        }
+        self.assertEqual(
+            module.explicit_composition(distant_formula, [distant_herb], misleading, 0),
+            [],
+        )
+
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
