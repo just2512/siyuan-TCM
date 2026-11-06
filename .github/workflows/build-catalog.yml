@@ -33,20 +33,37 @@ jobs:
         run: python tools/build_content_integrity_audit.py --output catalog/generated
       - name: Build typed-node semantic index
         run: python tools/build_node_semantic_index.py --output catalog/generated
-      - name: Audit content anomalies across exported notes
-        run: python tools/build_content_anomaly_audit.py --output catalog/generated
-      - name: Extract dosage-expression review candidates
-        run: python tools/build_dosage_expression_candidates.py --output catalog/generated
-      - name: Build heading-level section index
-        run: python tools/build_section_index.py --output catalog/generated
-      - name: Export provenance-preserving machine-readable knowledge units
-        run: python tools/build_knowledge_units.py --output catalog/generated
-      - name: Validate machine-readable knowledge units
-        run: python tools/build_knowledge_units.py --validate --output catalog/generated
-      - name: Extract dictionary-backed entity mention candidates
-        run: python tools/build_entity_mention_candidates.py --output catalog/generated
-      - name: Validate entity mention candidate index
-        run: python tools/build_entity_mention_candidates.py --validate --output catalog/generated
+      - name: Build independent semantic indexes in parallel
+        shell: bash
+        run: |
+          set -uo pipefail
+          python tools/build_content_anomaly_audit.py --output catalog/generated > "$RUNNER_TEMP/content-anomaly.log" 2>&1 & anomaly_pid=$!
+          python tools/build_dosage_expression_candidates.py --output catalog/generated > "$RUNNER_TEMP/dosage-candidates.log" 2>&1 & dosage_pid=$!
+          python tools/build_section_index.py --output catalog/generated > "$RUNNER_TEMP/section-index.log" 2>&1 & section_pid=$!
+          python tools/build_knowledge_units.py --output catalog/generated > "$RUNNER_TEMP/knowledge-units.log" 2>&1 & units_pid=$!
+          python tools/build_entity_mention_candidates.py --output catalog/generated > "$RUNNER_TEMP/entity-mentions.log" 2>&1 & mentions_pid=$!
+          status=0
+          for pid in "$anomaly_pid" "$dosage_pid" "$section_pid" "$units_pid" "$mentions_pid"; do
+            wait "$pid" || status=1
+          done
+          for log in "$RUNNER_TEMP/content-anomaly.log" "$RUNNER_TEMP/dosage-candidates.log" "$RUNNER_TEMP/section-index.log" "$RUNNER_TEMP/knowledge-units.log" "$RUNNER_TEMP/entity-mentions.log"; do
+            echo "::group::$(basename "$log")"
+            cat "$log"
+            echo "::endgroup::"
+          done
+          exit "$status"
+      - name: Validate knowledge units and entity mentions in parallel
+        shell: bash
+        run: |
+          set -uo pipefail
+          python tools/build_knowledge_units.py --validate --output catalog/generated > "$RUNNER_TEMP/validate-units.log" 2>&1 & units_pid=$!
+          python tools/build_entity_mention_candidates.py --validate --output catalog/generated > "$RUNNER_TEMP/validate-mentions.log" 2>&1 & mentions_pid=$!
+          status=0
+          wait "$units_pid" || status=1
+          wait "$mentions_pid" || status=1
+          cat "$RUNNER_TEMP/validate-units.log"
+          cat "$RUNNER_TEMP/validate-mentions.log"
+          exit "$status"
       - name: Extract explicit formula-herb relation candidates
         run: python tools/build_formula_herb_relation_candidates.py
       - name: Validate formula-herb relation candidate provenance
@@ -60,14 +77,24 @@ jobs:
           path: catalog/generated/siyuan_search.sqlite3
           if-no-files-found: error
           retention-days: 30
-      - name: Build human review queues
-        run: python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv
-      - name: Build topic and title extraction audits
-        run: python tools/build_rule_extraction_audit.py --documents catalog/generated/documents.csv --output catalog/generated
-      - name: Build asset review queue from persisted local scan
-        run: python tools/build_asset_review_queue.py --candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv --output catalog/generated --batch-size 25
-      - name: Build bibliographic source review queue
-        run: python tools/build_source_review_queue.py --candidates catalog/source-review-candidates.csv --output catalog/generated --batch-size 20
+      - name: Build independent review queues in parallel
+        shell: bash
+        run: |
+          set -uo pipefail
+          python tools/build_siyuan_review_queue.py --documents catalog/generated/documents.csv --output catalog/generated --decisions catalog/review-decisions.csv > "$RUNNER_TEMP/review-queue.log" 2>&1 & review_pid=$!
+          python tools/build_rule_extraction_audit.py --documents catalog/generated/documents.csv --output catalog/generated > "$RUNNER_TEMP/rule-audit.log" 2>&1 & rule_pid=$!
+          python tools/build_asset_review_queue.py --candidates catalog/local-review/asset-prefix-candidates-2026-11-05.csv --output catalog/generated --batch-size 25 > "$RUNNER_TEMP/asset-queue.log" 2>&1 & asset_pid=$!
+          python tools/build_source_review_queue.py --candidates catalog/source-review-candidates.csv --output catalog/generated --batch-size 20 > "$RUNNER_TEMP/source-queue.log" 2>&1 & source_pid=$!
+          status=0
+          for pid in "$review_pid" "$rule_pid" "$asset_pid" "$source_pid"; do
+            wait "$pid" || status=1
+          done
+          for log in "$RUNNER_TEMP/review-queue.log" "$RUNNER_TEMP/rule-audit.log" "$RUNNER_TEMP/asset-queue.log" "$RUNNER_TEMP/source-queue.log"; do
+            echo "::group::$(basename "$log")"
+            cat "$log"
+            echo "::endgroup::"
+          done
+          exit "$status"
       - name: Build human-review progress report
         run: python tools/build_review_progress_report.py --decisions catalog/review-decisions.csv --sources catalog/source-review-candidates.csv --assets catalog/generated/asset_review_queue.csv --evidence catalog/review-evidence.csv --topics catalog/generated/topic_rule_audit.csv --titles catalog/generated/title_extraction_audit.csv --empty-body catalog/generated/empty_body_review.csv --content-anomalies catalog/generated/content_anomaly_audit.csv --paragraph-anomalies catalog/generated/paragraph_anomaly_audit.csv --dosage-candidates catalog/generated/dosage_expression_candidates.csv --sections catalog/generated/section_index.csv --block-types catalog/generated/block_type_inventory.csv --output catalog/generated/review_progress.md
       - name: Validate generated catalogue consistency
