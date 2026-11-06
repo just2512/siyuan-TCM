@@ -31,7 +31,7 @@ FIELDS = [
 
 
 NGRAM_PATTERNS = {
-    length: re.compile(rf"(?=([\\u3400-\\u4dbf\\u4e00-\\u9fff]{{{length}}}))")
+    length: re.compile(rf"(?=([\u3400-\u4dbf\u4e00-\u9fff]{{{length}}}))")
     for length in range(2, 7)
 }
 
