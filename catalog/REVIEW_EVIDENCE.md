@@ -71,6 +71,17 @@ EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.
 此映射只验证证据分类，不认证内容真实性。不得为了通过校验而更改 evidence_kind。
 
 
+## 原始 .sy 证据的对象绑定
+
+当 `evidence_kind=original_sy` 且对象类型为 `document`、`topic_decision`、`title_decision` 或 `empty_body_decision` 时：
+
+- `subject_key` 必须是仓库相对的原始 `.sy` 文件路径。
+- `source_reference` 必须与 `subject_key` 指向同一个文件，不得用另一篇笔记、文件名线索或自由文本代替。
+- 如填写 `context_reference`，其文档部分（`#` 前）必须与 `subject_key` 完全一致。
+- 不得使用绝对路径或包含 `..` 的路径段。
+
+这只保证证据记录没有跨文档错绑；仍不证明人工确实打开并检查了原始文件。检查方式必须单独标记，只有 `HUMAN_DIRECT` 可以支撑人工结论。
+
 ## 检查方式与人工结论的边界（强制）
 
 证据台账新增 `inspection_method`：
