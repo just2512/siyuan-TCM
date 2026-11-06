@@ -82,3 +82,12 @@
 - `lexicon_version`、`extraction_method`、`resolution_status`。
 
 当前提取方法为精确词典匹配。允许嵌套和重叠提及，例如方剂名与方剂名中包含的药名同时保留。候选统一标记为 `UNRESOLVED_CANDIDATE`；不执行同义词扩展、否定识别、实体消歧或关系推断。词典是第一版启动词表，不代表全量覆盖。
+
+
+## 稳定实体标识（词面级）
+
+生成文件：`catalog/generated/entity_registry.csv`。
+
+每个词典条目按 `entity_type + lexical_form` 生成稳定 `entity_id`，供 SQLite 的 `entity_catalog` 和 `entity_mentions` 关联使用。当前 `identity_status=LEXICAL_ID_ONLY`，只表示程序已为词面分配稳定 ID，不代表同义词归并、药物基原确认或医学概念消歧。
+
+例如“黄芪”和“黄耆”暂时保留为两个独立词面 ID。只有后续有明确、可追溯的别名规则时，才另建 alias 映射；不得仅凭字形相近自动合并。
