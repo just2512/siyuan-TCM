@@ -51,7 +51,7 @@ class EntityMentionCandidateTests(unittest.TestCase):
                 "content": {"source_text": "桂枝汤由桂枝、芍药组成。"},
             }
             with gzip.open(units_path, "wt", encoding="utf-8") as stream:
-                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
             self.assertEqual(module.validate(path, units_path), 4)
             with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
