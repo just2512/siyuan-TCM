@@ -300,6 +300,9 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                     if (endpoint_start < 0 or endpoint_end <= endpoint_start
                         or endpoint_text[endpoint_start:endpoint_end] != endpoint["matched_text"]):
                         raise ValueError(f"row {line}: {endpoint_name} mention span mismatch")
+                if (subject["document"] != row["document"]
+                    or subject["source_sha256"] != row["source_sha256"]):
+                    raise ValueError(f"row {line}: formula mention belongs to a different source document")
                 if (obj["document"] != row["document"]
                     or obj["source_sha256"] != row["source_sha256"]
                     or obj["tree_position"] != row["tree_position"]
