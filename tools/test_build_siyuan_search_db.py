@@ -190,6 +190,35 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                 search_db.build_database(content, None, root / "bad.sqlite3", entities,
                                           None, root / "missing-registry.csv")
 
+
+    def test_indexes_and_queries_corpus_mined_terms(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            terms = root / "terms.csv.gz"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "hash-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "characters": 6,
+                "content_text": "太阳中风，桂枝汤主之",
+            }])
+            self._write_gzip_csv(terms, [
+                "candidate_id", "term", "ngram_length", "occurrence_count",
+                "unit_count", "document_count", "sample_evidence", "candidate_status",
+            ], [{
+                "candidate_id": "term-sun-wind", "term": "太阳中风",
+                "ngram_length": 4, "occurrence_count": 8, "unit_count": 5,
+                "document_count": 3, "sample_evidence": "[]",
+                "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
+            }])
+            result = search_db.build_database(content, None, db, None, None, None, terms)
+            self.assertEqual(result["unclassified_term_candidates"], 1)
+            found = search_db.search_unclassified_terms(db, "太阳")
+            self.assertEqual(len(found), 1)
+            self.assertEqual(found[0]["term"], "太阳中风")
+            self.assertEqual(found[0]["document_count"], 3)
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")
