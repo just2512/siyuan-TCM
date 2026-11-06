@@ -95,14 +95,32 @@ def position_parts(value: str) -> tuple[int, ...]:
         return ()
 
 
+def has_explicit_formula_context(mention: dict[str, str]) -> bool:
+    source_text = mention.get("_source_text", "")
+    start, end = int(mention["character_start"]), int(mention["character_end"])
+    after = source_text[end:end + 16]
+    if re.match(r"^\s*(?:主之|主治|是|组成|由|含有|包含|[:：])", after):
+        return True
+    if mention.get("_unit_type") == "SECTION_HEADING" and start <= 12:
+        return True
+    if start <= 12 and re.match(
+        r"^\s*" + re.escape(mention["matched_text"]) + r"\s*(?:【|〔|（|\(|[:：]|主|是|由|含)",
+        source_text,
+    ):
+        return True
+    return False
+
+
 def nearby_formula(formula_mentions: list[dict[str, str]],
                    evidence_unit: dict[str, Any]) -> dict[str, str] | None:
-    """Choose one unambiguous formula mention in a nearby sibling block."""
+    """Choose a unique nearby formula only when its own block names it explicitly."""
     evidence_pos = position_parts(evidence_unit["source"]["tree_position"])
     if len(evidence_pos) < 2:
         return None
     candidates = []
     for mention in formula_mentions:
+        if not has_explicit_formula_context(mention):
+            continue
         if mention["unit_id"] == evidence_unit["unit_id"]:
             candidates.append((0, mention))
             continue
@@ -168,7 +186,10 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
             units.append(unit)
             for mention in mentions.get(unit["unit_id"], []):
                 if mention["entity_type"] == "FORMULA":
-                    formulas_by_document[mention["document"]].append(mention)
+                    formula_record = dict(mention)
+                    formula_record["_source_text"] = unit["content"]["source_text"]
+                    formula_record["_unit_type"] = unit["unit_type"]
+                    formulas_by_document[mention["document"]].append(formula_record)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
