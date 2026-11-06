@@ -50,8 +50,100 @@ def unique_index(rows: list[dict[str, str]], key: str, label: str) -> dict[str, 
     return result
 
 
+def validate_decision_projection(decisions_path: Path, docs: dict[str, dict[str, str]],
+                                 review: dict[str, dict[str, str]],
+                                 empty: dict[str, dict[str, str]],
+                                 title: dict[str, dict[str, str]],
+                                 topic: dict[str, dict[str, str]]) -> None:
+    decision_fields = {
+        "document", "reviewer", "title_review_status", "human_corrected_title",
+        "source_status", "source_version_status", "collation_status",
+        "topic_review_status", "human_approved_topics", "empty_body_status",
+        "review_notes", "evidence_reference",
+    }
+    decisions = unique_index(
+        read_csv(decisions_path, decision_fields), "document", "review-decisions.csv"
+    )
+    unknown = set(decisions) - set(docs)
+    if unknown:
+        raise ValueError(
+            "review-decisions.csv 引用了未知文档：" + ", ".join(sorted(unknown))
+        )
+
+    document_defaults = {
+        "title_review_status": "NOT_REVIEWED",
+        "topic_review_status": "NOT_REVIEWED",
+        "source_status": "UNVERIFIED",
+        "source_version_status": "UNVERIFIED",
+        "collation_status": "NOT_REVIEWED",
+        "human_corrected_title": "",
+        "human_approved_topics": "",
+        "reviewer": "",
+        "review_notes": "",
+        "evidence_reference": "",
+    }
+
+    def value(decision: dict[str, str], field: str, default: str = "") -> str:
+        return (decision.get(field) or "").strip() or default
+
+    def compare(path: str, row: dict[str, str], expected: dict[str, str],
+                label: str) -> None:
+        for field, expected_value in expected.items():
+            actual = (row.get(field) or "").strip()
+            if actual != expected_value:
+                raise ValueError(
+                    f"{path} 的 {label}.{field} 与 review-decisions.csv 不一致："
+                    f"期望 {expected_value!r}，实际 {actual!r}"
+                )
+
+    for path, row in review.items():
+        decision = decisions.get(path, {})
+        compare(
+            path, row,
+            {field: value(decision, field, default)
+             for field, default in document_defaults.items()},
+            "document_review",
+        )
+
+    for path, row in title.items():
+        decision = decisions.get(path, {})
+        compare(path, row, {
+            "review_status": value(decision, "title_review_status", "NOT_REVIEWED"),
+            "human_corrected_title": value(decision, "human_corrected_title"),
+            "reviewer": value(decision, "reviewer"),
+            "review_notes": value(decision, "review_notes"),
+            "evidence_reference": value(decision, "evidence_reference"),
+        }, "title_review_candidates")
+
+    for path, row in topic.items():
+        decision = decisions.get(path, {})
+        compare(path, row, {
+            "review_status": value(decision, "topic_review_status", "NOT_REVIEWED"),
+            "human_approved_topics": value(decision, "human_approved_topics"),
+            "reviewer": value(decision, "reviewer"),
+            "review_notes": value(decision, "review_notes"),
+            "evidence_reference": value(decision, "evidence_reference"),
+        }, "topic_review")
+
+    for path, row in empty.items():
+        decision = decisions.get(path, {})
+        compare(path, row, {
+            "review_status": value(decision, "empty_body_status", "NEEDS_SOURCE_INSPECTION"),
+            "reviewer": value(decision, "reviewer"),
+            "review_notes": value(decision, "review_notes"),
+            "evidence_reference": value(decision, "evidence_reference"),
+        }, "empty_body_review")
+
+    for path, decision in decisions.items():
+        if value(decision, "empty_body_status") and path not in empty:
+            raise ValueError(
+                f"{path} 的 review-decisions.empty_body_status 指向非空正文文档"
+            )
+
+
 def validate_catalogue(generated: Path, source_candidates: Path,
-                       asset_candidates: Path) -> dict[str, int]:
+                       asset_candidates: Path,
+                       decisions_path: Path | None = None) -> dict[str, int]:
     documents = read_csv(generated / "documents.csv", {
         "path", "title", "title_source", "topics", "parse_status",
         "asset_ref_count", "parent_document", "document_depth",
@@ -197,7 +289,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
 
     empty_rows = read_csv(generated / "empty_body_review.csv", {
         "document", "review_status", "parent_document", "document_depth",
-        "child_document_count",
+        "child_document_count", "reviewer", "review_notes", "evidence_reference",
     })
     empty = unique_index(empty_rows, "document", "empty_body_review.csv")
     expected_empty = {path for path, row in docs.items() if not row["search_text"].strip()}
@@ -339,6 +431,13 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             if row[status_field] != "UNVERIFIED" and not row[evidence_field].strip():
                 raise ValueError(f"{path} 的 {status_field} 已有结论但缺少 {evidence_field}")
 
+    if decisions_path is None:
+        inferred_decisions = generated.parent / "review-decisions.csv"
+        if inferred_decisions.is_file():
+            decisions_path = inferred_decisions
+    if decisions_path is not None:
+        validate_decision_projection(decisions_path, docs, review, empty, title, topic)
+
     return {
         "documents": len(docs),
         "asset_references": len(asset_rows),
@@ -356,8 +455,9 @@ def main() -> None:
     parser.add_argument("--generated", type=Path, required=True)
     parser.add_argument("--source-candidates", type=Path, required=True)
     parser.add_argument("--asset-candidates", type=Path, required=True)
+    parser.add_argument("--decisions", type=Path, default=None)
     args = parser.parse_args()
-    print(validate_catalogue(args.generated, args.source_candidates, args.asset_candidates))
+    print(validate_catalogue(args.generated, args.source_candidates, args.asset_candidates, args.decisions))
 
 
 if __name__ == "__main__":
