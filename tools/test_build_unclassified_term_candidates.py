@@ -62,15 +62,15 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             self.assertIn("太阳中风", samples[0]["evidence_text"])
             self.assertEqual(samples[0]["matched_text"], "太阳中风")
 
-    def test_document_counts_are_unique_across_interleaved_units_and_sample_limit(self):
+    def test_document_counts_are_unique_within_sorted_documents_and_sample_limit(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             source = root / "units.jsonl.gz"
             output = root / "terms.csv.gz"
             records = [
                 make_unit("u1", "a.sy", "经络辨证"),
-                make_unit("u2", "b.sy", "经络辨证"),
-                make_unit("u3", "a.sy", "经络辨证"),
+                make_unit("u2", "a.sy", "经络辨证"),
+                make_unit("u3", "b.sy", "经络辨证"),
                 make_unit("u4", "c.sy", "经络辨证"),
             ]
             write_units(source, records)
@@ -88,6 +88,20 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             samples = json.loads(row["sample_evidence"])
             self.assertEqual(len(samples), 2)
             self.assertEqual([item["document"] for item in samples], ["a.sy", "b.sy"])
+
+    def test_rejects_non_monotonic_document_order(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "units.jsonl.gz"
+            output = root / "terms.csv.gz"
+            records = [
+                make_unit("u1", "a.sy", "经络辨证"),
+                make_unit("u2", "b.sy", "经络辨证"),
+                make_unit("u3", "a.sy", "经络辨证"),
+            ]
+            write_units(source, records)
+            with self.assertRaisesRegex(ValueError, "ordered by source document"):
+                module.mine(source, output, min_occurrences=2, min_documents=1)
 
     def test_excludes_terms_already_present_in_entity_lexicon(self):
         with tempfile.TemporaryDirectory() as temp:
