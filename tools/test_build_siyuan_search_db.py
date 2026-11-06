@@ -136,6 +136,55 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(found[0]["object_tree_position"], "0.0")
             self.assertEqual(found[0]["evidence_tree_position"], "0.0")
 
+    def test_registry_assigns_stable_entity_id_to_mentions(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            entities = root / "entities.csv.gz"
+            registry = root / "registry.csv"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "hash-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "characters": 6,
+                "content_text": "黄芪与黄耆",
+            }])
+            self._write_gzip_csv(entities, search_db.ENTITY_FIELDS, [
+                {"mention_id": "m1", "unit_id": "u1", "entity_type": "HERB",
+                 "matched_text": "黄芪", "character_start": 0, "character_end": 2,
+                 "document": "book/a.sy", "source_sha256": "hash-a",
+                 "tree_position": "0.0", "block_id": "p1", "content_type": "PARAGRAPH",
+                 "section_path": "", "lexicon_version": "1.3.0",
+                 "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+                {"mention_id": "m2", "unit_id": "u1", "entity_type": "HERB",
+                 "matched_text": "黄耆", "character_start": 3, "character_end": 5,
+                 "document": "book/a.sy", "source_sha256": "hash-a",
+                 "tree_position": "0.0", "block_id": "p1", "content_type": "PARAGRAPH",
+                 "section_path": "", "lexicon_version": "1.3.0",
+                 "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+            ])
+            with registry.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=search_db.ENTITY_REGISTRY_FIELDS)
+                writer.writeheader()
+                for term in ("黄芪", "黄耆"):
+                    writer.writerow({
+                        "entity_id": "id-" + term, "entity_type": "HERB",
+                        "preferred_label": term, "lexical_form": term,
+                        "lexicon_version": "1.3.0", "identity_status": "LEXICAL_ID_ONLY",
+                    })
+            result = search_db.build_database(content, None, db, entities, None, registry)
+            self.assertEqual(result["lexical_entities"], 2)
+            first = search_db.search_entity_mentions(db, "黄芪")
+            second = search_db.search_entity_mentions(db, "黄耆")
+            self.assertEqual(first[0]["entity_id"], "id-黄芪")
+            self.assertEqual(second[0]["entity_id"], "id-黄耆")
+            self.assertNotEqual(first[0]["entity_id"], second[0]["entity_id"])
+            with self.assertRaises(ValueError):
+                search_db.build_database(content, None, root / "bad.sqlite3", entities,
+                                          None, root / "missing-registry.csv")
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")
