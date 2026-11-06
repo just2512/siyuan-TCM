@@ -161,6 +161,14 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 writer.writerows(corrupted)
             with self.assertRaisesRegex(ValueError, "object mention provenance mismatch"):
                 module.validate(output, units, mentions)
+            corrupted[1]["source_sha256"] = source_hash
+            corrupted[0]["document"] = "book/other.sy"
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                writer.writerows(corrupted)
+            with self.assertRaisesRegex(ValueError, "formula mention belongs to a different source document"):
+                module.validate(output, units, mentions)
 
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
