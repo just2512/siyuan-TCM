@@ -124,33 +124,40 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             connection.execute("PRAGMA cache_size=-32768")
             connection.executescript("""
                 CREATE TABLE term_stats (
-                    term TEXT PRIMARY KEY,
+                    term_id INTEGER PRIMARY KEY,
+                    term TEXT NOT NULL UNIQUE,
                     occurrence_count INTEGER NOT NULL,
                     unit_count INTEGER NOT NULL,
                     document_count INTEGER NOT NULL DEFAULT 0,
                     sample_count INTEGER NOT NULL DEFAULT 0
-                ) WITHOUT ROWID;
+                );
+                CREATE TABLE documents (
+                    document_id INTEGER PRIMARY KEY,
+                    document TEXT NOT NULL UNIQUE
+                );
                 CREATE TABLE term_documents (
-                    term TEXT NOT NULL,
-                    document TEXT NOT NULL,
-                    PRIMARY KEY (term, document)
+                    term_id INTEGER NOT NULL,
+                    document_id INTEGER NOT NULL,
+                    PRIMARY KEY (term_id, document_id)
                 ) WITHOUT ROWID;
                 CREATE TABLE term_samples (
-                    term TEXT NOT NULL,
+                    term_id INTEGER NOT NULL,
                     sample_index INTEGER NOT NULL,
                     sample_evidence TEXT NOT NULL,
-                    PRIMARY KEY (term, sample_index)
+                    PRIMARY KEY (term_id, sample_index)
                 ) WITHOUT ROWID;
                 CREATE TEMP TABLE unit_ngrams (
                     term TEXT PRIMARY KEY,
                     occurrence_count INTEGER NOT NULL
                 ) WITHOUT ROWID;
                 CREATE TEMP TABLE new_document_terms (
-                    term TEXT PRIMARY KEY,
+                    term_id INTEGER PRIMARY KEY,
+                    term TEXT NOT NULL,
                     sample_index INTEGER,
                     sample_evidence TEXT
                 ) WITHOUT ROWID;
             """)
+            document_ids: dict[str, int] = {}
             with gzip.open(units_path, "rt", encoding="utf-8") as stream:
                 for line_number, line in enumerate(stream, 1):
                     unit = json.loads(line)
@@ -175,6 +182,16 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         filtered_terms.append((term, occurrences))
 
                     if filtered_terms:
+                        document_id = document_ids.get(document)
+                        if document_id is None:
+                            connection.execute(
+                                "INSERT INTO documents(document) VALUES (?) ON CONFLICT(document) DO NOTHING",
+                                (document,),
+                            )
+                            document_id = connection.execute(
+                                "SELECT document_id FROM documents WHERE document = ?", (document,)
+                            ).fetchone()[0]
+                            document_ids[document] = document_id
                         connection.execute("DELETE FROM unit_ngrams")
                         connection.execute("DELETE FROM new_document_terms")
                         connection.executemany(
@@ -193,37 +210,37 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         # independent of input ordering and handles multiple
                         # blocks from the same document without inflating counts.
                         new_terms = connection.execute("""
-                            SELECT unit.term, stats.sample_count
+                            SELECT stats.term_id, unit.term, stats.sample_count
                             FROM unit_ngrams AS unit
                             JOIN term_stats AS stats ON stats.term = unit.term
                             LEFT JOIN term_documents AS seen
-                              ON seen.term = unit.term AND seen.document = ?
-                            WHERE seen.term IS NULL
-                        """, (document,)).fetchall()
+                              ON seen.term_id = stats.term_id AND seen.document_id = ?
+                            WHERE seen.term_id IS NULL
+                        """, (document_id,)).fetchall()
 
                         if new_terms:
                             staged_rows = []
-                            for term, sample_count in new_terms:
+                            for term_id, term, sample_count in new_terms:
                                 if sample_count < sample_limit:
                                     sample = _sample_evidence(
                                         unit, document, text, term, unit_id, line_number
                                     )
-                                    staged_rows.append((term, sample_count, sample))
+                                    staged_rows.append((term_id, term, sample_count, sample))
                                 else:
-                                    staged_rows.append((term, None, None))
+                                    staged_rows.append((term_id, term, None, None))
 
                             connection.executemany("""
                                 INSERT INTO new_document_terms(
-                                    term, sample_index, sample_evidence
-                                ) VALUES (?, ?, ?)
+                                    term_id, term, sample_index, sample_evidence
+                                ) VALUES (?, ?, ?, ?)
                             """, staged_rows)
                             connection.execute("""
-                                INSERT INTO term_documents(term, document)
-                                SELECT term, ? FROM new_document_terms
-                            """, (document,))
+                                INSERT INTO term_documents(term_id, document_id)
+                                SELECT term_id, ? FROM new_document_terms
+                            """, (document_id,))
                             connection.execute("""
-                                INSERT INTO term_samples(term, sample_index, sample_evidence)
-                                SELECT term, sample_index, sample_evidence
+                                INSERT INTO term_samples(term_id, sample_index, sample_evidence)
+                                SELECT term_id, sample_index, sample_evidence
                                 FROM new_document_terms
                                 WHERE sample_evidence IS NOT NULL
                             """)
@@ -232,7 +249,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                                 SET document_count = document_count + 1,
                                     sample_count = sample_count
                                         + CASE WHEN sample_count < ? THEN 1 ELSE 0 END
-                                WHERE term IN (SELECT term FROM new_document_terms)
+                                WHERE term_id IN (SELECT term_id FROM new_document_terms)
                             """, (sample_limit,))
 
                     if unit_total % COMMIT_EVERY_UNITS == 0:
@@ -263,20 +280,20 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                 writer = csv.DictWriter(stream, fieldnames=FIELDS)
                 writer.writeheader()
                 candidates = connection.execute("""
-                    SELECT term, occurrence_count, unit_count, document_count
+                    SELECT term_id, term, occurrence_count, unit_count, document_count
                     FROM term_stats
                     WHERE occurrence_count >= ? AND document_count >= ?
                     ORDER BY document_count DESC, occurrence_count DESC, term ASC
                 """, (min_occurrences, min_documents))
-                for term, occurrences, units, documents in candidates:
+                for term_id, term, occurrences, units, documents in candidates:
                     samples = [
                         json.loads(row[0])
                         for row in connection.execute("""
                             SELECT sample_evidence
                             FROM term_samples
-                            WHERE term = ?
+                            WHERE term_id = ?
                             ORDER BY sample_index
-                        """, (term,))
+                        """, (term_id,))
                     ]
                     writer.writerow({
                         "candidate_id": candidate_id(term),
