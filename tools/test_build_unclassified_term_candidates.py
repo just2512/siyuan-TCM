@@ -47,6 +47,8 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             result = module.mine(source, output, min_occurrences=3, min_documents=2)
             self.assertEqual(result["knowledge_units_scanned"], 3)
             self.assertGreater(result["unclassified_term_candidates"], 0)
+            if module.resource is not None:
+                self.assertGreater(result["peak_rss_kib"], 0)
             self.assertEqual(
                 module.validate(output), result["unclassified_term_candidates"]
             )
