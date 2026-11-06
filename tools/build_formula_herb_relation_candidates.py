@@ -99,12 +99,15 @@ def has_explicit_formula_context(mention: dict[str, str]) -> bool:
     source_text = mention.get("_source_text", "")
     start, end = int(mention["character_start"]), int(mention["character_end"])
     after = source_text[end:end + 16]
-    if re.match(r"^\s*(?:主之|主治|是|组成|由|含有|包含|[:：])", after):
+    if re.match(
+        r"^\s*(?:(?:亦|也|可|亦可)?主之|主治|组成|方名|方剂|[:：])",
+        after,
+    ):
         return True
     if mention.get("_unit_type") == "SECTION_HEADING" and start <= 12:
         return True
     if start <= 12 and re.match(
-        r"^\s*" + re.escape(mention["matched_text"]) + r"\s*(?:【|〔|（|\(|[:：]|主|是|由|含)",
+        r"^\s*" + re.escape(mention["matched_text"]) + r"\s*(?:【|〔|（|\(|[:：]|主|组成)",
         source_text,
     ):
         return True
