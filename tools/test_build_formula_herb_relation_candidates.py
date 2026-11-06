@@ -50,7 +50,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
 
         explicit = {
             "unit_id": "indication", "tree_position": "0.2",
-            "character_start": "8", "character_end": "11",
+            "character_start": "9", "character_end": "12",
             "matched_text": "黄土汤", "_source_text": "【15.6】下血，黄土汤主之",
             "_unit_type": "SOURCE_PARAGRAPH",
         }
