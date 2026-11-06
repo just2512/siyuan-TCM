@@ -83,6 +83,39 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(entity_results[0]["character_end"], 3)
             self.assertEqual(entity_results[0]["content_text"], "桂枝汤治疗太阳中风")
 
+    def test_indexes_and_queries_explicit_relation_candidates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            relations = root / "relation_candidates.csv"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "hash-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "characters": 12,
+                "content_text": "桂枝汤由桂枝组成。",
+            }])
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=search_db.RELATION_CANDIDATE_FIELDS)
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "r1", "unit_id": "u1", "subject_mention_id": "m1",
+                    "subject_text": "桂枝汤", "predicate": "FORMULA_CONTAINS_HERB",
+                    "object_mention_id": "m2", "object_text": "桂枝",
+                    "document": "book/a.sy", "source_sha256": "hash-a",
+                    "tree_position": "0.0", "block_id": "p1",
+                    "sentence_start": 0, "sentence_end": 9,
+                    "evidence_text": "桂枝汤由桂枝组成。",
+                    "extraction_rule": "FORMULA_COMPOSITION_EXPLICIT_V1",
+                    "resolution_status": "UNRESOLVED_CANDIDATE",
+                })
+            result = search_db.build_database(content, None, db, None, relations)
+            self.assertEqual(result["relation_candidates"], 1)
+            found = search_db.search_relation_candidates(db, "桂枝汤")
+            self.assertEqual(len(found), 1)
+            self.assertEqual(found[0]["object_text"], "桂枝")
+            self.assertEqual(found[0]["evidence_text"], "桂枝汤由桂枝组成。")
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")
