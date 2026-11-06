@@ -48,7 +48,8 @@ def read_gzip_csv(path: Path):
 def build_database(content_index: Path, relationship_index: Path | None,
                    database_path: Path, entity_mentions_path: Path | None = None,
                    relation_candidates_path: Path | None = None,
-                   entity_registry_path: Path | None = None) -> dict[str, Any]:
+                   entity_registry_path: Path | None = None,
+                   term_candidates_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
@@ -59,6 +60,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
         raise FileNotFoundError(relation_candidates_path)
     if entity_registry_path is not None and not entity_registry_path.is_file():
         raise FileNotFoundError(entity_registry_path)
+    if term_candidates_path is not None and not term_candidates_path.is_file():
+        raise FileNotFoundError(term_candidates_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
     if database_path.exists():
         database_path.unlink()
@@ -125,6 +128,19 @@ def build_database(content_index: Path, relationship_index: Path | None,
             lexicon_version TEXT NOT NULL,
             extraction_method TEXT NOT NULL,
             resolution_status TEXT NOT NULL
+        )
+    """)
+
+    connection.execute("""
+        CREATE TABLE unclassified_term_candidates (
+            candidate_id TEXT PRIMARY KEY,
+            term TEXT NOT NULL,
+            ngram_length INTEGER NOT NULL,
+            occurrence_count INTEGER NOT NULL,
+            unit_count INTEGER NOT NULL,
+            document_count INTEGER NOT NULL,
+            sample_evidence TEXT NOT NULL,
+            candidate_status TEXT NOT NULL
         )
     """)
 
@@ -249,6 +265,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
     connection.execute("CREATE INDEX idx_entity_document ON entity_mentions(document, tree_position)")
     connection.execute("CREATE INDEX idx_relation_candidate_subject ON semantic_relation_candidates(subject_text, predicate)")
     connection.execute("CREATE INDEX idx_relation_candidate_object ON semantic_relation_candidates(object_text, predicate)")
+    connection.execute("CREATE INDEX idx_unclassified_term ON unclassified_term_candidates(term)")
+    connection.execute("CREATE INDEX idx_unclassified_term_frequency ON unclassified_term_candidates(document_count, occurrence_count)")
     entity_registry: dict[tuple[str, str], dict[str, str]] = {}
     if entity_registry_path is not None:
         with entity_registry_path.open("r", encoding="utf-8-sig", newline="") as stream:
@@ -326,6 +344,24 @@ def build_database(content_index: Path, relationship_index: Path | None,
                 )
                 relation_candidate_count += len(batch)
 
+    term_candidate_count = 0
+    if term_candidates_path is not None:
+        with gzip.open(term_candidates_path, "rt", encoding="utf-8", newline="") as stream:
+            batch = []
+            for row in csv.DictReader(stream):
+                batch.append((
+                    row["candidate_id"], row["term"], int(row["ngram_length"]),
+                    int(row["occurrence_count"]), int(row["unit_count"]),
+                    int(row["document_count"]), row["sample_evidence"], row["candidate_status"],
+                ))
+                if len(batch) >= 2000:
+                    connection.executemany("INSERT INTO unclassified_term_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?)", batch)
+                    term_candidate_count += len(batch)
+                    batch = []
+            if batch:
+                connection.executemany("INSERT INTO unclassified_term_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?)", batch)
+                term_candidate_count += len(batch)
+
     connection.execute("CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
     connection.executemany("INSERT INTO index_metadata(key, value) VALUES (?, ?)", [
         ("search_backend", "fts5-trigram" if fts_enabled else "sqlite-instr-fallback"),
@@ -334,6 +370,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         ("entity_mentions", str(entity_count)),
         ("lexical_entities", str(lexical_entity_count)),
         ("relation_candidates", str(relation_candidate_count)),
+        ("unclassified_term_candidates", str(term_candidate_count)),
     ])
     connection.commit()
     connection.close()
@@ -344,6 +381,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         "entity_mentions": entity_count,
         "lexical_entities": lexical_entity_count,
         "relation_candidates": relation_candidate_count,
+        "unclassified_term_candidates": term_candidate_count,
         "search_backend": "fts5-trigram" if fts_enabled else "sqlite-instr-fallback",
         "database_bytes": database_path.stat().st_size,
     }
@@ -432,6 +470,24 @@ def search_entity_by_id(database_path: Path, entity_id: str, limit: int = 100) -
     return results
 
 
+def search_unclassified_terms(database_path: Path, query: str, limit: int = 50) -> list[dict[str, Any]]:
+    if not query.strip():
+        raise ValueError("term query must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    rows = connection.execute("""
+        SELECT candidate_id, term, ngram_length, occurrence_count, unit_count,
+               document_count, sample_evidence, candidate_status
+        FROM unclassified_term_candidates
+        WHERE instr(term, ?) > 0
+        ORDER BY document_count DESC, occurrence_count DESC, term
+        LIMIT ?
+    """, (query, limit)).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def search_relation_candidates(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
     if not query.strip():
         raise ValueError("relation query must not be empty")
@@ -471,6 +527,9 @@ def main() -> int:
                         help="optional dictionary-backed entity mention candidate index")
     parser.add_argument("--relation-candidates", type=Path, default=None,
                         help="optional explicit relation candidate CSV")
+    parser.add_argument("--term-candidates", type=Path, default=None,
+                        help="optional corpus-mined unclassified term candidates CSV.GZ")
+    parser.add_argument("--term-query", help="search corpus-mined unclassified terms")
     parser.add_argument("--entity-registry", type=Path, default=None,
                         help="stable lexical entity registry CSV")
     parser.add_argument("--relation-query", help="query formula-herb relation candidates")
@@ -481,10 +540,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry),
+        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry, args.term_candidates),
                          ensure_ascii=False, sort_keys=True))
         return 0
-    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query)) > 1:
+    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query, args.term_query)) > 1:
         parser.error("choose only one query mode")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
@@ -496,6 +555,10 @@ def main() -> int:
         return 0
     if args.entity_id:
         results = search_entity_by_id(args.db, args.entity_id, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    if args.term_query:
+        results = search_unclassified_terms(args.db, args.term_query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     if args.relation_query:
