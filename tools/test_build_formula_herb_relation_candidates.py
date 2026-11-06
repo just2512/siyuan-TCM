@@ -152,6 +152,15 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             self.assertTrue(all(row["subject_mention_id"] == "formula-m" for row in found))
             self.assertTrue(all(row["unit_id"] == "composition" for row in found))
             self.assertTrue(all(row["extraction_rule"] == "FORMULA_COMPOSITION_NEARBY_BLOCK_V1" for row in found))
+            with gzip.open(mentions, "rt", encoding="utf-8", newline="") as stream:
+                corrupted = list(csv.DictReader(stream))
+            corrupted[1]["source_sha256"] = "c" * 64
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                writer.writerows(corrupted)
+            with self.assertRaisesRegex(ValueError, "object mention provenance mismatch"):
+                module.validate(output, units, mentions)
 
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
