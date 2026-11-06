@@ -122,7 +122,7 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 edge_count += 1
             elif kind == "CONTEXTUAL_TERM_CANDIDATE":
                 evidence = row["evidence"]
-                key = (row["candidate_id"], row["candidate_type"], evidence["unit_id"], evidence["character_start"], evidence["character_end"])
+                key = (row["candidate_id"], row["candidate_type"], row["rule_id"], evidence["unit_id"], evidence["character_start"], evidence["character_end"])
                 if key in seen_contextual_terms:
                     raise ValueError(f"duplicate contextual term at line {line}")
                 if row["classification_status"] != "CONTEXT_RULE_CANDIDATE":

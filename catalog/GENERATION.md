@@ -125,3 +125,12 @@ python tools/build_siyuan_search_db.py --context-query SYMPTOM --db catalog/gene
 仅当主体、客体在同一知识单元、同一分句中，且支持关系的谓词位于两个原文跨度之间时才生成候选。
 单纯共现不会生成关系。每条记录保留双方候选 ID、原文句子、谓词、文档 SHA、块定位和字符范围，
 并保持 `UNRESOLVED_CANDIDATE` 状态。该文件随 CI artifact 发布，后续纳入统一关系查询表。
+
+
+## 语义图中的上下文术语与显式关系
+
+语义图除词典实体和方剂—药物关系外，还导出上下文分类术语候选
+(`CONTEXTUAL_TERM_CANDIDATE`) 与显式症状—证候—治法—方剂关系
+(`CONTEXTUAL_RELATION_CANDIDATE`)。图校验会逐条核对候选状态、文档 SHA、
+块定位、原文证据跨度，以及关系主体、客体和谓词在源文本中的实际位置。
+图边仍保持候选语义，不会将规则抽取结果升级为已确认医学事实。
