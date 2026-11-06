@@ -248,7 +248,7 @@ class EvidenceReferenceTests(unittest.TestCase):
             "subject_key": "assets/img-1.png", "evidence_kind": "asset_content",
             "inspection_method": "HUMAN_DIRECT",
         }])
-        with self.assertRaisesRegex(ValueError, "上下文定位"):
+        with self.assertRaisesRegex(ValueError, "上下文/块定位"):
             validator.validate_references(self.ledger, assets_path=self.assets)
 
     def test_rejects_asset_reference_without_content_evidence(self):
