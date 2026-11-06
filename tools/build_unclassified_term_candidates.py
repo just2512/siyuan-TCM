@@ -120,8 +120,8 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             # in-memory Counter is for the current knowledge unit.
             connection.execute("PRAGMA journal_mode=OFF")
             connection.execute("PRAGMA synchronous=OFF")
-            connection.execute("PRAGMA temp_store=FILE")
-            connection.execute("PRAGMA cache_size=-8192")
+            connection.execute("PRAGMA temp_store=MEMORY")
+            connection.execute("PRAGMA cache_size=-32768")
             connection.executescript("""
                 CREATE TABLE term_stats (
                     term TEXT PRIMARY KEY,
@@ -151,14 +151,6 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     sample_evidence TEXT
                 ) WITHOUT ROWID;
             """)
-            upsert_term = """
-                INSERT INTO term_stats (term, occurrence_count, unit_count)
-                VALUES (?, ?, 1)
-                ON CONFLICT(term) DO UPDATE SET
-                    occurrence_count = occurrence_count + excluded.occurrence_count,
-                    unit_count = unit_count + 1
-            """
-
             with gzip.open(units_path, "rt", encoding="utf-8") as stream:
                 for line_number, line in enumerate(stream, 1):
                     unit = json.loads(line)
@@ -189,7 +181,13 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                             "INSERT INTO unit_ngrams(term, occurrence_count) VALUES (?, ?)",
                             filtered_terms,
                         )
-                        connection.executemany(upsert_term, filtered_terms)
+                        connection.execute("""
+                            INSERT INTO term_stats (term, occurrence_count, unit_count)
+                            SELECT term, occurrence_count, 1 FROM unit_ngrams WHERE 1
+                            ON CONFLICT(term) DO UPDATE SET
+                                occurrence_count = occurrence_count + excluded.occurrence_count,
+                                unit_count = unit_count + 1
+                        """)
 
                         # Deduplicate by the true (term, document) key. This is
                         # independent of input ordering and handles multiple
