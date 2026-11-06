@@ -55,9 +55,8 @@ jobs:
           if [ "$status" -ne 0 ]; then
             exit "$status"
           fi
-          # Term mining consumes the just-built knowledge units, so it must
-          # start after the parallel producer batch has completed.
           python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
+          python tools/build_contextual_term_candidates.py | tee "$RUNNER_TEMP/contextual-terms.log"
       - name: Validate knowledge units and entity mentions in parallel
         shell: bash
         run: |
@@ -66,15 +65,18 @@ jobs:
           python tools/build_entity_mention_candidates.py --validate --output catalog/generated > "$RUNNER_TEMP/validate-mentions.log" 2>&1 & mentions_pid=$!
           python tools/build_entity_registry.py --validate --output catalog/generated/entity_registry.csv > "$RUNNER_TEMP/validate-registry.log" 2>&1 & registry_pid=$!
           python tools/build_unclassified_term_candidates.py --validate > "$RUNNER_TEMP/validate-terms.log" 2>&1 & terms_pid=$!
+          python tools/build_contextual_term_candidates.py --validate > "$RUNNER_TEMP/validate-context-terms.log" 2>&1 & context_pid=$!
           status=0
           wait "$units_pid" || status=1
           wait "$mentions_pid" || status=1
           wait "$registry_pid" || status=1
           wait "$terms_pid" || status=1
+          wait "$context_pid" || status=1
           cat "$RUNNER_TEMP/validate-units.log"
           cat "$RUNNER_TEMP/validate-mentions.log"
           cat "$RUNNER_TEMP/validate-registry.log"
           cat "$RUNNER_TEMP/validate-terms.log"
+          cat "$RUNNER_TEMP/validate-context-terms.log"
           exit "$status"
       - name: Extract explicit formula-herb relation candidates
         run: python tools/build_formula_herb_relation_candidates.py
@@ -93,6 +95,7 @@ jobs:
           path: |
             catalog/generated/siyuan_search.sqlite3
             catalog/generated/semantic_graph.jsonl.gz
+            catalog/generated/contextual_term_type_candidates.csv.gz
           if-no-files-found: error
           retention-days: 30
       - name: Build independent review queues in parallel
@@ -122,16 +125,13 @@ jobs:
       - name: Commit generated catalogue
         run: |
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.email '41898282+just2512@users.noreply.github.com'
           git add catalog/generated
           if git diff --cached --quiet; then
             echo 'Catalogue is unchanged.'
             exit 0
           fi
           git commit -m 'docs(catalog): refresh generated TCM index [skip ci]'
-          # A concurrent master update or transient GitHub 5xx must not
-          # discard the generated catalogue. Rebase and retry a bounded number
-          # of times; never force-push.
           for attempt in 1 2 3; do
             git fetch origin master
             git rebase origin/master
