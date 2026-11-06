@@ -67,7 +67,7 @@ def classify_sample(sample: dict[str, str]) -> list[tuple[str, str]]:
             # the candidate. Intrinsic cues such as 疼痛/舌红/脉弦 may
             # be part of the candidate itself. Do not borrow cues after
             # the candidate: they may describe a neighboring concept.
-            if re.search(pattern, before) or re.search(pattern, term):
+            if re.search(pattern, before + term):
                 found.append((candidate_type, rule_id))
     return found
 
