@@ -21,6 +21,12 @@ RELATION_FIELDS = [
     "source_block_id", "source_node_type", "relation_type", "target",
     "target_subtype", "target_document", "resolution",
 ]
+RELATION_CANDIDATE_FIELDS = [
+    "relation_id", "unit_id", "subject_mention_id", "subject_text", "predicate",
+    "object_mention_id", "object_text", "document", "source_sha256", "tree_position",
+    "block_id", "sentence_start", "sentence_end", "evidence_text",
+    "extraction_rule", "resolution_status",
+]
 ENTITY_FIELDS = [
     "mention_id", "unit_id", "entity_type", "matched_text",
     "character_start", "character_end", "document", "source_sha256",
@@ -35,13 +41,15 @@ def read_gzip_csv(path: Path):
 
 
 def build_database(content_index: Path, relationship_index: Path | None,
-                   database_path: Path, entity_mentions_path: Path | None = None) -> dict[str, Any]:
+                   database_path: Path, entity_mentions_path: Path | None = None,\n                   relation_candidates_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
         raise FileNotFoundError(relationship_index)
     if entity_mentions_path is not None and not entity_mentions_path.is_file():
         raise FileNotFoundError(entity_mentions_path)
+    if relation_candidates_path is not None and not relation_candidates_path.is_file():
+        raise FileNotFoundError(relation_candidates_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
     if database_path.exists():
         database_path.unlink()
@@ -95,6 +103,27 @@ def build_database(content_index: Path, relationship_index: Path | None,
             section_path TEXT,
             lexicon_version TEXT NOT NULL,
             extraction_method TEXT NOT NULL,
+            resolution_status TEXT NOT NULL
+        )
+    """)
+
+    connection.execute("""
+        CREATE TABLE semantic_relation_candidates (
+            relation_id TEXT PRIMARY KEY,
+            unit_id TEXT NOT NULL,
+            subject_mention_id TEXT NOT NULL,
+            subject_text TEXT NOT NULL,
+            predicate TEXT NOT NULL,
+            object_mention_id TEXT NOT NULL,
+            object_text TEXT NOT NULL,
+            document TEXT NOT NULL,
+            source_sha256 TEXT NOT NULL,
+            tree_position TEXT NOT NULL,
+            block_id TEXT,
+            sentence_start INTEGER NOT NULL,
+            sentence_end INTEGER NOT NULL,
+            evidence_text TEXT NOT NULL,
+            extraction_rule TEXT NOT NULL,
             resolution_status TEXT NOT NULL
         )
     """)
@@ -195,6 +224,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
     connection.execute("CREATE INDEX idx_relation_target ON node_relationships(target)")
     connection.execute("CREATE INDEX idx_entity_term ON entity_mentions(entity_type, matched_text)")
     connection.execute("CREATE INDEX idx_entity_document ON entity_mentions(document, tree_position)")
+    connection.execute("CREATE INDEX idx_relation_candidate_subject ON semantic_relation_candidates(subject_text, predicate)")
+    connection.execute("CREATE INDEX idx_relation_candidate_object ON semantic_relation_candidates(object_text, predicate)")
     entity_count = 0
     if entity_mentions_path is not None:
         batch = []
@@ -217,12 +248,33 @@ def build_database(content_index: Path, relationship_index: Path | None,
                 INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, batch)
             entity_count += len(batch)
+    relation_candidate_count = 0
+    if relation_candidates_path is not None:
+        batch = []
+        with relation_candidates_path.open("r", encoding="utf-8", newline="") as stream:
+            for row in csv.DictReader(stream):
+                batch.append(tuple(row.get(field, "") for field in RELATION_CANDIDATE_FIELDS))
+                if len(batch) >= 2000:
+                    connection.executemany(
+                        "INSERT INTO semantic_relation_candidates VALUES (" + ",".join(["?"] * 16) + ")",
+                        batch,
+                    )
+                    relation_candidate_count += len(batch)
+                    batch = []
+            if batch:
+                connection.executemany(
+                    "INSERT INTO semantic_relation_candidates VALUES (" + ",".join(["?"] * 16) + ")",
+                    batch,
+                )
+                relation_candidate_count += len(batch)
+
     connection.execute("CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
     connection.executemany("INSERT INTO index_metadata(key, value) VALUES (?, ?)", [
         ("search_backend", "fts5-trigram" if fts_enabled else "sqlite-instr-fallback"),
         ("content_blocks", str(content_count)),
         ("relationships", str(relation_count)),
         ("entity_mentions", str(entity_count)),
+        ("relation_candidates", str(relation_candidate_count)),
     ])
     connection.commit()
     connection.close()
@@ -231,6 +283,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         "content_blocks": content_count,
         "relationships": relation_count,
         "entity_mentions": entity_count,
+        "relation_candidates": relation_candidate_count,
         "search_backend": "fts5-trigram" if fts_enabled else "sqlite-instr-fallback",
         "database_bytes": database_path.stat().st_size,
     }
@@ -292,6 +345,25 @@ def search_entity_mentions(database_path: Path, query: str, limit: int = 20) -> 
     return results
 
 
+def search_relation_candidates(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
+    if not query.strip():
+        raise ValueError("relation query must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    rows = connection.execute("""
+        SELECT relation_id, predicate, subject_text, object_text, document,
+               tree_position, block_id, sentence_start, sentence_end,
+               evidence_text, extraction_rule, resolution_status, unit_id
+        FROM semantic_relation_candidates
+        WHERE instr(subject_text, ?) > 0 OR instr(object_text, ?) > 0
+        ORDER BY document, tree_position, sentence_start
+        LIMIT ?
+    """, (query, query, limit)).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", action="store_true", help="build the local SQLite index")
@@ -302,17 +374,20 @@ def main() -> int:
     parser.add_argument("--db", type=Path, default=Path("catalog/generated/siyuan_search.sqlite3"))
     parser.add_argument("--entity-mentions", type=Path, default=None,
                         help="optional dictionary-backed entity mention candidate index")
+    parser.add_argument("--relation-candidates", type=Path, default=None,
+                        help="optional explicit relation candidate CSV")
+    parser.add_argument("--relation-query", help="query formula-herb relation candidates")
     parser.add_argument("--query", help="search source text in a built database")
     parser.add_argument("--entity-query", help="search entity mentions with exact source spans")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions),
+        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates),
                          ensure_ascii=False, sort_keys=True))
         return 0
-    if args.query and args.entity_query:
-        parser.error("choose only one of --query or --entity-query")
+    if sum(bool(value) for value in (args.query, args.entity_query, args.relation_query)) > 1:
+        parser.error("choose only one query mode")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
@@ -321,7 +396,11 @@ def main() -> int:
         results = search_entity_mentions(args.db, args.entity_query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
-    parser.error("choose --build or provide --query/--entity-query")
+    if args.relation_query:
+        results = search_relation_candidates(args.db, args.relation_query, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    parser.error("choose --build or provide a query mode")
     return 2
 
 
