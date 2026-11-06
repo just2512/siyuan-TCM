@@ -21,6 +21,12 @@ RELATION_FIELDS = [
     "source_block_id", "source_node_type", "relation_type", "target",
     "target_subtype", "target_document", "resolution",
 ]
+ENTITY_FIELDS = [
+    "mention_id", "unit_id", "entity_type", "matched_text",
+    "character_start", "character_end", "document", "source_sha256",
+    "tree_position", "block_id", "content_type", "section_path",
+    "lexicon_version", "extraction_method", "resolution_status",
+]
 
 
 def read_gzip_csv(path: Path):
@@ -29,11 +35,13 @@ def read_gzip_csv(path: Path):
 
 
 def build_database(content_index: Path, relationship_index: Path | None,
-                   database_path: Path) -> dict[str, Any]:
+                   database_path: Path, entity_mentions_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
         raise FileNotFoundError(relationship_index)
+    if entity_mentions_path is not None and not entity_mentions_path.is_file():
+        raise FileNotFoundError(entity_mentions_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
     if database_path.exists():
         database_path.unlink()
@@ -69,6 +77,25 @@ def build_database(content_index: Path, relationship_index: Path | None,
             target_subtype TEXT,
             target_document TEXT,
             resolution TEXT NOT NULL
+        )
+    """)
+    connection.execute("""
+        CREATE TABLE entity_mentions (
+            mention_id TEXT PRIMARY KEY,
+            unit_id TEXT NOT NULL,
+            entity_type TEXT NOT NULL,
+            matched_text TEXT NOT NULL,
+            character_start INTEGER NOT NULL,
+            character_end INTEGER NOT NULL,
+            document TEXT NOT NULL,
+            source_sha256 TEXT NOT NULL,
+            tree_position TEXT NOT NULL,
+            block_id TEXT,
+            content_type TEXT NOT NULL,
+            section_path TEXT,
+            lexicon_version TEXT NOT NULL,
+            extraction_method TEXT NOT NULL,
+            resolution_status TEXT NOT NULL
         )
     """)
 
@@ -166,11 +193,36 @@ def build_database(content_index: Path, relationship_index: Path | None,
     connection.execute("CREATE INDEX idx_content_block_id ON content_blocks(block_id)")
     connection.execute("CREATE INDEX idx_relation_source ON node_relationships(source_document, source_block_id)")
     connection.execute("CREATE INDEX idx_relation_target ON node_relationships(target)")
+    connection.execute("CREATE INDEX idx_entity_term ON entity_mentions(entity_type, matched_text)")
+    connection.execute("CREATE INDEX idx_entity_document ON entity_mentions(document, tree_position)")
+    entity_count = 0
+    if entity_mentions_path is not None:
+        batch = []
+        for row in read_gzip_csv(entity_mentions_path):
+            batch.append((
+                row["mention_id"], row["unit_id"], row["entity_type"], row["matched_text"],
+                int(row["character_start"]), int(row["character_end"]), row["document"],
+                row["source_sha256"], row["tree_position"], row.get("block_id", ""),
+                row["content_type"], row.get("section_path", ""), row["lexicon_version"],
+                row["extraction_method"], row["resolution_status"],
+            ))
+            if len(batch) >= 2000:
+                connection.executemany("""
+                    INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, batch)
+                entity_count += len(batch)
+                batch = []
+        if batch:
+            connection.executemany("""
+                INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, batch)
+            entity_count += len(batch)
     connection.execute("CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
     connection.executemany("INSERT INTO index_metadata(key, value) VALUES (?, ?)", [
         ("search_backend", "fts5-trigram" if fts_enabled else "sqlite-instr-fallback"),
         ("content_blocks", str(content_count)),
         ("relationships", str(relation_count)),
+        ("entity_mentions", str(entity_count)),
     ])
     connection.commit()
     connection.close()
@@ -178,6 +230,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         "database": str(database_path),
         "content_blocks": content_count,
         "relationships": relation_count,
+        "entity_mentions": entity_count,
         "search_backend": "fts5-trigram" if fts_enabled else "sqlite-instr-fallback",
         "database_bytes": database_path.stat().st_size,
     }
@@ -224,12 +277,14 @@ def main() -> int:
     parser.add_argument("--relationship-index", type=Path,
                         default=Path("catalog/generated/node_relationship_index.csv.gz"))
     parser.add_argument("--db", type=Path, default=Path("catalog/generated/siyuan_search.sqlite3"))
+    parser.add_argument("--entity-mentions", type=Path, default=None,
+                        help="optional dictionary-backed entity mention candidate index")
     parser.add_argument("--query", help="search a built database")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db),
+        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions),
                          ensure_ascii=False, sort_keys=True))
         return 0
     if args.query:
