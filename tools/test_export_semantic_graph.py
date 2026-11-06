@@ -88,5 +88,69 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(edge["evidence"]["text"], "桂枝汤由桂枝组成。")
 
 
+    def test_exports_contextual_terms_and_explicit_relation_edges(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            contextual_terms = root / "contextual-terms.csv.gz"
+            contextual_relations = root / "contextual-relations.csv"
+            database = root / "search.sqlite3"
+            output = root / "graph.jsonl.gz"
+            source_text = "症见头痛，辨证为太阳中风。"
+            def write_gzip(path, fields, rows):
+                with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+                    writer = csv.DictWriter(stream, fieldnames=fields)
+                    writer.writeheader()
+                    writer.writerows(rows)
+            write_gzip(content, db.CONTENT_FIELDS, [{
+                "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
+                "block_id": "b1", "content_type": "PARAGRAPH", "characters": len(source_text),
+                "content_text": source_text,
+            }])
+            term_fields = ["candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                "character_end", "evidence_start", "evidence_text", "classification_status"]
+            write_gzip(contextual_terms, term_fields, [
+                {"candidate_id": "sym-1", "term": "头痛", "candidate_type": "SYMPTOM",
+                 "rule_id": "SYMPTOM_RULE", "evidence_document": "a.sy", "source_sha256": "hash",
+                 "tree_position": "0.0", "block_id": "b1", "unit_id": "u1",
+                 "character_start": 2, "character_end": 4, "evidence_start": 0,
+                 "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE"},
+                {"candidate_id": "syn-1", "term": "太阳中风", "candidate_type": "SYNDROME",
+                 "rule_id": "SYNDROME_RULE", "evidence_document": "a.sy", "source_sha256": "hash",
+                 "tree_position": "0.0", "block_id": "b1", "unit_id": "u1",
+                 "character_start": 8, "character_end": 12, "evidence_start": 0,
+                 "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE"},
+            ])
+            relation_fields = ["relation_id", "predicate", "subject_candidate_id", "subject_text",
+                "subject_type", "subject_start", "subject_end", "object_candidate_id", "object_text",
+                "object_type", "object_start", "object_end", "unit_id", "document", "source_sha256",
+                "tree_position", "block_id", "sentence_start", "sentence_end", "evidence_text",
+                "predicate_text", "extraction_rule", "resolution_status"]
+            with contextual_relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=relation_fields)
+                writer.writeheader()
+                writer.writerow({"relation_id": "ctx-r1", "predicate": "SYMPTOM_TO_SYNDROME",
+                    "subject_candidate_id": "sym-1", "subject_text": "头痛", "subject_type": "SYMPTOM",
+                    "subject_start": 2, "subject_end": 4, "object_candidate_id": "syn-1",
+                    "object_text": "太阳中风", "object_type": "SYNDROME", "object_start": 8,
+                    "object_end": 12, "unit_id": "u1", "document": "a.sy", "source_sha256": "hash",
+                    "tree_position": "0.0", "block_id": "b1", "sentence_start": 0,
+                    "sentence_end": len(source_text), "evidence_text": source_text,
+                    "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
+                    "resolution_status": "UNRESOLVED_CANDIDATE"})
+            db.build_database(content, None, database, None, None, None, None, contextual_terms, contextual_relations)
+            counts = module.export(database, output)
+            self.assertEqual(counts["contextual_term_candidates"], 2)
+            self.assertEqual(counts["contextual_relation_edges"], 1)
+            validated = module.validate(database, output)
+            self.assertEqual(validated["validated_contextual_term_candidates"], 2)
+            self.assertEqual(validated["validated_contextual_relation_edges"], 1)
+            with gzip.open(output, "rt", encoding="utf-8") as stream:
+                rows = [json.loads(line) for line in stream]
+            edge = next(row for row in rows if row["record_type"] == "CONTEXTUAL_RELATION_CANDIDATE")
+            self.assertEqual(edge["subject_text"], "头痛")
+            self.assertEqual(edge["object_text"], "太阳中风")
+            self.assertEqual(edge["evidence"]["text"], source_text)
 if __name__ == "__main__":
     unittest.main()
