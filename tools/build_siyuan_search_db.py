@@ -50,7 +50,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
                    relation_candidates_path: Path | None = None,
                    entity_registry_path: Path | None = None,
                    term_candidates_path: Path | None = None,
-                   contextual_term_candidates_path: Path | None = None) -> dict[str, Any]:
+                   contextual_term_candidates_path: Path | None = None,
+                   contextual_relations_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
@@ -65,6 +66,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
         raise FileNotFoundError(term_candidates_path)
     if contextual_term_candidates_path is not None and not contextual_term_candidates_path.is_file():
         raise FileNotFoundError(contextual_term_candidates_path)
+    if contextual_relations_path is not None and not contextual_relations_path.is_file():
+        raise FileNotFoundError(contextual_relations_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
     if database_path.exists():
         database_path.unlink()
@@ -165,6 +168,33 @@ def build_database(content_index: Path, relationship_index: Path | None,
             evidence_text TEXT NOT NULL,
             classification_status TEXT NOT NULL,
             UNIQUE(candidate_id, candidate_type, rule_id, unit_id)
+        )
+    """)
+    connection.execute("""
+        CREATE TABLE contextual_relation_candidates (
+            relation_id TEXT PRIMARY KEY,
+            predicate TEXT NOT NULL,
+            subject_candidate_id TEXT NOT NULL,
+            subject_text TEXT NOT NULL,
+            subject_type TEXT NOT NULL,
+            subject_start INTEGER NOT NULL,
+            subject_end INTEGER NOT NULL,
+            object_candidate_id TEXT NOT NULL,
+            object_text TEXT NOT NULL,
+            object_type TEXT NOT NULL,
+            object_start INTEGER NOT NULL,
+            object_end INTEGER NOT NULL,
+            unit_id TEXT NOT NULL,
+            document TEXT NOT NULL,
+            source_sha256 TEXT NOT NULL,
+            tree_position TEXT NOT NULL,
+            block_id TEXT,
+            sentence_start INTEGER NOT NULL,
+            sentence_end INTEGER NOT NULL,
+            evidence_text TEXT NOT NULL,
+            predicate_text TEXT NOT NULL,
+            extraction_rule TEXT NOT NULL,
+            resolution_status TEXT NOT NULL
         )
     """)
     connection.execute("""
@@ -292,6 +322,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
     connection.execute("CREATE INDEX idx_unclassified_term_frequency ON unclassified_term_candidates(document_count, occurrence_count)")
     connection.execute("CREATE INDEX idx_contextual_term_type ON contextual_term_type_candidates(candidate_type, term)")
     connection.execute("CREATE INDEX idx_contextual_term_document ON contextual_term_type_candidates(evidence_document, tree_position)")
+    connection.execute("CREATE INDEX idx_contextual_relation_subject ON contextual_relation_candidates(subject_text, predicate)")
+    connection.execute("CREATE INDEX idx_contextual_relation_object ON contextual_relation_candidates(object_text, predicate)")
     entity_registry: dict[tuple[str, str], dict[str, str]] = {}
     if entity_registry_path is not None:
         with entity_registry_path.open("r", encoding="utf-8-sig", newline="") as stream:
@@ -419,6 +451,34 @@ def build_database(content_index: Path, relationship_index: Path | None,
                 """, batch)
                 contextual_candidate_count += len(batch)
 
+    contextual_relation_count = 0
+    if contextual_relations_path is not None:
+        with contextual_relations_path.open("r", encoding="utf-8", newline="") as stream:
+            batch = []
+            fields = [
+                "relation_id", "predicate", "subject_candidate_id", "subject_text",
+                "subject_type", "subject_start", "subject_end", "object_candidate_id",
+                "object_text", "object_type", "object_start", "object_end", "unit_id",
+                "document", "source_sha256", "tree_position", "block_id",
+                "sentence_start", "sentence_end", "evidence_text", "predicate_text",
+                "extraction_rule", "resolution_status",
+            ]
+            for row in csv.DictReader(stream):
+                batch.append(tuple(row[field] for field in fields))
+                if len(batch) >= 2000:
+                    connection.executemany(
+                        "INSERT INTO contextual_relation_candidates VALUES (" + ",".join(["?"] * 23) + ")",
+                        batch,
+                    )
+                    contextual_relation_count += len(batch)
+                    batch = []
+            if batch:
+                connection.executemany(
+                    "INSERT INTO contextual_relation_candidates VALUES (" + ",".join(["?"] * 23) + ")",
+                    batch,
+                )
+                contextual_relation_count += len(batch)
+
     connection.execute("CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
     connection.executemany("INSERT INTO index_metadata(key, value) VALUES (?, ?)", [
         ("search_backend", "fts5-trigram" if fts_enabled else "sqlite-instr-fallback"),
@@ -429,6 +489,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         ("relation_candidates", str(relation_candidate_count)),
         ("unclassified_term_candidates", str(term_candidate_count)),
         ("contextual_term_type_candidates", str(contextual_candidate_count)),
+        ("contextual_relation_candidates", str(contextual_relation_count)),
     ])
     connection.commit()
     connection.close()
@@ -441,6 +502,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         "relation_candidates": relation_candidate_count,
         "unclassified_term_candidates": term_candidate_count,
         "contextual_term_type_candidates": contextual_candidate_count,
+        "contextual_relation_candidates": contextual_relation_count,
         "search_backend": "fts5-trigram" if fts_enabled else "sqlite-instr-fallback",
         "database_bytes": database_path.stat().st_size,
     }
@@ -567,6 +629,28 @@ def search_contextual_term_candidates(database_path: Path, query: str, limit: in
     return results
 
 
+def search_contextual_relation_candidates(database_path: Path, query: str, limit: int = 50) -> list[dict[str, Any]]:
+    """Search explicit symptom/syndrome/treatment/formula relation candidates."""
+    if not query.strip():
+        raise ValueError("contextual relation query must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    rows = connection.execute("""
+        SELECT relation_id, predicate, subject_candidate_id, subject_text, subject_type,
+               subject_start, subject_end, object_candidate_id, object_text, object_type,
+               object_start, object_end, unit_id, document, source_sha256, tree_position,
+               block_id, sentence_start, sentence_end, evidence_text, predicate_text,
+               extraction_rule, resolution_status
+        FROM contextual_relation_candidates
+        WHERE instr(subject_text, ?) > 0 OR instr(object_text, ?) > 0 OR instr(predicate, ?) > 0
+        ORDER BY document, tree_position, sentence_start, predicate
+        LIMIT ?
+    """, (query, query, query, limit)).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def search_relation_candidates(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
     if not query.strip():
         raise ValueError("relation query must not be empty")
@@ -612,6 +696,9 @@ def main() -> int:
     parser.add_argument("--contextual-term-candidates", type=Path, default=None,
                         help="optional context-classified term candidate CSV.GZ")
     parser.add_argument("--context-query", help="search contextual term type candidates")
+    parser.add_argument("--contextual-relations", type=Path, default=None,
+                        help="optional explicit contextual relation candidate CSV")
+    parser.add_argument("--contextual-relation-query", help="search contextual relation candidates")
     parser.add_argument("--entity-registry", type=Path, default=None,
                         help="stable lexical entity registry CSV")
     parser.add_argument("--relation-query", help="query formula-herb relation candidates")
@@ -622,10 +709,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry, args.term_candidates, args.contextual_term_candidates),
+        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry, args.term_candidates, args.contextual_term_candidates, args.contextual_relations),
                          ensure_ascii=False, sort_keys=True))
         return 0
-    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query, args.term_query, args.context_query)) > 1:
+    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query, args.term_query, args.context_query, args.contextual_relation_query)) > 1:
         parser.error("choose only one query mode")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
@@ -645,6 +732,10 @@ def main() -> int:
         return 0
     if args.context_query:
         results = search_contextual_term_candidates(args.db, args.context_query, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    if args.contextual_relation_query:
+        results = search_contextual_relation_candidates(args.db, args.contextual_relation_query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     if args.relation_query:

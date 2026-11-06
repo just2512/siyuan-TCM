@@ -89,7 +89,7 @@ jobs:
       - name: Validate contextual relation candidate provenance
         run: python tools/build_contextual_relation_candidates.py --validate
       - name: Build SQLite full-text, entity and relation index
-        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz --contextual-term-candidates catalog/generated/contextual_term_type_candidates.csv.gz
+        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz --contextual-term-candidates catalog/generated/contextual_term_type_candidates.csv.gz --contextual-relations catalog/generated/contextual_relation_candidates.csv
       - name: Export machine-readable semantic graph
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence
@@ -102,6 +102,7 @@ jobs:
             catalog/generated/siyuan_search.sqlite3
             catalog/generated/semantic_graph.jsonl.gz
             catalog/generated/contextual_term_type_candidates.csv.gz
+            catalog/generated/contextual_relation_candidates.csv
           if-no-files-found: error
           retention-days: 30
       - name: Build independent review queues in parallel

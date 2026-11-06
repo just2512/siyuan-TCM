@@ -263,6 +263,49 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(found[0]["evidence_text"], "症见头痛，舌红")
             self.assertEqual(len(search_db.search_contextual_term_candidates(db, "SYMPTOM")), 1)
 
+    def test_indexes_and_queries_contextual_relation_candidates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            relations = root / "contextual-relations.csv"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "hash-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "characters": 12,
+                "content_text": "症见头痛，辨证为太阳中风",
+            }])
+            fields = [
+                "relation_id", "predicate", "subject_candidate_id", "subject_text",
+                "subject_type", "subject_start", "subject_end", "object_candidate_id",
+                "object_text", "object_type", "object_start", "object_end", "unit_id",
+                "document", "source_sha256", "tree_position", "block_id",
+                "sentence_start", "sentence_end", "evidence_text", "predicate_text",
+                "extraction_rule", "resolution_status",
+            ]
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "ctx-r1", "predicate": "SYMPTOM_TO_SYNDROME",
+                    "subject_candidate_id": "sym-1", "subject_text": "头痛",
+                    "subject_type": "SYMPTOM", "subject_start": 2, "subject_end": 4,
+                    "object_candidate_id": "syn-1", "object_text": "太阳中风",
+                    "object_type": "SYNDROME", "object_start": 8, "object_end": 12,
+                    "unit_id": "u1", "document": "book/a.sy", "source_sha256": "hash-a",
+                    "tree_position": "0.0", "block_id": "p1", "sentence_start": 0,
+                    "sentence_end": 12, "evidence_text": "症见头痛，辨证为太阳中风",
+                    "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
+                    "resolution_status": "UNRESOLVED_CANDIDATE",
+                })
+            result = search_db.build_database(content, None, db, contextual_relations_path=relations)
+            self.assertEqual(result["contextual_relation_candidates"], 1)
+            found = search_db.search_contextual_relation_candidates(db, "头痛")
+            self.assertEqual(len(found), 1)
+            self.assertEqual(found[0]["object_text"], "太阳中风")
+            self.assertEqual(found[0]["predicate_text"], "辨证为")
+            self.assertEqual(len(search_db.search_contextual_relation_candidates(db, "SYMPTOM_TO_SYNDROME")), 1)
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")
