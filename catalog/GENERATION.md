@@ -48,6 +48,7 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 ```bash
 python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz
 python tools/build_siyuan_search_db.py --query "桂枝汤" --limit 20
+python tools/build_siyuan_search_db.py --entity-query "桂枝汤" --limit 20
 ```
 
 数据库包含：
