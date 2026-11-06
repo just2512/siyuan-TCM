@@ -282,9 +282,29 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                 if (subject["entity_type"] != "FORMULA" or obj["entity_type"] != "HERB"
                     or subject["matched_text"] != row["subject_text"]
                     or obj["matched_text"] != row["object_text"]
-                    or subject["document"] != row["document"]
                     or obj["unit_id"] != row["unit_id"]):
                     raise ValueError(f"row {line}: relation endpoints do not match source mentions")
+                for endpoint_name, endpoint in (("subject", subject), ("object", obj)):
+                    endpoint_unit = units.get(endpoint["unit_id"])
+                    if endpoint_unit is None:
+                        raise ValueError(f"row {line}: {endpoint_name} source unit not found")
+                    endpoint_source = endpoint_unit["source"]
+                    if (endpoint_source["document"] != endpoint["document"]
+                        or endpoint_source["sha256"] != endpoint["source_sha256"]
+                        or endpoint_source["tree_position"] != endpoint["tree_position"]
+                        or endpoint_source.get("block_id", "") != endpoint["block_id"]):
+                        raise ValueError(f"row {line}: {endpoint_name} mention provenance mismatch")
+                    endpoint_text = endpoint_unit["content"]["source_text"]
+                    endpoint_start = int(endpoint["character_start"])
+                    endpoint_end = int(endpoint["character_end"])
+                    if (endpoint_start < 0 or endpoint_end <= endpoint_start
+                        or endpoint_text[endpoint_start:endpoint_end] != endpoint["matched_text"]):
+                        raise ValueError(f"row {line}: {endpoint_name} mention span mismatch")
+                if (obj["document"] != row["document"]
+                    or obj["source_sha256"] != row["source_sha256"]
+                    or obj["tree_position"] != row["tree_position"]
+                    or obj["block_id"] != row["block_id"]):
+                    raise ValueError(f"row {line}: object mention does not belong to evidence source")
             text = unit["content"]["source_text"]
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
