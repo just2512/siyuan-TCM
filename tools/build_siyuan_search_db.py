@@ -438,7 +438,8 @@ def search_relation_candidates(database_path: Path, query: str, limit: int = 20)
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
-        SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,\n               s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id,
+        SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,
+               s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id,
                r.document AS evidence_document, r.tree_position AS evidence_tree_position,
                r.block_id AS evidence_block_id, r.sentence_start, r.sentence_end,
                r.evidence_text, r.extraction_rule, r.resolution_status, r.unit_id,
