@@ -10,6 +10,7 @@ import argparse
 import csv
 import gzip
 import json
+import re
 from pathlib import Path
 
 RULES = {
@@ -46,11 +47,20 @@ FIELDS = [
 
 def classify_sample(sample: dict[str, str]) -> list[tuple[str, str]]:
     text = sample.get("evidence_text", "")
+    term = sample.get("matched_text", "")
+    if not term:
+        return []
+    start = int(sample.get("character_start", 0)) - int(sample.get("evidence_start", 0))
+    end = start + len(term)
+    if start < 0 or end > len(text) or text[start:end] != term:
+        raise ValueError("candidate term does not match its source evidence span")
+    before = text[max(0, start - 10):start]
+    after = text[end:min(len(text), end + 10)]
+    local = before + term + after
     found = []
     for candidate_type, rules in RULES.items():
         for rule_id, pattern in rules:
-            import re
-            if re.search(pattern, text):
+            if re.search(pattern, local):
                 found.append((candidate_type, rule_id))
     return found
 
