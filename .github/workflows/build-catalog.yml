@@ -9,7 +9,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: tcm-catalog-master
+  # Versioned to release the queue behind the long-running pre-optimization build.
+  # The publish step below also refuses to commit output from a stale source SHA.
+  group: tcm-catalog-master-v2
   cancel-in-progress: false
 
 jobs:
@@ -133,6 +135,11 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+just2512@users.noreply.github.com'
+          git fetch origin master
+          if [ "$(git rev-parse origin/master)" != "$GITHUB_SHA" ]; then
+            echo "Skipping generated output from stale source SHA $GITHUB_SHA; master is $(git rev-parse origin/master)." >&2
+            exit 0
+          fi
           git add catalog/generated
           if git diff --cached --quiet; then
             echo 'Catalogue is unchanged.'
@@ -141,6 +148,10 @@ jobs:
           git commit -m 'docs(catalog): refresh generated TCM index [skip ci]'
           for attempt in 1 2 3; do
             git fetch origin master
+            if [ "$(git rev-parse origin/master)" != "$GITHUB_SHA" ]; then
+              echo "Skipping publish because master advanced beyond source SHA $GITHUB_SHA." >&2
+              exit 0
+            fi
             git rebase origin/master
             if git push origin HEAD:master; then
               exit 0

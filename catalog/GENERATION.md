@@ -134,3 +134,11 @@ python tools/build_siyuan_search_db.py --context-query SYMPTOM --db catalog/gene
 (`CONTEXTUAL_RELATION_CANDIDATE`)。图校验会逐条核对候选状态、文档 SHA、
 块定位、原文证据跨度，以及关系主体、客体和谓词在源文本中的实际位置。
 图边仍保持候选语义，不会将规则抽取结果升级为已确认医学事实。
+
+
+## 全语料术语聚合的输入顺序约束
+
+- `content_block_index.csv.gz` 按排序后的源文档路径逐篇输出；`knowledge_units.jsonl.gz` 保持该文档顺序，不跨文档重排。
+- 全语料术语挖掘器据此按当前文档维护唯一术语集合，文档切换时批量累计 `document_count` 和证据样本，避免对全语料级 `(term_id, document_id)` 关系表逐知识单元执行反连接查询。
+- 术语挖掘器会拒绝文档路径逆序输入；这是显式数据契约，不会静默产生错误的文档去重计数。
+- 原始笔记和知识单元正文不因该优化而改写；候选仍保留来源 SHA、文档、块 ID、树位置和字符跨度。
