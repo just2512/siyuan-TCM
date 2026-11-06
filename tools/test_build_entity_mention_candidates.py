@@ -1,6 +1,7 @@
 import csv
 import gzip
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,7 +40,19 @@ class EntityMentionCandidateTests(unittest.TestCase):
             result = module.extract(content, lexicon, output)
             self.assertEqual(result["mentions"], 4)
             path = output / "entity_mention_candidates.csv.gz"
-            self.assertEqual(module.validate(path), 4)
+            units_path = root / "knowledge_units.jsonl.gz"
+            source_row = {
+                "document": "notes/a.sy", "source_sha256": "a" * 64,
+                "tree_position": "0.1", "block_id": "b1",
+            }
+            unit = {
+                "unit_id": module.unit_id(source_row),
+                "source": {**source_row},
+                "content": {"source_text": "桂枝汤由桂枝、芍药组成。"},
+            }
+            with gzip.open(units_path, "wt", encoding="utf-8") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+            self.assertEqual(module.validate(path, units_path), 4)
             with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual([r["matched_text"] for r in rows], ["桂枝汤", "桂枝", "桂枝", "芍药"])
