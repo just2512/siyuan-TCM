@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
 import json
 import sqlite3
 from pathlib import Path
@@ -27,6 +28,10 @@ RELATION_CANDIDATE_FIELDS = [
     "block_id", "sentence_start", "sentence_end", "evidence_text",
     "extraction_rule", "resolution_status",
 ]
+ENTITY_REGISTRY_FIELDS = [
+    "entity_id", "entity_type", "preferred_label", "lexical_form",
+    "lexicon_version", "identity_status",
+]
 ENTITY_FIELDS = [
     "mention_id", "unit_id", "entity_type", "matched_text",
     "character_start", "character_end", "document", "source_sha256",
@@ -42,7 +47,7 @@ def read_gzip_csv(path: Path):
 
 def build_database(content_index: Path, relationship_index: Path | None,
                    database_path: Path, entity_mentions_path: Path | None = None,
-                   relation_candidates_path: Path | None = None) -> dict[str, Any]:
+                   relation_candidates_path: Path | None = None,\n                   entity_registry_path: Path | None = None) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
     if relationship_index is not None and not relationship_index.is_file():
@@ -51,6 +56,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
         raise FileNotFoundError(entity_mentions_path)
     if relation_candidates_path is not None and not relation_candidates_path.is_file():
         raise FileNotFoundError(relation_candidates_path)
+    if entity_registry_path is not None and not entity_registry_path.is_file():
+        raise FileNotFoundError(entity_registry_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
     if database_path.exists():
         database_path.unlink()
@@ -89,8 +96,20 @@ def build_database(content_index: Path, relationship_index: Path | None,
         )
     """)
     connection.execute("""
+        CREATE TABLE entity_catalog (
+            entity_id TEXT PRIMARY KEY,
+            entity_type TEXT NOT NULL,
+            preferred_label TEXT NOT NULL,
+            lexical_form TEXT NOT NULL,
+            lexicon_version TEXT NOT NULL,
+            identity_status TEXT NOT NULL,
+            UNIQUE(entity_type, lexical_form)
+        )
+    """)
+    connection.execute("""
         CREATE TABLE entity_mentions (
             mention_id TEXT PRIMARY KEY,
+            entity_id TEXT NOT NULL,
             unit_id TEXT NOT NULL,
             entity_type TEXT NOT NULL,
             matched_text TEXT NOT NULL,
@@ -224,15 +243,51 @@ def build_database(content_index: Path, relationship_index: Path | None,
     connection.execute("CREATE INDEX idx_relation_source ON node_relationships(source_document, source_block_id)")
     connection.execute("CREATE INDEX idx_relation_target ON node_relationships(target)")
     connection.execute("CREATE INDEX idx_entity_term ON entity_mentions(entity_type, matched_text)")
+    connection.execute("CREATE INDEX idx_entity_catalog_label ON entity_catalog(entity_type, preferred_label)")
+    connection.execute("CREATE INDEX idx_entity_mentions_id ON entity_mentions(entity_id, document)")
     connection.execute("CREATE INDEX idx_entity_document ON entity_mentions(document, tree_position)")
     connection.execute("CREATE INDEX idx_relation_candidate_subject ON semantic_relation_candidates(subject_text, predicate)")
     connection.execute("CREATE INDEX idx_relation_candidate_object ON semantic_relation_candidates(object_text, predicate)")
+    entity_registry: dict[tuple[str, str], dict[str, str]] = {}
+    if entity_registry_path is not None:
+        with entity_registry_path.open("r", encoding="utf-8-sig", newline="") as stream:
+            for row in csv.DictReader(stream):
+                key = (row["entity_type"], row["lexical_form"])
+                if key in entity_registry:
+                    raise ValueError(f"duplicate entity registry entry: {key}")
+                entity_registry[key] = row
+                connection.execute(
+                    "INSERT INTO entity_catalog VALUES (?, ?, ?, ?, ?, ?)",
+                    tuple(row[field] for field in ENTITY_REGISTRY_FIELDS),
+                )
+
     entity_count = 0
     if entity_mentions_path is not None:
         batch = []
         for row in read_gzip_csv(entity_mentions_path):
+            key = (row["entity_type"], row["matched_text"])
+            registry_row = entity_registry.get(key)
+            if entity_registry_path is not None and registry_row is None:
+                raise ValueError(f"entity mention missing from registry: {key}")
+            if registry_row is None:
+                identity = "\\0".join(key)
+                entity_id = "lex_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:24]
+                registry_row = {
+                    "entity_id": entity_id,
+                    "entity_type": key[0],
+                    "preferred_label": key[1],
+                    "lexical_form": key[1],
+                    "lexicon_version": row["lexicon_version"],
+                    "identity_status": "LEXICAL_ID_ONLY",
+                }
+                entity_registry[key] = registry_row
+                connection.execute(
+                    "INSERT OR IGNORE INTO entity_catalog VALUES (?, ?, ?, ?, ?, ?)",
+                    tuple(registry_row[field] for field in ENTITY_REGISTRY_FIELDS),
+                )
             batch.append((
-                row["mention_id"], row["unit_id"], row["entity_type"], row["matched_text"],
+                row["mention_id"], registry_row["entity_id"], row["unit_id"],
+                row["entity_type"], row["matched_text"],
                 int(row["character_start"]), int(row["character_end"]), row["document"],
                 row["source_sha256"], row["tree_position"], row.get("block_id", ""),
                 row["content_type"], row.get("section_path", ""), row["lexicon_version"],
@@ -240,15 +295,16 @@ def build_database(content_index: Path, relationship_index: Path | None,
             ))
             if len(batch) >= 2000:
                 connection.executemany("""
-                    INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, batch)
                 entity_count += len(batch)
                 batch = []
         if batch:
             connection.executemany("""
-                INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, batch)
             entity_count += len(batch)
+    lexical_entity_count = connection.execute("SELECT COUNT(*) FROM entity_catalog").fetchone()[0]
     relation_candidate_count = 0
     if relation_candidates_path is not None:
         batch = []
@@ -275,6 +331,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         ("content_blocks", str(content_count)),
         ("relationships", str(relation_count)),
         ("entity_mentions", str(entity_count)),
+        ("lexical_entities", str(lexical_entity_count)),
         ("relation_candidates", str(relation_candidate_count)),
     ])
     connection.commit()
@@ -284,6 +341,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
         "content_blocks": content_count,
         "relationships": relation_count,
         "entity_mentions": entity_count,
+        "lexical_entities": lexical_entity_count,
         "relation_candidates": relation_candidate_count,
         "search_backend": "fts5-trigram" if fts_enabled else "sqlite-instr-fallback",
         "database_bytes": database_path.stat().st_size,
@@ -330,10 +388,11 @@ def search_entity_mentions(database_path: Path, query: str, limit: int = 20) -> 
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
-        SELECT e.entity_type, e.matched_text, e.character_start, e.character_end,
+        SELECT e.entity_id, ec.preferred_label, ec.identity_status,\n               e.entity_type, e.matched_text, e.character_start, e.character_end,
                e.document, e.tree_position, e.block_id, e.section_path,
                e.lexicon_version, e.resolution_status, e.unit_id, c.content_text
         FROM entity_mentions e
+        JOIN entity_catalog ec ON ec.entity_id = e.entity_id
         LEFT JOIN content_blocks c
           ON c.document = e.document AND c.source_sha256 = e.source_sha256
          AND c.tree_position = e.tree_position AND c.block_id = e.block_id
@@ -384,6 +443,8 @@ def main() -> int:
                         help="optional dictionary-backed entity mention candidate index")
     parser.add_argument("--relation-candidates", type=Path, default=None,
                         help="optional explicit relation candidate CSV")
+    parser.add_argument("--entity-registry", type=Path, default=None,
+                        help="stable lexical entity registry CSV")
     parser.add_argument("--relation-query", help="query formula-herb relation candidates")
     parser.add_argument("--query", help="search source text in a built database")
     parser.add_argument("--entity-query", help="search entity mentions with exact source spans")
@@ -391,7 +452,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates),
+        print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry),
                          ensure_ascii=False, sort_keys=True))
         return 0
     if sum(bool(value) for value in (args.query, args.entity_query, args.relation_query)) > 1:
