@@ -55,7 +55,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                     })
             result = module.extract(mentions, units, output)
             self.assertEqual(result["relation_candidates"], 2)
-            self.assertEqual(module.validate(output, units), 2)
+            self.assertEqual(module.validate(output, units, mentions), 2)
             with output.open("r", encoding="utf-8", newline="") as stream:
                 found = list(csv.DictReader(stream))
             self.assertEqual([row["object_text"] for row in found], ["桂枝", "芍药"])
