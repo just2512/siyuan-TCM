@@ -43,17 +43,21 @@ jobs:
           python tools/build_knowledge_units.py --output catalog/generated > "$RUNNER_TEMP/knowledge-units.log" 2>&1 & units_pid=$!
           python tools/build_entity_mention_candidates.py --output catalog/generated > "$RUNNER_TEMP/entity-mentions.log" 2>&1 & mentions_pid=$!
           python tools/build_entity_registry.py --output catalog/generated/entity_registry.csv > "$RUNNER_TEMP/entity-registry.log" 2>&1 & registry_pid=$!
-          python tools/build_unclassified_term_candidates.py > "$RUNNER_TEMP/unclassified-terms.log" 2>&1 & terms_pid=$!
           status=0
-          for pid in "$anomaly_pid" "$dosage_pid" "$section_pid" "$units_pid" "$mentions_pid" "$registry_pid" "$terms_pid"; do
+          for pid in "$anomaly_pid" "$dosage_pid" "$section_pid" "$units_pid" "$mentions_pid" "$registry_pid"; do
             wait "$pid" || status=1
           done
-          for log in "$RUNNER_TEMP/content-anomaly.log" "$RUNNER_TEMP/dosage-candidates.log" "$RUNNER_TEMP/section-index.log" "$RUNNER_TEMP/knowledge-units.log" "$RUNNER_TEMP/entity-mentions.log" "$RUNNER_TEMP/entity-registry.log" "$RUNNER_TEMP/unclassified-terms.log"; do
+          for log in "$RUNNER_TEMP/content-anomaly.log" "$RUNNER_TEMP/dosage-candidates.log" "$RUNNER_TEMP/section-index.log" "$RUNNER_TEMP/knowledge-units.log" "$RUNNER_TEMP/entity-mentions.log" "$RUNNER_TEMP/entity-registry.log"; do
             echo "::group::$(basename "$log")"
             cat "$log"
             echo "::endgroup::"
           done
-          exit "$status"
+          if [ "$status" -ne 0 ]; then
+            exit "$status"
+          fi
+          # Term mining consumes the just-built knowledge units, so it must
+          # start after the parallel producer batch has completed.
+          python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
       - name: Validate knowledge units and entity mentions in parallel
         shell: bash
         run: |
