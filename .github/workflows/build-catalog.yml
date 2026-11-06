@@ -85,7 +85,7 @@ jobs:
       - name: Validate formula-herb relation candidate provenance
         run: python tools/build_formula_herb_relation_candidates.py --validate
       - name: Build SQLite full-text, entity and relation index
-        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz
+        run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz --contextual-term-candidates catalog/generated/contextual_term_type_candidates.csv.gz
       - name: Export machine-readable semantic graph
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence

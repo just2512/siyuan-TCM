@@ -53,6 +53,7 @@ python tools/build_entity_registry.py --validate
 python tools/build_formula_herb_relation_candidates.py
 python tools/build_formula_herb_relation_candidates.py --validate
 python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv
+python tools/build_siyuan_search_db.py --context-query SYMPTOM --db catalog/generated/siyuan_search.sqlite3
 python tools/build_siyuan_search_db.py --query "桂枝汤" --limit 20
 python tools/build_siyuan_search_db.py --entity-query "桂枝汤" --limit 20
 python tools/build_siyuan_search_db.py --entity-id "lex_..." --limit 100
@@ -101,3 +102,17 @@ their own source knowledge units, then verifies that the object mention belongs
 to the evidence block and that the formula mention belongs to the same source
 document and source revision. Invalid or cross-document endpoints are rejected
 before SQLite and graph export.
+
+
+## 上下文分类候选查询
+
+语料术语候选经过原文局部上下文规则分类后，生成
+`contextual_term_type_candidates.csv.gz`。每条记录保留词条、分类规则、原文文档、
+SHA、块位置和字符跨度，状态为 `CONTEXT_RULE_CANDIDATE`。这是机器候选，不是人工审批状态或医学事实断言。
+
+CI 将这些记录同步写入 SQLite 的 `contextual_term_type_candidates` 表。可按词语或类别查询：
+
+```bash
+python tools/build_siyuan_search_db.py --context-query 头痛 --db catalog/generated/siyuan_search.sqlite3
+python tools/build_siyuan_search_db.py --context-query SYMPTOM --db catalog/generated/siyuan_search.sqlite3
+```

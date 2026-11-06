@@ -219,6 +219,50 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(found[0]["term"], "太阳中风")
             self.assertEqual(found[0]["document_count"], 3)
 
+    def test_indexes_and_queries_contextual_term_type_candidates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            terms = root / "terms.csv.gz"
+            contextual = root / "contextual.csv.gz"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "hash-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "characters": 8,
+                "content_text": "症见头痛，舌红",
+            }])
+            self._write_gzip_csv(terms, [
+                "candidate_id", "term", "ngram_length", "occurrence_count",
+                "unit_count", "document_count", "sample_evidence", "candidate_status",
+            ], [{
+                "candidate_id": "term-headache", "term": "头痛", "ngram_length": 2,
+                "occurrence_count": 5, "unit_count": 3, "document_count": 2,
+                "sample_evidence": "[]", "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
+            }])
+            self._write_gzip_csv(contextual, [
+                "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                "character_end", "evidence_start", "evidence_text", "classification_status",
+            ], [{
+                "candidate_id": "term-headache", "term": "头痛", "candidate_type": "SYMPTOM",
+                "rule_id": "SYMPTOM_CONTEXT_01", "evidence_document": "book/a.sy",
+                "source_sha256": "hash-a", "tree_position": "0.0", "block_id": "p1",
+                "unit_id": "u1", "character_start": 2, "character_end": 4,
+                "evidence_start": 0, "evidence_text": "症见头痛，舌红",
+                "classification_status": "CONTEXT_RULE_CANDIDATE",
+            }])
+            result = search_db.build_database(
+                content, None, db, term_candidates_path=terms,
+                contextual_term_candidates_path=contextual,
+            )
+            self.assertEqual(result["contextual_term_type_candidates"], 1)
+            found = search_db.search_contextual_term_candidates(db, "头痛")
+            self.assertEqual(len(found), 1)
+            self.assertEqual(found[0]["candidate_type"], "SYMPTOM")
+            self.assertEqual(found[0]["evidence_text"], "症见头痛，舌红")
+            self.assertEqual(len(search_db.search_contextual_term_candidates(db, "SYMPTOM")), 1)
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")

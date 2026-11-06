@@ -340,7 +340,7 @@ def build_review_queues(documents_csv: Path, output: Path,
         "document", "notebook", "parent_document", "document_depth", "child_document_count",
         "title", "title_source", "parse_status",
         "bytes", "asset_ref_count", "node_types", "child_node_count",
-        "structure_status", "review_status", "review_notes", "evidence_reference",
+        "structure_status", "review_status", "reviewer", "review_notes", "evidence_reference",
     ])
     write_csv(output / "topic_review.csv", topic_rows, [
         "document", "notebook", "title", "title_source", "catalog_topics", "catalog_matched_terms",

@@ -65,6 +65,8 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("parent_document", empty_rows[0])
             self.assertEqual(empty_rows[0]["document_depth"], "0")
             self.assertEqual(empty_rows[0]["review_status"], "NEEDS_SOURCE_INSPECTION")
+            self.assertIn("reviewer", empty_rows[0])
+            self.assertIn("evidence_reference", empty_rows[0])
             self.assertEqual(empty_rows[0]["structure_status"], "PARAGRAPH_NODES_WITHOUT_EXTRACTED_TEXT")
             with (output / "title_review_candidates.csv").open(encoding="utf-8-sig", newline="") as stream:
                 title_candidates = list(csv.DictReader(stream))
