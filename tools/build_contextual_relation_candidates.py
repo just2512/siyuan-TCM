@@ -19,7 +19,8 @@ from typing import Any
 
 FIELDS = [
     "relation_id", "predicate", "subject_candidate_id", "subject_text",
-    "subject_type", "object_candidate_id", "object_text", "object_type",
+    "subject_type", "subject_start", "subject_end", "object_candidate_id", "object_text",
+    "object_type", "object_start", "object_end",
     "unit_id", "document", "source_sha256", "tree_position", "block_id",
     "sentence_start", "sentence_end", "evidence_text", "predicate_text",
     "extraction_rule", "resolution_status",
@@ -157,9 +158,13 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                                     "subject_candidate_id": subject["candidate_id"],
                                     "subject_text": subject["term"],
                                     "subject_type": subject["candidate_type"],
+                                    "subject_start": subject_start,
+                                    "subject_end": subject_end,
                                     "object_candidate_id": obj["candidate_id"],
                                     "object_text": obj["term"],
                                     "object_type": obj["candidate_type"],
+                                    "object_start": object_start,
+                                    "object_end": object_end,
                                     "unit_id": unit_id,
                                     "document": src["document"],
                                     "source_sha256": src["sha256"],
@@ -213,8 +218,17 @@ def validate(path: Path, units_path: Path) -> int:
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
                 raise ValueError(f"row {line}: evidence span mismatch")
-            if row["predicate_text"] not in row["evidence_text"]:
-                raise ValueError(f"row {line}: predicate evidence missing")
+            subject_start, subject_end = int(row["subject_start"]), int(row["subject_end"])
+            object_start, object_end = int(row["object_start"]), int(row["object_end"])
+            if not (start <= subject_start < subject_end <= object_start < object_end <= end):
+                raise ValueError(f"row {line}: endpoint spans are outside sentence or overlap")
+            if text[subject_start:subject_end] != row["subject_text"]:
+                raise ValueError(f"row {line}: subject span does not match source")
+            if text[object_start:object_end] != row["object_text"]:
+                raise ValueError(f"row {line}: object span does not match source")
+            predicate_match = PREDICATES[predicate].search(text[subject_end:object_start])
+            if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
+                raise ValueError(f"row {line}: predicate evidence missing between endpoints")
             identity = (row["relation_id"], row["unit_id"])
             if identity in seen:
                 raise ValueError(f"row {line}: duplicate relation")
