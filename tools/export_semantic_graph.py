@@ -118,6 +118,11 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     expected_relations = {row[0] for row in connection.execute("SELECT relation_id FROM semantic_relation_candidates")}
     expected_contextual_relations = {row[0] for row in connection.execute("SELECT relation_id FROM contextual_relation_candidates")}
     expected_contextual_terms = connection.execute("SELECT COUNT(*) FROM contextual_term_type_candidates").fetchone()[0]
+    contextual_endpoint_types = {
+        "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
+        "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
+        "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+    }
     seen_entities, seen_relations, seen_contextual_relations, seen_contextual_terms = set(), set(), set(), set()
     edge_count = contextual_edge_count = contextual_term_count = 0
     with gzip.open(graph_path, "rt", encoding="utf-8") as stream:
@@ -171,6 +176,49 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"duplicate or unknown contextual relation at line {line}")
                 if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                     raise ValueError(f"unsafe contextual relation status at line {line}")
+                evidence = row["evidence"]
+                expected = connection.execute("""
+                    SELECT predicate, subject_candidate_id, subject_text, subject_type,
+                           subject_start, subject_end, object_candidate_id, object_text,
+                           object_type, object_start, object_end, unit_id, document,
+                           source_sha256, tree_position, block_id, sentence_start,
+                           sentence_end, evidence_text, predicate_text, extraction_rule,
+                           resolution_status
+                    FROM contextual_relation_candidates WHERE relation_id = ?
+                """, (relation_id,)).fetchone()
+                exported = (
+                    row["predicate"], row["subject_candidate_id"], row["subject_text"],
+                    row["subject_type"], row["subject_start"], row["subject_end"],
+                    row["object_candidate_id"], row["object_text"], row["object_type"],
+                    row["object_start"], row["object_end"], evidence["unit_id"],
+                    evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                    evidence["block_id"], evidence["character_start"], evidence["character_end"],
+                    evidence["text"], row["predicate_text"], row["extraction_rule"],
+                    row["resolution_status"],
+                )
+                if expected is None or tuple(expected) != exported:
+                    raise ValueError(f"contextual relation graph/SQLite mismatch at line {line}")
+                endpoint_types = contextual_endpoint_types.get(row["predicate"])
+                if endpoint_types != (row["subject_type"], row["object_type"]):
+                    raise ValueError(f"contextual relation endpoint types invalid at line {line}")
+                for candidate_id, term, candidate_type, left, right, role in (
+                    (row["subject_candidate_id"], row["subject_text"], row["subject_type"],
+                     row["subject_start"], row["subject_end"], "subject"),
+                    (row["object_candidate_id"], row["object_text"], row["object_type"],
+                     row["object_start"], row["object_end"], "object"),
+                ):
+                    endpoint = connection.execute("""
+                        SELECT 1 FROM contextual_term_type_candidates
+                        WHERE candidate_id = ? AND term = ? AND candidate_type = ?
+                          AND unit_id = ? AND evidence_document = ? AND source_sha256 = ?
+                          AND tree_position = ? AND block_id = ?
+                          AND character_start = ? AND character_end = ?
+                        LIMIT 1
+                    """, (candidate_id, term, candidate_type, evidence["unit_id"],
+                          evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                          evidence["block_id"], left, right)).fetchone()
+                    if endpoint is None:
+                        raise ValueError(f"contextual relation {role} is not a matching SQLite term candidate at line {line}")
                 evidence = row["evidence"]
                 start, end = evidence["character_start"], evidence["character_end"]
                 source = connection.execute("""SELECT content_text FROM content_blocks
