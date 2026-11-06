@@ -53,6 +53,7 @@ python tools/build_formula_herb_relation_candidates.py --validate
 python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv
 python tools/build_siyuan_search_db.py --query "桂枝汤" --limit 20
 python tools/build_siyuan_search_db.py --entity-query "桂枝汤" --limit 20
+python tools/build_siyuan_search_db.py --entity-id "lex_..." --limit 100
 python tools/build_siyuan_search_db.py --relation-query "桂枝汤" --limit 20
 python tools/export_semantic_graph.py
 python tools/export_semantic_graph.py --validate
