@@ -276,17 +276,19 @@ class CatalogueValidationTests(unittest.TestCase):
             path = generated / "document_review.csv"
             with path.open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            rows[0]["source_status"] = "PARTIAL"
-            rows[0]["reviewer"] = "reviewer-1"
-            rows[0]["evidence_reference"] = "EV-001"
-            self.write(path, list(rows[0]), rows)
+            target = next(row for row in rows if row["document"] == "book/a.sy")
+            target["source_status"] = "PARTIAL"
+            target["reviewer"] = "reviewer-1"
+            target["evidence_reference"] = "EV-001"
+            self.write(path, list(target), rows)
             for queue_name in ("title_review_candidates.csv", "topic_review.csv", "topic_review_batches.csv"):
                 queue_path = generated / queue_name
                 with queue_path.open(encoding="utf-8-sig", newline="") as stream:
                     queue_rows = list(csv.DictReader(stream))
-                queue_rows[0]["reviewer"] = "reviewer-1"
-                queue_rows[0]["evidence_reference"] = "EV-001"
-                self.write(queue_path, list(queue_rows[0]), queue_rows)
+                queue_target = next(row for row in queue_rows if row["document"] == "book/a.sy")
+                queue_target["reviewer"] = "reviewer-1"
+                queue_target["evidence_reference"] = "EV-001"
+                self.write(queue_path, list(queue_target), queue_rows)
             validator.validate_catalogue(generated, source, assets)
 
     def test_rejects_topic_queue_status_drift(self):
