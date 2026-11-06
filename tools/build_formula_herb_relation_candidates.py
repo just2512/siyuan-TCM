@@ -115,7 +115,8 @@ def has_explicit_formula_context(mention: dict[str, str]) -> bool:
 
 
 def nearby_formula(formula_mentions: list[dict[str, str]],
-                   evidence_unit: dict[str, Any]) -> dict[str, str] | None:
+                   evidence_unit: dict[str, Any],
+                   herbs: list[dict[str, str]] | None = None) -> dict[str, str] | None:
     """Choose a unique nearby formula only when its own block names it explicitly."""
     evidence_pos = position_parts(evidence_unit["source"]["tree_position"])
     if len(evidence_pos) < 2:
@@ -139,7 +140,16 @@ def nearby_formula(formula_mentions: list[dict[str, str]],
     nearest = [mention for distance, mention in candidates if distance == min_distance]
     terms = {mention["matched_text"] for mention in nearest}
     if len(terms) != 1:
-        return None
+        herb_terms = [herb["matched_text"] for herb in (herbs or [])]
+        scores = {
+            term: sum(1 for herb_term in herb_terms if herb_term in term)
+            for term in terms
+        }
+        best = max(scores.values(), default=0)
+        winners = {term for term, score in scores.items() if score == best and score > 0}
+        if len(winners) != 1:
+            return None
+        nearest = [mention for mention in nearest if mention["matched_text"] in winners]
     return sorted(nearest, key=lambda item: item["mention_id"])[0]
 
 
@@ -227,7 +237,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
             # adjacent sibling position, with a unique nearest formula name.
             if re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", text) and herbs:
                 formula = nearby_formula(
-                    formulas_by_document.get(source["document"], []), unit
+                    formulas_by_document.get(source["document"], []), unit, herbs
                 )
                 if formula is not None:
                     for herb in herbs:
