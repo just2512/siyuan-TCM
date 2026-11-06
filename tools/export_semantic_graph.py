@@ -116,10 +116,22 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                     raise ValueError(f"unsafe relation status at line {line}")
                 evidence = row["evidence"]
-                if evidence["character_end"] <= evidence["character_start"]:
+                start, end = evidence["character_start"], evidence["character_end"]
+                if end <= start:
                     raise ValueError(f"invalid evidence span at line {line}")
-                if len(evidence["text"]) != evidence["character_end"] - evidence["character_start"]:
+                if len(evidence["text"]) != end - start:
                     raise ValueError(f"evidence span length mismatch at line {line}")
+                connection = sqlite3.connect(database_path)
+                source_row = connection.execute("""
+                    SELECT content_text FROM content_blocks
+                    WHERE document = ? AND source_sha256 = ?
+                      AND tree_position = ? AND block_id = ?
+                    LIMIT 1
+                """, (evidence["document"], evidence["source_sha256"],
+                      evidence["tree_position"], evidence["block_id"])).fetchone()
+                connection.close()
+                if source_row is None or source_row[0][start:end] != evidence["text"]:
+                    raise ValueError(f"evidence does not match source block at line {line}")
                 seen_relations.add(relation_id)
                 edge_count += 1
             else:
