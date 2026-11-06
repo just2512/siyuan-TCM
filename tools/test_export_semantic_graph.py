@@ -76,9 +76,14 @@ class SemanticGraphExportTests(unittest.TestCase):
                 })
             db.build_database(content, None, database, mentions, relations, registry)
             result = module.export(database, output)
-            self.assertEqual(result, {"entity_nodes": 2, "relation_edges": 1})
+            self.assertEqual(result, {
+                "entity_nodes": 2, "relation_edges": 1,
+                "contextual_term_candidates": 0, "contextual_relation_edges": 0,
+            })
             self.assertEqual(module.validate(database, output), {
-                "validated_entity_nodes": 2, "validated_relation_edges": 1
+                "validated_entity_nodes": 2, "validated_relation_edges": 1,
+                "validated_contextual_term_candidates": 0,
+                "validated_contextual_relation_edges": 0,
             })
             with gzip.open(output, "rt", encoding="utf-8") as stream:
                 rows = [json.loads(line) for line in stream]
