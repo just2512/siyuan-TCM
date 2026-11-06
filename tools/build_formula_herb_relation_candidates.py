@@ -122,8 +122,12 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
     return {"relation_candidates": count, "unique_relation_ids": len(seen)}
 
 
-def validate(path: Path, units_path: Path) -> int:
+def validate(path: Path, units_path: Path, mentions_path: Path | None = None) -> int:
     units = {}
+    mentions = {}
+    if mentions_path is not None:
+        with gzip.open(mentions_path, "rt", encoding="utf-8", newline="") as mention_stream:
+            mentions = {row["mention_id"]: row for row in csv.DictReader(mention_stream)}
     with gzip.open(units_path, "rt", encoding="utf-8", newline="") as stream:
         for raw in stream:
             unit = json.loads(raw)
@@ -144,6 +148,16 @@ def validate(path: Path, units_path: Path) -> int:
                 or source_info["tree_position"] != row["tree_position"]
                 or source_info.get("block_id", "") != row["block_id"]):
                 raise ValueError(f"row {line}: source provenance mismatch")
+            if mentions_path is not None:
+                subject = mentions.get(row["subject_mention_id"])
+                obj = mentions.get(row["object_mention_id"])
+                if subject is None or obj is None:
+                    raise ValueError(f"row {line}: relation mention reference not found")
+                if (subject["unit_id"] != row["unit_id"] or obj["unit_id"] != row["unit_id"]
+                    or subject["entity_type"] != "FORMULA" or obj["entity_type"] != "HERB"
+                    or subject["matched_text"] != row["subject_text"]
+                    or obj["matched_text"] != row["object_text"]):
+                    raise ValueError(f"row {line}: relation endpoints do not match entity mentions")
             text = unit["content"]["source_text"]
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
@@ -163,11 +177,11 @@ def main() -> int:
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
     if args.validate:
-        count = validate(args.output, args.units)
+        count = validate(args.output, args.units, args.mentions)
         print(json.dumps({"validated_relation_candidates": count}, ensure_ascii=False))
     else:
         result = extract(args.mentions, args.units, args.output)
-        validate(args.output, args.units)
+        validate(args.output, args.units, args.mentions)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
