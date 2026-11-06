@@ -41,7 +41,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             "source": {"tree_position": "0.0"},
         }
         incidental = {
-            "unit_id": "context", "tree_position": "0.2",
+            "mention_id": "incidental-m", "unit_id": "context", "tree_position": "0.2",
             "character_start": "0", "character_end": "3",
             "matched_text": "真武汤", "_source_text": "真武汤在少阴篇会有包含小便不利",
             "_unit_type": "SOURCE_PARAGRAPH",
@@ -49,7 +49,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
         self.assertIsNone(module.nearby_formula([incidental], evidence_unit))
 
         explicit = {
-            "unit_id": "indication", "tree_position": "0.2",
+            "mention_id": "explicit-m", "unit_id": "indication", "tree_position": "0.2",
             "character_start": "9", "character_end": "12",
             "matched_text": "黄土汤", "_source_text": "【15.6】下血，黄土汤主之",
             "_unit_type": "SOURCE_PARAGRAPH",
@@ -66,12 +66,14 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             unit_rows = [
                 {
                     "unit_id": "composition",
+                    "unit_type": "SOURCE_PARAGRAPH",
                     "source": {"document": "book/a.sy", "sha256": source_hash,
                                "tree_position": "0.0", "block_id": "b1"},
                     "content": {"source_text": "组成：桂枝、芍药"},
                 },
                 {
                     "unit_id": "formula",
+                    "unit_type": "SOURCE_PARAGRAPH",
                     "source": {"document": "book/a.sy", "sha256": source_hash,
                                "tree_position": "0.2", "block_id": "b2"},
                     "content": {"source_text": "桂枝汤主之"},
@@ -122,6 +124,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             text = "桂枝汤由桂枝、芍药组成。另有麻黄汤。"
             unit = {
                 "unit_id": "u1",
+                "unit_type": "SOURCE_PARAGRAPH",
                 "source": {"document": "a.sy", "sha256": "a" * 64,
                            "tree_position": "0.1", "block_id": "b1"},
                 "content": {"source_text": text},
