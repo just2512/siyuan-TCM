@@ -35,9 +35,11 @@ python tools/build_siyuan_catalog.py --root /path/to/siyuan/data --assets-dir /p
 
 默认结果写入 catalog/generated/，并自动读取仓库的 catalog/notebook-map.json。工具不会上传或复制 assets。
 
-## 当前执行状态
+## CI 生成与验收
 
-索引生成工具和工作流配置已经提交。当前尚未取得成功的 GitHub Actions 运行记录，因此 catalog/generated/ 中的全量逐篇索引仍待实际执行后验收；不要将仓库盘点基线误认为逐篇索引已完成。
+每次 master 上的源码、词典或工作流更新，Actions 会重新生成逐篇索引。以 [Build and commit TCM catalogue](../.github/workflows/build-catalog.yml) 的最新运行结果为准；只有全部构建、来源校验、SQLite 构建、语义图校验和产物上传步骤成功，才视为该版本索引完成。
+
+生成结果包括知识单元、实体提及候选、词面级实体注册表、方剂—药物关系候选、SQLite 检索库和 JSONL.GZ 语义图。原始笔记保持只读，程序输出不覆盖笔记内容。
 
 机器可读知识单元的数据契约见 [KNOWLEDGE_UNIT_SCHEMA.md](KNOWLEDGE_UNIT_SCHEMA.md)。该步骤只标准化结构与来源定位，不自动解释或改写医学内容。
 
