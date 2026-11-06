@@ -82,6 +82,9 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(entity_results[0]["character_start"], 0)
             self.assertEqual(entity_results[0]["character_end"], 3)
             self.assertEqual(entity_results[0]["content_text"], "桂枝汤治疗太阳中风")
+            resolved = search_db.search_entity_by_id(db, entity_results[0]["entity_id"])
+            self.assertEqual(len(resolved), 1)
+            self.assertEqual(resolved[0]["matched_text"], "桂枝汤")
 
     def test_indexes_and_queries_explicit_relation_candidates(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -135,6 +138,8 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(found[0]["subject_tree_position"], "0.2")
             self.assertEqual(found[0]["object_tree_position"], "0.0")
             self.assertEqual(found[0]["evidence_tree_position"], "0.0")
+            self.assertEqual(found[0]["subject_entity_id"], search_db.search_entity_mentions(db, "桂枝汤")[0]["entity_id"])
+            self.assertEqual(found[0]["object_entity_id"], search_db.search_entity_mentions(db, "桂枝")[0]["entity_id"])
 
     def test_registry_assigns_stable_entity_id_to_mentions(self):
         with tempfile.TemporaryDirectory() as temp:
