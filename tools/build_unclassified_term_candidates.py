@@ -16,6 +16,10 @@ import json
 import re
 import sqlite3
 import sys
+try:
+    import resource
+except ImportError:  # pragma: no cover - unavailable on Windows
+    resource = None
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -310,6 +314,12 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
         finally:
             connection.close()
 
+    peak_rss_kib = None
+    if resource is not None:
+        peak_rss_kib = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        if sys.platform == "darwin":
+            peak_rss_kib //= 1024
+
     return {
         "knowledge_units_scanned": unit_total,
         "distinct_ngrams_seen": distinct_ngrams_seen,
@@ -319,6 +329,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
         "minimum_documents": min_documents,
         "max_unit_distinct_terms": max_unit_distinct_terms,
         "aggregation_strategy": "sqlite_term_document_upsert",
+        "peak_rss_kib": peak_rss_kib,
 
     }
 
