@@ -49,7 +49,7 @@ class CatalogueValidationTests(unittest.TestCase):
         ])
         review_fields = ["document", "title", "topics", "parse_status", "title_review_status", "topic_review_status", "source_status", "source_version_status", "collation_status", "human_corrected_title", "human_approved_topics", "reviewer", "review_notes", "evidence_reference", "parent_document", "document_depth", "child_document_count"]
         self.write(generated / "document_review.csv", review_fields, [
-            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "evidence_reference": "", "parent_document": d["parent_document"], "document_depth": d["document_depth"], "child_document_count": d["child_document_count"]} for d in docs
+            {"document": d["path"], "title": d["title"], "topics": d["topics"], "parse_status": d["parse_status"], "title_review_status": "NOT_REVIEWED", "topic_review_status": "NOT_REVIEWED", "source_status": "UNVERIFIED", "source_version_status": "UNVERIFIED", "collation_status": "NOT_REVIEWED", "reviewer": "", "review_notes": "", "evidence_reference": "", "parent_document": d["parent_document"], "document_depth": d["document_depth"], "child_document_count": d["child_document_count"]} for d in docs
         ])
         self.write(generated / "empty_body_review.csv", [
             "document", "review_status", "parent_document", "document_depth",
@@ -128,6 +128,22 @@ class CatalogueValidationTests(unittest.TestCase):
                 "empty_body_status": "UNRESOLVED", "review_notes": "原始 .sy 待检查",
                 "evidence_reference": "EV-002",
             }])
+            review_path = generated / "document_review.csv"
+            with review_path.open(encoding="utf-8-sig", newline="") as stream:
+                review_rows = list(csv.DictReader(stream))
+            for row in review_rows:
+                if row["document"] == "book/b.sy":
+                    row["reviewer"] = "reviewer-2"
+                    row["review_notes"] = "原始 .sy 待检查"
+                    row["evidence_reference"] = "EV-002"
+            self.write(review_path, list(review_rows[0]), review_rows)
+            empty_path = generated / "empty_body_review.csv"
+            with empty_path.open(encoding="utf-8-sig", newline="") as stream:
+                empty_rows = list(csv.DictReader(stream))
+            empty_rows[0]["reviewer"] = "reviewer-2"
+            empty_rows[0]["review_notes"] = "原始 .sy 待检查"
+            empty_rows[0]["evidence_reference"] = "EV-002"
+            self.write(empty_path, list(empty_rows[0]), empty_rows)
             with self.assertRaisesRegex(ValueError, "empty_body_review.review_status 与 review-decisions.csv 不一致"):
                 validator.validate_catalogue(generated, source, assets, decisions)
 
@@ -309,9 +325,10 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "empty_body_review.csv"
-            self.write(path, ["document", "review_status", "parent_document", "document_depth", "child_document_count"], [
+            self.write(path, ["document", "review_status", "parent_document", "document_depth", "child_document_count", "reviewer", "review_notes", "evidence_reference"], [
                 {"document": "book/b.sy", "review_status": "MADE_UP",
-                 "parent_document": "", "document_depth": "0", "child_document_count": "0"},
+                 "parent_document": "", "document_depth": "0", "child_document_count": "0",
+                 "reviewer": "", "review_notes": "", "evidence_reference": ""},
             ])
             with self.assertRaisesRegex(ValueError, "review_status 无效"):
                 validator.validate_catalogue(generated, source, assets)
