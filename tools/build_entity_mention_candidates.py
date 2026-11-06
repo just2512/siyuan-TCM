@@ -59,6 +59,46 @@ def read_lexicon(path: Path) -> list[dict[str, str]]:
     return sorted(terms, key=lambda item: (item["entity_type"], item["term"]))
 
 
+def build_matcher(lexicon: list[dict[str, str]]) -> list[dict[str, Any]]:
+    """Build an Aho-Corasick automaton; overlapping terms are retained."""
+    nodes: list[dict[str, Any]] = [{"next": {}, "fail": 0, "output": []}]
+    for item in lexicon:
+        state = 0
+        for char in item["term"].casefold():
+            if char not in nodes[state]["next"]:
+                nodes[state]["next"][char] = len(nodes)
+                nodes.append({"next": {}, "fail": 0, "output": []})
+            state = nodes[state]["next"][char]
+        nodes[state]["output"].append(item)
+    queue = list(nodes[0]["next"].values())
+    cursor = 0
+    while cursor < len(queue):
+        state = queue[cursor]
+        cursor += 1
+        for char, child in nodes[state]["next"].items():
+            queue.append(child)
+            fallback = nodes[state]["fail"]
+            while fallback and char not in nodes[fallback]["next"]:
+                fallback = nodes[fallback]["fail"]
+            nodes[child]["fail"] = nodes[fallback]["next"].get(char, 0)
+            nodes[child]["output"].extend(nodes[nodes[child]["fail"]]["output"])
+    return nodes
+
+
+def find_matches(text: str, nodes: list[dict[str, Any]]):
+    state = 0
+    matches = []
+    for index, char in enumerate(text.casefold()):
+        while state and char not in nodes[state]["next"]:
+            state = nodes[state]["fail"]
+        state = nodes[state]["next"].get(char, 0)
+        for item in nodes[state]["output"]:
+            end = index + 1
+            matches.append((end - len(item["term"]), end, item))
+    matches.sort(key=lambda hit: (hit[0], hit[1], hit[2]["entity_type"], hit[2]["term"]))
+    return matches
+
+
 def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, Any]:
     if not content_index.is_file():
         raise FileNotFoundError(content_index)
@@ -71,6 +111,7 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
     blocks = 0
     mentions = 0
     seen_ids: set[str] = set()
+    matcher = build_matcher(lexicon)
     with (gzip.open(content_index, "rt", encoding="utf-8-sig", newline="") as source,
           gzip.open(target, "wt", encoding="utf-8", newline="") as destination):
         reader = csv.DictReader(source)
@@ -85,36 +126,26 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
                 continue
             blocks += 1
             source_unit_id = unit_id(row)
-            for item in lexicon:
+            for start, end, item in find_matches(text, matcher):
                 term = item["term"]
-                for match in re.finditer(re.escape(term), text, flags=re.IGNORECASE):
-                    start, end = match.span()
-                    identity = "\0".join((
-                        source_unit_id, item["entity_type"], str(start), str(end), term,
-                    ))
-                    mention_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
-                    if mention_id in seen_ids:
-                        raise ValueError("duplicate mention_id: " + mention_id)
-                    seen_ids.add(mention_id)
-                    writer.writerow({
-                        "mention_id": mention_id,
-                        "unit_id": source_unit_id,
-                        "entity_type": item["entity_type"],
-                        "matched_text": match.group(0),
-                        "character_start": start,
-                        "character_end": end,
-                        "document": row["document"],
-                        "source_sha256": row["source_sha256"],
-                        "tree_position": row["tree_position"],
-                        "block_id": row.get("block_id", ""),
-                        "content_type": row["content_type"],
-                        "section_path": row.get("section_path", ""),
-                        "lexicon_version": item["lexicon_version"],
-                        "extraction_method": "EXACT_LEXICON_MATCH",
-                        "resolution_status": "UNRESOLVED_CANDIDATE",
-                    })
-                    counts[item["entity_type"]] = counts.get(item["entity_type"], 0) + 1
-                    mentions += 1
+                identity = "\0".join((source_unit_id, item["entity_type"], str(start), str(end), term))
+                mention_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+                if mention_id in seen_ids:
+                    raise ValueError("duplicate mention_id: " + mention_id)
+                seen_ids.add(mention_id)
+                writer.writerow({
+                    "mention_id": mention_id, "unit_id": source_unit_id,
+                    "entity_type": item["entity_type"], "matched_text": text[start:end],
+                    "character_start": start, "character_end": end,
+                    "document": row["document"], "source_sha256": row["source_sha256"],
+                    "tree_position": row["tree_position"], "block_id": row.get("block_id", ""),
+                    "content_type": row["content_type"], "section_path": row.get("section_path", ""),
+                    "lexicon_version": item["lexicon_version"],
+                    "extraction_method": "EXACT_LEXICON_MATCH",
+                    "resolution_status": "UNRESOLVED_CANDIDATE",
+                })
+                counts[item["entity_type"]] = counts.get(item["entity_type"], 0) + 1
+                mentions += 1
 
     report = [
         "# 词典匹配实体候选",
