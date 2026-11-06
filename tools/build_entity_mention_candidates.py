@@ -30,7 +30,7 @@ OUTPUT_FIELDS = [
 
 
 def unit_id(row: dict[str, str]) -> str:
-    identity = "\\0".join((
+    identity = "\0".join((
         row["document"], row["source_sha256"], row["tree_position"],
         row.get("block_id", ""),
     ))
@@ -89,7 +89,7 @@ def extract(content_index: Path, lexicon_path: Path, output: Path) -> dict[str, 
                 term = item["term"]
                 for match in re.finditer(re.escape(term), text, flags=re.IGNORECASE):
                     start, end = match.span()
-                    identity = "\\0".join((
+                    identity = "\0".join((
                         source_unit_id, item["entity_type"], str(start), str(end), term,
                     ))
                     mention_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
