@@ -77,6 +77,14 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
         self.assertTrue(module.has_explicit_formula_context(baiye))
         self.assertTrue(module.has_explicit_formula_context(huangtu))
         self.assertIsNone(module.nearby_formula([baiye, huangtu], evidence_unit))
+        self.assertEqual(
+            module.nearby_formula([baiye, huangtu], evidence_unit, [{"matched_text": "黄土"}]),
+            huangtu,
+        )
+        self.assertEqual(
+            module.nearby_formula([baiye, huangtu], evidence_unit, [{"matched_text": "柏叶"}]),
+            baiye,
+        )
 
         incidental = {
             "mention_id": "white-tiger", "unit_id": "context", "tree_position": "0.2",
