@@ -1,0 +1,45 @@
+name: Module CI
+
+on:
+  push:
+    branches:
+      - 'work/**'
+      - 'integration/**'
+    paths:
+      - 'tools/**'
+      - 'catalog/**'
+      - '.github/workflows/ci-modules.yml'
+  pull_request:
+    branches:
+      - master
+      - 'integration/**'
+    paths:
+      - 'tools/**'
+      - 'catalog/**'
+      - '.github/workflows/ci-modules.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tcm-module-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  module-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile tools and tests
+        run: python -m compileall -q tools
+      - name: Run unit and contract tests
+        run: python -m unittest discover -s tools -p 'test_*.py' -v
+      - name: Verify production build remains master-only
+        shell: bash
+        run: |
+          grep -qE '^  push:$' .github/workflows/build-catalog.yml
+          grep -qE 'branches: \[master\]' .github/workflows/build-catalog.yml
