@@ -44,13 +44,20 @@ def candidate_id(term: str) -> str:
 
 def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
          min_documents: int = 2, min_length: int = 2, max_length: int = 6,
-         sample_limit: int = 5) -> dict[str, int]:
+         sample_limit: int = 5, lexicon_path: Path | None = None) -> dict[str, int]:
     if not units_path.is_file():
         raise FileNotFoundError(units_path)
     if min_occurrences < 1 or min_documents < 1:
         raise ValueError("minimum counts must be positive")
+    known_terms: set[str] = set()
+    if lexicon_path is not None:
+        if not lexicon_path.is_file():
+            raise FileNotFoundError(lexicon_path)
+        with lexicon_path.open("r", encoding="utf-8-sig", newline="") as lexicon_stream:
+            known_terms = {row["term"].strip() for row in csv.DictReader(lexicon_stream) if row.get("term", "").strip()}
     stats: dict[str, dict[str, Any]] = {}
     unit_total = 0
+    known_term_occurrences = 0
     with gzip.open(units_path, "rt", encoding="utf-8") as stream:
         for line_number, line in enumerate(stream, 1):
             unit = json.loads(line)
@@ -67,6 +74,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             seen_in_unit: set[str] = set()
             for term, start, end in iter_ngrams(text, min_length, max_length):
                 if term in STOP_TERMS:
+                    continue
+                if term in known_terms:
+                    known_term_occurrences += 1
                     continue
                 item = stats.get(term)
                 if item is None:
@@ -115,6 +125,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
     return {
         "knowledge_units_scanned": unit_total,
         "distinct_ngrams_seen": len(stats),
+        "known_lexicon_occurrences_skipped": known_term_occurrences,
         "unclassified_term_candidates": len(eligible),
         "minimum_occurrences": min_occurrences,
         "minimum_documents": min_documents,
@@ -164,13 +175,14 @@ def main() -> int:
     parser.add_argument("--min-documents", type=int, default=2)
     parser.add_argument("--min-length", type=int, default=2)
     parser.add_argument("--max-length", type=int, default=6)
+    parser.add_argument("--lexicon", type=Path, default=Path("catalog/entity-lexicon.csv"))
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
     if args.validate:
         result = {"validated_candidates": validate(args.output)}
     else:
         result = mine(args.units, args.output, args.min_occurrences, args.min_documents,
-                      args.min_length, args.max_length)
+                      args.min_length, args.max_length, lexicon_path=args.lexicon)
         result["validated_candidates"] = validate(args.output)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
