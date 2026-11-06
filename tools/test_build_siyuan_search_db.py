@@ -77,6 +77,11 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                 ).fetchone()
             self.assertEqual(count, 1)
             self.assertEqual(entity, ("FORMULA", "桂枝汤", "book/a.sy", "UNRESOLVED_CANDIDATE"))
+            entity_results = search_db.search_entity_mentions(db, "桂枝汤")
+            self.assertEqual(len(entity_results), 1)
+            self.assertEqual(entity_results[0]["character_start"], 0)
+            self.assertEqual(entity_results[0]["character_end"], 3)
+            self.assertEqual(entity_results[0]["content_text"], "桂枝汤治疗太阳中风")
 
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
