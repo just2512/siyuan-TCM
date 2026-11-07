@@ -147,6 +147,31 @@ def smoke(database_path: Path) -> dict:
             raise AssertionError("contextual relation query failed source/endpoint/predicate evidence checks")
         checks["contextual_relation_evidence"] = "PASS"
 
+    if counts["contextual_relation_candidates"]:
+        contracts = {
+            "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
+            "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
+            "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+        }
+        predicates = [
+            row[0] for row in connection.execute(
+                "SELECT DISTINCT predicate FROM contextual_relation_candidates ORDER BY predicate"
+            )
+        ]
+        for predicate in predicates:
+            if predicate not in contracts:
+                raise AssertionError(f"unsupported contextual relation predicate: {predicate}")
+            rows = search_contextual_relation_candidates(database_path, predicate, limit=20)
+            expected_subject, expected_object = contracts[predicate]
+            if not rows or any(
+                row["predicate"] != predicate
+                or row["subject_type"] != expected_subject
+                or row["object_type"] != expected_object
+                for row in rows
+            ):
+                raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
+        checks["contextual_relation_predicate_direction"] = "PASS"
+
     connection.close()
     return {
         "schema_version": 1,
