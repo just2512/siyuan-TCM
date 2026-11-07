@@ -22,6 +22,13 @@ REQUIRED_FIELDS = {
     "candidate_category", "path", "candidate_note",
     *STATUS_FIELDS.keys(), *STATUS_FIELDS.values(),
 }
+
+UNVERIFIED_IDENTITY_CLAIMS = (
+    "身份可从文件名确认",
+    "身份可确认",
+    "身份已经确认",
+    "身份已确认",
+)
 QUEUE_FIELDS = [
     "batch_id", "batch_position", "candidate_category", "path", "candidate_note",
     "source_identity_status", "source_identity_evidence_reference",
@@ -49,6 +56,14 @@ def read_candidates(path: Path) -> list[dict[str, str]]:
         category = row.get("candidate_category", "")
         if category not in ACTIONS:
             raise ValueError(f"{key} 的候选类别无效：{category}")
+        if row.get("source_identity_status") == "UNVERIFIED" and any(
+            claim in (row.get("candidate_note") or "")
+            for claim in UNVERIFIED_IDENTITY_CLAIMS
+        ):
+            raise ValueError(
+                f"{key} 的 candidate_note 将文件名/关键词候选线索表述为已确认来源身份，"
+                "但 source_identity_status 仍为 UNVERIFIED"
+            )
         for status_field, evidence_field in STATUS_FIELDS.items():
             status = (row.get(status_field) or "").strip()
             if status not in ALLOWED_STATUSES:
