@@ -43,6 +43,54 @@ class ReviewProgressReportTests(unittest.TestCase):
             self.assertIn("章节级索引记录：1", report)
             self.assertIn("块类型覆盖记录：1", report)
 
+    def test_report_separates_static_audits_from_human_decision_projections(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            paths = {name: root / f"{name}.csv" for name in (
+                "decisions", "sources", "assets", "evidence", "topics", "titles",
+                "empty", "topic_review", "title_review"
+            )}
+            paths["decisions"].write_text(
+                "document,title_review_status,topic_review_status,source_status,"
+                "source_version_status,collation_status,empty_body_status\\n"
+                "a.sy,CONFIRMED,CONFIRMED,UNVERIFIED,UNVERIFIED,NOT_REVIEWED,NEEDS_SOURCE_INSPECTION\\n",
+                encoding="utf-8",
+            )
+            paths["sources"].write_text("path\\na.pdf\\n", encoding="utf-8")
+            paths["assets"].write_text("reference\\na.png\\n", encoding="utf-8")
+            paths["evidence"].write_text("evidence_id\\nEV-001\\n", encoding="utf-8")
+            paths["topics"].write_text(
+                "document,topic,review_status\\na.sy,伤寒与温病,NOT_REVIEWED\\n",
+                encoding="utf-8",
+            )
+            paths["titles"].write_text(
+                "document,review_status\\na.sy,NOT_REVIEWED\\n", encoding="utf-8"
+            )
+            paths["empty"].write_text(
+                "document,review_status\\na.sy,NEEDS_SOURCE_INSPECTION\\n", encoding="utf-8"
+            )
+            paths["topic_review"].write_text(
+                "document,review_status,human_approved_topics,reviewer,evidence_reference\\n"
+                "a.sy,CONFIRMED,伤寒与温病,reviewer-1,EV-001\\n",
+                encoding="utf-8",
+            )
+            paths["title_review"].write_text(
+                "document,review_status,reviewer,evidence_reference\\n"
+                "a.sy,CONFIRMED,reviewer-1,EV-001\\n",
+                encoding="utf-8",
+            )
+            report = module.render_report(
+                paths["decisions"], paths["sources"], paths["assets"], paths["evidence"],
+                paths["topics"], paths["titles"], paths["empty"],
+                topic_review=paths["topic_review"], title_review=paths["title_review"],
+            )
+            self.assertIn("静态风险审计信号（不承载人工决策状态）", report)
+            self.assertIn("逐文档—主题审计：1 条（机器规则命中线索", report)
+            self.assertIn("标题风险审计：1 条（标题抽取风险线索", report)
+            self.assertIn("逐文档—主题复核：1 条；CONFIRMED: 1", report)
+            self.assertIn("标题候选复核：1 条；CONFIRMED: 1", report)
+            self.assertIn("review-decisions.csv 为唯一持久化来源", report)
+
     def test_report_keeps_pending_conflict_and_unresolved_separate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
