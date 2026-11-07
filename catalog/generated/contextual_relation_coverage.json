@@ -5,78 +5,79 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 16690,
-      "pairs_with_predicate_between": 0,
+      "ordered_typed_pairs": 5245,
+      "pairs_with_predicate_between": 8,
       "negated_pairs": 0,
-      "eligible_pairs": 0,
-      "marker_sentences_without_typed_pair": 63,
-      "typed_pair_sentences_without_marker": 68,
+      "eligible_pairs": 8,
+      "marker_sentences_without_typed_pair": 62,
+      "typed_pair_sentences_without_marker": 140,
       "marker_sentences_with_subject_type": 13,
-      "marker_sentences_with_object_type": 11,
-      "marker_sentences_with_both_endpoint_types": 0,
+      "marker_sentences_with_object_type": 17,
+      "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 50,
-      "marker_sentences_without_object_type": 52,
+      "marker_sentences_without_object_type": 46,
       "units_with_marker": 61,
-      "units_with_eligible_pair": 0,
-      "extracted_rows": 0,
+      "units_with_eligible_pair": 1,
+      "extracted_rows": 8,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYNDROME": 85,
+        "SYNDROME": 27,
         "SYMPTOM": 231,
-        "FORMULA": 2
+        "FORMULA": 2,
+        "TREATMENT": 3
       }
     },
     "SYNDROME_TO_TREATMENT": {
       "marker_occurrences": 1098,
       "sentences_with_marker": 1054,
-      "ordered_typed_pairs": 390,
-      "pairs_with_predicate_between": 0,
+      "ordered_typed_pairs": 17,
+      "pairs_with_predicate_between": 8,
       "negated_pairs": 0,
-      "eligible_pairs": 0,
-      "marker_sentences_without_typed_pair": 1054,
-      "typed_pair_sentences_without_marker": 10,
+      "eligible_pairs": 8,
+      "marker_sentences_without_typed_pair": 1052,
+      "typed_pair_sentences_without_marker": 3,
       "marker_sentences_with_subject_type": 2,
-      "marker_sentences_with_object_type": 353,
-      "marker_sentences_with_both_endpoint_types": 0,
+      "marker_sentences_with_object_type": 676,
+      "marker_sentences_with_both_endpoint_types": 2,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 1052,
-      "marker_sentences_without_object_type": 701,
+      "marker_sentences_without_object_type": 378,
       "units_with_marker": 875,
-      "units_with_eligible_pair": 0,
-      "extracted_rows": 0,
+      "units_with_eligible_pair": 2,
+      "extracted_rows": 8,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "TREATMENT": 3353,
+        "TREATMENT": 1183,
         "SYMPTOM": 727,
         "FORMULA": 92,
-        "SYNDROME": 19
+        "SYNDROME": 4
       }
     },
     "TREATMENT_TO_FORMULA": {
       "marker_occurrences": 2954,
       "sentences_with_marker": 2837,
-      "ordered_typed_pairs": 707,
-      "pairs_with_predicate_between": 2,
+      "ordered_typed_pairs": 139,
+      "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
-      "eligible_pairs": 2,
-      "marker_sentences_without_typed_pair": 2834,
-      "typed_pair_sentences_without_marker": 42,
-      "marker_sentences_with_subject_type": 13,
+      "eligible_pairs": 0,
+      "marker_sentences_without_typed_pair": 2835,
+      "typed_pair_sentences_without_marker": 51,
+      "marker_sentences_with_subject_type": 17,
       "marker_sentences_with_object_type": 148,
       "marker_sentences_with_both_endpoint_types": 3,
-      "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+      "marker_sentences_with_both_types_but_no_ordered_pair": 1,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 2,
-      "marker_sentences_without_subject_type": 2824,
+      "marker_sentences_without_subject_type": 2820,
       "marker_sentences_without_object_type": 2689,
       "units_with_marker": 2590,
-      "units_with_eligible_pair": 1,
-      "extracted_rows": 2,
+      "units_with_eligible_pair": 0,
+      "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 224,
-        "SYNDROME": 146,
+        "TREATMENT": 33,
         "SYMPTOM": 1826,
-        "TREATMENT": 113
+        "SYNDROME": 39
       }
     }
   },
@@ -92,19 +93,6 @@
           "sentence_start": 122,
           "sentence_end": 143,
           "sentence_text": "所以，我们常常会遇到被西医诊断为不同的病。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
-          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150243-3qj6v6b.sy",
-          "source_sha256": "53833f1b305d669444d0f9bd37c0092b895611d62c157abbec8eba8aff56db49",
-          "tree_position": "0.11",
-          "block_id": "20240220115925-pj76tsk",
-          "sentence_start": 0,
-          "sentence_end": 43,
-          "sentence_text": "黄帝曰：余闻人有精、气、津、液、血、脉,余意以为一气耳,今乃辨为六名,余不知其所以然。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
           "candidate_spans_truncated": false
@@ -147,6 +135,19 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [],
           "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "8d6ec3ae152c338029d34880af0ca052bd72b84b98ccb4220dcbf428c2938273",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-dttef46.sy",
+          "source_sha256": "9a1dace9d52dfa46b6123e65a2db5765ddd9ccff96b5b765ca9784d56f1f28b3",
+          "tree_position": "0.993",
+          "block_id": "20240511095102-zay4xaw",
+          "sentence_start": 0,
+          "sentence_end": 113,
+          "sentence_text": "新光医院睡眠中心主任林嘉谟表示，这名患者是个才9岁大的小学3年级小男生，不久前，疼爱他的阿公过世，他哭得好伤心，情绪荡到最低点，什么事都不想做，阿嬷只好带他看医师，结果被诊断为有忧郁倾向，开给抗忧郁药物「百忧解」，每天吃2颗。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
         }
       ],
       "missing_subject_type": [
@@ -162,291 +163,137 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_d35220b52223d3a7a4f7af57",
-              "term": "辨证",
-              "candidate_type": "SYNDROME",
-              "start": 62,
-              "end": 64
-            },
-            {
-              "candidate_id": "term_45255ac56c251446b85a2a78",
-              "term": "证为",
-              "candidate_type": "SYNDROME",
-              "start": 63,
-              "end": 65
-            },
-            {
               "candidate_id": "term_414f7335a9a1713435414fa0",
               "term": "为主",
               "candidate_type": "SYNDROME",
               "start": 64,
               "end": 66
-            },
-            {
-              "candidate_id": "term_b9fc92a059b1f93c73c9d454",
-              "term": "证为主",
-              "candidate_type": "SYNDROME",
-              "start": 63,
-              "end": 66
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
-          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
-          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
-          "tree_position": "0.59",
-          "block_id": "20231122160010-q88onhz",
+          "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150243-3qj6v6b.sy",
+          "source_sha256": "53833f1b305d669444d0f9bd37c0092b895611d62c157abbec8eba8aff56db49",
+          "tree_position": "0.11",
+          "block_id": "20240220115925-pj76tsk",
           "sentence_start": 0,
-          "sentence_end": 31,
-          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
+          "sentence_end": 43,
+          "sentence_text": "黄帝曰：余闻人有精、气、津、液、血、脉,余意以为一气耳,今乃辨为六名,余不知其所以然。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_d35220b52223d3a7a4f7af57",
-              "term": "辨证",
+              "candidate_id": "term_a9a822f777e68919d4d69381",
+              "term": "六名",
               "candidate_type": "SYNDROME",
-              "start": 25,
-              "end": 27
-            },
-            {
-              "candidate_id": "term_45255ac56c251446b85a2a78",
-              "term": "证为",
-              "candidate_type": "SYNDROME",
-              "start": 26,
-              "end": 28
-            },
-            {
-              "candidate_id": "term_b08e1d05922d8e06796f1154",
-              "term": "为寒",
-              "candidate_type": "SYNDROME",
-              "start": 27,
-              "end": 29
-            },
-            {
-              "candidate_id": "term_63dae4ae4cb531caeef3d458",
-              "term": "寒痢",
-              "candidate_type": "SYNDROME",
-              "start": 28,
-              "end": 30
-            },
-            {
-              "candidate_id": "term_ca3075d64323a24d05cd0949",
-              "term": "在辨证",
-              "candidate_type": "SYNDROME",
-              "start": 24,
-              "end": 27
+              "start": 32,
+              "end": 34
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "f6959b2a1d855590ca07dcbe01ea2702600c0d6b5ce07b8779be54bcbf0684f3",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
-          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
-          "tree_position": "0.53",
-          "block_id": "20240614123926-oi0g2p6",
+          "unit_id": "eab67ea91c94c5bb68b20ebb1c37776a5aa744237efba858a443fb03bfbc135f",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.177",
+          "block_id": "20240511101226-y418udq",
           "sentence_start": 0,
-          "sentence_end": 242,
-          "sentence_text": "辛苦微甘．气寒．其性轻扬．上行入心及包络．兼入肺经．凉心热．散肝郁．破血下气．治吐衄尿血．妇人经脉逆行．（经不下行、上为吐衄诸证、用郁金末、加韭汁、姜汁、童便服、其血自清、痰中带血者、加竹沥．）血气诸痛．产后败血攻心．颠狂失心．（颠多喜笑、尚知畏惧、证属不足、狂多忿怒、人莫能制、证属有余、因惊忧痰血塞于心窍所致、用郁金七两、白矾三两、薄荷糊丸、名白金丸、郁金散恶血、白矾化顽痰．）痘毒入心．（因瘀血凝滞、而痘疹陷伏者、可用．）阳毒．生肌定痛．能开肺金之郁．故名．今医用此开郁．罕效．",
+          "sentence_end": 142,
+          "sentence_text": "目前台湾以及大陆的中医包含卫生署在内,中药药理方面都是以本草纲目为标准,方剂学是以汤头歌诀 或是医宗金鉴删补名医方论为主,处方依据是以温病条辨为主要依据,大家都知道黄帝内经,神农本草经,难经,伤寒论,金匮为中医的经典之作,但是都流于嘴上 说说而已,实际上很少人懂得如何真正的使用它 .",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
+              "candidate_id": "term_5ccd91f4181db651fcdad0ae",
+              "term": "主要",
               "candidate_type": "SYNDROME",
-              "start": 125,
-              "end": 127
+              "start": 72,
+              "end": 74
             },
             {
-              "candidate_id": "term_3917fb0151a8f4d435793c20",
-              "term": "属不",
+              "candidate_id": "term_abafe019c119cfa1fbf321ab",
+              "term": "主要依",
               "candidate_type": "SYNDROME",
-              "start": 126,
-              "end": 128
+              "start": 72,
+              "end": 75
             },
             {
-              "candidate_id": "term_1a5219a8272afb1380afb9bd",
-              "term": "不足",
+              "candidate_id": "term_08d27d496795d68a3fe0743a",
+              "term": "主要依据",
               "candidate_type": "SYNDROME",
-              "start": 127,
-              "end": 129
-            },
-            {
-              "candidate_id": "term_9a360959b080cb1ead86f59c",
-              "term": "证属不",
-              "candidate_type": "SYNDROME",
-              "start": 125,
-              "end": 128
-            },
-            {
-              "candidate_id": "term_87ba6f894b314d3750eb0c85",
-              "term": "属不足",
-              "candidate_type": "SYNDROME",
-              "start": 126,
-              "end": 129
-            },
-            {
-              "candidate_id": "term_9294ef8776fca78749d198fe",
-              "term": "证属不足",
-              "candidate_type": "SYNDROME",
-              "start": 125,
-              "end": 129
-            },
-            {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
-              "candidate_type": "SYNDROME",
-              "start": 140,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_3361b2fb640fa7eb130adf22",
-              "term": "属有",
-              "candidate_type": "SYNDROME",
-              "start": 141,
-              "end": 143
-            },
-            {
-              "candidate_id": "term_bd1a606d3c16c28d465dc826",
-              "term": "有余",
-              "candidate_type": "SYNDROME",
-              "start": 142,
-              "end": 144
-            },
-            {
-              "candidate_id": "term_2c3626a412d71fe613bc8cc1",
-              "term": "证属有",
-              "candidate_type": "SYNDROME",
-              "start": 140,
-              "end": 143
-            },
-            {
-              "candidate_id": "term_eed804929a46110e3c2e205a",
-              "term": "属有余",
-              "candidate_type": "SYNDROME",
-              "start": 141,
-              "end": 144
-            },
-            {
-              "candidate_id": "term_3a0cd81d2d49a6e9e738a1c9",
-              "term": "证属有余",
-              "candidate_type": "SYNDROME",
-              "start": 140,
-              "end": 144
+              "start": 72,
+              "end": 76
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "f216a55701e70a772a9eac987ba83691c89bf3eb44d630a50e556822f04c5741",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
-          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
-          "tree_position": "0.108",
-          "block_id": "20240614123655-7i0t9er",
-          "sentence_start": 46,
-          "sentence_end": 89,
-          "sentence_text": "痰中带血者，加竹沥），血气诸痛，产后败血攻心，癫狂失心（癫多喜笑，尚知畏惧，证属不足；",
+          "unit_id": "0f4c1050bb5c1868c03670f86fcd173d29ae68970b0ace279a8c8f0e83809fc9",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.327",
+          "block_id": "20240511101226-bousowz",
+          "sentence_start": 0,
+          "sentence_end": 141,
+          "sentence_text": "目前台湾以及大陆的中医包含卫生署在内,中药药理方面都是以本草纲目为标准,方剂学是以汤头歌诀 或是医宗金鉴删补名医方论为主,处方依据是以温病条辨为主要依据,大家都知道黄帝内经,神农本草经,难经,伤寒论,金匮为中医的经典之作,但是都流于嘴上说说而已,实际上很少人懂得如何真正的使用它 .",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
+              "candidate_id": "term_5ccd91f4181db651fcdad0ae",
+              "term": "主要",
               "candidate_type": "SYNDROME",
-              "start": 84,
-              "end": 86
+              "start": 72,
+              "end": 74
             },
             {
-              "candidate_id": "term_3917fb0151a8f4d435793c20",
-              "term": "属不",
+              "candidate_id": "term_abafe019c119cfa1fbf321ab",
+              "term": "主要依",
               "candidate_type": "SYNDROME",
-              "start": 85,
-              "end": 87
+              "start": 72,
+              "end": 75
             },
             {
-              "candidate_id": "term_1a5219a8272afb1380afb9bd",
-              "term": "不足",
+              "candidate_id": "term_08d27d496795d68a3fe0743a",
+              "term": "主要依据",
               "candidate_type": "SYNDROME",
-              "start": 86,
-              "end": 88
-            },
-            {
-              "candidate_id": "term_9a360959b080cb1ead86f59c",
-              "term": "证属不",
-              "candidate_type": "SYNDROME",
-              "start": 84,
-              "end": 87
-            },
-            {
-              "candidate_id": "term_87ba6f894b314d3750eb0c85",
-              "term": "属不足",
-              "candidate_type": "SYNDROME",
-              "start": 85,
-              "end": 88
-            },
-            {
-              "candidate_id": "term_9294ef8776fca78749d198fe",
-              "term": "证属不足",
-              "candidate_type": "SYNDROME",
-              "start": 84,
-              "end": 88
+              "start": 72,
+              "end": 76
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "f216a55701e70a772a9eac987ba83691c89bf3eb44d630a50e556822f04c5741",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
-          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
-          "tree_position": "0.108",
-          "block_id": "20240614123655-7i0t9er",
-          "sentence_start": 89,
-          "sentence_end": 104,
-          "sentence_text": "狂多忿怒，人莫能制，证属有余。",
+          "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1466",
+          "block_id": "20240511101226-mci07sp",
+          "sentence_start": 0,
+          "sentence_end": 270,
+          "sentence_text": "08/31/2007初诊，白人，女，67岁，被本地西医诊断得到红斑性狼疮， 她一被告知得到此病后的第一反应，就是来看我，因此完全没有被西医碰过，所以也从未吃过西药，自述近来体重少了10磅，全身呈现红斑到处，体无完肤，连续 三个月不断的落发，环唇一圈是又干又红，且很热痛，耳中自觉非常干热，问诊结果是，失眠严重，口中干燥，大便正常，喜喝冷饮，双脚冰冷，胃口很好，奇怪的 是一觉得饿，就必须立刻吃些食物，否则必头痛，脉诊得到数且大脉，舌苔中黄湿，四周红色且色深，督脉压诊在第五椎有压痛点，诊断为此人属于寒热并结，眼诊 可知其肝中有毒素造成损伤。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
+              "candidate_id": "term_26cff9dbc3c0f182717a1144",
+              "term": "寒热",
               "candidate_type": "SYNDROME",
-              "start": 99,
-              "end": 101
+              "start": 249,
+              "end": 251
             },
             {
-              "candidate_id": "term_3361b2fb640fa7eb130adf22",
-              "term": "属有",
+              "candidate_id": "term_7f5cbc589c421bd1c476e70c",
+              "term": "寒热并",
               "candidate_type": "SYNDROME",
-              "start": 100,
-              "end": 102
+              "start": 249,
+              "end": 252
             },
             {
-              "candidate_id": "term_bd1a606d3c16c28d465dc826",
-              "term": "有余",
+              "candidate_id": "term_963eb41f2c7b349ac0e39afe",
+              "term": "寒热并结",
               "candidate_type": "SYNDROME",
-              "start": 101,
-              "end": 103
-            },
-            {
-              "candidate_id": "term_2c3626a412d71fe613bc8cc1",
-              "term": "证属有",
-              "candidate_type": "SYNDROME",
-              "start": 99,
-              "end": 102
-            },
-            {
-              "candidate_id": "term_eed804929a46110e3c2e205a",
-              "term": "属有余",
-              "candidate_type": "SYNDROME",
-              "start": 100,
-              "end": 103
-            },
-            {
-              "candidate_id": "term_3a0cd81d2d49a6e9e738a1c9",
-              "term": "证属有余",
-              "candidate_type": "SYNDROME",
-              "start": 99,
-              "end": 103
+              "start": 249,
+              "end": 253
             }
           ],
           "candidate_spans_truncated": false
@@ -959,20 +806,6 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7fa820a5784322031ace71c2",
-              "term": "法当",
-              "candidate_type": "TREATMENT",
-              "start": 192,
-              "end": 194
-            },
-            {
-              "candidate_id": "term_0002e2d87fe9c9ab93de3673",
-              "term": "当然",
-              "candidate_type": "TREATMENT",
-              "start": 193,
-              "end": 195
-            },
-            {
               "candidate_id": "term_afb921a2e2c70faaf4bcac50",
               "term": "然也",
               "candidate_type": "TREATMENT",
@@ -980,70 +813,14 @@
               "end": 196
             },
             {
-              "candidate_id": "term_256c0476edd6eaddf694c8c1",
-              "term": "也是",
+              "candidate_id": "term_87d29efb1972a5f95d8dced4",
+              "term": "然也是",
               "candidate_type": "TREATMENT",
-              "start": 195,
+              "start": 194,
               "end": 197
-            },
-            {
-              "candidate_id": "term_fb51a257ebc8a335dba12efb",
-              "term": "是象",
-              "candidate_type": "TREATMENT",
-              "start": 196,
-              "end": 198
-            },
-            {
-              "candidate_id": "term_62cbf8dc35802887baa50e74",
-              "term": "象征",
-              "candidate_type": "TREATMENT",
-              "start": 197,
-              "end": 199
-            },
-            {
-              "candidate_id": "term_a37aa55ba88875d22fa2bf0e",
-              "term": "征性",
-              "candidate_type": "TREATMENT",
-              "start": 198,
-              "end": 200
-            },
-            {
-              "candidate_id": "term_c9684b63e52e97271db021a3",
-              "term": "性的",
-              "candidate_type": "TREATMENT",
-              "start": 199,
-              "end": 201
-            },
-            {
-              "candidate_id": "term_7bd438c5e15bd4122948368f",
-              "term": "的讲",
-              "candidate_type": "TREATMENT",
-              "start": 200,
-              "end": 202
-            },
-            {
-              "candidate_id": "term_b19281ec7b909307b51377ac",
-              "term": "讲法",
-              "candidate_type": "TREATMENT",
-              "start": 201,
-              "end": 203
-            },
-            {
-              "candidate_id": "term_18f11b3c6d48b6a70299f631",
-              "term": "说法当",
-              "candidate_type": "TREATMENT",
-              "start": 191,
-              "end": 194
-            },
-            {
-              "candidate_id": "term_8c04e7c1f3a25d2035ee9b54",
-              "term": "法当然",
-              "candidate_type": "TREATMENT",
-              "start": 192,
-              "end": 195
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "749bc8338575d681094ba88d67f0939d650ecc616c2713a175d3b036dc6a8164",
@@ -1057,59 +834,10 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7fa820a5784322031ace71c2",
-              "term": "法当",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_0002e2d87fe9c9ab93de3673",
-              "term": "当然",
-              "candidate_type": "TREATMENT",
-              "start": 9,
-              "end": 11
-            },
-            {
               "candidate_id": "term_7204c6bb1261dee09f9f7605",
               "term": "然是",
               "candidate_type": "TREATMENT",
               "start": 10,
-              "end": 12
-            },
-            {
-              "candidate_id": "term_d89827b1af0ed71bb56c7443",
-              "term": "是太",
-              "candidate_type": "TREATMENT",
-              "start": 11,
-              "end": 13
-            },
-            {
-              "candidate_id": "term_0634b00fae0785b635ee1cec",
-              "term": "太玄",
-              "candidate_type": "TREATMENT",
-              "start": 12,
-              "end": 14
-            },
-            {
-              "candidate_id": "term_18f11b3c6d48b6a70299f631",
-              "term": "说法当",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_8c04e7c1f3a25d2035ee9b54",
-              "term": "法当然",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_6ce92d5e390887384b84507c",
-              "term": "当然是",
-              "candidate_type": "TREATMENT",
-              "start": 9,
               "end": 12
             },
             {
@@ -1118,30 +846,9 @@
               "candidate_type": "TREATMENT",
               "start": 10,
               "end": 13
-            },
-            {
-              "candidate_id": "term_f363c79fdb8bd53528cd2eed",
-              "term": "个说法当",
-              "candidate_type": "TREATMENT",
-              "start": 6,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_e882878eb669d99e486196b5",
-              "term": "说法当然",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_b3eb7c74bf73b28ffbf13227",
-              "term": "法当然是",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 12
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "4cc3b883e81bf00638fc9aac37a0909ec78a2d1c3b10c752457044a24c5f487e",
@@ -1155,45 +862,10 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7fa820a5784322031ace71c2",
-              "term": "法当",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 9
-            },
-            {
-              "candidate_id": "term_1fe604704e7f331c3a90089d",
-              "term": "当腹",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 10
-            },
-            {
               "candidate_id": "term_1ff1e96b19ded7aa6db9daef",
               "term": "腹满",
               "candidate_type": "TREATMENT",
               "start": 9,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_14b9645fc31cc83ef5289b5e",
-              "term": "法当腹",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_9ab0a05e437fab334b28664e",
-              "term": "当腹满",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_dd2ac6ae87785a8fcf8a9b13",
-              "term": "法当腹满",
-              "candidate_type": "TREATMENT",
-              "start": 7,
               "end": 11
             },
             {
@@ -1228,99 +900,6 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "87469eb1e9b8f21b553711bb9752c437843cce11c270e355aebc6f2bbe0e1cb0",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927152729-ylxrc0l.sy",
-          "source_sha256": "be4c8a120959e2a802a4a331ec9c3c5db55d1cc83e93d8ba7aa4456e5da8fb3d",
-          "tree_position": "0.55",
-          "block_id": "20240205090428-pssb1xg",
-          "sentence_start": 0,
-          "sentence_end": 13,
-          "sentence_text": "【11-3】…法当咽痛…。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_7fa820a5784322031ace71c2",
-              "term": "法当",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 9
-            },
-            {
-              "candidate_id": "term_7f95eba6aba6e32e5360a7f2",
-              "term": "当咽",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_269e8a6ba383e9c1f1747c16",
-              "term": "咽痛",
-              "candidate_type": "TREATMENT",
-              "start": 9,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_8d4ba67bb84ef0190d004289",
-              "term": "法当咽",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 10
-            },
-            {
-              "candidate_id": "term_991535b88039c7b1fa23cc36",
-              "term": "当咽痛",
-              "candidate_type": "TREATMENT",
-              "start": 8,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_54792dc52ad68a44865b56b5",
-              "term": "法当咽痛",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 11
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "3d4285084e658a5ecd99645c50756117cb303bfde989a2491e1d6dd247d9c6cf",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927163902-eex8857.sy",
-          "source_sha256": "9e0de8c8d2037c4d0c61cca49da3ca24307e0648e726795efa7a1e7325c47cbe",
-          "tree_position": "0.35",
-          "block_id": "20230927163905-ticipr4",
-          "sentence_start": 58,
-          "sentence_end": 82,
-          "sentence_text": "支饮者，法当冒，冒者必呕，呕者复内半夏以去其水：",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_7fa820a5784322031ace71c2",
-              "term": "法当",
-              "candidate_type": "TREATMENT",
-              "start": 62,
-              "end": 64
-            },
-            {
-              "candidate_id": "term_e67899e1f00c8c185e36ca0b",
-              "term": "当冒",
-              "candidate_type": "TREATMENT",
-              "start": 63,
-              "end": 65
-            },
-            {
-              "candidate_id": "term_cd2b8384e46bf9c201ec4ac9",
-              "term": "法当冒",
-              "candidate_type": "TREATMENT",
-              "start": 62,
-              "end": 65
-            }
-          ],
-          "candidate_spans_truncated": false
-        }
-      ],
-      "missing_both_endpoint_types": [
-        {
           "unit_id": "c44d8bbe300ecb4a1ff58f7b8aca804bb8b4df27b33e765c774a10e06689f7b2",
           "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927152806-eat7107.sy",
           "source_sha256": "974de9d4287e02fd67cb22110afd12b6f1bcf2cf034eedc8aab29159d202e429",
@@ -1330,7 +909,15 @@
           "sentence_end": 90,
           "sentence_text": "湖阳公主的瘦胎方用「枳壳」来让胎儿顺产好生，至少在唐朝都没有出事，才会继续留用到宋朝，可是，JT认为现代人的体质娇嫩、虚，不宜用这个方，况且还有其它没有含枳壳的安胎顺产的方子可用。",
           "sentence_truncated": false,
-          "typed_candidate_spans": [],
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_fc3d65a45589fababd03b491",
+              "term": "这个方",
+              "candidate_type": "TREATMENT",
+              "start": 64,
+              "end": 67
+            }
+          ],
           "candidate_spans_truncated": false
         },
         {
@@ -1343,224 +930,96 @@
           "sentence_end": 41,
           "sentence_text": "【13-14】问曰：疟病以月一发者，当以十五日愈，甚者当月尽解，如其不差，当云何？",
           "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "1c611ba84c79a68ed5265018d68b6cede43e1b10c3397cdca4a84fd509ef24a7",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926173646-98s53iv.sy",
-          "source_sha256": "2a61b9b763a4cdde74cdc975ee082db7496de5e94d1f7fc210c65855a923a42f",
-          "tree_position": "0.3",
-          "block_id": "20230926173713-53m002f",
-          "sentence_start": 0,
-          "sentence_end": 55,
-          "sentence_text": "[16.3]妇人怀孕六七月，脉弦，发热，其胎愈胀，腹痛，恶寒，少腹如扇，所以然者，子藏开故也，当以附子汤温之。",
-          "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_85385f4a812bbf2a5a241774",
-              "term": "发热",
-              "candidate_type": "SYMPTOM",
-              "start": 17,
-              "end": 19
+              "candidate_id": "term_2f740e1769682233943b30f2",
+              "term": "十五",
+              "candidate_type": "TREATMENT",
+              "start": 20,
+              "end": 22
             },
             {
-              "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
-              "term": "附子汤",
-              "candidate_type": "FORMULA",
-              "start": 49,
-              "end": 52
+              "candidate_id": "term_168baee354e0f5fa2d43b363",
+              "term": "十五日",
+              "candidate_type": "TREATMENT",
+              "start": 20,
+              "end": 23
+            },
+            {
+              "candidate_id": "term_7e68f81d86a12388a51d1174",
+              "term": "十五日愈",
+              "candidate_type": "TREATMENT",
+              "start": 20,
+              "end": 24
             }
           ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "bdefa7e48d586eb91adcf55f98e198025c3f8d704d1a9126192f195bf17a39df",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927104349-6pdgxwd.sy",
-          "source_sha256": "2c29841d8a4d9114cd547d029572db8a4ecbc53916363d1af288e138e4580275",
-          "tree_position": "0.8",
-          "block_id": "20230927104352-zsnpwue",
-          "sentence_start": 0,
-          "sentence_end": 49,
-          "sentence_text": "[桂林本 9-102]阳明病，腹满，胁下偏痛，发微热，其脉弦紧者，当以温药下之，宜大黄附子细辛汤。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "107b8fb8d22b633865b5c4c199d1f024fcc26f30c6892240f767e194a0a05047",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927155742-j2jc1ov.sy",
-          "source_sha256": "25ee71c6231e83f662f523499d8f39a23f6afa8e889e87befa3b4d36c1ab613b",
-          "tree_position": "0.16",
-          "block_id": "20231227094032-az60sg4",
-          "sentence_start": 0,
-          "sentence_end": 124,
-          "sentence_text": "那为什么说要用慢慢消化的方法，为什么不能快呢? 其实这还是蛮有道理的，那同学们看一下讲义里头有《金匮要略》的几句话，治疗痰饮的一些基本原则的一个论点，在42页的讲义的中间上面一点，就是《金匮要略》讲到痰饮的时候，他有说，“病痰饮者，当以温药和之”。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
           "candidate_spans_truncated": false
         }
       ],
-      "missing_object_type": [
+      "missing_both_endpoint_types": [
         {
-          "unit_id": "fe6841b0dc35191e3b85bb521bc2b14ee555afe02ad2ab91573d2bfc829e63eb",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153814-j2kwwow.sy",
-          "source_sha256": "5fe711d74eaecbe77596a371cfafad57b66dcf97119ad9cdc05dbb0600a828c8",
-          "tree_position": "0.130",
-          "block_id": "20240613082447-mn7amyg",
-          "sentence_start": 0,
-          "sentence_end": 387,
-          "sentence_text": "苦寒．能泻肾经及隧道水湿．直达水气所结之处．以攻决为用．为下水之圣药．主十二种水．大腹肿满．（名水蛊、嘉言曰∶胃为水谷之海、五脏六腑之源、脾不能散胃之水精于肺、而病于中、肺不能通胃之水道于膀胱、而病于上、肾不能司胃之关时其输泄、而病于下、以致积水浸淫、无所底止、好古曰∶水者、脾肺肾三经所主、有五脏六腑、十二经之部分、上头面、中四肢、下腰脚、外皮肤、中肌肉、内筋骨、脉有尺寸之殊、浮沉之别、不可轻泻药、当知病在何经何脏、方可用之、按水肿、有痰裹、食积、瘀血、致清不升、浊不降而成者、有湿热相生、隧道阻塞而成者、有燥热冲击、秘结不通而成者、是证属有余、有服寒凉、伤饮食、中气虚衰而成者、有大病后、正气衰惫而成者、有小便不通、水液妄行、脾不能制而成者、证属不足、宜分别治之、然其源多由中气不足而起、丹溪曰∶水病当以健脾为主、使脾参苓为君、视所挟证加减、苟徒用利水药、多致不起．）",
+          "unit_id": "3d4285084e658a5ecd99645c50756117cb303bfde989a2491e1d6dd247d9c6cf",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927163902-eex8857.sy",
+          "source_sha256": "9e0de8c8d2037c4d0c61cca49da3ca24307e0648e726795efa7a1e7325c47cbe",
+          "tree_position": "0.35",
+          "block_id": "20230927163905-ticipr4",
+          "sentence_start": 58,
+          "sentence_end": 82,
+          "sentence_text": "支饮者，法当冒，冒者必呕，呕者复内半夏以去其水：",
           "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
-              "candidate_type": "SYNDROME",
-              "start": 270,
-              "end": 272
-            },
-            {
-              "candidate_id": "term_3361b2fb640fa7eb130adf22",
-              "term": "属有",
-              "candidate_type": "SYNDROME",
-              "start": 271,
-              "end": 273
-            },
-            {
-              "candidate_id": "term_bd1a606d3c16c28d465dc826",
-              "term": "有余",
-              "candidate_type": "SYNDROME",
-              "start": 272,
-              "end": 274
-            },
-            {
-              "candidate_id": "term_2c3626a412d71fe613bc8cc1",
-              "term": "证属有",
-              "candidate_type": "SYNDROME",
-              "start": 270,
-              "end": 273
-            },
-            {
-              "candidate_id": "term_eed804929a46110e3c2e205a",
-              "term": "属有余",
-              "candidate_type": "SYNDROME",
-              "start": 271,
-              "end": 274
-            },
-            {
-              "candidate_id": "term_3a0cd81d2d49a6e9e738a1c9",
-              "term": "证属有余",
-              "candidate_type": "SYNDROME",
-              "start": 270,
-              "end": 274
-            },
-            {
-              "candidate_id": "term_c6096e53df0cb8d6cef21340",
-              "term": "证属",
-              "candidate_type": "SYNDROME",
-              "start": 324,
-              "end": 326
-            },
-            {
-              "candidate_id": "term_3917fb0151a8f4d435793c20",
-              "term": "属不",
-              "candidate_type": "SYNDROME",
-              "start": 325,
-              "end": 327
-            },
-            {
-              "candidate_id": "term_1a5219a8272afb1380afb9bd",
-              "term": "不足",
-              "candidate_type": "SYNDROME",
-              "start": 326,
-              "end": 328
-            },
-            {
-              "candidate_id": "term_9a360959b080cb1ead86f59c",
-              "term": "证属不",
-              "candidate_type": "SYNDROME",
-              "start": 324,
-              "end": 327
-            },
-            {
-              "candidate_id": "term_87ba6f894b314d3750eb0c85",
-              "term": "属不足",
-              "candidate_type": "SYNDROME",
-              "start": 325,
-              "end": 328
-            },
-            {
-              "candidate_id": "term_9294ef8776fca78749d198fe",
-              "term": "证属不足",
-              "candidate_type": "SYNDROME",
-              "start": 324,
-              "end": 328
-            }
-          ],
+          "typed_candidate_spans": [],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "de0cdca51d617c1a2c3cff6c786f2d9b6b21534f02a813d45ad2bc655e43541c",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506105102-bmdtjt9.sy",
-          "source_sha256": "902ccdec4e7a8f6084246beaa2197a92112375d8ba3edf3cb9d14e9a54c2e312",
-          "tree_position": "0.122",
-          "block_id": "20240613130701-doa8n4t",
-          "sentence_start": 146,
-          "sentence_end": 168,
-          "sentence_text": "此证风涎潮于上，膈痹气不通，宜用救急稀涎散。",
+          "unit_id": "11020bee5155a55f636771236c62788a4b254fe1457cac44d9a935a1f4fad6e7",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.819",
+          "block_id": "20240523115029-qfhby8i",
+          "sentence_start": 25,
+          "sentence_end": 38,
+          "sentence_text": "在治病时，要因时因地治宜。",
           "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_d9c4bc491bc7f81ad638b5ad",
-              "term": "此证",
-              "candidate_type": "SYNDROME",
-              "start": 146,
-              "end": 148
-            },
-            {
-              "candidate_id": "term_cbefc880567860cb28d4e52e",
-              "term": "证风",
-              "candidate_type": "SYNDROME",
-              "start": 147,
-              "end": 149
-            },
-            {
-              "candidate_id": "term_813e8137712c5cd09a8061fb",
-              "term": "风涎",
-              "candidate_type": "SYNDROME",
-              "start": 148,
-              "end": 150
-            },
-            {
-              "candidate_id": "term_9a0c8681ed0d413efc8436f0",
-              "term": "涎潮",
-              "candidate_type": "SYNDROME",
-              "start": 149,
-              "end": 151
-            },
-            {
-              "candidate_id": "term_d67f95408d44ae18f85fb251",
-              "term": "潮于",
-              "candidate_type": "SYNDROME",
-              "start": 150,
-              "end": 152
-            },
-            {
-              "candidate_id": "term_6fc2dd562378abb69c995450",
-              "term": "于上",
-              "candidate_type": "SYNDROME",
-              "start": 151,
-              "end": 153
-            },
-            {
-              "candidate_id": "term_020c0270b07ebc2c81fcdee2",
-              "term": "风涎潮",
-              "candidate_type": "SYNDROME",
-              "start": 148,
-              "end": 151
-            }
-          ],
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "3097781a63b1d533658b9a42c4f2271086fea5a149b2034995cef07acedb2834",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1406",
+          "block_id": "20240523115029-73lxjsh",
+          "sentence_start": 0,
+          "sentence_end": 20,
+          "sentence_text": "对称治疗法，除了左病右治，右病左治以外。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "2127a0da1236b68c9a3c13020a83e14dbcaad67d5990d0c25eba32cd4dd34482",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.406",
+          "block_id": "20231107104838-j6w6eam",
+          "sentence_start": 249,
+          "sentence_end": 260,
+          "sentence_text": "弗治，满十日，法当死。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "3e36f08681b4496bf19ab5bf5163616140ba190b5614424dfa5c63a5ea8e9c74",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.674",
+          "block_id": "20231128153257-4fvrarv",
+          "sentence_start": 0,
+          "sentence_end": 18,
+          "sentence_text": "320、疟脉缓大虚，不宜用针宜用药；",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
           "candidate_spans_truncated": false
         }
       ]
@@ -1749,6 +1208,27 @@
       ],
       "missing_object_type": [
         {
+          "unit_id": "c44d8bbe300ecb4a1ff58f7b8aca804bb8b4df27b33e765c774a10e06689f7b2",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927152806-eat7107.sy",
+          "source_sha256": "974de9d4287e02fd67cb22110afd12b6f1bcf2cf034eedc8aab29159d202e429",
+          "tree_position": "0.68",
+          "block_id": "20230927152810-gk90e1l",
+          "sentence_start": 0,
+          "sentence_end": 90,
+          "sentence_text": "湖阳公主的瘦胎方用「枳壳」来让胎儿顺产好生，至少在唐朝都没有出事，才会继续留用到宋朝，可是，JT认为现代人的体质娇嫩、虚，不宜用这个方，况且还有其它没有含枳壳的安胎顺产的方子可用。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_fc3d65a45589fababd03b491",
+              "term": "这个方",
+              "candidate_type": "TREATMENT",
+              "start": 64,
+              "end": 67
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
           "unit_id": "0da5790d41f550f251e5d5fd8f8cde407ccba837eabceb2b66f05fae7fac8384",
           "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509093133-ogrbnqq.sy",
           "source_sha256": "7a94cb68c0a17aa714e81246ccbed322203131b07daa7478122a7695c2e0cab2",
@@ -1760,66 +1240,10 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_6bb55fb27286bbb4a118b968",
-              "term": "治法",
-              "candidate_type": "TREATMENT",
-              "start": 332,
-              "end": 334
-            },
-            {
-              "candidate_id": "term_0f233b5d750365fcbcd6108e",
-              "term": "法的",
-              "candidate_type": "TREATMENT",
-              "start": 333,
-              "end": 335
-            },
-            {
               "candidate_id": "term_214125ba3c492a5bc54cfd72",
               "term": "的这",
               "candidate_type": "TREATMENT",
               "start": 334,
-              "end": 336
-            },
-            {
-              "candidate_id": "term_65fb6a309ac351de1bf7051b",
-              "term": "个方",
-              "candidate_type": "TREATMENT",
-              "start": 336,
-              "end": 338
-            },
-            {
-              "candidate_id": "term_fe866d0985db549aba3991ea",
-              "term": "方子",
-              "candidate_type": "TREATMENT",
-              "start": 337,
-              "end": 339
-            },
-            {
-              "candidate_id": "term_f49ae7c29f78ae42eaffb309",
-              "term": "子啊",
-              "candidate_type": "TREATMENT",
-              "start": 338,
-              "end": 340
-            },
-            {
-              "candidate_id": "term_ebfb43d8f053fe3f73ef8b1a",
-              "term": "个治法",
-              "candidate_type": "TREATMENT",
-              "start": 331,
-              "end": 334
-            },
-            {
-              "candidate_id": "term_c46c73485c183fde568c93a5",
-              "term": "治法的",
-              "candidate_type": "TREATMENT",
-              "start": 332,
-              "end": 335
-            },
-            {
-              "candidate_id": "term_8f2a806c1afc1c7aaad7a75f",
-              "term": "法的这",
-              "candidate_type": "TREATMENT",
-              "start": 333,
               "end": 336
             },
             {
@@ -1830,21 +1254,28 @@
               "end": 337
             },
             {
-              "candidate_id": "term_fc3d65a45589fababd03b491",
-              "term": "这个方",
+              "candidate_id": "term_f14a19493c1ee6102fdca600",
+              "term": "的这个方",
               "candidate_type": "TREATMENT",
-              "start": 335,
+              "start": 334,
               "end": 338
             },
             {
-              "candidate_id": "term_42e17c59c8d0e5978234f41a",
-              "term": "个方子",
+              "candidate_id": "term_bcc646b70ee7a972da1648a2",
+              "term": "的这个方子",
               "candidate_type": "TREATMENT",
-              "start": 336,
+              "start": 334,
               "end": 339
+            },
+            {
+              "candidate_id": "term_2b49004a114acdd44264f287",
+              "term": "的这个方子啊",
+              "candidate_type": "TREATMENT",
+              "start": 334,
+              "end": 340
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "99c4cd14367d53718460cd8304ac1c476496b0dc134827315d83c79112828a21",
@@ -1858,67 +1289,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_6bb55fb27286bbb4a118b968",
-              "term": "治法",
-              "candidate_type": "TREATMENT",
-              "start": 140,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_90b785c3b267c1e55bdc4a4f",
-              "term": "法可",
-              "candidate_type": "TREATMENT",
-              "start": 141,
-              "end": 143
-            },
-            {
               "candidate_id": "term_4d99c976beb8827ecac5f423",
               "term": "可用",
               "candidate_type": "TREATMENT",
               "start": 142,
               "end": 144
-            },
-            {
-              "candidate_id": "term_cc291be7de8f2856d0964909",
-              "term": "用溫",
-              "candidate_type": "TREATMENT",
-              "start": 143,
-              "end": 145
-            },
-            {
-              "candidate_id": "term_6cadf93130633b44bc3d366b",
-              "term": "溫中",
-              "candidate_type": "TREATMENT",
-              "start": 144,
-              "end": 146
-            },
-            {
-              "candidate_id": "term_0fd96812e236abb0ad89f5f6",
-              "term": "中健",
-              "candidate_type": "TREATMENT",
-              "start": 145,
-              "end": 147
-            },
-            {
-              "candidate_id": "term_288e6acbd956e03ffdd75ae4",
-              "term": "健脾",
-              "candidate_type": "TREATMENT",
-              "start": 146,
-              "end": 148
-            },
-            {
-              "candidate_id": "term_399d3ef6e0f63ac750f3477b",
-              "term": "法可用",
-              "candidate_type": "TREATMENT",
-              "start": 141,
-              "end": 144
-            },
-            {
-              "candidate_id": "term_26f1078a97d31f29476843b7",
-              "term": "中健脾",
-              "candidate_type": "TREATMENT",
-              "start": 145,
-              "end": 148
             }
           ],
           "candidate_spans_truncated": false
@@ -1935,59 +1310,10 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_a5ac4ce625eeb91381a5b639",
-              "term": "治以",
-              "candidate_type": "TREATMENT",
-              "start": 140,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_3d873b53cc799414c13f2209",
-              "term": "以温",
-              "candidate_type": "TREATMENT",
-              "start": 141,
-              "end": 143
-            },
-            {
               "candidate_id": "term_787b997cd5caa03e00ce37cd",
               "term": "温热",
               "candidate_type": "TREATMENT",
               "start": 142,
-              "end": 144
-            },
-            {
-              "candidate_id": "term_5180e38d15f9a80accafb587",
-              "term": "热的",
-              "candidate_type": "TREATMENT",
-              "start": 143,
-              "end": 145
-            },
-            {
-              "candidate_id": "term_cbbcf3154bc97fea923e1fc1",
-              "term": "的方",
-              "candidate_type": "TREATMENT",
-              "start": 144,
-              "end": 146
-            },
-            {
-              "candidate_id": "term_22b9f0b66212809c3ad29660",
-              "term": "方法",
-              "candidate_type": "TREATMENT",
-              "start": 145,
-              "end": 147
-            },
-            {
-              "candidate_id": "term_73d4a17f8647e371f7cbe62a",
-              "term": "可治以",
-              "candidate_type": "TREATMENT",
-              "start": 139,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_af9455a3f6c6219ab17ec63f",
-              "term": "以温热",
-              "candidate_type": "TREATMENT",
-              "start": 141,
               "end": 144
             },
             {
@@ -1996,139 +1322,71 @@
               "candidate_type": "TREATMENT",
               "start": 142,
               "end": 145
-            },
-            {
-              "candidate_id": "term_c31892c167979b5afe0a1d64",
-              "term": "热的方",
-              "candidate_type": "TREATMENT",
-              "start": 143,
-              "end": 146
-            },
-            {
-              "candidate_id": "term_fac4f2169fbcd45a93599e8e",
-              "term": "的方法",
-              "candidate_type": "TREATMENT",
-              "start": 144,
-              "end": 147
-            },
-            {
-              "candidate_id": "term_c0d1d56df3feb2d5e68c3c98",
-              "term": "热的方法",
-              "candidate_type": "TREATMENT",
-              "start": 143,
-              "end": 147
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "a11546bd76776e9a452fcc94310cd966800119117cd10a7abe0ad0ed92c915b3",
-          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
-          "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
-          "tree_position": "0.32",
-          "block_id": "20231122164333-odf76ao",
+          "unit_id": "5df33fe71bc2d7d403cf7e8d8e89ccb39e91cce1ec951650616f151f44981ff6",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153657-nr3s17p.sy",
+          "source_sha256": "cfc678e8624c4499755a9c5a980d69f54eb7f60ddd0e22077b1bf4abb3cf7786",
+          "tree_position": "0.241",
+          "block_id": "20240614090802-n1e5wuv",
+          "sentence_start": 37,
+          "sentence_end": 82,
+          "sentence_text": "大都佳果，多是圃人以他木接根上栽之，遂至肥美，殊失本性，此等药中不可用之，当以一生者为佳。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_92b0ef01cb61f908dbf33a66",
+              "term": "一生",
+              "candidate_type": "TREATMENT",
+              "start": 76,
+              "end": 78
+            }
+          ],
+          "candidate_spans_truncated": false
+        }
+      ],
+      "both_endpoint_types_but_no_ordered_pair": [
+        {
+          "unit_id": "900b59eb9418cff9f6d7eb64d8ed19aaa75ddbfe17700497c41913b1c5cd7efa",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.266",
+          "block_id": "20240220090739-8dez503",
           "sentence_start": 0,
-          "sentence_end": 48,
-          "sentence_text": "【提要】以上分别叙述了痈邪、实邪、虚邪、热邪、寒邪等五邪所致病证、治疗原则、针刺方法和选用针具。",
+          "sentence_end": 44,
+          "sentence_text": "【活人书】曰：大抵发斑不可用表药,表虚里实者,若发汗开泄,则更斑烂,宜用调胃承气汤下之。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_e6384697762471e1ec11c7a8",
-              "term": "原则",
+              "candidate_id": "term_e60aad46a068c1c20b7c913f",
+              "term": "调胃",
               "candidate_type": "TREATMENT",
-              "start": 35,
-              "end": 37
+              "start": 36,
+              "end": 38
             },
             {
-              "candidate_id": "term_94f8b9ebf3ed4c9ad4e39134",
-              "term": "疗原则",
+              "candidate_id": "term_a3af4c0e01bcc2857549cf42",
+              "term": "调胃承",
               "candidate_type": "TREATMENT",
-              "start": 34,
-              "end": 37
+              "start": 36,
+              "end": 39
             },
             {
-              "candidate_id": "term_d640a586270f28ae90cca516",
-              "term": "治疗原则",
+              "candidate_id": "term_36bdc0bb893f124e4cb0dbb3",
+              "term": "调胃承气",
               "candidate_type": "TREATMENT",
-              "start": 33,
-              "end": 37
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "47a351872a6f78615ac65af66fdb8e983df3b4179964c1bb211011ed0276b74e",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153847-eepruzr.sy",
-          "source_sha256": "18325c145629e57c391e3bbccbe8aa80480c2f480b242b5fb2e37e106bdcd1f6",
-          "tree_position": "0.408",
-          "block_id": "20240607114914-xue8i9z",
-          "sentence_start": 11,
-          "sentence_end": 125,
-          "sentence_text": "治法：喷粉法-洗净患者肠内容物，凡使用乙状结肠镜可窥视到的溃疡及其他炎症病变，均可用带有长金属臂的喷粉器.将黄连粉直接喷到溃疡或病变部位，每次用药6～8分，隔日1次，9次为一个疗程，以后视病情需要可每隔1周进行第二或第三个疗程。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_6bb55fb27286bbb4a118b968",
-              "term": "治法",
-              "candidate_type": "TREATMENT",
-              "start": 11,
-              "end": 13
+              "start": 36,
+              "end": 40
             },
             {
-              "candidate_id": "term_3642ddd757d405d3d29f7b55",
-              "term": "喷粉",
-              "candidate_type": "TREATMENT",
-              "start": 14,
-              "end": 16
-            },
-            {
-              "candidate_id": "term_f0e4a11a201cef769053b4db",
-              "term": "粉法",
-              "candidate_type": "TREATMENT",
-              "start": 15,
-              "end": 17
-            },
-            {
-              "candidate_id": "term_b53c956fd28ec5fca7d87dcc",
-              "term": "洗净",
-              "candidate_type": "TREATMENT",
-              "start": 18,
-              "end": 20
-            },
-            {
-              "candidate_id": "term_927d3d05dc4877776e13f6e8",
-              "term": "净患",
-              "candidate_type": "TREATMENT",
-              "start": 19,
-              "end": 21
-            },
-            {
-              "candidate_id": "term_9db4a3b37ed687cde721a1e9",
-              "term": "患者",
-              "candidate_type": "TREATMENT",
-              "start": 20,
-              "end": 22
-            },
-            {
-              "candidate_id": "term_75063d8e130dd3ea87308e8c",
-              "term": "者肠",
-              "candidate_type": "TREATMENT",
-              "start": 21,
-              "end": 23
-            },
-            {
-              "candidate_id": "term_3eee50853e3f2cc7f22bef07",
-              "term": "洗净患",
-              "candidate_type": "TREATMENT",
-              "start": 18,
-              "end": 21
-            },
-            {
-              "candidate_id": "term_ff018f531773f01e5bfb8a3b",
-              "term": "患者肠",
-              "candidate_type": "TREATMENT",
-              "start": 20,
-              "end": 23
+              "candidate_id": "b26fc034482d72fa7a553bfff11480cab620a2c0ac104a501aeb75ea62cb37d7",
+              "term": "调胃承气汤",
+              "candidate_type": "FORMULA",
+              "start": 36,
+              "end": 41
             }
           ],
           "candidate_spans_truncated": false
@@ -2147,45 +1405,10 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_a5ac4ce625eeb91381a5b639",
-              "term": "治以",
-              "candidate_type": "TREATMENT",
-              "start": 146,
-              "end": 148
-            },
-            {
-              "candidate_id": "term_43362fcd9b04cc23348ac88b",
-              "term": "以咸",
-              "candidate_type": "TREATMENT",
-              "start": 147,
-              "end": 149
-            },
-            {
               "candidate_id": "term_e41aae4b9902641cb100b82d",
               "term": "咸寒",
               "candidate_type": "TREATMENT",
               "start": 148,
-              "end": 150
-            },
-            {
-              "candidate_id": "term_2433533b3d0fc203c8cc6eb0",
-              "term": "治以咸",
-              "candidate_type": "TREATMENT",
-              "start": 146,
-              "end": 149
-            },
-            {
-              "candidate_id": "term_40e0d6bfedd117650a0bcd12",
-              "term": "以咸寒",
-              "candidate_type": "TREATMENT",
-              "start": 147,
-              "end": 150
-            },
-            {
-              "candidate_id": "term_6043a681dab981a7afa11a63",
-              "term": "治以咸寒",
-              "candidate_type": "TREATMENT",
-              "start": 146,
               "end": 150
             },
             {
@@ -2213,85 +1436,43 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "88b939fede2171d80b4a1055689a6b31378384c29b177309f54d95088277ec4a",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506100118-gfta4gf.sy",
-          "source_sha256": "25d665bd9a5f240e84c053d48e54899adcb4ad40fba40bcead0dd942158f0571",
-          "tree_position": "0.140",
-          "block_id": "20240612164126-6wi24kf",
+          "unit_id": "9bc286b27024d67fa838971771b3abe4ce94a09cbc3a414e16ff1c9aab3cbe47",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240504161429-sad4g53.sy",
+          "source_sha256": "ba9099ff888714e934cf9504a5caa5f6901b5228621e5b2a34ee4936101665b4",
+          "tree_position": "0.156",
+          "block_id": "20240617092413-y7gy6v3",
           "sentence_start": 0,
-          "sentence_end": 1696,
-          "sentence_text": "气厥痰厥．咳逆．元阳下亏、生气不布、宜同归地人参用．）自汗．（陈言三因方、有 附术附参附三汤、嘉言曰∶卫外之阳不固而自汗、则用 附、脾中之阳遏郁而自汗、则用术附、肾中之阳浮游而自汗、则用参附、凡属阳虚自汗、不能舍三方为治．）呕哕膈噎．（膈噎多由气可下而食不下、槁在吸门、喉间之会厌也、食下胃脘痛、须臾吐出、槁在贲门、胃之上口也、此上焦名噎、食下良久、吐出、槁在幽门、胃之下口也、此中焦名膈、朝食暮吐、槁在阑门、大小肠下口也、此下焦名反胃、又有痰饮食积、瘀血壅塞胃口附参术、胃槁者、当滋润、宜四物牛羊乳、瘀血者、加韭汁．）心腹冷痛．暴泻脱阳．脾泄久痢．霍乱转筋．（寒客中焦脾胃、为霍乱、寒客下焦肝肾、为转筋．）拘挛风痹．症瘕积聚．督脉为病．脊强而厥．小儿慢惊．痘疮灰白．痈疽不敛．一切沉寒痼冷之证．（经曰∶阴盛生内寒、阳虚生外寒．）开关门．消肿满．（经曰∶肾者胃之关也、关门不利、故聚水而从其类也、嘉言曰∶肾之关门不开、必以附子回阳、蒸动肾气、其关始开、胃中积水始下、以阳主开故也、集验曰∶肿因积生、积去而肿再作、若再用利药、小便愈闭、医多束手、盖中焦气不升降、为寒所隔、唯服附子、小便自通．）缩小便．（洁古曰∶益火之源、以消阴翳、则便溺有节．）壮阳退阴．杀邪辟鬼．通经堕胎．通宜冷服．（热因寒用也、盖阴寒在下、虚阳上浮、治之以寒、则阴益甚、治之以热、则格拒不纳、用热药冷冻饮料、下咽之后、冷体既消、热",
-          "sentence_truncated": true,
+          "sentence_end": 37,
+          "sentence_text": "或疑桂枝汤宜用而不用，以致传入于各经，而头痛项强如故，不识桂枝汤仍可用否？",
+          "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_6bb55fb27286bbb4a118b968",
-              "term": "治法",
+              "candidate_id": "term_a1cf70af0c2001493e965911",
+              "term": "而不",
               "candidate_type": "TREATMENT",
-              "start": 1407,
-              "end": 1409
+              "start": 7,
+              "end": 9
             },
             {
-              "candidate_id": "term_81c3cc1f16054962543a5493",
-              "term": "极浓",
+              "candidate_id": "term_fefa90f7887a294c17fe3616",
+              "term": "而不用",
               "candidate_type": "TREATMENT",
-              "start": 1411,
-              "end": 1413
+              "start": 7,
+              "end": 10
             },
             {
-              "candidate_id": "term_58047ddc4a51dab1e66d1e33",
-              "term": "草水",
-              "candidate_type": "TREATMENT",
-              "start": 1414,
-              "end": 1416
-            },
-            {
-              "candidate_id": "term_7c7e964870a5a46d480e299e",
-              "term": "甘草水",
-              "candidate_type": "TREATMENT",
-              "start": 1413,
-              "end": 1416
-            },
-            {
-              "candidate_id": "term_3fa7d498f840935075fbca10",
-              "term": "将附",
-              "candidate_type": "TREATMENT",
-              "start": 1417,
-              "end": 1419
-            },
-            {
-              "candidate_id": "term_a4096c1c874fd69dd0749826",
-              "term": "将附子",
-              "candidate_type": "TREATMENT",
-              "start": 1417,
-              "end": 1420
-            },
-            {
-              "candidate_id": "4aac697e68efbf80f6265583b655d4ee6a4aa8c9540feca9ee0b027227ea6c36",
-              "term": "麻黄附子细辛汤",
+              "candidate_id": "0cb6d274f34b181f5cdb33cdb798c6f0a452a3fd11f856d4a886b8ac09cd085d",
+              "term": "桂枝汤",
               "candidate_type": "FORMULA",
-              "start": 746,
-              "end": 753
+              "start": 2,
+              "end": 5
             },
             {
-              "candidate_id": "df09e02fd5a469de1f8fef62177cd017d85e509a4b529562f4985dff1840c246",
-              "term": "四逆汤",
+              "candidate_id": "2834b0a3cf4262ae8b468269cc7c1b070898daebea4f089d361a78e00a60fcb9",
+              "term": "桂枝汤",
               "candidate_type": "FORMULA",
-              "start": 765,
-              "end": 768
-            },
-            {
-              "candidate_id": "5bfff1b968f936fd96ce9f166ce24bfcdaad2b03142dd9bafee2df1a311b3a0e",
-              "term": "甘草汤",
-              "candidate_type": "FORMULA",
-              "start": 1436,
-              "end": 1439
-            },
-            {
-              "candidate_id": "c4c8d3dd96ab7f819591ac1d5288882cbdb9c4f2dc6db59a4772fd1418ef219c",
-              "term": "甘草汤",
-              "candidate_type": "FORMULA",
-              "start": 1563,
-              "end": 1566
+              "start": 29,
+              "end": 32
             }
           ],
           "candidate_spans_truncated": false
