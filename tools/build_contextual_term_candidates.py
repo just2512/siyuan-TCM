@@ -33,7 +33,7 @@ RULES = {
         ("TONGUE_CONTEXT_01", r"(?:舌象|舌质|舌苔|舌红|舌淡|舌绛|苔白|苔黄|苔腻)"),
     ],
     "SYNDROME": [
-        ("SYNDROME_CONTEXT_01", r"(?:辨证|证属|属于.{0,4}证|证候|证型|此证|本证)"),
+        ("SYNDROME_CONTEXT_01", r"(?:辨证|证属|属于|证候|证型|此证|本证)"),
     ],
     "TREATMENT": [
         ("TREATMENT_CONTEXT_01", r"(?:治法|治宜|宜.{0,4}法|治以|法当|治疗原则|治疗方法)"),
@@ -59,6 +59,9 @@ NGRAM_PATTERNS = {
 PUNCTUATION = "，。！？；、\n"
 
 
+PREFIX_ONLY_TYPES = {"SYNDROME", "TREATMENT", "FORMULA", "HERB"}
+
+
 def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
     if start < 0 or end <= start or end > len(text):
         raise ValueError("candidate span is outside source text")
@@ -70,7 +73,8 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
         for rule_id, pattern in rules:
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
-            if re.search(pattern, before + term):
+            context = before if candidate_type in PREFIX_ONLY_TYPES else before + term
+            if re.search(pattern, context):
                 found.append((candidate_type, rule_id))
     return found
 
