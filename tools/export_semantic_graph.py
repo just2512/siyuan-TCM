@@ -114,10 +114,40 @@ def export(database_path: Path, output_path: Path) -> dict[str, int]:
 
 def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     connection = sqlite3.connect(database_path)
-    expected_entities = {row[0] for row in connection.execute("SELECT entity_id FROM entity_catalog")}
-    expected_relations = {row[0] for row in connection.execute("SELECT relation_id FROM semantic_relation_candidates")}
+    expected_entities = {
+        row["entity_id"]: (row["entity_type"], row["preferred_label"], row["lexical_form"],
+                           row["identity_status"], row["mention_count"])
+        for row in connection.execute("""
+            SELECT c.entity_id, c.entity_type, c.preferred_label, c.lexical_form,
+                   c.identity_status, COUNT(m.mention_id) AS mention_count
+            FROM entity_catalog c LEFT JOIN entity_mentions m ON m.entity_id = c.entity_id
+            GROUP BY c.entity_id, c.entity_type, c.preferred_label, c.lexical_form, c.identity_status
+        """)
+    }
+    expected_relations = {
+        row["relation_id"]: tuple(row[key] for key in (
+            "unit_id", "subject_text", "predicate", "object_text", "document",
+            "source_sha256", "tree_position", "block_id", "sentence_start",
+            "sentence_end", "evidence_text", "extraction_rule", "resolution_status",
+            "subject_entity_id", "object_entity_id",
+        ))
+        for row in connection.execute("""
+            SELECT r.*, s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id
+            FROM semantic_relation_candidates r
+            JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
+            JOIN entity_mentions o ON o.mention_id = r.object_mention_id
+        """)
+    }
     expected_contextual_relations = {row[0] for row in connection.execute("SELECT relation_id FROM contextual_relation_candidates")}
-    expected_contextual_terms = connection.execute("SELECT COUNT(*) FROM contextual_term_type_candidates").fetchone()[0]
+    expected_contextual_terms = {
+        tuple(row)
+        for row in connection.execute("""
+            SELECT candidate_id, term, candidate_type, rule_id, evidence_document, source_sha256,
+                   tree_position, block_id, unit_id, character_start, character_end,
+                   evidence_start, evidence_text, classification_status
+            FROM contextual_term_type_candidates
+        """)
+    }
     contextual_endpoint_types = {
         "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
         "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
@@ -133,11 +163,27 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 entity_id = row["entity_id"]
                 if entity_id in seen_entities:
                     raise ValueError(f"duplicate entity node at line {line}")
+                expected = expected_entities.get(entity_id)
+                exported = (row["entity_type"], row["preferred_label"], row["lexical_form"],
+                            row["identity_status"], row["mention_count"])
+                if expected is None or expected != exported:
+                    raise ValueError(f"entity graph/SQLite mismatch at line {line}")
                 seen_entities.add(entity_id)
             elif kind == "RELATION_CANDIDATE":
                 relation_id = row["relation_id"]
                 if relation_id in seen_relations:
                     raise ValueError(f"duplicate relation edge at line {line}")
+                evidence = row["evidence"]
+                expected = expected_relations.get(relation_id)
+                exported = (
+                    evidence["unit_id"], row["subject_text"], row["predicate"], row["object_text"],
+                    evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                    evidence["block_id"], evidence["character_start"], evidence["character_end"],
+                    evidence["text"], row["extraction_rule"], row["resolution_status"],
+                    row["subject_entity_id"], row["object_entity_id"],
+                )
+                if expected is None or expected != exported:
+                    raise ValueError(f"relation graph/SQLite mismatch at line {line}")
                 if row["subject_entity_id"] not in expected_entities or row["object_entity_id"] not in expected_entities:
                     raise ValueError(f"unknown relation endpoint at line {line}")
                 if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
@@ -153,9 +199,15 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 edge_count += 1
             elif kind == "CONTEXTUAL_TERM_CANDIDATE":
                 evidence = row["evidence"]
-                key = (row["candidate_id"], row["candidate_type"], row["rule_id"], evidence["unit_id"], evidence["character_start"], evidence["character_end"])
+                key = (row["candidate_id"], row["term"], row["candidate_type"], row["rule_id"],
+                       evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                       evidence["block_id"], evidence["unit_id"], evidence["character_start"],
+                       evidence["character_end"], evidence["evidence_start"], evidence["text"],
+                       row["classification_status"])
                 if key in seen_contextual_terms:
                     raise ValueError(f"duplicate contextual term at line {line}")
+                if key not in expected_contextual_terms:
+                    raise ValueError(f"contextual term graph/SQLite mismatch at line {line}")
                 if row["classification_status"] != "CONTEXT_RULE_CANDIDATE":
                     raise ValueError(f"unsafe contextual term status at line {line}")
                 source = connection.execute("""SELECT content_text FROM content_blocks
@@ -239,11 +291,11 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             else:
                 raise ValueError(f"unknown graph record type at line {line}")
     connection.close()
-    if seen_entities != expected_entities:
+    if seen_entities != set(expected_entities):
         raise ValueError("entity node coverage does not match SQLite catalog")
-    if seen_relations != expected_relations:
+    if seen_relations != set(expected_relations):
         raise ValueError("relation edge coverage does not match SQLite relation table")
-    if len(seen_contextual_terms) != expected_contextual_terms:
+    if seen_contextual_terms != expected_contextual_terms:
         raise ValueError("contextual term coverage does not match SQLite candidates")
     if seen_contextual_relations != expected_contextual_relations:
         raise ValueError("contextual relation coverage does not match SQLite candidates")
