@@ -116,14 +116,17 @@ class SemanticGraphExportTests(unittest.TestCase):
             content = root / "content.csv.gz"
             contextual_terms = root / "contextual-terms.csv.gz"
             contextual_relations = root / "contextual-relations.csv"
+            mentions = root / "mentions.csv.gz"
             database = root / "search.sqlite3"
             output = root / "graph.jsonl.gz"
-            source_text = "症见头痛，辨证为太阳中风。"
+            source_text = "症见头痛，辨证为太阳中风，治宜解表，方用桂枝汤。"
+
             def write_gzip(path, fields, rows):
                 with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
                     writer = csv.DictWriter(stream, fieldnames=fields)
                     writer.writeheader()
                     writer.writerows(rows)
+
             write_gzip(content, db.CONTENT_FIELDS, [{
                 "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
                 "block_id": "b1", "content_type": "PARAGRAPH", "characters": len(source_text),
@@ -143,7 +146,20 @@ class SemanticGraphExportTests(unittest.TestCase):
                  "tree_position": "0.0", "block_id": "b1", "unit_id": "u1",
                  "character_start": 8, "character_end": 12, "evidence_start": 0,
                  "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE"},
+                {"candidate_id": "treat-1", "term": "解表", "candidate_type": "TREATMENT",
+                 "rule_id": "TREATMENT_RULE", "evidence_document": "a.sy", "source_sha256": "hash",
+                 "tree_position": "0.0", "block_id": "b1", "unit_id": "u1",
+                 "character_start": 15, "character_end": 17, "evidence_start": 0,
+                 "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE"},
             ])
+            write_gzip(mentions, db.ENTITY_FIELDS, [{
+                "mention_id": "formula-1", "unit_id": "u1", "entity_type": "FORMULA",
+                "matched_text": "桂枝汤", "character_start": 20, "character_end": 23,
+                "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
+                "block_id": "b1", "content_type": "PARAGRAPH", "section_path": "",
+                "lexicon_version": "1.3.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                "resolution_status": "UNRESOLVED_CANDIDATE",
+            }])
             relation_fields = ["relation_id", "predicate", "subject_candidate_id", "subject_text",
                 "subject_type", "subject_start", "subject_end", "object_candidate_id", "object_text",
                 "object_type", "object_start", "object_end", "unit_id", "document", "source_sha256",
@@ -152,47 +168,66 @@ class SemanticGraphExportTests(unittest.TestCase):
             with contextual_relations.open("w", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=relation_fields)
                 writer.writeheader()
-                writer.writerow({"relation_id": "ctx-r1", "predicate": "SYMPTOM_TO_SYNDROME",
-                    "subject_candidate_id": "sym-1", "subject_text": "头痛", "subject_type": "SYMPTOM",
-                    "subject_start": 2, "subject_end": 4, "object_candidate_id": "syn-1",
-                    "object_text": "太阳中风", "object_type": "SYNDROME", "object_start": 8,
-                    "object_end": 12, "unit_id": "u1", "document": "a.sy", "source_sha256": "hash",
-                    "tree_position": "0.0", "block_id": "b1", "sentence_start": 0,
-                    "sentence_end": len(source_text), "evidence_text": source_text,
-                    "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
-                    "resolution_status": "UNRESOLVED_CANDIDATE"})
-            db.build_database(content, None, database, None, None, None, None, contextual_terms, contextual_relations)
+                writer.writerows([
+                    {"relation_id": "ctx-r1", "predicate": "SYMPTOM_TO_SYNDROME",
+                     "subject_candidate_id": "sym-1", "subject_text": "头痛", "subject_type": "SYMPTOM",
+                     "subject_start": 2, "subject_end": 4, "object_candidate_id": "syn-1",
+                     "object_text": "太阳中风", "object_type": "SYNDROME", "object_start": 8,
+                     "object_end": 12, "unit_id": "u1", "document": "a.sy", "source_sha256": "hash",
+                     "tree_position": "0.0", "block_id": "b1", "sentence_start": 0,
+                     "sentence_end": len(source_text), "evidence_text": source_text,
+                     "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
+                     "resolution_status": "UNRESOLVED_CANDIDATE"},
+                    {"relation_id": "ctx-r2", "predicate": "TREATMENT_TO_FORMULA",
+                     "subject_candidate_id": "treat-1", "subject_text": "解表", "subject_type": "TREATMENT",
+                     "subject_start": 15, "subject_end": 17, "object_candidate_id": "formula-1",
+                     "object_text": "桂枝汤", "object_type": "FORMULA", "object_start": 20,
+                     "object_end": 23, "unit_id": "u1", "document": "a.sy", "source_sha256": "hash",
+                     "tree_position": "0.0", "block_id": "b1", "sentence_start": 0,
+                     "sentence_end": len(source_text), "evidence_text": source_text,
+                     "predicate_text": "方用", "extraction_rule": "TREATMENT_TO_FORMULA_EXPLICIT_V1",
+                     "resolution_status": "UNRESOLVED_CANDIDATE"},
+                ])
+            db.build_database(content, None, database, mentions, None, None, None,
+                              contextual_terms, contextual_relations)
             counts = module.export(database, output)
-            self.assertEqual(counts["contextual_term_candidates"], 2)
-            self.assertEqual(counts["contextual_relation_edges"], 1)
+            self.assertEqual(counts["contextual_term_candidates"], 3)
+            self.assertEqual(counts["contextual_relation_edges"], 2)
             validated = module.validate(database, output)
-            self.assertEqual(validated["validated_contextual_term_candidates"], 2)
-            self.assertEqual(validated["validated_contextual_relation_edges"], 1)
+            self.assertEqual(validated["validated_contextual_term_candidates"], 3)
+            self.assertEqual(validated["validated_contextual_relation_edges"], 2)
             with gzip.open(output, "rt", encoding="utf-8") as stream:
                 rows = [json.loads(line) for line in stream]
-            edge = next(row for row in rows if row["record_type"] == "CONTEXTUAL_RELATION_CANDIDATE")
+            edge = next(row for row in rows if row["record_type"] == "CONTEXTUAL_RELATION_CANDIDATE"
+                         and row["predicate"] == "SYMPTOM_TO_SYNDROME")
+            formula_edge = next(row for row in rows if row["record_type"] == "CONTEXTUAL_RELATION_CANDIDATE"
+                                and row["predicate"] == "TREATMENT_TO_FORMULA")
             self.assertEqual(edge["subject_text"], "头痛")
             self.assertEqual(edge["object_text"], "太阳中风")
+            self.assertEqual(formula_edge["subject_text"], "解表")
+            self.assertEqual(formula_edge["object_text"], "桂枝汤")
+            self.assertEqual(formula_edge["object_candidate_id"], "formula-1")
             self.assertEqual(edge["evidence"]["text"], source_text)
 
-            # A term can keep a valid evidence span and still carry corrupted
-            # classification metadata; compare the entire record with SQLite.
+            # Tampering with contextual classification metadata must be rejected.
             term = next(row for row in rows if row["record_type"] == "CONTEXTUAL_TERM_CANDIDATE")
             term["rule_id"] = "TAMPERED_RULE"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
             with self.assertRaisesRegex(ValueError, "contextual term graph/SQLite mismatch"):
                 module.validate(database, output)
+
             term["rule_id"] = "SYMPTOM_RULE"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
             edge["subject_candidate_id"] = "missing-candidate"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
             with self.assertRaisesRegex(ValueError, "graph/SQLite mismatch"):
                 module.validate(database, output)
+
 if __name__ == "__main__":
     unittest.main()
