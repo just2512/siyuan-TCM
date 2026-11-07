@@ -263,16 +263,31 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     (row["object_candidate_id"], row["object_text"], row["object_type"],
                      row["object_start"], row["object_end"], "object"),
                 ):
-                    endpoint = connection.execute("""
-                        SELECT 1 FROM contextual_term_type_candidates
-                        WHERE candidate_id = ? AND term = ? AND candidate_type = ?
-                          AND unit_id = ? AND evidence_document = ? AND source_sha256 = ?
-                          AND tree_position = ? AND block_id = ?
-                          AND character_start = ? AND character_end = ?
-                        LIMIT 1
-                    """, (candidate_id, term, candidate_type, evidence["unit_id"],
-                          evidence["document"], evidence["source_sha256"], evidence["tree_position"],
-                          evidence["block_id"], left, right)).fetchone()
+                    if candidate_type == "FORMULA":
+                        # Formula endpoints originate from the lexical entity-mention
+                        # index, not contextual_term_type_candidates (which only
+                        # classifies SYMPTOM/SYNDROME/TREATMENT candidates).
+                        endpoint = connection.execute("""
+                            SELECT 1 FROM entity_mentions
+                            WHERE mention_id = ? AND matched_text = ? AND entity_type = ?
+                              AND unit_id = ? AND document = ? AND source_sha256 = ?
+                              AND tree_position = ? AND block_id = ?
+                              AND character_start = ? AND character_end = ?
+                            LIMIT 1
+                        """, (candidate_id, term, candidate_type, evidence["unit_id"],
+                              evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                              evidence["block_id"], left, right)).fetchone()
+                    else:
+                        endpoint = connection.execute("""
+                            SELECT 1 FROM contextual_term_type_candidates
+                            WHERE candidate_id = ? AND term = ? AND candidate_type = ?
+                              AND unit_id = ? AND evidence_document = ? AND source_sha256 = ?
+                              AND tree_position = ? AND block_id = ?
+                              AND character_start = ? AND character_end = ?
+                            LIMIT 1
+                        """, (candidate_id, term, candidate_type, evidence["unit_id"],
+                              evidence["document"], evidence["source_sha256"], evidence["tree_position"],
+                              evidence["block_id"], left, right)).fetchone()
                     if endpoint is None:
                         raise ValueError(f"contextual relation {role} is not a matching SQLite term candidate at line {line}")
                 evidence = row["evidence"]
