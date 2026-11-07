@@ -96,7 +96,7 @@ class SemanticGraphExportTests(unittest.TestCase):
             edge["predicate"] = "FORMULA_CONTAINS_FORMULA"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
                 module.validate(database, output)
 
@@ -105,7 +105,7 @@ class SemanticGraphExportTests(unittest.TestCase):
             entity["preferred_label"] = "错误实体标签"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "entity graph/SQLite mismatch"):
                 module.validate(database, output)
 
@@ -181,13 +181,13 @@ class SemanticGraphExportTests(unittest.TestCase):
             term["rule_id"] = "TAMPERED_RULE"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "contextual term graph/SQLite mismatch"):
                 module.validate(database, output)
             term["rule_id"] = "SYMPTOM_RULE"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             edge["subject_candidate_id"] = "missing-candidate"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
