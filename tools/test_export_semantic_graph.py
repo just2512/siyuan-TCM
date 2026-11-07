@@ -91,6 +91,23 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(edge["subject_entity_id"], "ef")
             self.assertEqual(edge["object_entity_id"], "eh")
             self.assertEqual(edge["evidence"]["text"], "桂枝汤由桂枝组成。")
+            # Destructive checks: every exported relation field and endpoint mapping
+            # must remain identical to the SQLite source row.
+            edge["predicate"] = "FORMULA_CONTAINS_FORMULA"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+            with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
+                module.validate(database, output)
+
+            edge["predicate"] = "FORMULA_CONTAINS_HERB"
+            entity = next(row for row in rows if row["record_type"] == "ENTITY")
+            entity["preferred_label"] = "错误实体标签"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+            with self.assertRaisesRegex(ValueError, "entity graph/SQLite mismatch"):
+                module.validate(database, output)
 
 
     def test_exports_contextual_terms_and_explicit_relation_edges(self):
@@ -157,6 +174,20 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(edge["subject_text"], "头痛")
             self.assertEqual(edge["object_text"], "太阳中风")
             self.assertEqual(edge["evidence"]["text"], source_text)
+
+            # A term can keep a valid evidence span and still carry corrupted
+            # classification metadata; compare the entire record with SQLite.
+            term = next(row for row in rows if row["record_type"] == "CONTEXTUAL_TERM_CANDIDATE")
+            term["rule_id"] = "TAMPERED_RULE"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+            with self.assertRaisesRegex(ValueError, "contextual term graph/SQLite mismatch"):
+                module.validate(database, output)
+            term["rule_id"] = "SYMPTOM_RULE"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
             edge["subject_candidate_id"] = "missing-candidate"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
