@@ -151,6 +151,61 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertEqual(result["contextual_relation_candidates"], 0)
             self.assertEqual(validate(output, units), 0)
 
+    def test_preserves_repeated_subject_mentions_as_distinct_relations(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "症见头痛，症见头痛，辨证为太阳中风。"
+            symptom_starts = [i for i in range(len(source_text)) if source_text.startswith("头痛", i)]
+            syndrome_start = source_text.index("太阳中风")
+            rows = [
+                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[0]),
+                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[1]),
+                ("syndrome-1", "太阳中风", "SYNDROME", syndrome_start),
+            ]
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                    "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                    "character_end", "evidence_start", "evidence_text", "classification_status",
+                ])
+                writer.writeheader()
+                for cid, term, typ, start in rows:
+                    writer.writerow({
+                        "candidate_id": cid, "term": term, "candidate_type": typ, "rule_id": "R1",
+                        "evidence_document": "a.sy", "source_sha256": "sha", "tree_position": "0",
+                        "block_id": "b", "unit_id": "u", "character_start": start,
+                        "character_end": start + len(term), "evidence_start": 0,
+                        "evidence_text": source_text, "classification_status": "CONTEXT_RULE_CANDIDATE",
+                    })
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                    "character_end", "document", "source_sha256", "tree_position", "block_id",
+                ])
+                writer.writeheader()
+            unit = {
+                "unit_id": "u",
+                "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+
+            result = extract(context, mentions, units, output)
+            self.assertEqual(result["contextual_relation_candidates"], 2)
+            self.assertEqual(validate(output, units), 2)
+            with output.open(encoding="utf-8", newline="") as stream:
+                relations = list(csv.DictReader(stream))
+            self.assertEqual(len({row["relation_id"] for row in relations}), 2)
+            self.assertEqual(
+                {int(row["subject_start"]) for row in relations},
+                set(symptom_starts),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

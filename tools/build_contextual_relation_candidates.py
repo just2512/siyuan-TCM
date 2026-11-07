@@ -98,7 +98,9 @@ def sentence_ranges(text: str):
 def relation_identity(predicate: str, subject: dict[str, str],
                       obj: dict[str, str], unit_id: str, start: int, end: int) -> str:
     raw = "\0".join((
-        predicate, subject["candidate_id"], obj["candidate_id"],
+        predicate, subject["candidate_id"], str(subject["character_start"]),
+        str(subject["character_end"]), obj["candidate_id"],
+        str(obj["character_start"]), str(obj["character_end"]),
         unit_id, str(start), str(end),
     ))
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
@@ -244,6 +246,16 @@ def validate(path: Path, units_path: Path) -> int:
             if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
                 or NEGATION_PREFIX.search(between[:predicate_match.start()])):
                 raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
+            expected_relation_id = relation_identity(
+                predicate,
+                {"candidate_id": row["subject_candidate_id"],
+                 "character_start": str(subject_start), "character_end": str(subject_end)},
+                {"candidate_id": row["object_candidate_id"],
+                 "character_start": str(object_start), "character_end": str(object_end)},
+                row["unit_id"], start, end,
+            )
+            if row["relation_id"] != expected_relation_id:
+                raise ValueError(f"row {line}: relation identity does not match endpoint spans")
             identity = (row["relation_id"], row["unit_id"])
             if identity in seen:
                 raise ValueError(f"row {line}: duplicate relation")
