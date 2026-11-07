@@ -73,8 +73,16 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
         for rule_id, pattern in rules:
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
-            context = before if candidate_type in PREFIX_ONLY_TYPES else before + term
-            if re.search(pattern, context):
+            if candidate_type in PREFIX_ONLY_TYPES:
+                # A prefix cue must terminate immediately before the candidate
+                # (allowing only a tiny punctuation/whitespace separator).
+                matched = re.search(
+                    rf"(?:{pattern.pattern})[\\s:：、]{{0,2}}$",
+                    before,
+                )
+            else:
+                matched = pattern.search(before + term)
+            if matched:
                 found.append((candidate_type, rule_id))
     return found
 
