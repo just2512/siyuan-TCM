@@ -65,7 +65,7 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 {text.index("头痛"), text.rindex("头痛")},
             )
             self.assertTrue(all(row["classification_status"] == "CONTEXT_RULE_CANDIDATE" for row in rows))
-            self.assertTrue(all(row["document"] if "document" in row else row["evidence_document"] == "note.sy" for row in rows))
+            self.assertTrue(all(row["evidence_document"] == "note.sy" for row in rows))
 
     def test_does_not_borrow_tongue_context_from_adjacent_symptom(self):
         sample = {
