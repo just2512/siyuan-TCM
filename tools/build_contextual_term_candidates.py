@@ -77,8 +77,8 @@ def build(source_path: Path, output_path: Path) -> dict[str, int]:
         raise FileNotFoundError(source_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     rows = 0
-    candidates = set()
-    with gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source, \
+    distinct_terms_classified = 0
+    with gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source, \\
          gzip.open(output_path, "wt", encoding="utf-8", newline="") as target:
         reader = csv.DictReader(source)
         required = {"candidate_id", "term", "sample_evidence", "candidate_status"}
@@ -90,13 +90,18 @@ def build(source_path: Path, output_path: Path) -> dict[str, int]:
         for candidate in reader:
             if candidate["candidate_status"] != "UNCLASSIFIED_TERM_CANDIDATE":
                 raise ValueError("input contains a non-unclassified candidate")
+            # Candidate rows are unique by candidate_id. Deduplicate only within
+            # the current candidate: a corpus-wide set grows with every matching
+            # term and is unnecessary because evidence samples are grouped here.
+            candidate_classifications = set()
+            candidate_rows = 0
             samples = json.loads(candidate["sample_evidence"])
             for sample in samples:
                 for candidate_type, rule_id in classify_sample(sample):
-                    key = (candidate["candidate_id"], candidate_type, rule_id, sample.get("unit_id", ""))
-                    if key in candidates:
+                    key = (candidate_type, rule_id, sample.get("unit_id", ""))
+                    if key in candidate_classifications:
                         continue
-                    candidates.add(key)
+                    candidate_classifications.add(key)
                     writer.writerow({
                         "candidate_id": candidate["candidate_id"],
                         "term": candidate["term"],
@@ -114,8 +119,11 @@ def build(source_path: Path, output_path: Path) -> dict[str, int]:
                         "classification_status": "CONTEXT_RULE_CANDIDATE",
                     })
                     rows += 1
+                    candidate_rows += 1
+            if candidate_rows:
+                distinct_terms_classified += 1
     return {"contextual_classification_candidates": rows,
-            "distinct_terms_classified": len({row[0] for row in candidates})}
+            "distinct_terms_classified": distinct_terms_classified}
 
 
 def validate(path: Path) -> int:
