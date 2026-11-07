@@ -3,7 +3,8 @@
 Scope: explicit relation candidates, canonical predicates, evidence validation, and source provenance.
 
 Acceptance gates:
-- Subject/object mentions must be grounded in the same permitted source context.
+- Subject/object mentions must be grounded in the same permitted source context and retain exact character spans.
+- Repeated mentions of the same lexical candidate in one sentence must retain distinct span-based relation identities.
 - Predicate vocabulary and direction are explicit and versioned.
 - Distinguish co-occurrence from asserted relation; reject unsupported cross-document joins.
 - Tests cover direction, negation, scope boundaries, repeated mentions, and provenance mismatch.
