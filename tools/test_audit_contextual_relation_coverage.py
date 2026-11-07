@@ -21,11 +21,14 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             source_text = (
                 "症见头痛，辨证为太阳中风，治宜解肌发表，方用桂枝汤。"
                 "头痛，不宜辨证为太阳中风。"
-                "头痛，太阳中风，解肌发表。"
             )
+            second_sentence = source_text.index("头痛", source_text.index("。") + 1)
+            second_syndrome = source_text.index("太阳中风", source_text.index("。") + 1)
             terms = [
-                ("s1", "头痛", "SYMPTOM", 2),
+                ("s1", "头痛", "SYMPTOM", source_text.index("头痛")),
+                ("s2", "头痛", "SYMPTOM", second_sentence),
                 ("y1", "太阳中风", "SYNDROME", source_text.index("太阳中风")),
+                ("y2", "太阳中风", "SYNDROME", second_syndrome),
                 ("t1", "解肌发表", "TREATMENT", source_text.index("解肌发表")),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
