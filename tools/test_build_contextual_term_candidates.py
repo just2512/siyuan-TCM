@@ -100,6 +100,33 @@ class ContextualTermCandidateTests(unittest.TestCase):
             [("SYNDROME", "SYNDROME_CONTEXT_01")],
         )
 
+
+    def test_deduplicates_same_rule_and_unit_without_global_state(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "terms.csv.gz"
+            output = root / "typed.csv.gz"
+            sample = {
+                "unit_id": "unit-dup", "document": "note.sy", "source_sha256": "abc",
+                "tree_position": "1.9", "block_id": "b9", "character_start": 2,
+                "character_end": 4, "evidence_start": 0,
+                "matched_text": "头痛", "evidence_text": "症见头痛",
+            }
+            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "sample_evidence", "candidate_status"
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "candidate_id": "term-dup", "term": "头痛",
+                    "sample_evidence": json.dumps([sample, sample], ensure_ascii=False),
+                    "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
+                })
+            result = build(source, output)
+            self.assertEqual(result["distinct_terms_classified"], 1)
+            self.assertEqual(result["contextual_classification_candidates"], 1)
+            self.assertEqual(validate(output), 1)
+
     def test_rejects_wrong_input_status(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
