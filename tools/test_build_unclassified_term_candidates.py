@@ -46,6 +46,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
 
             result = module.mine(source, output, min_occurrences=3, min_documents=2)
             self.assertEqual(result["knowledge_units_scanned"], 3)
+            self.assertEqual(result["documents_scanned"], 3)
             self.assertGreater(result["unclassified_term_candidates"], 0)
             if module.resource is not None:
                 self.assertGreater(result["peak_rss_kib"], 0)
@@ -81,6 +82,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
                 source, output, min_occurrences=4, min_documents=3, sample_limit=2
             )
             self.assertEqual(result["knowledge_units_scanned"], 4)
+            self.assertEqual(result["documents_scanned"], 3)
             with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             row = next(item for item in rows if item["term"] == "经络辨证")
@@ -106,6 +108,7 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
                 source, output, min_occurrences=3, min_documents=2, sample_limit=2
             )
             self.assertEqual(result["knowledge_units_scanned"], 3)
+            self.assertEqual(result["documents_scanned"], 2)
             self.assertEqual(result["aggregation_strategy"], "sqlite_term_document_upsert")
             with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
                 row = next(item for item in csv.DictReader(stream) if item["term"] == "经络辨证")
@@ -137,6 +140,15 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             samples = json.loads(row["sample_evidence"])
             self.assertEqual(len(samples), 1)
             self.assertEqual(samples[0]["document"], "a.sy")
+
+    def test_rejects_non_positive_sample_limit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "units.jsonl.gz"
+            output = root / "terms.csv.gz"
+            write_units(source, [make_unit("u1", "a.sy", "经络辨证")])
+            with self.assertRaisesRegex(ValueError, "sample_limit must be positive"):
+                module.mine(source, output, sample_limit=0)
 
     def test_excludes_terms_already_present_in_entity_lexicon(self):
         with tempfile.TemporaryDirectory() as temp:
