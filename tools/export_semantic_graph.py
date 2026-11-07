@@ -125,6 +125,9 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             GROUP BY c.entity_id, c.entity_type, c.preferred_label, c.lexical_form, c.identity_status
         """)
     }
+    expected_relation_ids = {
+        row[0] for row in connection.execute("SELECT relation_id FROM semantic_relation_candidates")
+    }
     expected_relations = {
         row["relation_id"]: tuple(row[key] for key in (
             "unit_id", "subject_text", "predicate", "object_text", "document",
@@ -294,7 +297,7 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     connection.close()
     if seen_entities != set(expected_entities):
         raise ValueError("entity node coverage does not match SQLite catalog")
-    if seen_relations != set(expected_relations):
+    if seen_relations != expected_relation_ids:
         raise ValueError("relation edge coverage does not match SQLite relation table")
     if seen_contextual_terms != expected_contextual_terms:
         raise ValueError("contextual term coverage does not match SQLite candidates")
