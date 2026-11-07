@@ -229,7 +229,7 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
                 "document": "book/a.sy", "source_sha256": "hash-a",
                 "tree_position": "0.0", "block_id": "p1",
-                "content_type": "PARAGRAPH", "characters": 8,
+                "content_type": "PARAGRAPH", "characters": 9,
                 "content_text": "症见头痛，症见头痛",
             }])
             self._write_gzip_csv(terms, [
@@ -272,7 +272,7 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual({row["candidate_type"] for row in found}, {"SYMPTOM"})
             self.assertEqual({row["character_start"] for row in found}, {2, 7})
             self.assertTrue(all(row["evidence_text"] == "症见头痛，症见头痛" for row in found))
-            self.assertEqual(len(search_db.search_contextual_term_candidates(db, "SYMPTOM")), 1)
+            self.assertEqual(len(search_db.search_contextual_term_candidates(db, "SYMPTOM")), 2)
 
     def test_indexes_and_queries_contextual_relation_candidates(self):
         with tempfile.TemporaryDirectory() as temp:
