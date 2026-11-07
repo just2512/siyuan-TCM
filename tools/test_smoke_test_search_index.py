@@ -44,7 +44,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             )
             connection.execute(
                 "INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                ("m1", "FORMULA", "桂枝汤", 0, 3, "book/a.sy", "sha-a",
+                ("entity-gui-zhi", "FORMULA", "桂枝汤", 0, 3, "book/a.sy", "sha-a",
                  "0.0", "p1", "", "1.0", "UNRESOLVED_CANDIDATE", "u1"),
             )
             counts = {
