@@ -78,8 +78,10 @@ def build(source_path: Path, output_path: Path) -> dict[str, int]:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     rows = 0
     distinct_terms_classified = 0
-    with gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source, \\
-         gzip.open(output_path, "wt", encoding="utf-8", newline="") as target:
+    with (
+        gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source,
+        gzip.open(output_path, "wt", encoding="utf-8", newline="") as target,
+    ):
         reader = csv.DictReader(source)
         required = {"candidate_id", "term", "sample_evidence", "candidate_status"}
         missing = required - set(reader.fieldnames or [])
