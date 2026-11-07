@@ -52,31 +52,31 @@ class ReviewProgressReportTests(unittest.TestCase):
             )}
             paths["decisions"].write_text(
                 "document,title_review_status,topic_review_status,source_status,"
-                "source_version_status,collation_status,empty_body_status\\n"
-                "a.sy,CONFIRMED,CONFIRMED,UNVERIFIED,UNVERIFIED,NOT_REVIEWED,NEEDS_SOURCE_INSPECTION\\n",
+                "source_version_status,collation_status,empty_body_status\n"
+                "a.sy,CONFIRMED,CONFIRMED,UNVERIFIED,UNVERIFIED,NOT_REVIEWED,NEEDS_SOURCE_INSPECTION\n",
                 encoding="utf-8",
             )
-            paths["sources"].write_text("path\\na.pdf\\n", encoding="utf-8")
-            paths["assets"].write_text("reference\\na.png\\n", encoding="utf-8")
-            paths["evidence"].write_text("evidence_id\\nEV-001\\n", encoding="utf-8")
+            paths["sources"].write_text("path\na.pdf\n", encoding="utf-8")
+            paths["assets"].write_text("reference\na.png\n", encoding="utf-8")
+            paths["evidence"].write_text("evidence_id\nEV-001\n", encoding="utf-8")
             paths["topics"].write_text(
-                "document,topic,review_status\\na.sy,伤寒与温病,NOT_REVIEWED\\n",
+                "document,topic,review_status\na.sy,伤寒与温病,NOT_REVIEWED\n",
                 encoding="utf-8",
             )
             paths["titles"].write_text(
-                "document,review_status\\na.sy,NOT_REVIEWED\\n", encoding="utf-8"
+                "document,review_status\na.sy,NOT_REVIEWED\n", encoding="utf-8"
             )
             paths["empty"].write_text(
-                "document,review_status\\na.sy,NEEDS_SOURCE_INSPECTION\\n", encoding="utf-8"
+                "document,review_status\na.sy,NEEDS_SOURCE_INSPECTION\n", encoding="utf-8"
             )
             paths["topic_review"].write_text(
-                "document,review_status,human_approved_topics,reviewer,evidence_reference\\n"
-                "a.sy,CONFIRMED,伤寒与温病,reviewer-1,EV-001\\n",
+                "document,review_status,human_approved_topics,reviewer,evidence_reference\n"
+                "a.sy,CONFIRMED,伤寒与温病,reviewer-1,EV-001\n",
                 encoding="utf-8",
             )
             paths["title_review"].write_text(
-                "document,review_status,reviewer,evidence_reference\\n"
-                "a.sy,CONFIRMED,reviewer-1,EV-001\\n",
+                "document,review_status,reviewer,evidence_reference\n"
+                "a.sy,CONFIRMED,reviewer-1,EV-001\n",
                 encoding="utf-8",
             )
             report = module.render_report(
