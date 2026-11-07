@@ -21,6 +21,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             source_text = (
                 "症见头痛，辨证为太阳中风，治宜解肌发表，方用桂枝汤。"
                 "头痛，不宜辨证为太阳中风。"
+                "治宜解肌发表。"
             )
             second_sentence = source_text.index("头痛", source_text.index("。") + 1)
             second_syndrome = source_text.index("太阳中风", source_text.index("。") + 1)
@@ -30,6 +31,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 ("y1", "太阳中风", "SYNDROME", source_text.index("太阳中风")),
                 ("y2", "太阳中风", "SYNDROME", second_syndrome),
                 ("t1", "解肌发表", "TREATMENT", source_text.index("解肌发表")),
+                ("t2", "解肌发表", "TREATMENT", source_text.rindex("解肌发表")),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
@@ -81,6 +83,18 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             self.assertEqual(diagnostic["marker_sentences_with_both_endpoint_types"], 2)
             self.assertEqual(diagnostic["marker_sentences_without_subject_type"], 0)
             self.assertEqual(diagnostic["marker_sentences_without_object_type"], 0)
+            treatment_diagnostic = parsed["predicates"]["SYNDROME_TO_TREATMENT"]
+            examples = parsed["diagnostic_examples"]["SYNDROME_TO_TREATMENT"]
+            self.assertEqual(len(examples["missing_subject_type"]), 1)
+            sample = examples["missing_subject_type"][0]
+            self.assertEqual(sample["document"], "a.sy")
+            self.assertEqual(sample["source_sha256"], "sha")
+            self.assertIn("治宜解肌发表", sample["sentence_text"])
+            self.assertEqual(sample["typed_candidate_spans"][0]["candidate_type"], "TREATMENT")
+            self.assertGreaterEqual(
+                treatment_diagnostic["typed_candidate_mentions_by_type_in_marker_sentences"]["TREATMENT"],
+                1,
+            )
 
 
 if __name__ == "__main__":
