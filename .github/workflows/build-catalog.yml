@@ -107,6 +107,13 @@ jobs:
             catalog/generated/contextual_relation_candidates.csv
           if-no-files-found: error
           retention-days: 30
+      - name: Publish full unclassified term candidate dataset
+        uses: actions/upload-artifact@v4
+        with:
+          name: siyuan-tcm-unclassified-term-candidates
+          path: catalog/generated/unclassified_term_candidates.csv.gz
+          if-no-files-found: error
+          retention-days: 30
       - name: Build independent review queues in parallel
         shell: bash
         run: |
