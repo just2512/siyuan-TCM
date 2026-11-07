@@ -77,7 +77,7 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
                 # A prefix cue must terminate immediately before the candidate
                 # (allowing only a tiny punctuation/whitespace separator).
                 matched = re.search(
-                    rf"(?:{pattern.pattern})[\\s:：、]{{0,2}}$",
+                    rf"(?:{pattern.pattern})[\s:：、]{{0,2}}$",
                     before,
                 )
             else:
