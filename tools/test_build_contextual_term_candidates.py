@@ -66,6 +66,40 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_sample(syndrome))
         self.assertNotIn(("SYMPTOM", "SYMPTOM_CONTEXT_01"), classify_sample(syndrome))
 
+    def test_punctuation_boundary_prevents_borrowing_context_from_previous_clause(self):
+        sample = {
+            "unit_id": "unit-5", "document": "note.sy", "source_sha256": "abc",
+            "tree_position": "1.6", "block_id": "b5", "character_start": 5,
+            "character_end": 7, "evidence_start": 0,
+            "matched_text": "脉弦", "evidence_text": "舌红苔黄，脉弦",
+        }
+        self.assertEqual(
+            classify_sample(sample),
+            [("PULSE", "PULSE_CONTEXT_01")],
+        )
+
+    def test_same_lexical_candidate_can_keep_distinct_evidence_backed_labels(self):
+        symptom_context = {
+            "unit_id": "unit-6", "document": "note.sy", "source_sha256": "abc",
+            "tree_position": "1.7", "block_id": "b6", "character_start": 2,
+            "character_end": 5, "evidence_start": 0,
+            "matched_text": "少阳证", "evidence_text": "症见少阳证",
+        }
+        syndrome_context = {
+            "unit_id": "unit-7", "document": "note.sy", "source_sha256": "abc",
+            "tree_position": "1.8", "block_id": "b7", "character_start": 2,
+            "character_end": 5, "evidence_start": 0,
+            "matched_text": "少阳证", "evidence_text": "证属少阳证",
+        }
+        self.assertEqual(
+            classify_sample(symptom_context),
+            [("SYMPTOM", "SYMPTOM_CONTEXT_01")],
+        )
+        self.assertEqual(
+            classify_sample(syndrome_context),
+            [("SYNDROME", "SYNDROME_CONTEXT_01")],
+        )
+
     def test_rejects_wrong_input_status(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
