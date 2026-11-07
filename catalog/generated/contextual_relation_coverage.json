@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "source_units_scanned": 236987,
+  "predicates": {
+    "SYMPTOM_TO_SYNDROME": {
+      "marker_occurrences": 66,
+      "sentences_with_marker": 63,
+      "ordered_typed_pairs": 2304,
+      "pairs_with_predicate_between": 0,
+      "negated_pairs": 0,
+      "eligible_pairs": 0,
+      "marker_sentences_without_typed_pair": 63,
+      "typed_pair_sentences_without_marker": 39,
+      "units_with_marker": 61,
+      "units_with_eligible_pair": 0,
+      "extracted_rows": 0
+    },
+    "SYNDROME_TO_TREATMENT": {
+      "marker_occurrences": 1098,
+      "sentences_with_marker": 1054,
+      "ordered_typed_pairs": 14,
+      "pairs_with_predicate_between": 0,
+      "negated_pairs": 0,
+      "eligible_pairs": 0,
+      "marker_sentences_without_typed_pair": 1054,
+      "typed_pair_sentences_without_marker": 2,
+      "units_with_marker": 875,
+      "units_with_eligible_pair": 0,
+      "extracted_rows": 0
+    },
+    "TREATMENT_TO_FORMULA": {
+      "marker_occurrences": 2954,
+      "sentences_with_marker": 2837,
+      "ordered_typed_pairs": 213,
+      "pairs_with_predicate_between": 1,
+      "negated_pairs": 0,
+      "eligible_pairs": 1,
+      "marker_sentences_without_typed_pair": 2835,
+      "typed_pair_sentences_without_marker": 26,
+      "units_with_marker": 2590,
+      "units_with_eligible_pair": 1,
+      "extracted_rows": 1
+    }
+  },
+  "interpretation": {
+    "marker_occurrences": "supported lexical predicate occurrences in source sentences",
+    "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints",
+    "extracted_rows": "rows emitted by the production extractor; must equal eligible_pairs",
+    "coverage_limit": "This audit measures only the current predicate lexicon and typed candidates; it does not estimate semantic relations expressed with unsupported wording."
+  }
+}
