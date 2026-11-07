@@ -114,6 +114,7 @@ def export(database_path: Path, output_path: Path) -> dict[str, int]:
 
 def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
     expected_entities = {
         row["entity_id"]: (row["entity_type"], row["preferred_label"], row["lexical_form"],
                            row["identity_status"], row["mention_count"])
