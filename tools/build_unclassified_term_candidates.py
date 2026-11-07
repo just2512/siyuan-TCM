@@ -255,12 +255,17 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             document_total = connection.execute(
                 "SELECT COUNT(*) FROM source_documents"
             ).fetchone()[0]
+            # Aggregate document counts in one ordered scan. A correlated
+            # COUNT(*) for every term performs millions of separate index probes.
             connection.execute("""
                 UPDATE term_stats
-                SET document_count = (
-                    SELECT COUNT(*) FROM term_document_terms AS docs
-                    WHERE docs.term_id = term_stats.term_id
-                )
+                SET document_count = counts.document_count
+                FROM (
+                    SELECT term_id, COUNT(*) AS document_count
+                    FROM term_document_terms
+                    GROUP BY term_id
+                ) AS counts
+                WHERE term_stats.term_id = counts.term_id
             """)
             connection.execute("""
                 INSERT INTO term_samples(term_id, sample_index, sample_evidence)
@@ -276,10 +281,13 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             """, (sample_limit,))
             connection.execute("""
                 UPDATE term_stats
-                SET sample_count = (
-                    SELECT COUNT(*) FROM term_samples AS samples
-                    WHERE samples.term_id = term_stats.term_id
-                )
+                SET sample_count = counts.sample_count
+                FROM (
+                    SELECT term_id, COUNT(*) AS sample_count
+                    FROM term_samples
+                    GROUP BY term_id
+                ) AS counts
+                WHERE term_stats.term_id = counts.term_id
             """)
             connection.commit()
             distinct_ngrams_seen = connection.execute(
@@ -294,34 +302,57 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             with gzip.open(output_path, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=FIELDS)
                 writer.writeheader()
+                # Stream candidates and their samples through one ordered join.
+                # Avoid issuing one additional SQLite query for each of millions
+                # of candidate terms.
                 candidates = connection.execute("""
-                    SELECT term_id, term, occurrence_count, unit_count, document_count
-                    FROM term_stats
-                    WHERE occurrence_count >= ? AND document_count >= ?
-                    ORDER BY document_count DESC, occurrence_count DESC, term ASC
+                    SELECT stats.term_id, stats.term, stats.occurrence_count,
+                           stats.unit_count, stats.document_count,
+                           samples.sample_index, samples.sample_evidence
+                    FROM term_stats AS stats
+                    LEFT JOIN term_samples AS samples ON samples.term_id = stats.term_id
+                    WHERE stats.occurrence_count >= ? AND stats.document_count >= ?
+                    ORDER BY stats.document_count DESC, stats.occurrence_count DESC,
+                             stats.term ASC, samples.sample_index ASC
                 """, (min_occurrences, min_documents))
-                for term_id, term, occurrences, units, documents in candidates:
-                    samples = [
-                        json.loads(row[0])
-                        for row in connection.execute("""
-                            SELECT sample_evidence
-                            FROM term_samples
-                            WHERE term_id = ?
-                            ORDER BY sample_index
-                        """, (term_id,))
-                    ]
+
+                current_term_id = None
+                current_candidate = None
+                current_samples = []
+
+                def write_candidate() -> None:
+                    if current_candidate is None:
+                        return
+                    term = current_candidate["term"]
                     writer.writerow({
                         "candidate_id": candidate_id(term),
                         "term": term,
                         "ngram_length": len(term),
-                        "occurrence_count": occurrences,
-                        "unit_count": units,
-                        "document_count": documents,
+                        "occurrence_count": current_candidate["occurrence_count"],
+                        "unit_count": current_candidate["unit_count"],
+                        "document_count": current_candidate["document_count"],
                         "sample_evidence": json.dumps(
-                            samples, ensure_ascii=False, sort_keys=True
+                            current_samples, ensure_ascii=False, sort_keys=True
                         ),
                         "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
                     })
+
+                for row in candidates:
+                    (term_id, term, occurrences, units, documents,
+                     sample_index, sample_evidence) = row
+                    if term_id != current_term_id:
+                        write_candidate()
+                        current_term_id = term_id
+                        current_candidate = {
+                            "term": term,
+                            "occurrence_count": occurrences,
+                            "unit_count": units,
+                            "document_count": documents,
+                        }
+                        current_samples = []
+                    if sample_evidence is not None:
+                        current_samples.append(json.loads(sample_evidence))
+                write_candidate()
         finally:
             connection.close()
 
