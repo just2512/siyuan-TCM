@@ -167,7 +167,7 @@ def build_database(content_index: Path, relationship_index: Path | None,
             evidence_start INTEGER NOT NULL,
             evidence_text TEXT NOT NULL,
             classification_status TEXT NOT NULL,
-            UNIQUE(candidate_id, candidate_type, rule_id, unit_id)
+            UNIQUE(candidate_id, candidate_type, rule_id, unit_id, character_start, character_end)
         )
     """)
     connection.execute("""
