@@ -76,7 +76,11 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             self.assertEqual(result["predicates"]["TREATMENT_TO_FORMULA"]["eligible_pairs"], 1)
             self.assertTrue(report.is_file())
             parsed = json.loads(report.read_text(encoding="utf-8"))
-            self.assertEqual(parsed["schema_version"], 1)
+            self.assertEqual(parsed["schema_version"], 2)
+            diagnostic = parsed["predicates"]["SYMPTOM_TO_SYNDROME"]
+            self.assertEqual(diagnostic["marker_sentences_with_both_endpoint_types"], 2)
+            self.assertEqual(diagnostic["marker_sentences_without_subject_type"], 0)
+            self.assertEqual(diagnostic["marker_sentences_without_object_type"], 0)
 
 
 if __name__ == "__main__":
