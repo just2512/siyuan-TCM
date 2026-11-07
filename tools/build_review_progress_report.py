@@ -42,13 +42,17 @@ def render_report(decisions: Path, sources: Path, assets: Path,
                   paragraph_anomalies: Path | None = None,
                   dosage_candidates: Path | None = None,
                   sections: Path | None = None,
-                  block_types: Path | None = None) -> str:
+                  block_types: Path | None = None,
+                  topic_review: Path | None = None,
+                  title_review: Path | None = None) -> str:
     decision_rows = read_rows(decisions)
     source_rows = read_rows(sources)
     asset_rows = read_rows(assets)
     evidence_rows = read_rows(evidence)
     topic_rows = read_rows(topics) if topics else []
     title_rows = read_rows(titles) if titles else []
+    topic_decision_rows = read_rows(topic_review) if topic_review else []
+    title_decision_rows = read_rows(title_review) if title_review else []
     empty_rows = read_rows(empty_body) if empty_body else []
     anomaly_rows = read_rows(content_anomalies) if content_anomalies else []
     paragraph_anomaly_rows = read_rows(paragraph_anomalies) if paragraph_anomalies else []
@@ -67,18 +71,29 @@ def render_report(decisions: Path, sources: Path, assets: Path,
         rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
         lines.append(f"| {column} | {len(decision_rows)} | {rendered} |")
 
-    lines += ["", "## 原始人工复核队列", ""]
-    for label, rows, column in (
-        ("逐文档—主题审计", topic_rows, "review_status"),
-        ("标题风险审计", title_rows, "review_status"),
-        ("空正文候选", empty_rows, "review_status"),
+    lines += ["", "## 静态风险审计信号（不承载人工决策状态）", ""]
+    if topics:
+        lines.append(f"- 逐文档—主题审计：{len(topic_rows)} 条（机器规则命中线索，不代表已人工复核）")
+    else:
+        lines.append("- 逐文档—主题审计：未提供静态审计输入")
+    if titles:
+        lines.append(f"- 标题风险审计：{len(title_rows)} 条（标题抽取风险线索，不代表已人工复核）")
+    else:
+        lines.append("- 标题风险审计：未提供静态审计输入")
+
+    lines += ["", "## 人工决策投影队列", ""]
+    for label, rows, column, supplied in (
+        ("逐文档—主题复核", topic_decision_rows, "review_status", topic_review),
+        ("标题候选复核", title_decision_rows, "review_status", title_review),
+        ("空正文候选", empty_rows, "review_status", empty_body),
     ):
-        if rows:
+        if supplied:
             counts = count_column(rows, column)
             rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
             lines.append(f"- {label}：{len(rows)} 条；{rendered}")
         else:
-            lines.append(f"- {label}：未提供审计队列输入")
+            lines.append(f"- {label}：未提供决策投影输入")
+    lines.append("- 主题/标题结论以 review-decisions.csv 为唯一持久化来源；topic_review.csv 与 title_review_candidates.csv 是其生成投影，完整字段一致性由 validate_siyuan_catalog.py 校验。")
 
     lines += ["", "## 真实笔记内容审计", ""]
     if content_anomalies:
@@ -135,6 +150,8 @@ def main() -> int:
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--topics", type=Path)
     parser.add_argument("--titles", type=Path)
+    parser.add_argument("--topic-review", type=Path)
+    parser.add_argument("--title-review", type=Path)
     parser.add_argument("--empty-body", type=Path)
     parser.add_argument("--content-anomalies", type=Path)
     parser.add_argument("--paragraph-anomalies", type=Path)
@@ -146,7 +163,8 @@ def main() -> int:
     report = render_report(args.decisions, args.sources, args.assets, args.evidence,
                            args.topics, args.titles, args.empty_body,
                            args.content_anomalies, args.paragraph_anomalies,
-                           args.dosage_candidates, args.sections, args.block_types)
+                           args.dosage_candidates, args.sections, args.block_types,
+                           topic_review=args.topic_review, title_review=args.title_review)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(report, encoding="utf-8")
     print(f"Review progress report written: {args.output}")
