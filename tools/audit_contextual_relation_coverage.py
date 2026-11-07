@@ -9,6 +9,9 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+MAX_EXAMPLES_PER_DIAGNOSIS = 5
+MAX_CANDIDATE_SPANS_PER_EXAMPLE = 12
+
 from build_contextual_relation_candidates import (
     NEGATION_PREFIX,
     OBJECT_TYPES,
@@ -49,6 +52,38 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
     }
     marker_units = {key: set() for key in PREDICATES}
     eligible_units = {key: set() for key in PREDICATES}
+    examples = {key: defaultdict(list) for key in PREDICATES}
+
+    def add_example(predicate: str, diagnosis: str, unit: dict,
+                    sentence_start: int, sentence_end: int, sentence: str,
+                    spans: list[tuple[int, int, dict]]) -> None:
+        bucket = examples[predicate][diagnosis]
+        if len(bucket) >= MAX_EXAMPLES_PER_DIAGNOSIS:
+            return
+        source = unit["source"]
+        candidate_spans = [
+            {
+                "candidate_id": row["candidate_id"],
+                "term": row["term"],
+                "candidate_type": row["candidate_type"],
+                "start": start,
+                "end": end,
+            }
+            for start, end, row in spans[:MAX_CANDIDATE_SPANS_PER_EXAMPLE]
+        ]
+        bucket.append({
+            "unit_id": unit["unit_id"],
+            "document": source["document"],
+            "source_sha256": source["sha256"],
+            "tree_position": source["tree_position"],
+            "block_id": source.get("block_id", ""),
+            "sentence_start": sentence_start,
+            "sentence_end": sentence_end,
+            "sentence_text": sentence[:600],
+            "sentence_truncated": len(sentence) > 600,
+            "typed_candidate_spans": candidate_spans,
+            "candidate_spans_truncated": len(spans) > MAX_CANDIDATE_SPANS_PER_EXAMPLE,
+        })
 
     with gzip.open(units_path, "rt", encoding="utf-8", newline="") as stream:
         for raw in stream:
@@ -97,6 +132,19 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         stats["marker_sentences_with_both_endpoint_types"] += bool(subject_rows and object_rows)
                         stats["marker_sentences_without_subject_type"] += not bool(subject_rows)
                         stats["marker_sentences_without_object_type"] += not bool(object_rows)
+                        type_counts = stats.setdefault("typed_candidate_mentions_by_type_in_marker_sentences", {})
+                        for _, _, row in spans:
+                            candidate_type = row["candidate_type"]
+                            type_counts[candidate_type] = type_counts.get(candidate_type, 0) + 1
+                        if not subject_rows and not object_rows:
+                            add_example(predicate, "missing_both_endpoint_types", unit,
+                                        sentence_start, sentence_end, sentence, spans)
+                        elif not subject_rows:
+                            add_example(predicate, "missing_subject_type", unit,
+                                        sentence_start, sentence_end, sentence, spans)
+                        elif not object_rows:
+                            add_example(predicate, "missing_object_type", unit,
+                                        sentence_start, sentence_end, sentence, spans)
 
                     pairs = []
                     for subject_start, subject_end, subject in spans:
@@ -111,6 +159,8 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         counts[predicate]["marker_sentences_without_typed_pair"] += 1
                         if subject_rows and object_rows:
                             counts[predicate]["marker_sentences_with_both_types_but_no_ordered_pair"] += 1
+                            add_example(predicate, "both_endpoint_types_but_no_ordered_pair",
+                                        unit, sentence_start, sentence_end, sentence, spans)
                     if pairs and marker_matches:
                         between_any = any(
                             marker.search(sentence[subject_end - sentence_start:object_start - sentence_start])
@@ -118,6 +168,8 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         )
                         if not between_any:
                             counts[predicate]["marker_sentences_with_ordered_pair_but_no_predicate_between"] += 1
+                            add_example(predicate, "ordered_pair_but_no_predicate_between",
+                                        unit, sentence_start, sentence_end, sentence, spans)
                     if pairs and not marker_matches:
                         counts[predicate]["typed_pair_sentences_without_marker"] += 1
 
@@ -155,11 +207,16 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             1 for _ in gzip.open(units_path, "rt", encoding="utf-8", newline="")
         ),
         "predicates": counts,
+        "diagnostic_examples": {
+            predicate: dict(by_diagnosis)
+            for predicate, by_diagnosis in examples.items()
+        },
         "interpretation": {
             "marker_occurrences": "supported lexical predicate occurrences in source sentences",
             "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints",
             "extracted_rows": "rows emitted by the production extractor; must equal eligible_pairs",
             "endpoint_diagnostics": "For sentences containing a supported predicate marker, these counters show whether subject and object candidate types were present and ordered correctly; they do not relax extraction requirements.",
+            "diagnostic_examples": "At most five source-grounded examples per diagnosis and predicate. Candidate spans are limited to twelve per example and sentence text to 600 characters; examples retain source identity and offsets.",
             "coverage_limit": "This audit measures only the current predicate lexicon and typed candidates; it does not estimate semantic relations expressed with unsupported wording.",
         },
     }
@@ -170,6 +227,10 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
         "predicates": {
             key: dict(value)
             for key, value in counts.items()
+        },
+        "diagnostic_example_counts": {
+            predicate: {diagnosis: len(items) for diagnosis, items in groups.items()}
+            for predicate, groups in examples.items()
         },
     }
 
