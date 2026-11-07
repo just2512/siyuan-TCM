@@ -78,6 +78,18 @@ class SourceReviewQueueTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 queue.read_candidates(source)
 
+    def test_rejects_filename_or_keyword_identity_claim_while_unverified(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source = Path(temp) / "source.csv"
+            for category, path, note in (
+                ("asset_file", "assets/a.pdf", "身份可从文件名确认；版本仍未核验"),
+                ("nihongxia_lecture", "lectures/a.sy", "倪海厦课程讲稿身份可确认；原始载体未核验"),
+            ):
+                self.write_rows(source, [self.row(category, path, candidate_note=note)])
+                with self.subTest(category=category):
+                    with self.assertRaisesRegex(ValueError, "已确认来源身份"):
+                        queue.read_candidates(source)
+
     def test_requires_separate_evidence_for_each_conclusion(self):
         with tempfile.TemporaryDirectory() as temp:
             source = Path(temp) / "source.csv"
