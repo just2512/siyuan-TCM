@@ -13,11 +13,17 @@
 | topic_review_status | 33 | NOT_REVIEWED: 33 |
 | empty_body_status | 33 | NEEDS_SOURCE_INSPECTION: 33 |
 
-## 原始人工复核队列
+## 静态风险审计信号（不承载人工决策状态）
 
-- 逐文档—主题审计：4782 条；NOT_REVIEWED: 4782
-- 标题风险审计：22 条；NOT_REVIEWED: 22
+- 逐文档—主题审计：4782 条（机器规则命中线索，不代表已人工复核）
+- 标题风险审计：22 条（标题抽取风险线索，不代表已人工复核）
+
+## 人工决策投影队列
+
+- 逐文档—主题复核：1425 条；NOT_REVIEWED: 1425
+- 标题候选复核：19 条；NOT_REVIEWED: 19
 - 空正文候选：33 条；NEEDS_SOURCE_INSPECTION: 33
+- 主题/标题结论以 review-decisions.csv 为唯一持久化来源；topic_review.csv 与 title_review_candidates.csv 是其生成投影，完整字段一致性由 validate_siyuan_catalog.py 校验。
 
 ## 真实笔记内容审计
 
