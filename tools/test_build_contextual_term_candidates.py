@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_contextual_term_candidates import build, validate, classify_sample
+from build_contextual_term_candidates import build, validate, classify_sample, classify_span
 from build_unclassified_term_candidates import candidate_id
 
 
@@ -119,6 +119,16 @@ class ContextualTermCandidateTests(unittest.TestCase):
         }
         self.assertEqual(classify_sample(symptom_context), [("SYMPTOM", "SYMPTOM_CONTEXT_01")])
         self.assertEqual(classify_sample(syndrome_context), [("SYNDROME", "SYNDROME_CONTEXT_01")])
+
+    def test_does_not_classify_the_context_cue_itself_as_a_syndrome(self):
+        self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("证属不足", 0, 4))
+        self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证属少阳证", 3, 6))
+
+    def test_treatment_and_formula_cues_must_precede_candidate_span(self):
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("治法", 0, 2))
+        self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("治法为温中健脾", 3, 7))
+        self.assertNotIn(("FORMULA", "FORMULA_CONTEXT_01"), classify_span("方用", 0, 2))
+        self.assertIn(("FORMULA", "FORMULA_CONTEXT_01"), classify_span("方用桂枝汤", 2, 5))
 
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
