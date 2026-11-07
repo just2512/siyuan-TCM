@@ -17,3 +17,6 @@ __pycache__/
 catalog/generated/siyuan_search.sqlite3
 catalog/generated/siyuan_search.sqlite3-wal
 catalog/generated/siyuan_search.sqlite3-shm
+
+# Large corpus-derived candidate table is distributed as a workflow artifact, not Git history.
+catalog/generated/unclassified_term_candidates.csv.gz

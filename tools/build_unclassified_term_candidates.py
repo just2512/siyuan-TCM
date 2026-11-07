@@ -126,8 +126,10 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             # Only the current unit's n-gram Counter is held in Python memory.
             connection.execute("PRAGMA journal_mode=OFF")
             connection.execute("PRAGMA synchronous=OFF")
-            connection.execute("PRAGMA temp_store=MEMORY")
-            connection.execute("PRAGMA cache_size=-131072")
+            # Keep large window-function and ORDER BY temporary B-trees on disk.
+            # MEMORY temp storage caused multi-GiB RSS on the full corpus.
+            connection.execute("PRAGMA temp_store=FILE")
+            connection.execute("PRAGMA cache_size=-32768")
             connection.executescript("""
                 CREATE TABLE source_documents (
                     document TEXT PRIMARY KEY
