@@ -98,6 +98,8 @@ jobs:
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence
         run: python tools/export_semantic_graph.py --validate
+      - name: Smoke-test full-corpus SQLite query paths
+        run: python tools/smoke_test_search_index.py --db catalog/generated/siyuan_search.sqlite3 --output catalog/generated/search_index_smoke.json
       - name: Publish queryable SQLite and semantic graph artifacts
         uses: actions/upload-artifact@v4
         with:

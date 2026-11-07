@@ -1,0 +1,71 @@
+import sqlite3
+import tempfile
+import unittest
+from pathlib import Path
+
+from smoke_test_search_index import smoke
+
+
+class SearchIndexSmokeTests(unittest.TestCase):
+    def test_smoke_checks_real_sqlite_text_and_entity_source_spans(self):
+        with tempfile.TemporaryDirectory() as temp:
+            db = Path(temp) / "search.sqlite3"
+            connection = sqlite3.connect(db)
+            connection.executescript("""
+                CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+                CREATE TABLE content_blocks (
+                    document TEXT, source_sha256 TEXT, tree_position TEXT, block_id TEXT,
+                    content_type TEXT, section_path TEXT, content_text TEXT
+                );
+                CREATE TABLE node_relationships (id INTEGER);
+                CREATE TABLE entity_mentions (
+                    entity_id TEXT, entity_type TEXT, matched_text TEXT,
+                    character_start INTEGER, character_end INTEGER, document TEXT,
+                    source_sha256 TEXT, tree_position TEXT, block_id TEXT,
+                    section_path TEXT, lexicon_version TEXT, resolution_status TEXT, unit_id TEXT
+                );
+                CREATE TABLE entity_catalog (
+                    entity_id TEXT, entity_type TEXT, preferred_label TEXT,
+                    lexical_form TEXT, identity_status TEXT
+                );
+                CREATE TABLE semantic_relation_candidates (id INTEGER);
+                CREATE TABLE unclassified_term_candidates (id INTEGER);
+                CREATE TABLE contextual_term_type_candidates (id INTEGER);
+                CREATE TABLE contextual_relation_candidates (id INTEGER);
+            """)
+            text = "桂枝汤治疗太阳中风"
+            connection.execute(
+                "INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
+                ("book/a.sy", "sha-a", "0.0", "p1", "PARAGRAPH", "", text),
+            )
+            connection.execute(
+                "INSERT INTO entity_catalog VALUES (?, ?, ?, ?, ?)",
+                ("entity-gui-zhi", "FORMULA", "桂枝汤", "桂枝汤", "LEXICAL_ID_ONLY"),
+            )
+            connection.execute(
+                "INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                ("entity-gui-zhi", "FORMULA", "桂枝汤", 0, 3, "book/a.sy", "sha-a",
+                 "0.0", "p1", "", "1.0", "UNRESOLVED_CANDIDATE", "u1"),
+            )
+            counts = {
+                "content_blocks": 1, "relationships": 0, "entity_mentions": 1,
+                "lexical_entities": 1, "relation_candidates": 0,
+                "unclassified_term_candidates": 0, "contextual_term_type_candidates": 0,
+                "contextual_relation_candidates": 0,
+            }
+            connection.executemany(
+                "INSERT INTO index_metadata(key, value) VALUES (?, ?)",
+                [("search_backend", "sqlite-instr-fallback")] +
+                [(key, str(value)) for key, value in counts.items()],
+            )
+            connection.commit()
+            connection.close()
+
+            result = smoke(db)
+            self.assertEqual(result["checks"]["full_text"], "PASS")
+            self.assertEqual(result["checks"]["entity_span_and_source"], "PASS")
+            self.assertEqual(result["table_counts"]["content_blocks"], 1)
+
+
+if __name__ == "__main__":
+    unittest.main()
