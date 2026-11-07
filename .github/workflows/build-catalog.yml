@@ -90,6 +90,8 @@ jobs:
         run: python tools/build_contextual_relation_candidates.py
       - name: Validate contextual relation candidate provenance
         run: python tools/build_contextual_relation_candidates.py --validate
+      - name: Audit contextual relation predicate coverage
+        run: python tools/audit_contextual_relation_coverage.py | tee "$RUNNER_TEMP/contextual-relation-coverage.log"
       - name: Build SQLite full-text, entity and relation index
         run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz --contextual-term-candidates catalog/generated/contextual_term_type_candidates.csv.gz --contextual-relations catalog/generated/contextual_relation_candidates.csv
       - name: Export machine-readable semantic graph
