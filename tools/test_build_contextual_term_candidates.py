@@ -6,37 +6,66 @@ import unittest
 from pathlib import Path
 
 from build_contextual_term_candidates import build, validate, classify_sample
+from build_unclassified_term_candidates import candidate_id
+
+
+def write_candidates(path: Path, terms: list[str]) -> None:
+    with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=[
+            "candidate_id", "term", "candidate_status"
+        ])
+        writer.writeheader()
+        for term in terms:
+            writer.writerow({
+                "candidate_id": candidate_id(term),
+                "term": term,
+                "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
+            })
+
+
+def write_units(path: Path, text: str) -> None:
+    unit = {
+        "unit_id": "unit-1",
+        "source": {
+            "document": "note.sy",
+            "sha256": "sha-1",
+            "tree_position": "1.2",
+            "block_id": "block-1",
+        },
+        "content": {"source_text": text},
+    }
+    with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+        stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
 
 
 class ContextualTermCandidateTests(unittest.TestCase):
-    def test_builds_typed_candidates_with_source_evidence(self):
+    def test_classifies_every_source_occurrence_not_only_saved_samples(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "terms.csv.gz"
+            units = root / "units.jsonl.gz"
             output = root / "typed.csv.gz"
-            sample = {
-                "unit_id": "unit-1", "document": "note.sy", "source_sha256": "abc",
-                "tree_position": "1.2", "block_id": "b1", "character_start": 2,
-                "character_end": 4, "evidence_start": 0,
-                "matched_text": "头痛", "evidence_text": "症见头痛，舌红苔黄",
-            }
-            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
-                writer = csv.DictWriter(stream, fieldnames=[
-                    "candidate_id", "term", "sample_evidence", "candidate_status"
-                ])
-                writer.writeheader()
-                writer.writerow({
-                    "candidate_id": "term-1", "term": "头痛",
-                    "sample_evidence": json.dumps([sample], ensure_ascii=False),
-                    "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
-                })
-            result = build(source, output)
-            self.assertGreaterEqual(result["contextual_classification_candidates"], 1)
+            text = "症见头痛，平素无不适。另见症见头痛，伴有恶心。"
+            write_candidates(source, ["头痛", "恶心"])
+            write_units(units, text)
+
+            result = build(source, output, units)
+            self.assertEqual(result["source_units_scanned"], 1)
+            self.assertEqual(result["candidate_terms_loaded"], 2)
+            self.assertEqual(result["distinct_terms_classified"], 2)
+            self.assertGreaterEqual(result["contextual_classification_candidates"], 3)
             self.assertEqual(validate(output), result["contextual_classification_candidates"])
+
             with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
-            self.assertIn("SYMPTOM", {row["candidate_type"] for row in rows})
+            headache_rows = [row for row in rows if row["term"] == "头痛"]
+            self.assertEqual(len(headache_rows), 2)
+            self.assertEqual(
+                {int(row["character_start"]) for row in headache_rows},
+                {text.index("头痛"), text.rindex("头痛")},
+            )
             self.assertTrue(all(row["classification_status"] == "CONTEXT_RULE_CANDIDATE" for row in rows))
+            self.assertTrue(all(row["document"] if "document" in row else row["evidence_document"] == "note.sy" for row in rows))
 
     def test_does_not_borrow_tongue_context_from_adjacent_symptom(self):
         sample = {
@@ -73,10 +102,7 @@ class ContextualTermCandidateTests(unittest.TestCase):
             "character_end": 7, "evidence_start": 0,
             "matched_text": "脉弦", "evidence_text": "舌红苔黄，脉弦",
         }
-        self.assertEqual(
-            classify_sample(sample),
-            [("PULSE", "PULSE_CONTEXT_01")],
-        )
+        self.assertEqual(classify_sample(sample), [("PULSE", "PULSE_CONTEXT_01")])
 
     def test_same_lexical_candidate_can_keep_distinct_evidence_backed_labels(self):
         symptom_context = {
@@ -91,58 +117,27 @@ class ContextualTermCandidateTests(unittest.TestCase):
             "character_end": 5, "evidence_start": 0,
             "matched_text": "少阳证", "evidence_text": "证属少阳证",
         }
-        self.assertEqual(
-            classify_sample(symptom_context),
-            [("SYMPTOM", "SYMPTOM_CONTEXT_01")],
-        )
-        self.assertEqual(
-            classify_sample(syndrome_context),
-            [("SYNDROME", "SYNDROME_CONTEXT_01")],
-        )
+        self.assertEqual(classify_sample(symptom_context), [("SYMPTOM", "SYMPTOM_CONTEXT_01")])
+        self.assertEqual(classify_sample(syndrome_context), [("SYNDROME", "SYNDROME_CONTEXT_01")])
 
-
-    def test_deduplicates_same_rule_and_unit_without_global_state(self):
+    def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "terms.csv.gz"
+            units = root / "units.jsonl.gz"
             output = root / "typed.csv.gz"
-            sample = {
-                "unit_id": "unit-dup", "document": "note.sy", "source_sha256": "abc",
-                "tree_position": "1.9", "block_id": "b9", "character_start": 2,
-                "character_end": 4, "evidence_start": 0,
-                "matched_text": "头痛", "evidence_text": "症见头痛",
-            }
             with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
-                    "candidate_id", "term", "sample_evidence", "candidate_status"
+                    "candidate_id", "term", "candidate_status"
                 ])
                 writer.writeheader()
                 writer.writerow({
-                    "candidate_id": "term-dup", "term": "头痛",
-                    "sample_evidence": json.dumps([sample, sample], ensure_ascii=False),
+                    "candidate_id": "wrong-id", "term": "头痛",
                     "candidate_status": "UNCLASSIFIED_TERM_CANDIDATE",
                 })
-            result = build(source, output)
-            self.assertEqual(result["distinct_terms_classified"], 1)
-            self.assertEqual(result["contextual_classification_candidates"], 1)
-            self.assertEqual(validate(output), 1)
-
-    def test_rejects_wrong_input_status(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            source = root / "terms.csv.gz"
-            output = root / "typed.csv.gz"
-            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
-                writer = csv.DictWriter(stream, fieldnames=[
-                    "candidate_id", "term", "sample_evidence", "candidate_status"
-                ])
-                writer.writeheader()
-                writer.writerow({
-                    "candidate_id": "term-1", "term": "头痛",
-                    "sample_evidence": "[]", "candidate_status": "CONFIRMED",
-                })
-            with self.assertRaisesRegex(ValueError, "non-unclassified"):
-                build(source, output)
+            write_units(units, "症见头痛")
+            with self.assertRaisesRegex(ValueError, "invalid candidate identity"):
+                build(source, output, units)
 
 
 if __name__ == "__main__":
