@@ -9,10 +9,10 @@ permissions:
   contents: write
 
 concurrency:
-  # Versioned to release the queue behind the long-running pre-optimization build.
-  # The publish step below also refuses to commit output from a stale source SHA.
+  # Keep only the newest master source SHA in the full-corpus build queue.
+  # The publish step below independently refuses to commit output from a stale source SHA.
   group: tcm-catalog-master-v3
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build-catalog:
