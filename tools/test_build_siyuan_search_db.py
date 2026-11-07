@@ -230,7 +230,7 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                 "document": "book/a.sy", "source_sha256": "hash-a",
                 "tree_position": "0.0", "block_id": "p1",
                 "content_type": "PARAGRAPH", "characters": 8,
-                "content_text": "症见头痛，舌红",
+                "content_text": "症见头痛，症见头痛",
             }])
             self._write_gzip_csv(terms, [
                 "candidate_id", "term", "ngram_length", "occurrence_count",
@@ -244,23 +244,34 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
                 "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
                 "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
                 "character_end", "evidence_start", "evidence_text", "classification_status",
-            ], [{
-                "candidate_id": "term-headache", "term": "头痛", "candidate_type": "SYMPTOM",
-                "rule_id": "SYMPTOM_CONTEXT_01", "evidence_document": "book/a.sy",
-                "source_sha256": "hash-a", "tree_position": "0.0", "block_id": "p1",
-                "unit_id": "u1", "character_start": 2, "character_end": 4,
-                "evidence_start": 0, "evidence_text": "症见头痛，舌红",
-                "classification_status": "CONTEXT_RULE_CANDIDATE",
-            }])
+            ], [
+                {
+                    "candidate_id": "term-headache", "term": "头痛", "candidate_type": "SYMPTOM",
+                    "rule_id": "SYMPTOM_CONTEXT_01", "evidence_document": "book/a.sy",
+                    "source_sha256": "hash-a", "tree_position": "0.0", "block_id": "p1",
+                    "unit_id": "u1", "character_start": 2, "character_end": 4,
+                    "evidence_start": 0, "evidence_text": "症见头痛，症见头痛",
+                    "classification_status": "CONTEXT_RULE_CANDIDATE",
+                },
+                {
+                    "candidate_id": "term-headache", "term": "头痛", "candidate_type": "SYMPTOM",
+                    "rule_id": "SYMPTOM_CONTEXT_01", "evidence_document": "book/a.sy",
+                    "source_sha256": "hash-a", "tree_position": "0.0", "block_id": "p1",
+                    "unit_id": "u1", "character_start": 7, "character_end": 9,
+                    "evidence_start": 0, "evidence_text": "症见头痛，症见头痛",
+                    "classification_status": "CONTEXT_RULE_CANDIDATE",
+                },
+            ])
             result = search_db.build_database(
                 content, None, db, term_candidates_path=terms,
                 contextual_term_candidates_path=contextual,
             )
-            self.assertEqual(result["contextual_term_type_candidates"], 1)
+            self.assertEqual(result["contextual_term_type_candidates"], 2)
             found = search_db.search_contextual_term_candidates(db, "头痛")
-            self.assertEqual(len(found), 1)
-            self.assertEqual(found[0]["candidate_type"], "SYMPTOM")
-            self.assertEqual(found[0]["evidence_text"], "症见头痛，舌红")
+            self.assertEqual(len(found), 2)
+            self.assertEqual({row["candidate_type"] for row in found}, {"SYMPTOM"})
+            self.assertEqual({row["character_start"] for row in found}, {2, 7})
+            self.assertTrue(all(row["evidence_text"] == "症见头痛，症见头痛" for row in found))
             self.assertEqual(len(search_db.search_contextual_term_candidates(db, "SYMPTOM")), 1)
 
     def test_indexes_and_queries_contextual_relation_candidates(self):
