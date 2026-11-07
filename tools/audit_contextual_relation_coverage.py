@@ -139,12 +139,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
     return {
         "source_units_scanned": report["source_units_scanned"],
         "predicates": {
-            key: {
-                "marker_occurrences": value["marker_occurrences"],
-                "ordered_typed_pairs": value["ordered_typed_pairs"],
-                "eligible_pairs": value["eligible_pairs"],
-                "extracted_rows": value["extracted_rows"],
-            }
+            key: dict(value)
             for key, value in counts.items()
         },
     }
