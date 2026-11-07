@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
@@ -11,6 +11,13 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 63,
       "typed_pair_sentences_without_marker": 39,
+      "marker_sentences_with_subject_type": 10,
+      "marker_sentences_with_object_type": 7,
+      "marker_sentences_with_both_endpoint_types": 0,
+      "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+      "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
+      "marker_sentences_without_subject_type": 53,
+      "marker_sentences_without_object_type": 56,
       "units_with_marker": 61,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0
@@ -24,6 +31,13 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 1054,
       "typed_pair_sentences_without_marker": 2,
+      "marker_sentences_with_subject_type": 1,
+      "marker_sentences_with_object_type": 221,
+      "marker_sentences_with_both_endpoint_types": 0,
+      "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+      "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
+      "marker_sentences_without_subject_type": 1053,
+      "marker_sentences_without_object_type": 833,
       "units_with_marker": 875,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0
@@ -37,6 +51,13 @@
       "eligible_pairs": 1,
       "marker_sentences_without_typed_pair": 2835,
       "typed_pair_sentences_without_marker": 26,
+      "marker_sentences_with_subject_type": 8,
+      "marker_sentences_with_object_type": 148,
+      "marker_sentences_with_both_endpoint_types": 2,
+      "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+      "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
+      "marker_sentences_without_subject_type": 2829,
+      "marker_sentences_without_object_type": 2689,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 1,
       "extracted_rows": 1
@@ -46,6 +67,7 @@
     "marker_occurrences": "supported lexical predicate occurrences in source sentences",
     "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints",
     "extracted_rows": "rows emitted by the production extractor; must equal eligible_pairs",
+    "endpoint_diagnostics": "For sentences containing a supported predicate marker, these counters show whether subject and object candidate types were present and ordered correctly; they do not relax extraction requirements.",
     "coverage_limit": "This audit measures only the current predicate lexicon and typed candidates; it does not estimate semantic relations expressed with unsupported wording."
   }
 }
