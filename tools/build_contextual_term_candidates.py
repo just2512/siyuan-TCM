@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Classify corpus-mined terms only when nearby source wording supplies explicit context.
+"""Classify every corpus occurrence of mined terms using exact local context.
 
-The output is a multi-label candidate index. It never upgrades a term to a
-confirmed medical concept and always carries the original sample provenance.
+The mined-term file supplies the candidate vocabulary; classification is
+performed against every occurrence in the source knowledge units, not only
+the bounded sample snippets retained for vocabulary discovery.
 """
 from __future__ import annotations
 
@@ -11,7 +12,14 @@ import csv
 import gzip
 import json
 import re
+import sys
+try:
+    import resource
+except ImportError:  # pragma: no cover - unavailable on Windows
+    resource = None
 from pathlib import Path
+
+from build_unclassified_term_candidates import candidate_id
 
 RULES = {
     "SYMPTOM": [
@@ -43,6 +51,28 @@ FIELDS = [
     "unit_id", "character_start", "character_end", "evidence_start",
     "evidence_text", "classification_status",
 ]
+HAN_RUN = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]+")
+NGRAM_PATTERNS = {
+    length: re.compile(rf"(?=([\u3400-\u4dbf\u4e00-\u9fff]{{{length}}}))")
+    for length in range(2, 7)
+}
+PUNCTUATION = "，。！？；、\n"
+
+
+def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
+    if start < 0 or end <= start or end > len(text):
+        raise ValueError("candidate span is outside source text")
+    term = text[start:end]
+    left_boundary = max(text.rfind(mark, 0, start) for mark in PUNCTUATION) + 1
+    before = text[max(left_boundary, start - 10):start]
+    found = []
+    for candidate_type, rules in RULES.items():
+        for rule_id, pattern in rules:
+            # Prefix cues must precede the candidate. Intrinsic cues may be
+            # part of the candidate itself; cues after it are never borrowed.
+            if re.search(pattern, before + term):
+                found.append((candidate_type, rule_id))
+    return found
 
 
 def classify_sample(sample: dict[str, str]) -> list[tuple[str, str]]:
@@ -54,78 +84,115 @@ def classify_sample(sample: dict[str, str]) -> list[tuple[str, str]]:
     end = start + len(term)
     if start < 0 or end > len(text) or text[start:end] != term:
         raise ValueError("candidate term does not match its source evidence span")
-    # Context must belong to the candidate phrase, not an adjacent clause.
-    # Restrict the left context to the current punctuation-delimited clause.
-    left_boundary = max(
-        text.rfind(mark, 0, start) for mark in "，。！？；、\n"
-    ) + 1
-    before = text[max(left_boundary, start - 10):start]
-    found = []
-    for candidate_type, rules in RULES.items():
-        for rule_id, pattern in rules:
-            # Prefix cues (症见/辨证为/治宜/方用/舌/脉) must precede
-            # the candidate. Intrinsic cues such as 疼痛/舌红/脉弦 may
-            # be part of the candidate itself. Do not borrow cues after
-            # the candidate: they may describe a neighboring concept.
-            if re.search(pattern, before + term):
-                found.append((candidate_type, rule_id))
-    return found
+    return classify_span(text, start, end)
 
 
-def build(source_path: Path, output_path: Path) -> dict[str, int]:
+def load_candidate_terms(source_path: Path) -> set[str]:
     if not source_path.is_file():
         raise FileNotFoundError(source_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    rows = 0
-    distinct_terms_classified = 0
-    with (
-        gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source,
-        gzip.open(output_path, "wt", encoding="utf-8", newline="") as target,
-    ):
+    terms: set[str] = set()
+    with gzip.open(source_path, "rt", encoding="utf-8-sig", newline="") as source:
         reader = csv.DictReader(source)
-        required = {"candidate_id", "term", "sample_evidence", "candidate_status"}
+        required = {"candidate_id", "term", "candidate_status"}
         missing = required - set(reader.fieldnames or [])
         if missing:
             raise ValueError("term candidate input missing fields: " + ", ".join(sorted(missing)))
+        for line, candidate in enumerate(reader, 2):
+            term = candidate["term"]
+            if candidate["candidate_status"] != "UNCLASSIFIED_TERM_CANDIDATE":
+                raise ValueError(f"input row {line} contains a non-unclassified candidate")
+            if not term or candidate["candidate_id"] != candidate_id(term):
+                raise ValueError(f"input row {line} has an invalid candidate identity")
+            if len(term) < 2 or len(term) > 6:
+                raise ValueError(f"input row {line} has a term outside the mined n-gram range")
+            if term in terms:
+                raise ValueError(f"input row {line} contains a duplicate candidate term")
+            terms.add(term)
+    return terms
+
+
+def build(source_path: Path, output_path: Path,
+          units_path: Path = Path("catalog/generated/knowledge_units.jsonl.gz")) -> dict[str, int]:
+    if not units_path.is_file():
+        raise FileNotFoundError(units_path)
+    candidate_terms = load_candidate_terms(source_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    rows = 0
+    classified_terms: set[str] = set()
+    units_scanned = 0
+
+    with (
+        gzip.open(units_path, "rt", encoding="utf-8", newline="") as source,
+        gzip.open(output_path, "wt", encoding="utf-8", newline="") as target,
+    ):
         writer = csv.DictWriter(target, fieldnames=FIELDS)
         writer.writeheader()
-        for candidate in reader:
-            if candidate["candidate_status"] != "UNCLASSIFIED_TERM_CANDIDATE":
-                raise ValueError("input contains a non-unclassified candidate")
-            # Candidate rows are unique by candidate_id. Deduplicate only within
-            # the current candidate: a corpus-wide set grows with every matching
-            # term and is unnecessary because evidence samples are grouped here.
-            candidate_classifications = set()
-            candidate_rows = 0
-            samples = json.loads(candidate["sample_evidence"])
-            for sample in samples:
-                for candidate_type, rule_id in classify_sample(sample):
-                    key = (candidate_type, rule_id, sample.get("unit_id", ""))
-                    if key in candidate_classifications:
+        for line_number, line in enumerate(source, 1):
+            unit = json.loads(line)
+            source_info = unit.get("source") or {}
+            unit_id = str(unit.get("unit_id") or "")
+            text = (unit.get("content") or {}).get("source_text", "")
+            if not unit_id or not source_info.get("document") or not source_info.get("sha256"):
+                raise ValueError(f"unit line {line_number}: missing source identity")
+            if not isinstance(text, str) or not text:
+                continue
+            units_scanned += 1
+            for run in HAN_RUN.finditer(text):
+                run_text = run.group(0)
+                for length, pattern in NGRAM_PATTERNS.items():
+                    if len(run_text) < length:
                         continue
-                    candidate_classifications.add(key)
-                    writer.writerow({
-                        "candidate_id": candidate["candidate_id"],
-                        "term": candidate["term"],
-                        "candidate_type": candidate_type,
-                        "rule_id": rule_id,
-                        "evidence_document": sample.get("document", ""),
-                        "source_sha256": sample.get("source_sha256", ""),
-                        "tree_position": sample.get("tree_position", ""),
-                        "block_id": sample.get("block_id", ""),
-                        "unit_id": sample.get("unit_id", ""),
-                        "character_start": sample.get("character_start", ""),
-                        "character_end": sample.get("character_end", ""),
-                        "evidence_start": sample.get("evidence_start", ""),
-                        "evidence_text": sample.get("evidence_text", ""),
-                        "classification_status": "CONTEXT_RULE_CANDIDATE",
-                    })
-                    rows += 1
-                    candidate_rows += 1
-            if candidate_rows:
-                distinct_terms_classified += 1
-    return {"contextual_classification_candidates": rows,
-            "distinct_terms_classified": distinct_terms_classified}
+                    for match in pattern.finditer(run_text):
+                        term = match.group(1)
+                        if term not in candidate_terms:
+                            continue
+                        start = run.start() + match.start(1)
+                        end = start + length
+                        classifications = classify_span(text, start, end)
+                        if not classifications:
+                            continue
+                        evidence_start = max(0, start - 12)
+                        evidence_text = text[evidence_start:min(len(text), end + 12)]
+                        cid = candidate_id(term)
+                        for candidate_type, rule_id in classifications:
+                            writer.writerow({
+                                "candidate_id": cid,
+                                "term": term,
+                                "candidate_type": candidate_type,
+                                "rule_id": rule_id,
+                                "evidence_document": source_info["document"],
+                                "source_sha256": source_info["sha256"],
+                                "tree_position": str(source_info.get("tree_position", "")),
+                                "block_id": str(source_info.get("block_id", "")),
+                                "unit_id": unit_id,
+                                "character_start": start,
+                                "character_end": end,
+                                "evidence_start": evidence_start,
+                                "evidence_text": evidence_text,
+                                "classification_status": "CONTEXT_RULE_CANDIDATE",
+                            })
+                            rows += 1
+                            classified_terms.add(term)
+            if units_scanned % 25000 == 0:
+                print(
+                    f"[context-classification] scanned_units={units_scanned} "
+                    f"candidate_terms={len(candidate_terms)} typed_occurrences={rows}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
+    peak_rss_kib = None
+    if resource is not None:
+        peak_rss_kib = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        if sys.platform == "darwin":
+            peak_rss_kib //= 1024
+    return {
+        "source_units_scanned": units_scanned,
+        "candidate_terms_loaded": len(candidate_terms),
+        "contextual_classification_candidates": rows,
+        "distinct_terms_classified": len(classified_terms),
+        "peak_rss_kib": peak_rss_kib,
+    }
 
 
 def validate(path: Path) -> int:
@@ -143,15 +210,24 @@ def validate(path: Path) -> int:
                 rule_id for rules in RULES.values() for rule_id, _ in rules
             }:
                 raise ValueError(f"row {line}: unknown rule/type")
-            if not all(row[field] for field in ("candidate_id", "term", "unit_id", "evidence_document", "source_sha256")):
+            if not all(row[field] for field in (
+                "candidate_id", "term", "unit_id", "evidence_document", "source_sha256"
+            )):
                 raise ValueError(f"row {line}: missing source identity")
+            if row["candidate_id"] != candidate_id(row["term"]):
+                raise ValueError(f"row {line}: candidate identity does not match term")
             start, end, evidence_start = (
                 int(row["character_start"]), int(row["character_end"]), int(row["evidence_start"])
             )
             left, right = start - evidence_start, end - evidence_start
-            if start < 0 or end <= start or left < 0 or row["evidence_text"][left:right] != row["term"]:
+            if (start < 0 or end <= start or evidence_start < 0 or left < 0
+                or right > len(row["evidence_text"])
+                or row["evidence_text"][left:right] != row["term"]):
                 raise ValueError(f"row {line}: term span does not match evidence")
-            identity = (row["candidate_id"], row["candidate_type"], row["rule_id"], row["unit_id"])
+            identity = (
+                row["candidate_id"], row["candidate_type"], row["rule_id"],
+                row["unit_id"], start, end,
+            )
             if identity in seen:
                 raise ValueError(f"row {line}: duplicate classification evidence")
             seen.add(identity)
@@ -162,10 +238,11 @@ def validate(path: Path) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=Path("catalog/generated/unclassified_term_candidates.csv.gz"))
+    parser.add_argument("--units", type=Path, default=Path("catalog/generated/knowledge_units.jsonl.gz"))
     parser.add_argument("--output", type=Path, default=Path("catalog/generated/contextual_term_type_candidates.csv.gz"))
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
-    result = {"validated_candidates": validate(args.output)} if args.validate else build(args.input, args.output)
+    result = {"validated_candidates": validate(args.output)} if args.validate else build(args.input, args.output, args.units)
     if not args.validate:
         result["validated_candidates"] = validate(args.output)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
