@@ -110,6 +110,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     unit_total = 0
+    document_total = 0
     known_term_occurrences = 0
     distinct_ngrams_seen = 0
     eligible_count = 0
@@ -128,6 +129,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
             connection.execute("PRAGMA temp_store=MEMORY")
             connection.execute("PRAGMA cache_size=-131072")
             connection.executescript("""
+                CREATE TABLE source_documents (
+                    document TEXT PRIMARY KEY
+                ) WITHOUT ROWID;
                 CREATE TABLE term_stats (
                     term_id INTEGER PRIMARY KEY,
                     term TEXT NOT NULL UNIQUE,
@@ -200,6 +204,10 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                     if not unit_id or not document:
                         raise ValueError(f"line {line_number}: missing unit/source identity")
                     unit_total += 1
+                    connection.execute(
+                        "INSERT OR IGNORE INTO source_documents(document) VALUES (?)",
+                        (document,),
+                    )
                     unit_counts = count_ngrams(text, min_length, max_length)
                     max_unit_distinct_terms = max(max_unit_distinct_terms, len(unit_counts))
                     batch_rows = []
@@ -244,6 +252,9 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
                         )
 
             flush_batch()
+            document_total = connection.execute(
+                "SELECT COUNT(*) FROM source_documents"
+            ).fetchone()[0]
             connection.execute("""
                 UPDATE term_stats
                 SET document_count = (
@@ -322,6 +333,7 @@ def mine(units_path: Path, output_path: Path, min_occurrences: int = 3,
 
     return {
         "knowledge_units_scanned": unit_total,
+        "documents_scanned": document_total,
         "distinct_ngrams_seen": distinct_ngrams_seen,
         "known_lexicon_occurrences_skipped": known_term_occurrences,
         "unclassified_term_candidates": eligible_count,
@@ -377,6 +389,7 @@ def main() -> int:
     parser.add_argument("--min-documents", type=int, default=2)
     parser.add_argument("--min-length", type=int, default=2)
     parser.add_argument("--max-length", type=int, default=6)
+    parser.add_argument("--sample-limit", type=int, default=5)
     parser.add_argument("--lexicon", type=Path, default=Path("catalog/entity-lexicon.csv"))
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
@@ -385,7 +398,8 @@ def main() -> int:
     else:
         result = mine(
             args.units, args.output, args.min_occurrences, args.min_documents,
-            args.min_length, args.max_length, lexicon_path=args.lexicon
+            args.min_length, args.max_length, sample_limit=args.sample_limit,
+            lexicon_path=args.lexicon
         )
         result["validated_candidates"] = validate(args.output)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
