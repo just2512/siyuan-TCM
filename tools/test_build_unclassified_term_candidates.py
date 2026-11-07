@@ -119,6 +119,23 @@ class UnclassifiedTermCandidateTests(unittest.TestCase):
             self.assertEqual(len(samples), 2)
             self.assertEqual({item["document"] for item in samples}, {"a.sy", "b.sy"})
 
+    def test_default_sample_limit_caps_evidence_at_five_documents(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "units.jsonl.gz"
+            output = root / "terms.csv.gz"
+            records = [
+                make_unit(f"u{i}", f"{chr(97 + i)}.sy", "经络辨证")
+                for i in range(6)
+            ]
+            write_units(source, records)
+            result = module.mine(source, output, min_occurrences=6, min_documents=6)
+            self.assertEqual(result["documents_scanned"], 6)
+            with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
+                row = next(item for item in csv.DictReader(stream) if item["term"] == "经络辨证")
+            self.assertEqual(row["document_count"], "6")
+            self.assertEqual(len(json.loads(row["sample_evidence"])), 5)
+
     def test_sample_limit_one_is_exact_across_repeated_and_out_of_order_documents(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
