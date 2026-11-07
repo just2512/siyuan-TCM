@@ -34,6 +34,13 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             "eligible_pairs": 0,
             "marker_sentences_without_typed_pair": 0,
             "typed_pair_sentences_without_marker": 0,
+            "marker_sentences_with_subject_type": 0,
+            "marker_sentences_with_object_type": 0,
+            "marker_sentences_with_both_endpoint_types": 0,
+            "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+            "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
+            "marker_sentences_without_subject_type": 0,
+            "marker_sentences_without_object_type": 0,
             "units_with_marker": 0,
             "units_with_eligible_pair": 0,
             "extracted_rows": 0,
@@ -79,6 +86,18 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
 
                     subject_types = SUBJECT_TYPES[predicate.split("_TO_")[0]]
                     object_types = OBJECT_TYPES[predicate]
+                    subject_rows = [row for _, _, row in spans
+                                    if row["candidate_type"] in subject_types]
+                    object_rows = [row for _, _, row in spans
+                                   if row["candidate_type"] in object_types]
+                    if marker_matches:
+                        stats = counts[predicate]
+                        stats["marker_sentences_with_subject_type"] += bool(subject_rows)
+                        stats["marker_sentences_with_object_type"] += bool(object_rows)
+                        stats["marker_sentences_with_both_endpoint_types"] += bool(subject_rows and object_rows)
+                        stats["marker_sentences_without_subject_type"] += not bool(subject_rows)
+                        stats["marker_sentences_without_object_type"] += not bool(object_rows)
+
                     pairs = []
                     for subject_start, subject_end, subject in spans:
                         if subject["candidate_type"] not in subject_types:
@@ -90,6 +109,15 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                     counts[predicate]["ordered_typed_pairs"] += len(pairs)
                     if marker_matches and not pairs:
                         counts[predicate]["marker_sentences_without_typed_pair"] += 1
+                        if subject_rows and object_rows:
+                            counts[predicate]["marker_sentences_with_both_types_but_no_ordered_pair"] += 1
+                    if pairs and marker_matches:
+                        between_any = any(
+                            marker.search(sentence[subject_end - sentence_start:object_start - sentence_start])
+                            for subject_end, object_start in pairs
+                        )
+                        if not between_any:
+                            counts[predicate]["marker_sentences_with_ordered_pair_but_no_predicate_between"] += 1
                     if pairs and not marker_matches:
                         counts[predicate]["typed_pair_sentences_without_marker"] += 1
 
@@ -122,7 +150,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             )
 
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "source_units_scanned": sum(
             1 for _ in gzip.open(units_path, "rt", encoding="utf-8", newline="")
         ),
@@ -131,6 +159,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             "marker_occurrences": "supported lexical predicate occurrences in source sentences",
             "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints",
             "extracted_rows": "rows emitted by the production extractor; must equal eligible_pairs",
+            "endpoint_diagnostics": "For sentences containing a supported predicate marker, these counters show whether subject and object candidate types were present and ordered correctly; they do not relax extraction requirements.",
             "coverage_limit": "This audit measures only the current predicate lexicon and typed candidates; it does not estimate semantic relations expressed with unsupported wording.",
         },
     }
