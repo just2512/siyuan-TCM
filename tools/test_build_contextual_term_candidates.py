@@ -172,6 +172,30 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span(text, third_item, third_item + len("头昏")),
         )
 
+    def test_symptom_list_context_stops_at_non_symptom_narrative_clause(self):
+        text = "初诊时症状是，眼多赤筋，呕心，头昏，西医认为是自体免疫系统不全。"
+        false_term = "西医认为是"
+        start = text.index(false_term)
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, start, start + len(false_term)),
+        )
+
+        text = "症状是四肢肌肉强直，足外翻，双手内屈，无法言语，赴大陆之前无法直立，经过治疗目前可以走路，可见大陆医师经验丰富。"
+        false_term = "大陆医"
+        start = text.index(false_term)
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, start, start + len(false_term)),
+        )
+
+        text = "可见大陆医师经验丰富。"
+        start = text.index("大陆医")
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, start, start + len("大陆医")),
+        )
+
     def test_does_not_classify_generic_bianzheng_as_a_syndrome_prefix(self):
         self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为主", 2, 4))
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))
