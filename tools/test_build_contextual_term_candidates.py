@@ -166,6 +166,11 @@ class ContextualTermCandidateTests(unittest.TestCase):
             ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
             classify_span(text, second_item, second_item + len("呕心")),
         )
+        third_item = text.index("头昏")
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, third_item, third_item + len("头昏")),
+        )
 
     def test_does_not_classify_generic_bianzheng_as_a_syndrome_prefix(self):
         self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为主", 2, 4))
