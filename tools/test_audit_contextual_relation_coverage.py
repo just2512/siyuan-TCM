@@ -22,6 +22,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 "症见头痛，辨证为太阳中风，治宜解肌发表，方用桂枝汤。"
                 "头痛，不宜辨证为太阳中风。"
                 "治宜解肌发表。"
+                "太阳中风，丹溪曰∶治宜解肌发表。"
             )
             second_sentence = source_text.index("头痛", source_text.index("。") + 1)
             second_syndrome = source_text.index("太阳中风", source_text.index("。") + 1)
@@ -31,7 +32,9 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 ("y1", "太阳中风", "SYNDROME", source_text.index("太阳中风")),
                 ("y2", "太阳中风", "SYNDROME", second_syndrome),
                 ("t1", "解肌发表", "TREATMENT", source_text.index("解肌发表")),
-                ("t2", "解肌发表", "TREATMENT", source_text.rindex("解肌发表")),
+                ("t2", "解肌发表", "TREATMENT", source_text.index("解肌发表", source_text.index("。", source_text.index("。") + 1) + 1)),
+                ("y3", "太阳中风", "SYNDROME", source_text.rindex("太阳中风")),
+                ("t3", "解肌发表", "TREATMENT", source_text.rindex("解肌发表")),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
@@ -75,6 +78,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             self.assertEqual(result["predicates"]["SYMPTOM_TO_SYNDROME"]["extracted_rows"], 1)
             self.assertEqual(result["predicates"]["SYMPTOM_TO_SYNDROME"]["negated_pairs"], 1)
             self.assertEqual(result["predicates"]["SYNDROME_TO_TREATMENT"]["eligible_pairs"], 1)
+            self.assertEqual(result["predicates"]["SYNDROME_TO_TREATMENT"]["scope_break_pairs"], 1)
             self.assertEqual(result["predicates"]["TREATMENT_TO_FORMULA"]["eligible_pairs"], 1)
             self.assertTrue(report.is_file())
             parsed = json.loads(report.read_text(encoding="utf-8"))

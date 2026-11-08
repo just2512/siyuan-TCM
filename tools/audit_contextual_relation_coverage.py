@@ -17,6 +17,7 @@ from build_contextual_relation_candidates import (
     OBJECT_TYPES,
     PREDICATES,
     SUBJECT_TYPES,
+    RELATION_SCOPE_BREAKS,
     canonicalize_spans,
     load_context_candidates,
     load_formula_mentions,
@@ -35,6 +36,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             "ordered_typed_pairs": 0,
             "pairs_with_predicate_between": 0,
             "negated_pairs": 0,
+            "scope_break_pairs": 0,
             "eligible_pairs": 0,
             "marker_sentences_without_typed_pair": 0,
             "typed_pair_sentences_without_marker": 0,
@@ -180,6 +182,10 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         match = marker.search(between)
                         if match is None:
                             continue
+                        scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+                        if scope_break and scope_break.search(between[:match.start()]):
+                            counts[predicate]["scope_break_pairs"] += 1
+                            continue
                         counts[predicate]["pairs_with_predicate_between"] += 1
                         if NEGATION_PREFIX.search(between[:match.start()]):
                             counts[predicate]["negated_pairs"] += 1
@@ -215,7 +221,8 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
         },
         "interpretation": {
             "marker_occurrences": "supported lexical predicate occurrences in source sentences",
-            "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints",
+            "scope_break_pairs": "ordered typed pairs whose predicate is preceded by a source-attribution boundary and are excluded from extraction",
+            "eligible_pairs": "ordered typed candidate pairs with a non-negated predicate between endpoints and no source-attribution boundary",
             "extracted_rows": "rows emitted by the production extractor; must equal eligible_pairs",
             "endpoint_diagnostics": "For sentences containing a supported predicate marker, these counters show whether subject and object candidate types were present and ordered correctly; they do not relax extraction requirements.",
             "diagnostic_examples": "At most five source-grounded examples per diagnosis and predicate. Candidate spans are limited to twelve per example and sentence text to 600 characters; examples retain source identity and offsets.",
