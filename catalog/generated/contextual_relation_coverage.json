@@ -5,25 +5,25 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 305,
-      "pairs_with_predicate_between": 4,
+      "ordered_typed_pairs": 179,
+      "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
-      "eligible_pairs": 4,
-      "marker_sentences_without_typed_pair": 62,
-      "typed_pair_sentences_without_marker": 101,
-      "marker_sentences_with_subject_type": 13,
+      "eligible_pairs": 0,
+      "marker_sentences_without_typed_pair": 63,
+      "typed_pair_sentences_without_marker": 67,
+      "marker_sentences_with_subject_type": 5,
       "marker_sentences_with_object_type": 16,
-      "marker_sentences_with_both_endpoint_types": 1,
+      "marker_sentences_with_both_endpoint_types": 0,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
-      "marker_sentences_without_subject_type": 50,
+      "marker_sentences_without_subject_type": 58,
       "marker_sentences_without_object_type": 47,
       "units_with_marker": 61,
-      "units_with_eligible_pair": 1,
-      "extracted_rows": 4,
+      "units_with_eligible_pair": 0,
+      "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "SYNDROME": 18,
-        "SYMPTOM": 45,
+        "SYMPTOM": 12,
         "FORMULA": 2,
         "TREATMENT": 1
       }
@@ -49,7 +49,7 @@
       "extracted_rows": 2,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "TREATMENT": 353,
-        "SYMPTOM": 28,
+        "SYMPTOM": 26,
         "FORMULA": 42,
         "SYNDROME": 2
       }
@@ -75,7 +75,7 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 224,
-        "SYMPTOM": 333,
+        "SYMPTOM": 245,
         "TREATMENT": 12,
         "SYNDROME": 18
       }
@@ -215,6 +215,27 @@
           "candidate_spans_truncated": false
         },
         {
+          "unit_id": "5fc605446b969375905a36a6f63689bb8af6dd539316f2fb039b1393c1dd263a",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1338",
+          "block_id": "20240511101226-1kbz6qe",
+          "sentence_start": 0,
+          "sentence_end": 305,
+          "sentence_text": "03/23/2007，晴，白人，女，1956年生，初诊日期02/09/2007，本州岛岛西医诊断为 : Auto Immune--Kidney Failure，她自去年9月19日开始洗肾至今，服用药物是Lisinopril，Clonidine，Renal Vitamin+phosphate binder，初诊时症状是，眼多赤筋，呕心，头昏，西医认为是自体免疫系统不全，所以造成肾衰竭，她时常会瞬间血压升高，问诊 : 睡眠尚好，大便秘结，小便黄，仍有些便意，无胃口，因为呕心，身体多觉寒冷，双脚冰冷，月经有两年都没有来，脉弦，诊断为 : 里寒湿盛，心阳不足，肾阳尚存一游丝气息，体内饮积，是属于里寒表又虚之症。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_c0f9f2747f298eaf889e7aa2",
+              "term": "里寒表",
+              "candidate_type": "SYNDROME",
+              "start": 297,
+              "end": 300
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
           "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
           "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
           "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
@@ -234,51 +255,9 @@
             }
           ],
           "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
-          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
-          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
-          "tree_position": "0.59",
-          "block_id": "20231122160010-q88onhz",
-          "sentence_start": 0,
-          "sentence_end": 31,
-          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_63dae4ae4cb531caeef3d458",
-              "term": "寒痢",
-              "candidate_type": "SYNDROME",
-              "start": 28,
-              "end": 30
-            }
-          ],
-          "candidate_spans_truncated": false
         }
       ],
       "missing_object_type": [
-        {
-          "unit_id": "31f8691533928c1a14adb73fe8d5e560a2cc050affe3128fc906259d87f3c7fb",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.703",
-          "block_id": "20240511101226-byjkdzv",
-          "sentence_start": 0,
-          "sentence_end": 244,
-          "sentence_text": "04/04/2005,周一,晴,下午一位白人,56岁,于一个半月前来看我,西医诊断为血癌与摄护腺癌,没有任何西医治疗,今天我查了许久,几乎找不到 任何血癌的症状,双手掌皮温柔滑润,一切很好,唯有双脚仍然稍冷,所以我再给予粉剂,约18天量,此君因为西医没有介入,在进入第四周疗程时,我就找不到 血癌的踪迹,时至今日,已经 接近正常的阶段了,一般我们治血癌约须四周左右就可见好转了,而摄护腺癌就比较慢了,端视病情深浅,与是否有先经过西医胡搞过,举凡西医没有碰过的病人, 一般而言恢复期都很短.",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_c9de74e55e9f4eac4c3cb28e",
-              "term": "好转了",
-              "candidate_type": "SYMPTOM",
-              "start": 185,
-              "end": 188
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
         {
           "unit_id": "245acc5b67e306f2793e1fbc0429f4683252b0dea31e064cbe253ccb03da076b",
           "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
@@ -371,50 +350,71 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "1c1302776a347f8c8c8c1e556cb155f689f3848e041ee8daeb247756f32f7fd7",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.770",
-          "block_id": "20240511101226-2srv14x",
+          "unit_id": "3b43e49b151ff1366da9bea20be721814d24ef4e0a1415c14164132eddcc450c",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511105921-ssbnxpw/20240511110546-hd9orqs.sy",
+          "source_sha256": "59803eeb01b1a85f4994216965439819a8e83552461eda6feba57f6bc88a3db0",
+          "tree_position": "0.17",
+          "block_id": "20240511132144-x3ltg09",
           "sentence_start": 0,
-          "sentence_end": 241,
-          "sentence_text": "04/21/2005,晴,女32岁,被诊断为铜中毒,西医认为是遗传造成的,此病已经历十年以上,之前西医不断的误诊,直到后来才查出她体内无法代谢 铜,因而引起中毒,是极少见的案例,2003年曾经去大陆江苏一间医院诊治,这是大陆唯一一间医院专门治铜中毒的医院,他们认为是肝豆病,症状是四肢肌肉 强直,足外翻,双手内屈,无法言语,赴大陆之前是完全无法直立的,经过大陆的医师治疗,目前可以走路了,可见大陆医师比美国强很多,可是对于真正原因却一 无所知,读者现在可以试看看你们的闻诊功力如何?",
+          "sentence_end": 97,
+          "sentence_text": "尤其季节一变换，则许多人打喷嚏、流鼻水、鼻痒、流眼泪等症状相继出现，几乎人人都被诊断为过敏，为了寻找过敏原，打了上百针，也不见得知道，有时就算知道了，是对花粉或尘土或猫狗毛等过敏，谁又能避免呢？",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_270516a672302de42d3e1651",
-              "term": "四肢肌肉",
+              "candidate_id": "term_96e77d824c04622a8498cea3",
+              "term": "相继",
               "candidate_type": "SYMPTOM",
-              "start": 140,
-              "end": 144
+              "start": 29,
+              "end": 31
             },
             {
-              "candidate_id": "term_8c7af90e26ce57c9cd2d8b9d",
-              "term": "大陆医",
+              "candidate_id": "term_65f5a81a2ec1ec91b833b9c3",
+              "term": "几乎人人",
               "candidate_type": "SYMPTOM",
-              "start": 196,
-              "end": 199
+              "start": 34,
+              "end": 38
             }
           ],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "bd7dc107e9c77f7a95a7c98b306fbf34bbec6e255f19e31a8e48c8b8268ea7c6",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.900",
-          "block_id": "20240511101226-mmruf73",
+          "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
+          "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
+          "tree_position": "0.820",
+          "block_id": "20240511124241-c93256s",
           "sentence_start": 0,
-          "sentence_end": 610,
-          "sentence_text": "另一位妇女,56岁,C君,被西医诊断为脑下垂体瘤,造成甲状腺肿大,舌变大,脸变长,鼻子也长长,脸也变长,四肢末端肥大,全身骨头关结痛,发病约五 年,自述是吃女性贺尔蒙与黄体素几年之后,才发病的,是有一天看到美国新闻报导说这种药有非常大的副作用,所以才立刻停药,其间已经发过三次心脏病,曾经 返回台湾给两位主任级的西医一起动刀,自病处取出许多已经钙化的小肿块,但是无法清除干净,现在她被要求服用一种生长激素抑制剂(Somatuline P.R),每个月的药费是四万台币, 如果不使用它,就会因过渡生长,而导致脸与身体都变形,而且四肢会变肥大,我非常为这女子打抱不平,因为这种根本就是因为相信西医而去服用西药的女性贺尔 蒙之后,所产生的副作用,结果西药厂不但不须要赔偿,反而因此可以在去制造另一个药来大赚其钱,不吃还不行,还要吃终身的.吃了请问读者你能够负担得起每 个月四万台币的药钱吗? 我已经不知道说过多少次,西医用骗而且同时威胁妇女们,只要进入更年期就要吃这种女性贺尔蒙,否则就会得到骨质疏松症,在我这已经有许多无辜受害的老太太 告诉我,她们因为相信西医说的话,有的吃了25年,有的吃了30年,结果却是全身的骨头都出现了骨质疏松症,所以这种药根本就是在骗人,而产生的副作用他 们也不须要负责,还要终身吃他们的药,民众真是一生辛劳其结果所有赚的钱却都给了西药厂,起因只是因为相信西医,而所付出的代价却",
-          "sentence_truncated": true,
+          "sentence_end": 65,
+          "sentence_text": "1，同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重，因此，西医从原来诊断“癫痫”该作诊断为“Rasmussen”综合症。",
+          "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_6a6ef4061bb5077b4289fa5f",
-              "term": "了骨",
+              "candidate_id": "term_43f58b43ae8b16536da49646",
+              "term": "只是由于",
               "candidate_type": "SYMPTOM",
-              "start": 510,
-              "end": 512
+              "start": 11,
+              "end": 15
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "df27bd3624e78baae7b8097d914d11b8c590f537d83a830e536c34197b2018b3",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240522082141-eq7k2wu/20240522082253-87maqb6.sy",
+          "source_sha256": "7736b6d5faf65788c4a7ff28c297ad16e3619a1683b8824b8871553f1ee1e559",
+          "tree_position": "0.5",
+          "block_id": "20240522091345-74ie0ve",
+          "sentence_start": 0,
+          "sentence_end": 65,
+          "sentence_text": "1，同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重，因此，西医从原来诊断“癫痫”该作诊断为“Rasmussen”综合症。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_43f58b43ae8b16536da49646",
+              "term": "只是由于",
+              "candidate_type": "SYMPTOM",
+              "start": 11,
+              "end": 15
             }
           ],
           "candidate_spans_truncated": false
