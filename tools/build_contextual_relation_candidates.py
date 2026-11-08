@@ -43,6 +43,12 @@ OBJECT_TYPES = {
 }
 NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁|未|非)\s*$")
 
+# A later quoted recommendation must not attach to syndrome candidates
+# appearing before a source-attribution boundary in the same long sentence.
+RELATION_SCOPE_BREAKS = {
+    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:])"),
+}
+
 
 def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
     grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
@@ -217,6 +223,9 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                                 if match is None:
                                     continue
                                 if NEGATION_PREFIX.search(between[:match.start()]):
+                                    continue
+                                scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+                                if scope_break and scope_break.search(between[:match.start()]):
                                     continue
                                 relation_id = relation_identity(predicate, subject, obj, unit_id, start, end)
                                 writer.writerow({
