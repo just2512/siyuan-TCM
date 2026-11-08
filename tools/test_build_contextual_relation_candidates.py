@@ -287,6 +287,68 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             )
 
 
+    def test_validator_rejects_relation_evidence_spanning_multiple_sentences(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "太阳中风。丹溪曰：治宜健脾"
+            unit = {
+                "unit_id": "u",
+                "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+
+            subject_start = source_text.index("太阳中风")
+            object_start = source_text.index("健脾")
+            subject = {
+                "candidate_id": "syndrome-1",
+                "character_start": str(subject_start),
+                "character_end": str(subject_start + len("太阳中风")),
+            }
+            obj = {
+                "candidate_id": "treatment-1",
+                "character_start": str(object_start),
+                "character_end": str(object_start + len("健脾")),
+            }
+            row = {field: "" for field in FIELDS}
+            row.update({
+                "predicate": "SYNDROME_TO_TREATMENT",
+                "subject_candidate_id": subject["candidate_id"],
+                "subject_text": "太阳中风",
+                "subject_type": "SYNDROME",
+                "subject_start": subject["character_start"],
+                "subject_end": subject["character_end"],
+                "object_candidate_id": obj["candidate_id"],
+                "object_text": "健脾",
+                "object_type": "TREATMENT",
+                "object_start": obj["character_start"],
+                "object_end": obj["character_end"],
+                "unit_id": "u",
+                "document": "a.sy",
+                "source_sha256": "sha",
+                "tree_position": "0",
+                "block_id": "b",
+                "sentence_start": "0",
+                "sentence_end": str(len(source_text)),
+                "evidence_text": source_text,
+                "predicate_text": "治宜",
+                "extraction_rule": "SYNDROME_TO_TREATMENT_EXPLICIT_V1",
+                "resolution_status": "UNRESOLVED_CANDIDATE",
+            })
+            row["relation_id"] = relation_identity(
+                row["predicate"], subject, obj, "u", 0, len(source_text)
+            )
+            with output.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=FIELDS)
+                writer.writeheader()
+                writer.writerow(row)
+
+            with self.assertRaisesRegex(ValueError, "source sentence boundary"):
+                validate(output, units)
+
     def test_validator_rejects_relation_crossing_source_attribution_boundary(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
