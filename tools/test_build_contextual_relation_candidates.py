@@ -5,10 +5,16 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_contextual_relation_candidates import FIELDS, PREDICATES, extract, relation_identity, validate
+from build_contextual_relation_candidates import FIELDS, PREDICATES, extract, relation_identity, sentence_ranges, validate
 
 
 class ContextualRelationCandidateTests(unittest.TestCase):
+    def test_sentence_ranges_split_fullwidth_period_without_losing_offsets(self):
+        source_text = "甲方。乙方．丙方！丁方"
+        ranges = list(sentence_ranges(source_text))
+        self.assertEqual([source_text[start:end] for start, end in ranges], ["甲方。", "乙方．", "丙方！", "丁方"])
+        self.assertEqual([(start, end) for start, end in ranges], [(0, 3), (3, 6), (6, 9), (9, 11)])
+
     def test_ambiguous_classical_markers_are_not_treatment_relation_predicates(self):
         marker = PREDICATES["SYNDROME_TO_TREATMENT"]
         self.assertIsNone(marker.search("法当腹满"))
@@ -185,7 +191,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             output = root / "relations.csv"
             source_text = (
                 "水肿有余者与不足者宜分别治之，然其源多由中气不足而起，"
-                "丹溪曰：水病当以健脾为主。"
+                "丹溪曰∶水病当以健脾为主。"
             )
             terms = [
                 ("syndrome-1", "有余", "SYNDROME"),

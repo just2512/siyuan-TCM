@@ -25,7 +25,7 @@ FIELDS = [
     "sentence_start", "sentence_end", "evidence_text", "predicate_text",
     "extraction_rule", "resolution_status",
 ]
-SENTENCE_END = re.compile(r"[^。！？；\n]+[。！？；]?|；+|\n+")
+SENTENCE_END = re.compile(r"[^。！？；．\n]+[。！？；．]?|；+|\n+")
 PREDICATES = {
     "SYMPTOM_TO_SYNDROME": re.compile(r"(?:辨证为|辨证属|证属|诊断为|辨为)"),
     "SYNDROME_TO_TREATMENT": re.compile(r"(?:治宜|治法为|治以|当以)"),
@@ -46,7 +46,7 @@ NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁
 # A later quoted recommendation must not attach to syndrome candidates
 # appearing before a source-attribution boundary in the same long sentence.
 RELATION_SCOPE_BREAKS = {
-    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:])"),
+    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])"),
 }
 
 
