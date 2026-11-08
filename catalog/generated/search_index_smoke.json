@@ -12,6 +12,12 @@
     "contextual_term_type_candidates": 216473,
     "contextual_relation_candidates": 0
   },
+  "relation_predicate_counts": {
+    "FORMULA_CONTAINS_HERB": 158,
+    "SYMPTOM_TO_SYNDROME": 0,
+    "SYNDROME_TO_TREATMENT": 0,
+    "TREATMENT_TO_FORMULA": 0
+  },
   "checks": {
     "full_text": "PASS",
     "entity_span_and_source": "PASS",
