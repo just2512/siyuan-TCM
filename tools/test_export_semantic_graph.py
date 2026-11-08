@@ -209,6 +209,28 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(formula_edge["object_candidate_id"], "formula-1")
             self.assertEqual(edge["evidence"]["text"], source_text)
 
+            # Graph validation independently checks the explicit predicate against source text,
+            # rather than relying only on graph/SQLite field equality.
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET predicate_text=? WHERE relation_id=?",
+                ("证属", "ctx-r1"),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual relation predicate evidence mismatch"):
+                module.validate(database, output)
+
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET predicate_text=? WHERE relation_id=?",
+                ("辨证为", "ctx-r1"),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+
             # Tampering with contextual classification metadata must be rejected.
             term = next(row for row in rows if row["record_type"] == "CONTEXTUAL_TERM_CANDIDATE")
             term["rule_id"] = "TAMPERED_RULE"

@@ -9,6 +9,14 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from build_contextual_relation_candidates import (
+    NEGATION_PREFIX,
+    PREDICATES,
+    RELATION_SCOPE_BREAKS,
+    relation_identity,
+    sentence_ranges,
+)
+
 
 def records(database_path: Path):
     connection = sqlite3.connect(database_path)
@@ -303,8 +311,31 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"contextual relation endpoint spans invalid at line {line}")
                 if source[0][ss:se] != row["subject_text"] or source[0][os:oe] != row["object_text"]:
                     raise ValueError(f"contextual relation endpoint text mismatch at line {line}")
-                if row["predicate_text"] not in source[0][se:os]:
-                    raise ValueError(f"contextual relation predicate mismatch at line {line}")
+                if (start, end) not in set(sentence_ranges(source[0])):
+                    raise ValueError(f"contextual relation evidence crosses a source sentence boundary at line {line}")
+                predicate = row["predicate"]
+                if (predicate not in PREDICATES
+                    or row["extraction_rule"] != predicate + "_EXPLICIT_V1"):
+                    raise ValueError(f"contextual relation predicate/rule mismatch at line {line}")
+                between = source[0][se:os]
+                predicate_match = PREDICATES[predicate].search(between)
+                if (predicate_match is None
+                    or predicate_match.group(0) != row["predicate_text"]
+                    or NEGATION_PREFIX.search(between[:predicate_match.start()])):
+                    raise ValueError(f"contextual relation predicate evidence mismatch at line {line}")
+                scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+                if scope_break and scope_break.search(between[:predicate_match.start()]):
+                    raise ValueError(f"contextual relation crosses a source-attribution boundary at line {line}")
+                expected_id = relation_identity(
+                    predicate,
+                    {"candidate_id": row["subject_candidate_id"],
+                     "character_start": str(ss), "character_end": str(se)},
+                    {"candidate_id": row["object_candidate_id"],
+                     "character_start": str(os), "character_end": str(oe)},
+                    evidence["unit_id"], start, end,
+                )
+                if relation_id != expected_id:
+                    raise ValueError(f"contextual relation identity mismatch at line {line}")
                 seen_contextual_relations.add(relation_id)
                 contextual_edge_count += 1
             else:
