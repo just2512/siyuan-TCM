@@ -31,7 +31,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
                 CREATE TABLE contextual_term_type_candidates (id INTEGER);
-                CREATE TABLE contextual_relation_candidates (id INTEGER);
+                CREATE TABLE contextual_relation_candidates (id INTEGER, predicate TEXT);
             """)
             text = "桂枝汤治疗太阳中风"
             connection.execute(
