@@ -299,7 +299,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
                 "content": {"source_text": source_text},
             }
             with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
-                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
 
             subject_start = source_text.index("太阳中风")
             object_start = source_text.index("健脾")
