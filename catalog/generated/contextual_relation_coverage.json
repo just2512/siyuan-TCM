@@ -5,79 +5,79 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 5245,
+      "ordered_typed_pairs": 3582,
       "pairs_with_predicate_between": 8,
       "negated_pairs": 0,
       "eligible_pairs": 8,
       "marker_sentences_without_typed_pair": 62,
-      "typed_pair_sentences_without_marker": 140,
+      "typed_pair_sentences_without_marker": 104,
       "marker_sentences_with_subject_type": 13,
-      "marker_sentences_with_object_type": 17,
+      "marker_sentences_with_object_type": 16,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 50,
-      "marker_sentences_without_object_type": 46,
+      "marker_sentences_without_object_type": 47,
       "units_with_marker": 61,
       "units_with_eligible_pair": 1,
       "extracted_rows": 8,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYNDROME": 27,
+        "SYNDROME": 25,
         "SYMPTOM": 231,
         "FORMULA": 2,
         "TREATMENT": 3
       }
     },
     "SYNDROME_TO_TREATMENT": {
-      "marker_occurrences": 1098,
-      "sentences_with_marker": 1054,
-      "ordered_typed_pairs": 17,
-      "pairs_with_predicate_between": 8,
+      "marker_occurrences": 385,
+      "sentences_with_marker": 384,
+      "ordered_typed_pairs": 11,
+      "pairs_with_predicate_between": 6,
       "negated_pairs": 0,
-      "eligible_pairs": 8,
-      "marker_sentences_without_typed_pair": 1052,
-      "typed_pair_sentences_without_marker": 3,
-      "marker_sentences_with_subject_type": 2,
-      "marker_sentences_with_object_type": 676,
-      "marker_sentences_with_both_endpoint_types": 2,
+      "eligible_pairs": 6,
+      "marker_sentences_without_typed_pair": 383,
+      "typed_pair_sentences_without_marker": 2,
+      "marker_sentences_with_subject_type": 1,
+      "marker_sentences_with_object_type": 352,
+      "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
-      "marker_sentences_without_subject_type": 1052,
-      "marker_sentences_without_object_type": 378,
-      "units_with_marker": 875,
-      "units_with_eligible_pair": 2,
-      "extracted_rows": 8,
+      "marker_sentences_without_subject_type": 383,
+      "marker_sentences_without_object_type": 32,
+      "units_with_marker": 336,
+      "units_with_eligible_pair": 1,
+      "extracted_rows": 6,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "TREATMENT": 1183,
-        "SYMPTOM": 727,
-        "FORMULA": 92,
-        "SYNDROME": 4
+        "TREATMENT": 557,
+        "SYMPTOM": 92,
+        "FORMULA": 42,
+        "SYNDROME": 2
       }
     },
     "TREATMENT_TO_FORMULA": {
       "marker_occurrences": 2954,
       "sentences_with_marker": 2837,
-      "ordered_typed_pairs": 139,
+      "ordered_typed_pairs": 78,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "eligible_pairs": 0,
-      "marker_sentences_without_typed_pair": 2835,
-      "typed_pair_sentences_without_marker": 51,
-      "marker_sentences_with_subject_type": 17,
+      "marker_sentences_without_typed_pair": 2836,
+      "typed_pair_sentences_without_marker": 30,
+      "marker_sentences_with_subject_type": 12,
       "marker_sentences_with_object_type": 148,
-      "marker_sentences_with_both_endpoint_types": 3,
-      "marker_sentences_with_both_types_but_no_ordered_pair": 1,
-      "marker_sentences_with_ordered_pair_but_no_predicate_between": 2,
-      "marker_sentences_without_subject_type": 2820,
+      "marker_sentences_with_both_endpoint_types": 1,
+      "marker_sentences_with_both_types_but_no_ordered_pair": 0,
+      "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
+      "marker_sentences_without_subject_type": 2825,
       "marker_sentences_without_object_type": 2689,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 224,
-        "TREATMENT": 33,
         "SYMPTOM": 1826,
-        "SYNDROME": 39
+        "TREATMENT": 22,
+        "SYNDROME": 32
       }
     }
   },
@@ -93,6 +93,19 @@
           "sentence_start": 122,
           "sentence_end": 143,
           "sentence_text": "所以，我们常常会遇到被西医诊断为不同的病。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "67bbc2d6435a09ee4e52765b2716a95526eddc9f6755b4354305b6ee0695bb1f",
+          "document": "20230928080422-67pnka7/20240111114320-ao7fim0/20240118160255-y1tbtn1/20240118151028-egpg94j.sy",
+          "source_sha256": "d4a258b50a65e84756653ea974bbadfe9dc68d08232b548b43b8379580845f45",
+          "tree_position": "0.19",
+          "block_id": "20240122151401-0vqh2w4",
+          "sentence_start": 23,
+          "sentence_end": 67,
+          "sentence_text": "临床上我们有选用，选用的法则呢，我们以经方为主，以张仲景的处方为主，他的条辨、辨证为主。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
           "candidate_spans_truncated": false
@@ -135,43 +148,9 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [],
           "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "8d6ec3ae152c338029d34880af0ca052bd72b84b98ccb4220dcbf428c2938273",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-dttef46.sy",
-          "source_sha256": "9a1dace9d52dfa46b6123e65a2db5765ddd9ccff96b5b765ca9784d56f1f28b3",
-          "tree_position": "0.993",
-          "block_id": "20240511095102-zay4xaw",
-          "sentence_start": 0,
-          "sentence_end": 113,
-          "sentence_text": "新光医院睡眠中心主任林嘉谟表示，这名患者是个才9岁大的小学3年级小男生，不久前，疼爱他的阿公过世，他哭得好伤心，情绪荡到最低点，什么事都不想做，阿嬷只好带他看医师，结果被诊断为有忧郁倾向，开给抗忧郁药物「百忧解」，每天吃2颗。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
         }
       ],
       "missing_subject_type": [
-        {
-          "unit_id": "67bbc2d6435a09ee4e52765b2716a95526eddc9f6755b4354305b6ee0695bb1f",
-          "document": "20230928080422-67pnka7/20240111114320-ao7fim0/20240118160255-y1tbtn1/20240118151028-egpg94j.sy",
-          "source_sha256": "d4a258b50a65e84756653ea974bbadfe9dc68d08232b548b43b8379580845f45",
-          "tree_position": "0.19",
-          "block_id": "20240122151401-0vqh2w4",
-          "sentence_start": 23,
-          "sentence_end": 67,
-          "sentence_text": "临床上我们有选用，选用的法则呢，我们以经方为主，以张仲景的处方为主，他的条辨、辨证为主。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_414f7335a9a1713435414fa0",
-              "term": "为主",
-              "candidate_type": "SYNDROME",
-              "start": 64,
-              "end": 66
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
         {
           "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
           "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150243-3qj6v6b.sy",
@@ -294,6 +273,27 @@
               "candidate_type": "SYNDROME",
               "start": 249,
               "end": 253
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
+          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
+          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
+          "tree_position": "0.59",
+          "block_id": "20231122160010-q88onhz",
+          "sentence_start": 0,
+          "sentence_end": 31,
+          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_63dae4ae4cb531caeef3d458",
+              "term": "寒痢",
+              "candidate_type": "SYNDROME",
+              "start": 28,
+              "end": 30
             }
           ],
           "candidate_spans_truncated": false
@@ -795,132 +795,6 @@
     "SYNDROME_TO_TREATMENT": {
       "missing_subject_type": [
         {
-          "unit_id": "2f79efc23cb68cb04cb4946aca08b8f33c606794b07254ea0a232eb25ce999b4",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230926160059-s5llfbs.sy",
-          "source_sha256": "93290affbd777e07a6d995a81a9140aa2064ed482fa161ecb20debfc9c1f4706",
-          "tree_position": "0.4",
-          "block_id": "20230926160102-rtcnytk",
-          "sentence_start": 186,
-          "sentence_end": 265,
-          "sentence_text": "那精髓这个说法当然也是象征性的讲法，因为中国人总是觉得人的督脉啊，上到头顶是不是，那如里是有一个生物的角长到那么快的话，那当然这个生物的督脉就特别强啦是不是。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_afb921a2e2c70faaf4bcac50",
-              "term": "然也",
-              "candidate_type": "TREATMENT",
-              "start": 194,
-              "end": 196
-            },
-            {
-              "candidate_id": "term_87d29efb1972a5f95d8dced4",
-              "term": "然也是",
-              "candidate_type": "TREATMENT",
-              "start": 194,
-              "end": 197
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "749bc8338575d681094ba88d67f0939d650ecc616c2713a175d3b036dc6a8164",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230926161505-xlnro3v.sy",
-          "source_sha256": "0e468ae8b4d3741d61f12461259d6aa7279dab6b732ccf8cc76a6c7563f5017a",
-          "tree_position": "0.23",
-          "block_id": "20230926161508-4joqu2k",
-          "sentence_start": 0,
-          "sentence_end": 53,
-          "sentence_text": "我跟你讲，这个说法当然是太玄，而且我们台湾不是拿新鲜的天门冬来酿哦，你也不要想象真的十天就能够大痒而特痒。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_7204c6bb1261dee09f9f7605",
-              "term": "然是",
-              "candidate_type": "TREATMENT",
-              "start": 10,
-              "end": 12
-            },
-            {
-              "candidate_id": "term_66392df705fb60e42ddc02c7",
-              "term": "然是太",
-              "candidate_type": "TREATMENT",
-              "start": 10,
-              "end": 13
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "4cc3b883e81bf00638fc9aac37a0909ec78a2d1c3b10c752457044a24c5f487e",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927140249-py17drz.sy",
-          "source_sha256": "93d556a333e7d7998990e8e0648071025acfe7de08a54f6c8e9394cb1f8fba4b",
-          "tree_position": "0.185",
-          "block_id": "20240205084435-91y8ral",
-          "sentence_start": 0,
-          "sentence_end": 42,
-          "sentence_text": "趺阳脉微而弦，法当腹满，若不满者，必大便难，两胠疼痛，此为虚寒，当温之，宜吴茱萸汤。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_1ff1e96b19ded7aa6db9daef",
-              "term": "腹满",
-              "candidate_type": "TREATMENT",
-              "start": 9,
-              "end": 11
-            },
-            {
-              "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
-              "term": "疼痛",
-              "candidate_type": "SYMPTOM",
-              "start": 24,
-              "end": 26
-            },
-            {
-              "candidate_id": "term_8e59acb21d99e3a3e49b770f",
-              "term": "胠疼痛",
-              "candidate_type": "SYMPTOM",
-              "start": 23,
-              "end": 26
-            },
-            {
-              "candidate_id": "term_8cc676ecaf274c0d2677f34e",
-              "term": "两胠疼痛",
-              "candidate_type": "SYMPTOM",
-              "start": 22,
-              "end": 26
-            },
-            {
-              "candidate_id": "0433d204665959e1f00198084b7ca6a8433765752f22a39689085f89626dc429",
-              "term": "吴茱萸汤",
-              "candidate_type": "FORMULA",
-              "start": 37,
-              "end": 41
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "c44d8bbe300ecb4a1ff58f7b8aca804bb8b4df27b33e765c774a10e06689f7b2",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927152806-eat7107.sy",
-          "source_sha256": "974de9d4287e02fd67cb22110afd12b6f1bcf2cf034eedc8aab29159d202e429",
-          "tree_position": "0.68",
-          "block_id": "20230927152810-gk90e1l",
-          "sentence_start": 0,
-          "sentence_end": 90,
-          "sentence_text": "湖阳公主的瘦胎方用「枳壳」来让胎儿顺产好生，至少在唐朝都没有出事，才会继续留用到宋朝，可是，JT认为现代人的体质娇嫩、虚，不宜用这个方，况且还有其它没有含枳壳的安胎顺产的方子可用。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_fc3d65a45589fababd03b491",
-              "term": "这个方",
-              "candidate_type": "TREATMENT",
-              "start": 64,
-              "end": 67
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "b976123f2a2d6ac79b3423ed61dc057b53560bff152bbf9f42fd7838868fcc5f",
           "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926142448-l5657o2.sy",
           "source_sha256": "7c98ff84a42d6c7a9b610e3b92bd618cafa2050adf1f22039b4cea5fb16d9d53",
@@ -954,22 +828,135 @@
             }
           ],
           "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "1c611ba84c79a68ed5265018d68b6cede43e1b10c3397cdca4a84fd509ef24a7",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926173646-98s53iv.sy",
+          "source_sha256": "2a61b9b763a4cdde74cdc975ee082db7496de5e94d1f7fc210c65855a923a42f",
+          "tree_position": "0.3",
+          "block_id": "20230926173713-53m002f",
+          "sentence_start": 0,
+          "sentence_end": 55,
+          "sentence_text": "[16.3]妇人怀孕六七月，脉弦，发热，其胎愈胀，腹痛，恶寒，少腹如扇，所以然者，子藏开故也，当以附子汤温之。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_85385f4a812bbf2a5a241774",
+              "term": "发热",
+              "candidate_type": "SYMPTOM",
+              "start": 17,
+              "end": 19
+            },
+            {
+              "candidate_id": "term_85ae24c8dafac1016f4f5b1a",
+              "term": "附子汤温",
+              "candidate_type": "TREATMENT",
+              "start": 49,
+              "end": 53
+            },
+            {
+              "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
+              "term": "附子汤",
+              "candidate_type": "FORMULA",
+              "start": 49,
+              "end": 52
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "bdefa7e48d586eb91adcf55f98e198025c3f8d704d1a9126192f195bf17a39df",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927104349-6pdgxwd.sy",
+          "source_sha256": "2c29841d8a4d9114cd547d029572db8a4ecbc53916363d1af288e138e4580275",
+          "tree_position": "0.8",
+          "block_id": "20230927104352-zsnpwue",
+          "sentence_start": 0,
+          "sentence_end": 49,
+          "sentence_text": "[桂林本 9-102]阳明病，腹满，胁下偏痛，发微热，其脉弦紧者，当以温药下之，宜大黄附子细辛汤。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_8476bbcf6f73d042f8d68a77",
+              "term": "温药",
+              "candidate_type": "TREATMENT",
+              "start": 35,
+              "end": 37
+            },
+            {
+              "candidate_id": "term_8adaf051c6e4e963a96478d1",
+              "term": "温药下",
+              "candidate_type": "TREATMENT",
+              "start": 35,
+              "end": 38
+            },
+            {
+              "candidate_id": "term_61b607e29d73215b5646e967",
+              "term": "温药下之",
+              "candidate_type": "TREATMENT",
+              "start": 35,
+              "end": 39
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "107b8fb8d22b633865b5c4c199d1f024fcc26f30c6892240f767e194a0a05047",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927155742-j2jc1ov.sy",
+          "source_sha256": "25ee71c6231e83f662f523499d8f39a23f6afa8e889e87befa3b4d36c1ab613b",
+          "tree_position": "0.16",
+          "block_id": "20231227094032-az60sg4",
+          "sentence_start": 0,
+          "sentence_end": 124,
+          "sentence_text": "那为什么说要用慢慢消化的方法，为什么不能快呢? 其实这还是蛮有道理的，那同学们看一下讲义里头有《金匮要略》的几句话，治疗痰饮的一些基本原则的一个论点，在42页的讲义的中间上面一点，就是《金匮要略》讲到痰饮的时候，他有说，“病痰饮者，当以温药和之”。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_8476bbcf6f73d042f8d68a77",
+              "term": "温药",
+              "candidate_type": "TREATMENT",
+              "start": 118,
+              "end": 120
+            },
+            {
+              "candidate_id": "term_69074e73386d9c323c8d2311",
+              "term": "温药和",
+              "candidate_type": "TREATMENT",
+              "start": 118,
+              "end": 121
+            },
+            {
+              "candidate_id": "term_2c9a998d65d9199f97c5a420",
+              "term": "温药和之",
+              "candidate_type": "TREATMENT",
+              "start": 118,
+              "end": 122
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "70caaa2a94950af2020b95c4286f1cf4f49c708f49cb560420e01e8242c77666",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927161037-1evm893.sy",
+          "source_sha256": "c7fd328b02760d72fe77ce117dd5a4247483d4fac544d8388bf0d9a25b65ac54",
+          "tree_position": "0.1",
+          "block_id": "20230927161040-5xaps5w",
+          "sentence_start": 0,
+          "sentence_end": 448,
+          "sentence_text": "命名不曰归芎而曰佛手者，谓此方治妇人胎前产后诸疾，如佛手之神妙也，当归川芎为血分之主药，性温而味甘辛，以温能和血，甘能补血，辛能散血也，古人俱必以当归君川芎或一倍或再倍者，盖以川芎辛窜，捷于升散过则伤气，故寇宗曰：不可单服久服，亦此义也，然施之于气郁血凝，无不奏效，故用以佐当归而收血病之功，使瘀去新生，血各有所归，血既有所归，则血安其部，而诸血病愈矣，至妊娠胎动，胎伤下血，非血壅胎伤，即血乱妄下，服此以探之，血乱胎未动者，血顺则痛止，血壅胎未损者，血行痛止，则胎因之而安也，已动已损者，血得顺行，则胎亦因之而顺下也，横生倒生，因用力太早或误服催生之药，致气逆血乱亦用此以调之，产后崩中金疮，亡血昏冒，亦用此以补之，子死腹中，腹痛欲死，亦用此以逐之，以上诸病，皆血病而气不虚者也，若夫气虚难产，产后血脱，唇面黄白，少气烦乱，动则昏冒，若误与此，反致立败，则必倍加人参，速固无形之气以救有形之血也，至于交骨难开，加龟版梳发下输阴道，寒加姜桂，热加黄耆，汗加桂枝，搐加荆穗，又当以意消息，加减可也。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_64545d406a13cb38024797eb",
+              "term": "意消",
+              "candidate_type": "TREATMENT",
+              "start": 439,
+              "end": 441
+            }
+          ],
+          "candidate_spans_truncated": false
         }
       ],
       "missing_both_endpoint_types": [
-        {
-          "unit_id": "3d4285084e658a5ecd99645c50756117cb303bfde989a2491e1d6dd247d9c6cf",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927163902-eex8857.sy",
-          "source_sha256": "9e0de8c8d2037c4d0c61cca49da3ca24307e0648e726795efa7a1e7325c47cbe",
-          "tree_position": "0.35",
-          "block_id": "20230927163905-ticipr4",
-          "sentence_start": 58,
-          "sentence_end": 82,
-          "sentence_text": "支饮者，法当冒，冒者必呕，呕者复内半夏以去其水：",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
         {
           "unit_id": "11020bee5155a55f636771236c62788a4b254fe1457cac44d9a935a1f4fad6e7",
           "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
@@ -997,29 +984,50 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "2127a0da1236b68c9a3c13020a83e14dbcaad67d5990d0c25eba32cd4dd34482",
-          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
-          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
-          "tree_position": "0.406",
-          "block_id": "20231107104838-j6w6eam",
-          "sentence_start": 249,
-          "sentence_end": 260,
-          "sentence_text": "弗治，满十日，法当死。",
+          "unit_id": "ec796c58ec00b781a6d5acd9b1c7b959a14a39708f9d35c9df7d21bedb4f7329",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.432",
+          "block_id": "20240524084808-tcapgqm",
+          "sentence_start": 89,
+          "sentence_end": 168,
+          "sentence_text": "其地高陵居，住在高山上面，风寒冰冽，非常得冷，人民呢，乐野处而乳食，吃乳肉的制品很多，居住在荒郊野外的地方，那脏就比较寒，生满病，其治宜，用灸治，都从北方来。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "3e36f08681b4496bf19ab5bf5163616140ba190b5614424dfa5c63a5ea8e9c74",
-          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
-          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
-          "tree_position": "0.674",
-          "block_id": "20231128153257-4fvrarv",
-          "sentence_start": 0,
-          "sentence_end": 18,
-          "sentence_text": "320、疟脉缓大虚，不宜用针宜用药；",
+          "unit_id": "7c306526a52aa7e38bcb7562561cccf26c348ec3e8cfe5cd7ca545e3d3703005",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+          "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+          "tree_position": "0.242",
+          "block_id": "20240606085950-akk0tgl",
+          "sentence_start": 50,
+          "sentence_end": 60,
+          "sentence_text": "其病挛痹，其治宜微。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "d2569a28ff477bda415e641d446a3e5f9e1e24b76e1865b317a671a9692893a4",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.803",
+          "block_id": "20240220100730-jxzjg18",
+          "sentence_start": 44,
+          "sentence_end": 112,
+          "sentence_text": "治以「小柴胡汤」,则之随脑、咽喉、气管、支气管、肺、肋膜、心脏、胃、肠、肝、脾、膵（胰脏）、肾、子宫等病证之治愈,而此抵抗物亦渐次缩消。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "5ac644179188f4457cddad949f6362ff8bb8557d3de8b8f87d859a0035506ed8",
+              "term": "小柴胡汤",
+              "candidate_type": "FORMULA",
+              "start": 47,
+              "end": 51
+            }
+          ],
           "candidate_spans_truncated": false
         }
       ]
@@ -1208,27 +1216,6 @@
       ],
       "missing_object_type": [
         {
-          "unit_id": "c44d8bbe300ecb4a1ff58f7b8aca804bb8b4df27b33e765c774a10e06689f7b2",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927152806-eat7107.sy",
-          "source_sha256": "974de9d4287e02fd67cb22110afd12b6f1bcf2cf034eedc8aab29159d202e429",
-          "tree_position": "0.68",
-          "block_id": "20230927152810-gk90e1l",
-          "sentence_start": 0,
-          "sentence_end": 90,
-          "sentence_text": "湖阳公主的瘦胎方用「枳壳」来让胎儿顺产好生，至少在唐朝都没有出事，才会继续留用到宋朝，可是，JT认为现代人的体质娇嫩、虚，不宜用这个方，况且还有其它没有含枳壳的安胎顺产的方子可用。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_fc3d65a45589fababd03b491",
-              "term": "这个方",
-              "candidate_type": "TREATMENT",
-              "start": 64,
-              "end": 67
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "0da5790d41f550f251e5d5fd8f8cde407ccba837eabceb2b66f05fae7fac8384",
           "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509093133-ogrbnqq.sy",
           "source_sha256": "7a94cb68c0a17aa714e81246ccbed322203131b07daa7478122a7695c2e0cab2",
@@ -1346,47 +1333,52 @@
             }
           ],
           "candidate_spans_truncated": false
-        }
-      ],
-      "both_endpoint_types_but_no_ordered_pair": [
+        },
         {
-          "unit_id": "900b59eb9418cff9f6d7eb64d8ed19aaa75ddbfe17700497c41913b1c5cd7efa",
-          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
-          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
-          "tree_position": "0.266",
-          "block_id": "20240220090739-8dez503",
+          "unit_id": "fe6841b0dc35191e3b85bb521bc2b14ee555afe02ad2ab91573d2bfc829e63eb",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153814-j2kwwow.sy",
+          "source_sha256": "5fe711d74eaecbe77596a371cfafad57b66dcf97119ad9cdc05dbb0600a828c8",
+          "tree_position": "0.130",
+          "block_id": "20240613082447-mn7amyg",
           "sentence_start": 0,
-          "sentence_end": 44,
-          "sentence_text": "【活人书】曰：大抵发斑不可用表药,表虚里实者,若发汗开泄,则更斑烂,宜用调胃承气汤下之。",
+          "sentence_end": 387,
+          "sentence_text": "苦寒．能泻肾经及隧道水湿．直达水气所结之处．以攻决为用．为下水之圣药．主十二种水．大腹肿满．（名水蛊、嘉言曰∶胃为水谷之海、五脏六腑之源、脾不能散胃之水精于肺、而病于中、肺不能通胃之水道于膀胱、而病于上、肾不能司胃之关时其输泄、而病于下、以致积水浸淫、无所底止、好古曰∶水者、脾肺肾三经所主、有五脏六腑、十二经之部分、上头面、中四肢、下腰脚、外皮肤、中肌肉、内筋骨、脉有尺寸之殊、浮沉之别、不可轻泻药、当知病在何经何脏、方可用之、按水肿、有痰裹、食积、瘀血、致清不升、浊不降而成者、有湿热相生、隧道阻塞而成者、有燥热冲击、秘结不通而成者、是证属有余、有服寒凉、伤饮食、中气虚衰而成者、有大病后、正气衰惫而成者、有小便不通、水液妄行、脾不能制而成者、证属不足、宜分别治之、然其源多由中气不足而起、丹溪曰∶水病当以健脾为主、使脾参苓为君、视所挟证加减、苟徒用利水药、多致不起．）",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_e60aad46a068c1c20b7c913f",
-              "term": "调胃",
-              "candidate_type": "TREATMENT",
-              "start": 36,
-              "end": 38
+              "candidate_id": "term_bd1a606d3c16c28d465dc826",
+              "term": "有余",
+              "candidate_type": "SYNDROME",
+              "start": 272,
+              "end": 274
             },
             {
-              "candidate_id": "term_a3af4c0e01bcc2857549cf42",
-              "term": "调胃承",
-              "candidate_type": "TREATMENT",
-              "start": 36,
-              "end": 39
+              "candidate_id": "term_1a5219a8272afb1380afb9bd",
+              "term": "不足",
+              "candidate_type": "SYNDROME",
+              "start": 326,
+              "end": 328
             },
             {
-              "candidate_id": "term_36bdc0bb893f124e4cb0dbb3",
-              "term": "调胃承气",
+              "candidate_id": "term_288e6acbd956e03ffdd75ae4",
+              "term": "健脾",
               "candidate_type": "TREATMENT",
-              "start": 36,
-              "end": 40
+              "start": 355,
+              "end": 357
             },
             {
-              "candidate_id": "b26fc034482d72fa7a553bfff11480cab620a2c0ac104a501aeb75ea62cb37d7",
-              "term": "调胃承气汤",
-              "candidate_type": "FORMULA",
-              "start": 36,
-              "end": 41
+              "candidate_id": "term_21384582a70348a8e269f6b9",
+              "term": "健脾为",
+              "candidate_type": "TREATMENT",
+              "start": 355,
+              "end": 358
+            },
+            {
+              "candidate_id": "term_453bc0d68ce920c4c8dfff66",
+              "term": "健脾为主",
+              "candidate_type": "TREATMENT",
+              "start": 355,
+              "end": 359
             }
           ],
           "candidate_spans_truncated": false
@@ -1431,48 +1423,6 @@
               "candidate_type": "FORMULA",
               "start": 180,
               "end": 185
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "9bc286b27024d67fa838971771b3abe4ce94a09cbc3a414e16ff1c9aab3cbe47",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240504161429-sad4g53.sy",
-          "source_sha256": "ba9099ff888714e934cf9504a5caa5f6901b5228621e5b2a34ee4936101665b4",
-          "tree_position": "0.156",
-          "block_id": "20240617092413-y7gy6v3",
-          "sentence_start": 0,
-          "sentence_end": 37,
-          "sentence_text": "或疑桂枝汤宜用而不用，以致传入于各经，而头痛项强如故，不识桂枝汤仍可用否？",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_a1cf70af0c2001493e965911",
-              "term": "而不",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 9
-            },
-            {
-              "candidate_id": "term_fefa90f7887a294c17fe3616",
-              "term": "而不用",
-              "candidate_type": "TREATMENT",
-              "start": 7,
-              "end": 10
-            },
-            {
-              "candidate_id": "0cb6d274f34b181f5cdb33cdb798c6f0a452a3fd11f856d4a886b8ac09cd085d",
-              "term": "桂枝汤",
-              "candidate_type": "FORMULA",
-              "start": 2,
-              "end": 5
-            },
-            {
-              "candidate_id": "2834b0a3cf4262ae8b468269cc7c1b070898daebea4f089d361a78e00a60fcb9",
-              "term": "桂枝汤",
-              "candidate_type": "FORMULA",
-              "start": 29,
-              "end": 32
             }
           ],
           "candidate_spans_truncated": false

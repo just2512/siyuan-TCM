@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "database_bytes": 8323686400,
+  "database_bytes": 8322273280,
   "search_backend": "fts5-trigram",
   "table_counts": {
     "content_blocks": 236987,
@@ -9,8 +9,8 @@
     "entity_catalog": 312,
     "semantic_relation_candidates": 164,
     "unclassified_term_candidates": 2363692,
-    "contextual_term_type_candidates": 350370,
-    "contextual_relation_candidates": 16
+    "contextual_term_type_candidates": 348539,
+    "contextual_relation_candidates": 14
   },
   "checks": {
     "full_text": "PASS",
