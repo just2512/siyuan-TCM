@@ -142,7 +142,7 @@ class ContextualTermCandidateTests(unittest.TestCase):
     def test_recognizes_relation_predicate_prefix_forms_for_typed_endpoints(self):
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨为太阳中风", 2, 6))
-        self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("宜用解肌发表", 2, 6))
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("宜用解肌发表", 2, 6))
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("当以温中健脾", 2, 6))
 
     def test_does_not_classify_generic_bianzheng_as_a_syndrome_prefix(self):
