@@ -418,12 +418,12 @@ def validate_catalogue(generated: Path, source_candidates: Path,
             raise ValueError(f"{batch_id} 的 batch_size 与实际批次记录数不一致")
 
     asset_queue = read_csv(generated / "asset_review_queue.csv", {
-        "reference", "candidate_paths", "candidate_status", "candidate_count",
+        "reference", "candidate_paths", "document_paths", "candidate_status", "candidate_count",
         "manual_status", "content_evidence_reference",
     })
     asset_queue_index = unique_index(asset_queue, "reference", "asset_review_queue.csv")
     persisted_assets = read_csv(asset_candidates, {
-        "reference", "candidate_paths", "candidate_status", "candidate_count",
+        "reference", "candidate_paths", "document_paths", "candidate_status", "candidate_count",
         "manual_status", "content_evidence_reference",
     })
     persisted_asset_index = unique_index(persisted_assets, "reference", "asset candidate source")
@@ -432,7 +432,7 @@ def validate_catalogue(generated: Path, source_candidates: Path,
     for reference, row in asset_queue_index.items():
         source = persisted_asset_index[reference]
         if any(row[field] != source[field] for field in (
-            "candidate_paths", "candidate_status", "candidate_count",
+            "candidate_paths", "document_paths", "candidate_status", "candidate_count",
             "manual_status", "content_evidence_reference",
         )):
             raise ValueError(f"{reference} 的附件候选队列与原始候选表不一致")
