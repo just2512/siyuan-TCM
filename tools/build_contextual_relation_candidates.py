@@ -294,6 +294,8 @@ def validate(path: Path, units_path: Path) -> int:
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
                 raise ValueError(f"row {line}: evidence span mismatch")
+            if (start, end) not in set(sentence_ranges(text)):
+                raise ValueError(f"row {line}: evidence span crosses a source sentence boundary")
             subject_start, subject_end = int(row["subject_start"]), int(row["subject_end"])
             object_start, object_end = int(row["object_start"]), int(row["object_end"])
             if not (start <= subject_start < subject_end <= object_start < object_end <= end):
