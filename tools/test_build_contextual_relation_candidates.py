@@ -338,7 +338,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
                     "unit_id": "u",
                     "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
                     "content": {"source_text": source_text},
-                }, ensure_ascii=False) + "\\n")
+                }, ensure_ascii=False) + "\n")
             subject = {"candidate_id": "fabricated-subject", "character_start": str(symptom_start),
                        "character_end": str(symptom_start + 2)}
             obj = {"candidate_id": "syndrome-real", "character_start": str(syndrome_start),
