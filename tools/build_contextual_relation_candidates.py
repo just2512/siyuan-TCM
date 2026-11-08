@@ -278,21 +278,28 @@ def validate(
             unit = json.loads(raw)
             units[unit["unit_id"]] = unit
 
-    candidate_index: dict[tuple[str, str], dict[str, str]] | None = None
+    candidate_index: set[tuple[str, str, str, str, int, int, str, str, str, str]] | None = None
     if (context_candidates_path is None) != (mentions_path is None):
         raise ValueError("both context candidates and formula mentions are required for endpoint validation")
     if context_candidates_path is not None and mentions_path is not None:
-        candidate_index = {}
+        # Context candidate IDs identify vocabulary terms, not individual
+        # occurrences. Repeated occurrences in one unit may share an ID.
+        # Validate the complete endpoint identity instead of requiring ID
+        # uniqueness: ID, type, text, exact span, and source provenance.
+        candidate_index = set()
         for grouped in (
             load_context_candidates(context_candidates_path),
             load_formula_mentions(mentions_path),
         ):
             for source_unit_id, rows in grouped.items():
                 for candidate in rows:
-                    key = (source_unit_id, candidate["candidate_id"])
-                    if key in candidate_index:
-                        raise ValueError(f"duplicate endpoint candidate ID: {source_unit_id}:{candidate['candidate_id']}")
-                    candidate_index[key] = candidate
+                    candidate_index.add((
+                        source_unit_id, candidate["candidate_id"],
+                        candidate["candidate_type"], candidate["term"],
+                        int(candidate["character_start"]), int(candidate["character_end"]),
+                        candidate["document"], candidate["source_sha256"],
+                        candidate["tree_position"], candidate["block_id"],
+                    ))
 
     count = 0
     seen = set()
@@ -351,19 +358,15 @@ def validate(
                     ("object", row["object_candidate_id"], row["object_type"],
                      row["object_text"], object_start, object_end),
                 ):
-                    candidate = candidate_index.get((row["unit_id"], candidate_id))
-                    if candidate is None:
-                        raise ValueError(f"row {line}: {role} candidate ID is absent from source candidate inputs")
-                    if (candidate["candidate_type"] != candidate_type
-                        or candidate["term"] != term
-                        or int(candidate["character_start"]) != span_start
-                        or int(candidate["character_end"]) != span_end):
-                        raise ValueError(f"row {line}: {role} candidate ID does not match endpoint type, text, or span")
-                    if (candidate["document"] != row["document"]
-                        or candidate["source_sha256"] != row["source_sha256"]
-                        or candidate["tree_position"] != row["tree_position"]
-                        or candidate["block_id"] != row["block_id"]):
-                        raise ValueError(f"row {line}: {role} candidate provenance differs from relation source")
+                    identity = (
+                        row["unit_id"], candidate_id, candidate_type, term,
+                        span_start, span_end, row["document"], row["source_sha256"],
+                        row["tree_position"], row["block_id"],
+                    )
+                    if identity not in candidate_index:
+                        raise ValueError(
+                            f"row {line}: {role} candidate ID/span/type is absent from source candidate inputs"
+                        )
 
             expected_relation_id = relation_identity(
                 predicate,

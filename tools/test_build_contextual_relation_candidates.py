@@ -237,9 +237,10 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             symptom_starts = [i for i in range(len(source_text)) if source_text.startswith("头痛", i)]
             syndrome_start = source_text.index("太阳中风")
             rows = [
-                ("symptom-short-1", "头痛", "SYMPTOM", symptom_starts[0]),
+                # Term-level candidate IDs legitimately repeat at distinct spans.
+                ("term-headache", "头痛", "SYMPTOM", symptom_starts[0]),
                 ("symptom-long-1", "头痛加剧", "SYMPTOM", symptom_starts[0]),
-                ("symptom-2", "头痛", "SYMPTOM", symptom_starts[1]),
+                ("term-headache", "头痛", "SYMPTOM", symptom_starts[1]),
                 ("syndrome-1", "太阳中风", "SYNDROME", syndrome_start),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
@@ -273,7 +274,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
 
             result = extract(context, mentions, units, output)
             self.assertEqual(result["contextual_relation_candidates"], 2)
-            self.assertEqual(validate(output, units), 2)
+            self.assertEqual(validate(output, units, context, mentions), 2)
             with output.open(encoding="utf-8", newline="") as stream:
                 relations = list(csv.DictReader(stream))
             self.assertEqual(len({row["relation_id"] for row in relations}), 2)
