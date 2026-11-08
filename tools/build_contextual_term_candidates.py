@@ -85,13 +85,13 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
                 # they are not symptoms themselves. Allow a short list-intro
                 # bridge (是/为/有 plus punctuation) before the first item.
                 symptom_left = max(
-                    text.rfind(mark, 0, start) for mark in "。！？；\\n"
+                    text.rfind(mark, 0, start) for mark in "。！？；\n"
                 ) + 1
                 symptom_before = text[symptom_left:start]
                 symptom_intro = re.compile(
                     r"(?:症见|症状(?:是|为|有)?|表现为|可见|见有|出现|伴有)"
-                    r"[\\s:：，、]{0,4}"
-                    r"(?:[\\u3400-\\u9fff]{1,12}[，、]\\s*){0,8}$"
+                    r"[\s:：，、]{0,4}"
+                    r"(?:[\u3400-\u9fff]{1,12}[，、]\s*){0,8}$"
                 )
                 matched = symptom_intro.search(symptom_before)
             else:
