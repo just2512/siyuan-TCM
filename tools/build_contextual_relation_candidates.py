@@ -46,7 +46,7 @@ NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁
 # A later quoted recommendation must not attach to syndrome candidates
 # appearing before a source-attribution boundary in the same long sentence.
 RELATION_SCOPE_BREAKS = {
-    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\\u3400-\\u9fff]{1,8}曰[：:])"),
+    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:])"),
 }
 
 
