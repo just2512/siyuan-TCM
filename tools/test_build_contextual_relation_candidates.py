@@ -79,6 +79,23 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertTrue(all(row["resolution_status"] == "UNRESOLVED_CANDIDATE" for row in rows))
             self.assertTrue(all(row["evidence_text"] == source_text for row in rows))
 
+    def test_collapses_overlapping_ngrams_but_preserves_repeated_occurrence_spans(self):
+        from build_contextual_relation_candidates import canonicalize_spans
+
+        text = "症见头痛加剧，症见头痛，辨证为太阳中风。"
+        first = text.index("头痛")
+        second = text.rindex("头痛")
+        spans = [
+            (first, first + 2, {"candidate_id": "short-1", "candidate_type": "SYMPTOM", "term": "头痛"}),
+            (first, first + 4, {"candidate_id": "long-1", "candidate_type": "SYMPTOM", "term": "头痛加剧"}),
+            (second, second + 2, {"candidate_id": "short-2", "candidate_type": "SYMPTOM", "term": "头痛"}),
+        ]
+        retained = canonicalize_spans(spans)
+        self.assertEqual([(start, end) for start, end, _ in retained], [
+            (first, first + 4), (second, second + 2),
+        ])
+        self.assertEqual([row["term"] for _, _, row in retained], ["头痛加剧", "头痛"])
+
     def test_rejects_negated_predicate_and_preserves_direction(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -165,12 +182,13 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             mentions = root / "mentions.csv.gz"
             units = root / "units.jsonl.gz"
             output = root / "relations.csv"
-            source_text = "症见头痛，症见头痛，辨证为太阳中风。"
+            source_text = "症见头痛加剧，症见头痛，辨证为太阳中风。"
             symptom_starts = [i for i in range(len(source_text)) if source_text.startswith("头痛", i)]
             syndrome_start = source_text.index("太阳中风")
             rows = [
-                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[0]),
-                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[1]),
+                ("symptom-short-1", "头痛", "SYMPTOM", symptom_starts[0]),
+                ("symptom-long-1", "头痛加剧", "SYMPTOM", symptom_starts[0]),
+                ("symptom-2", "头痛", "SYMPTOM", symptom_starts[1]),
                 ("syndrome-1", "太阳中风", "SYNDROME", syndrome_start),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
@@ -211,6 +229,10 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertEqual(
                 {int(row["subject_start"]) for row in relations},
                 set(symptom_starts),
+            )
+            self.assertEqual(
+                {row["subject_text"] for row in relations},
+                {"头痛加剧", "头痛"},
             )
 
 

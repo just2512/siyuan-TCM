@@ -95,6 +95,48 @@ def sentence_ranges(text: str):
             yield match.start(), match.end()
 
 
+def canonicalize_spans(
+    spans: list[tuple[int, int, dict[str, str]]],
+) -> list[tuple[int, int, dict[str, str]]]:
+    """Collapse overlapping same-type n-grams to one maximal endpoint.
+
+    Occurrences at different, non-overlapping offsets remain separate. This
+    prevents overlapping vocabulary windows from multiplying relation edges
+    without erasing repeated mentions in the source text.
+    """
+    grouped: dict[str, list[tuple[int, int, dict[str, str]]]] = defaultdict(list)
+    for item in spans:
+        grouped[item[2]["candidate_type"]].append(item)
+
+    retained: list[tuple[int, int, dict[str, str]]] = []
+    for candidate_type, items in grouped.items():
+        items.sort(key=lambda item: (item[0], -item[1], item[2]["candidate_id"]))
+        component: list[tuple[int, int, dict[str, str]]] = []
+        component_end = -1
+
+        def keep_maximal(group: list[tuple[int, int, dict[str, str]]]) -> None:
+            if not group:
+                return
+            # Longest exact source span is the canonical representation of an
+            # overlapping n-gram cluster; deterministic tie-breaks aid replay.
+            retained.append(min(
+                group,
+                key=lambda item: (-(item[1] - item[0]), item[0], item[2]["candidate_id"]),
+            ))
+
+        for item in items:
+            if component and item[0] >= component_end:
+                keep_maximal(component)
+                component = []
+                component_end = -1
+            component.append(item)
+            component_end = max(component_end, item[1])
+        keep_maximal(component)
+
+    return sorted(retained, key=lambda item: (item[0], item[1], item[2]["candidate_type"],
+                                               item[2]["candidate_id"]))
+
+
 def relation_identity(predicate: str, subject: dict[str, str],
                       obj: dict[str, str], unit_id: str, start: int, end: int) -> str:
     raw = "\0".join((
@@ -151,6 +193,7 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                             raise ValueError(f"candidate span mismatch: {unit_id}:{left}-{right}")
                         spans.append((left, right, row))
                     spans.sort(key=lambda item: (item[0], item[1], item[2]["candidate_id"]))
+                    spans = canonicalize_spans(spans)
                     for predicate, marker in PREDICATES.items():
                         subject_types = SUBJECT_TYPES[predicate.split("_TO_")[0]]
                         object_types = OBJECT_TYPES[predicate]

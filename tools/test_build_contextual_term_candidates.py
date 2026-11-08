@@ -145,6 +145,33 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("宜用解肌发表", 2, 6))
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("当以温中健脾", 2, 6))
 
+    def test_symptom_label_is_not_itself_a_symptom_and_list_items_keep_context(self):
+        text = "初诊时症状是，眼多赤筋，呕心，头昏。"
+        cue_start = text.index("症状")
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, cue_start, cue_start + len("症状")),
+        )
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, cue_start - 1, cue_start + len("症状")),
+        )
+        first_item = text.index("眼多赤筋")
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, first_item, first_item + len("眼多赤筋")),
+        )
+        second_item = text.index("呕心")
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, second_item, second_item + len("呕心")),
+        )
+        third_item = text.index("头昏")
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, third_item, third_item + len("头昏")),
+        )
+
     def test_does_not_classify_generic_bianzheng_as_a_syndrome_prefix(self):
         self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为主", 2, 4))
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))

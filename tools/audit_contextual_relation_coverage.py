@@ -17,6 +17,7 @@ from build_contextual_relation_candidates import (
     OBJECT_TYPES,
     PREDICATES,
     SUBJECT_TYPES,
+    canonicalize_spans,
     load_context_candidates,
     load_formula_mentions,
     sentence_ranges,
@@ -112,6 +113,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                     start, end = int(row["character_start"]), int(row["character_end"])
                     if sentence_start <= start and end <= sentence_end and end > start:
                         spans.append((start, end, row))
+                spans = canonicalize_spans(spans)
                 for predicate, marker in PREDICATES.items():
                     marker_matches = list(marker.finditer(sentence))
                     if marker_matches:
