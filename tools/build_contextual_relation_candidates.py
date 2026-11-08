@@ -98,12 +98,12 @@ def sentence_ranges(text: str):
 def canonicalize_spans(
     spans: list[tuple[int, int, dict[str, str]]],
 ) -> list[tuple[int, int, dict[str, str]]]:
-    """Collapse n-grams sharing a source boundary into one maximal endpoint.
+    """Collapse nested n-grams while preserving distinct partially-overlapping spans.
 
-    Same-start or same-end variants are alternate windows for one lexical
-    endpoint. Merely partial-overlapping spans with different boundaries may
-    represent adjacent real terms and are therefore retained. Non-overlapping
-    repeated occurrences always retain their own offsets.
+    A contained span is an alternate window for the enclosing lexical
+    endpoint. Partial overlaps with neither span containing the other may
+    represent adjacent real terms and are retained. Non-overlapping repeated
+    occurrences always retain their own offsets.
     """
     grouped: dict[str, list[tuple[int, int, dict[str, str]]]] = defaultdict(list)
     for item in spans:
@@ -124,11 +124,13 @@ def canonicalize_spans(
             if left_root != right_root:
                 parents[right_root] = left_root
 
-        boundary_owner: dict[tuple[str, int], int] = {}
-        for index, (left, right, _) in enumerate(items):
-            for boundary in (("start", left), ("end", right)):
-                previous = boundary_owner.setdefault(boundary, index)
-                union(index, previous)
+        for left_index, (left_start, left_end, _) in enumerate(items):
+            for right_index in range(left_index + 1, len(items)):
+                right_start, right_end, _ = items[right_index]
+                left_contains_right = left_start <= right_start and right_end <= left_end
+                right_contains_left = right_start <= left_start and left_end <= right_end
+                if left_contains_right or right_contains_left:
+                    union(left_index, right_index)
 
         components: dict[int, list[tuple[int, int, dict[str, str]]]] = defaultdict(list)
         for index, item in enumerate(items):
