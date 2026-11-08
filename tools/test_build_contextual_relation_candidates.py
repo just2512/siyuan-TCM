@@ -365,7 +365,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=FIELDS)
                 writer.writeheader()
                 writer.writerow(row)
-            with self.assertRaisesRegex(ValueError, "candidate ID is absent"):
+            with self.assertRaisesRegex(ValueError, "candidate ID/span/type is absent"):
                 validate(output, units, context, mentions)
 
     def test_validator_rejects_relation_evidence_spanning_multiple_sentences(self):
