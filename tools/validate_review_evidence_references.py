@@ -22,7 +22,7 @@ SOURCE_FIELDS = {
     "source_version_status", "source_version_evidence_reference",
     "collation_status", "collation_evidence_reference",
 }
-ASSET_FIELDS = {"reference", "document_paths", "manual_status", "content_evidence_reference"}
+ASSET_FIELDS = {"reference", "candidate_paths", "document_paths", "manual_status", "content_evidence_reference"}
 DECISION_ACTIVE = {
     "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
     "source_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
@@ -129,7 +129,8 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
     })
     def check(ids: list[str], expected_key: str, allowed_types: set[str],
               allowed_kinds: set[str], context: str,
-              context_documents: set[str] | None = None) -> None:
+              context_documents: set[str] | None = None,
+              allowed_asset_sources: set[str] | None = None) -> None:
         for evidence_id in ids:
             record = ledger.get(evidence_id)
             if record is None:
@@ -178,6 +179,11 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
                 ):
                     raise ValueError(
                         f"{context} 的附件内容证据 {evidence_id} 必须引用 assets/ 下的安全相对附件路径"
+                    )
+                if allowed_asset_sources is not None and source_reference not in allowed_asset_sources:
+                    raise ValueError(
+                        f"{context} 的附件内容证据 {evidence_id} source_reference 不属于该附件引用的候选路径集合："
+                        f"{source_reference!r}"
                     )
                 if record["content_basis"] not in ASSET_CONTENT_BASES:
                     raise ValueError(f"{context} 的附件内容证据 {evidence_id} 缺少有效 content_basis")
@@ -255,9 +261,20 @@ def validate_references(ledger_path: Path, decisions_path: Path | None = None,
             }
             if not context_documents:
                 raise ValueError(f"附件队列第 {line} 行 {row['reference']} 缺少关联原始 .sy 文档路径")
+            candidate_paths = {
+                item.strip().replace("\\", "/")
+                for item in row["candidate_paths"].split(";") if item.strip()
+            }
+            if not candidate_paths:
+                raise ValueError(
+                    f"附件队列第 {line} 行 {row['reference']} 已提交内容结论但没有候选附件路径；"
+                    "请先将人工发现的相对路径补入候选清单并重新生成队列"
+                )
             check(
                 ids, row["reference"], {"asset_reference"}, ASSET_EVIDENCE_KINDS,
-                f"{row['reference']} manual_status", context_documents=context_documents,
+                f"{row['reference']} manual_status",
+                context_documents=context_documents,
+                allowed_asset_sources=candidate_paths,
             )
             counts["asset_conclusions"] += 1
 

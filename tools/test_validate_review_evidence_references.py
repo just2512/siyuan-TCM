@@ -30,9 +30,12 @@ class EvidenceReferenceTests(unittest.TestCase):
         if path == self.assets:
             if "document_paths" not in fields:
                 fields = list(fields) + ["document_paths"]
+            if "candidate_paths" not in fields:
+                fields = list(fields) + ["candidate_paths"]
             rows = [{
                 **row,
                 "document_paths": row.get("document_paths", "book/a.sy"),
+                "candidate_paths": row.get("candidate_paths", row.get("reference", "")),
             } for row in rows]
         with path.open("w", encoding="utf-8-sig", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=fields)
@@ -158,6 +161,41 @@ class EvidenceReferenceTests(unittest.TestCase):
             "content_basis": "VISUAL_CONTENT_AND_NOTE_CONTEXT",
         }])
         with self.assertRaisesRegex(ValueError, "块定位"):
+            validator.validate_references(self.ledger, assets_path=self.assets)
+
+    def test_accepts_asset_evidence_for_a_listed_candidate_distinct_from_reference(self):
+        self.write(self.assets, [
+            "reference", "manual_status", "content_evidence_reference", "document_paths", "candidate_paths",
+        ], [{
+            "reference": "assets/img-1.png", "manual_status": "CONFIRMED_MATCH",
+            "content_evidence_reference": "EV-003", "document_paths": "book/a.sy",
+            "candidate_paths": "assets/img-1-candidate.png",
+        }])
+        self.write(self.ledger, [
+            "evidence_id", "subject_type", "subject_key", "evidence_kind",
+            "inspection_method", "source_reference", "context_reference", "content_basis",
+        ], [{
+            "evidence_id": "EV-003", "subject_type": "asset_reference",
+            "subject_key": "assets/img-1.png", "evidence_kind": "asset_content",
+            "inspection_method": "HUMAN_DIRECT", "source_reference": "assets/img-1-candidate.png",
+            "context_reference": "book/a.sy#block-1",
+            "content_basis": "VISUAL_CONTENT_AND_NOTE_CONTEXT",
+        }])
+        result = validator.validate_references(self.ledger, assets_path=self.assets)
+        self.assertEqual(result["asset_conclusions"], 1)
+
+    def test_rejects_asset_evidence_from_candidate_not_listed_for_reference(self):
+        self.write(self.ledger, [
+            "evidence_id", "subject_type", "subject_key", "evidence_kind",
+            "inspection_method", "source_reference", "context_reference", "content_basis",
+        ], [{
+            "evidence_id": "EV-003", "subject_type": "asset_reference",
+            "subject_key": "assets/img-1.png", "evidence_kind": "asset_content",
+            "inspection_method": "HUMAN_DIRECT", "source_reference": "assets/other.png",
+            "context_reference": "book/a.sy#block-1",
+            "content_basis": "VISUAL_CONTENT_AND_NOTE_CONTEXT",
+        }])
+        with self.assertRaisesRegex(ValueError, "不属于该附件引用的候选路径集合"):
             validator.validate_references(self.ledger, assets_path=self.assets)
 
     def test_rejects_asset_evidence_source_outside_assets_root(self):
