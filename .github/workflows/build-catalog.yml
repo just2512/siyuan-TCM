@@ -111,6 +111,8 @@ jobs:
             catalog/generated/semantic_graph.jsonl.gz
             catalog/generated/contextual_term_type_candidates.csv.gz
             catalog/generated/contextual_relation_candidates.csv
+            catalog/generated/contextual_relation_coverage.json
+            catalog/generated/search_index_smoke.json
           if-no-files-found: error
           retention-days: 30
       - name: Publish full unclassified term candidate dataset

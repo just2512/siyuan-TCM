@@ -40,6 +40,32 @@ def smoke(database_path: Path) -> dict:
         table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
         for table in TABLES
     }
+
+    formula_herb_predicates = dict(connection.execute(
+        "SELECT predicate, COUNT(*) FROM semantic_relation_candidates GROUP BY predicate ORDER BY predicate"
+    ))
+    contextual_predicate_types = {
+        "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
+        "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
+        "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+    }
+    contextual_predicates = {
+        predicate: connection.execute(
+            "SELECT COUNT(*) FROM contextual_relation_candidates WHERE predicate=?",
+            (predicate,),
+        ).fetchone()[0]
+        for predicate in contextual_predicate_types
+    }
+    unknown_contextual_predicates = {
+        row[0] for row in connection.execute(
+            "SELECT DISTINCT predicate FROM contextual_relation_candidates"
+        )
+    } - set(contextual_predicate_types)
+    if unknown_contextual_predicates:
+        raise AssertionError(
+            "unsupported contextual relation predicates: "
+            + ", ".join(sorted(unknown_contextual_predicates))
+        )
     metadata_keys = {
         "content_blocks": "content_blocks",
         "node_relationships": "relationships",
@@ -178,6 +204,10 @@ def smoke(database_path: Path) -> dict:
         "database_bytes": database_path.stat().st_size,
         "search_backend": metadata.get("search_backend"),
         "table_counts": counts,
+        "relation_predicate_counts": {
+            "FORMULA_CONTAINS_HERB": formula_herb_predicates.get("FORMULA_CONTAINS_HERB", 0),
+            **contextual_predicates,
+        },
         "checks": checks,
     }
 

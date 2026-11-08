@@ -28,7 +28,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                     entity_id TEXT, entity_type TEXT, preferred_label TEXT,
                     lexical_form TEXT, identity_status TEXT
                 );
-                CREATE TABLE semantic_relation_candidates (id INTEGER);
+                CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
                 CREATE TABLE contextual_term_type_candidates (id INTEGER);
                 CREATE TABLE contextual_relation_candidates (id INTEGER);
@@ -65,6 +65,12 @@ class SearchIndexSmokeTests(unittest.TestCase):
             self.assertEqual(result["checks"]["full_text"], "PASS")
             self.assertEqual(result["checks"]["entity_span_and_source"], "PASS")
             self.assertEqual(result["table_counts"]["content_blocks"], 1)
+            self.assertEqual(result["relation_predicate_counts"], {
+                "FORMULA_CONTAINS_HERB": 0,
+                "SYMPTOM_TO_SYNDROME": 0,
+                "SYNDROME_TO_TREATMENT": 0,
+                "TREATMENT_TO_FORMULA": 0,
+            })
 
 
     def test_smoke_checks_contextual_relation_predicate_and_direction(self):
@@ -122,6 +128,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             result = smoke(db)
             self.assertEqual(result["checks"]["contextual_relation_evidence"], "PASS")
             self.assertEqual(result["checks"]["contextual_relation_predicate_direction"], "PASS")
+            self.assertEqual(result["relation_predicate_counts"]["SYMPTOM_TO_SYNDROME"], 1)
 
 
 if __name__ == "__main__":
