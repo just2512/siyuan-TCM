@@ -82,19 +82,20 @@ class ContextualRelationCandidateTests(unittest.TestCase):
     def test_collapses_overlapping_ngrams_but_preserves_repeated_occurrence_spans(self):
         from build_contextual_relation_candidates import canonicalize_spans
 
-        text = "症见头痛加剧，症见头痛，辨证为太阳中风。"
+        text = "症见头痛加剧明显，症见头痛，辨证为太阳中风。"
         first = text.index("头痛")
         second = text.rindex("头痛")
         spans = [
             (first, first + 2, {"candidate_id": "short-1", "candidate_type": "SYMPTOM", "term": "头痛"}),
             (first, first + 4, {"candidate_id": "long-1", "candidate_type": "SYMPTOM", "term": "头痛加剧"}),
+            (first + 2, first + 6, {"candidate_id": "partial-1", "candidate_type": "SYMPTOM", "term": "加剧明显"}),
             (second, second + 2, {"candidate_id": "short-2", "candidate_type": "SYMPTOM", "term": "头痛"}),
         ]
         retained = canonicalize_spans(spans)
         self.assertEqual([(start, end) for start, end, _ in retained], [
-            (first, first + 4), (second, second + 2),
+            (first, first + 4), (first + 2, first + 6), (second, second + 2),
         ])
-        self.assertEqual([row["term"] for _, _, row in retained], ["头痛加剧", "头痛"])
+        self.assertEqual([row["term"] for _, _, row in retained], ["头痛加剧", "加剧明显", "头痛"])
 
     def test_rejects_negated_predicate_and_preserves_direction(self):
         with tempfile.TemporaryDirectory() as temp:

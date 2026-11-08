@@ -98,40 +98,49 @@ def sentence_ranges(text: str):
 def canonicalize_spans(
     spans: list[tuple[int, int, dict[str, str]]],
 ) -> list[tuple[int, int, dict[str, str]]]:
-    """Collapse overlapping same-type n-grams to one maximal endpoint.
+    """Collapse nested n-grams while preserving distinct partially-overlapping spans.
 
-    Occurrences at different, non-overlapping offsets remain separate. This
-    prevents overlapping vocabulary windows from multiplying relation edges
-    without erasing repeated mentions in the source text.
+    A contained span is an alternate window for the enclosing lexical
+    endpoint. Partial overlaps with neither span containing the other may
+    represent adjacent real terms and are retained. Non-overlapping repeated
+    occurrences always retain their own offsets.
     """
     grouped: dict[str, list[tuple[int, int, dict[str, str]]]] = defaultdict(list)
     for item in spans:
         grouped[item[2]["candidate_type"]].append(item)
 
     retained: list[tuple[int, int, dict[str, str]]] = []
-    for candidate_type, items in grouped.items():
-        items.sort(key=lambda item: (item[0], -item[1], item[2]["candidate_id"]))
-        component: list[tuple[int, int, dict[str, str]]] = []
-        component_end = -1
+    for items in grouped.values():
+        parents = list(range(len(items)))
 
-        def keep_maximal(group: list[tuple[int, int, dict[str, str]]]) -> None:
-            if not group:
-                return
-            # Longest exact source span is the canonical representation of an
-            # overlapping n-gram cluster; deterministic tie-breaks aid replay.
+        def find(index: int) -> int:
+            while parents[index] != index:
+                parents[index] = parents[parents[index]]
+                index = parents[index]
+            return index
+
+        def union(left: int, right: int) -> None:
+            left_root, right_root = find(left), find(right)
+            if left_root != right_root:
+                parents[right_root] = left_root
+
+        for left_index, (left_start, left_end, _) in enumerate(items):
+            for right_index in range(left_index + 1, len(items)):
+                right_start, right_end, _ = items[right_index]
+                left_contains_right = left_start <= right_start and right_end <= left_end
+                right_contains_left = right_start <= left_start and left_end <= right_end
+                if left_contains_right or right_contains_left:
+                    union(left_index, right_index)
+
+        components: dict[int, list[tuple[int, int, dict[str, str]]]] = defaultdict(list)
+        for index, item in enumerate(items):
+            components[find(index)].append(item)
+
+        for component in components.values():
             retained.append(min(
-                group,
+                component,
                 key=lambda item: (-(item[1] - item[0]), item[0], item[2]["candidate_id"]),
             ))
-
-        for item in items:
-            if component and item[0] >= component_end:
-                keep_maximal(component)
-                component = []
-                component_end = -1
-            component.append(item)
-            component_end = max(component_end, item[1])
-        keep_maximal(component)
 
     return sorted(retained, key=lambda item: (item[0], item[1], item[2]["candidate_type"],
                                                item[2]["candidate_id"]))
