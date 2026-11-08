@@ -71,8 +71,13 @@ class CatalogueValidationTests(unittest.TestCase):
         self.write(generated / "topic_review_batches.csv", ["document", "batch_id", "batch_position", "batch_size", "review_status", "human_approved_topics", "reviewer", "review_notes", "evidence_reference"], [
             {"document": "book/a.sy", "batch_id": "TOPIC-001", "batch_position": "1", "batch_size": "1", "review_status": "NOT_REVIEWED", "human_approved_topics": "", "reviewer": "", "review_notes": "", "evidence_reference": ""},
         ])
-        self.write(generated / "asset_review_queue.csv", ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
-            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
+        self.write(generated / "asset_review_queue.csv", [
+            "reference", "candidate_paths", "candidate_status", "candidate_count",
+            "manual_status", "content_evidence_reference",
+        ], [
+            {"reference": "assets/missing", "candidate_paths": "assets/candidate.png",
+             "candidate_status": "ONE_CANDIDATE", "candidate_count": "1",
+             "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
         source_fields = [
             "path", "candidate_category", "source_identity_status", "source_identity_evidence_reference",
@@ -89,8 +94,13 @@ class CatalogueValidationTests(unittest.TestCase):
         source_candidates = root / "source.csv"
         self.write(source_candidates, source_fields, [source_row])
         asset_candidates = root / "asset.csv"
-        self.write(asset_candidates, ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
-            {"reference": "assets/missing", "candidate_status": "ONE_CANDIDATE", "candidate_count": "1", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
+        self.write(asset_candidates, [
+            "reference", "candidate_paths", "candidate_status", "candidate_count",
+            "manual_status", "content_evidence_reference",
+        ], [
+            {"reference": "assets/missing", "candidate_paths": "assets/candidate.png",
+             "candidate_status": "ONE_CANDIDATE", "candidate_count": "1",
+             "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
         ])
         return generated, source_candidates, asset_candidates
 
@@ -291,10 +301,26 @@ class CatalogueValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             generated, source, assets = self.fixture(Path(temp))
             path = generated / "asset_review_queue.csv"
-            self.write(path, ["reference", "candidate_status", "candidate_count", "manual_status", "content_evidence_reference"], [
-                {"reference": "assets/missing", "candidate_status": "NO_CANDIDATE", "candidate_count": "0", "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
+            self.write(path, [
+                "reference", "candidate_paths", "candidate_status", "candidate_count",
+                "manual_status", "content_evidence_reference",
+            ], [
+                {"reference": "assets/missing", "candidate_paths": "",
+                 "candidate_status": "NO_CANDIDATE", "candidate_count": "0",
+                 "manual_status": "NEEDS_INSPECTION", "content_evidence_reference": ""},
             ])
             with self.assertRaisesRegex(ValueError, "附件候选队列"):
+                validator.validate_catalogue(generated, source, assets)
+
+    def test_rejects_asset_candidate_path_projection_drift(self):
+        with tempfile.TemporaryDirectory() as temp:
+            generated, source, assets = self.fixture(Path(temp))
+            path = generated / "asset_review_queue.csv"
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            rows[0]["candidate_paths"] = "assets/other.png"
+            self.write(path, list(rows[0]), rows)
+            with self.assertRaisesRegex(ValueError, "附件候选队列与原始候选表不一致"):
                 validator.validate_catalogue(generated, source, assets)
 
 
