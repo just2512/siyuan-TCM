@@ -5,10 +5,17 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_contextual_relation_candidates import extract, validate
+from build_contextual_relation_candidates import PREDICATES, extract, validate
 
 
 class ContextualRelationCandidateTests(unittest.TestCase):
+    def test_ambiguous_classical_markers_are_not_treatment_relation_predicates(self):
+        marker = PREDICATES["SYNDROME_TO_TREATMENT"]
+        self.assertIsNone(marker.search("法当腹满"))
+        self.assertIsNone(marker.search("宜用救急稀涎散"))
+        self.assertIsNotNone(marker.search("治宜温中健脾"))
+        self.assertIsNotNone(marker.search("当以健脾为主"))
+
     def test_extracts_only_explicit_predicates_with_source_provenance(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
