@@ -88,13 +88,14 @@ class ContextualRelationCandidateTests(unittest.TestCase):
         spans = [
             (first, first + 2, {"candidate_id": "short-1", "candidate_type": "SYMPTOM", "term": "头痛"}),
             (first, first + 4, {"candidate_id": "long-1", "candidate_type": "SYMPTOM", "term": "头痛加剧"}),
+            (first + 1, first + 4, {"candidate_id": "partial-1", "candidate_type": "SYMPTOM", "term": "痛加剧"}),
             (second, second + 2, {"candidate_id": "short-2", "candidate_type": "SYMPTOM", "term": "头痛"}),
         ]
         retained = canonicalize_spans(spans)
         self.assertEqual([(start, end) for start, end, _ in retained], [
-            (first, first + 4), (second, second + 2),
+            (first, first + 4), (first + 1, first + 4), (second, second + 2),
         ])
-        self.assertEqual([row["term"] for _, _, row in retained], ["头痛加剧", "头痛"])
+        self.assertEqual([row["term"] for _, _, row in retained], ["头痛加剧", "痛加剧", "头痛"])
 
     def test_rejects_negated_predicate_and_preserves_direction(self):
         with tempfile.TemporaryDirectory() as temp:
