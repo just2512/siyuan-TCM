@@ -90,7 +90,7 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
             self.assertEqual(result["asset_content"], 1)
 
             for updates, message in [
-                ({"context_reference": ""}, "原始 .sy 上下文定位"),
+                ({"context_reference": ""}, "上下文/块定位"),
                 ({"context_reference": "folder/note.sy"}, "上下文/块定位"),
                 ({"context_reference": "folder/note.sy#"}, "上下文/块定位"),
                 ({"content_basis": ""}, "有效 content_basis"),
