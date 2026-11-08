@@ -287,6 +287,86 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             )
 
 
+    def test_canonicalize_spans_preserves_nested_named_formulas(self):
+        from build_contextual_relation_candidates import canonicalize_spans
+
+        spans = [
+            (0, 10, {"candidate_id": "modified", "candidate_type": "FORMULA", "term": "加味芍药甘草汤"}),
+            (2, 8, {"candidate_id": "base", "candidate_type": "FORMULA", "term": "芍药甘草汤"}),
+        ]
+        retained = canonicalize_spans(spans)
+        self.assertEqual(
+            [(start, end, row["candidate_id"]) for start, end, row in retained],
+            [(0, 10, "modified"), (2, 8, "base")],
+        )
+
+    def test_validator_rejects_unknown_endpoint_candidate_id(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "头痛，辨证为太阳中风。"
+            symptom_start = source_text.index("头痛")
+            syndrome_start = source_text.index("太阳中风")
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "evidence_document",
+                    "source_sha256", "tree_position", "block_id", "unit_id",
+                    "character_start", "character_end", "classification_status",
+                ])
+                writer.writeheader()
+                writer.writerows([
+                    {"candidate_id": "symptom-real", "term": "头痛", "candidate_type": "SYMPTOM",
+                     "evidence_document": "a.sy", "source_sha256": "sha", "tree_position": "0",
+                     "block_id": "b", "unit_id": "u", "character_start": symptom_start,
+                     "character_end": symptom_start + 2, "classification_status": "CONTEXT_RULE_CANDIDATE"},
+                    {"candidate_id": "syndrome-real", "term": "太阳中风", "candidate_type": "SYNDROME",
+                     "evidence_document": "a.sy", "source_sha256": "sha", "tree_position": "0",
+                     "block_id": "b", "unit_id": "u", "character_start": syndrome_start,
+                     "character_end": syndrome_start + 4, "classification_status": "CONTEXT_RULE_CANDIDATE"},
+                ])
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                    "character_end", "document", "source_sha256", "tree_position", "block_id",
+                ])
+                writer.writeheader()
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps({
+                    "unit_id": "u",
+                    "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                    "content": {"source_text": source_text},
+                }, ensure_ascii=False) + "\\n")
+            subject = {"candidate_id": "fabricated-subject", "character_start": str(symptom_start),
+                       "character_end": str(symptom_start + 2)}
+            obj = {"candidate_id": "syndrome-real", "character_start": str(syndrome_start),
+                   "character_end": str(syndrome_start + 4)}
+            row = {field: "" for field in FIELDS}
+            row.update({
+                "predicate": "SYMPTOM_TO_SYNDROME",
+                "subject_candidate_id": subject["candidate_id"], "subject_text": "头痛",
+                "subject_type": "SYMPTOM", "subject_start": subject["character_start"],
+                "subject_end": subject["character_end"], "object_candidate_id": obj["candidate_id"],
+                "object_text": "太阳中风", "object_type": "SYNDROME",
+                "object_start": obj["character_start"], "object_end": obj["character_end"],
+                "unit_id": "u", "document": "a.sy", "source_sha256": "sha",
+                "tree_position": "0", "block_id": "b", "sentence_start": "0",
+                "sentence_end": str(len(source_text)), "evidence_text": source_text,
+                "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
+                "resolution_status": "UNRESOLVED_CANDIDATE",
+            })
+            row["relation_id"] = relation_identity(
+                row["predicate"], subject, obj, "u", 0, len(source_text)
+            )
+            with output.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=FIELDS)
+                writer.writeheader()
+                writer.writerow(row)
+            with self.assertRaisesRegex(ValueError, "candidate ID is absent"):
+                validate(output, units, context, mentions)
+
     def test_validator_rejects_relation_evidence_spanning_multiple_sentences(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

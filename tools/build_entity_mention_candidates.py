@@ -95,21 +95,9 @@ def find_matches(text: str, nodes: list[dict[str, Any]]):
         for item in nodes[state]["output"]:
             end = index + 1
             matches.append((end - len(item["term"]), end, item))
-    formula_hits = sorted(
-        (hit for hit in matches if hit[2]["entity_type"] == "FORMULA"),
-        key=lambda hit: (hit[0], -(hit[1] - hit[0]), hit[2]["term"]),
-    )
-    retained_formulas = []
-    for hit in formula_hits:
-        if any(
-            other[0] <= hit[0] and other[1] >= hit[1]
-            and (other[1] - other[0]) > (hit[1] - hit[0])
-            for other in retained_formulas
-        ):
-            continue
-        retained_formulas.append(hit)
-    matches = [hit for hit in matches if hit[2]["entity_type"] != "FORMULA"]
-    matches.extend(retained_formulas)
+    # Distinct lexicon formula names may be nested (e.g. a named base formula
+    # inside a modified formula name). Preserve every exact lexical hit with
+    # its own source span; downstream relations remain unresolved candidates.
     matches.sort(key=lambda hit: (hit[0], hit[1], hit[2]["entity_type"], hit[2]["term"]))
     return matches
 

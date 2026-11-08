@@ -88,8 +88,16 @@ class EntityMentionCandidateTests(unittest.TestCase):
         )
         formulas = [item["term"] for _, _, item in matches if item["entity_type"] == "FORMULA"]
         herbs = [item["term"] for _, _, item in matches if item["entity_type"] == "HERB"]
-        self.assertEqual(formulas, ["乌头麻黄黄芪芍药甘草汤"])
+        self.assertEqual(formulas, ["乌头麻黄黄芪芍药甘草汤", "芍药甘草汤"])
         self.assertEqual(herbs, ["乌头", "芍药", "甘草"])
+        formula_spans = [
+            (start, end, item["term"])
+            for start, end, item in matches if item["entity_type"] == "FORMULA"
+        ]
+        self.assertEqual(formula_spans, [
+            (0, len("乌头麻黄黄芪芍药甘草汤"), "乌头麻黄黄芪芍药甘草汤"),
+            (len("乌头麻黄黄芪"), len("乌头麻黄黄芪芍药甘草汤"), "芍药甘草汤"),
+        ])
 
     def test_rejects_missing_content_fields(self):
         with tempfile.TemporaryDirectory() as temp:

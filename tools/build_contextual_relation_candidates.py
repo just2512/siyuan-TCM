@@ -116,7 +116,14 @@ def canonicalize_spans(
         grouped[item[2]["candidate_type"]].append(item)
 
     retained: list[tuple[int, int, dict[str, str]]] = []
-    for items in grouped.values():
+    for candidate_type, items in grouped.items():
+        # Formula lexicon entries can be independently named formulas even
+        # when one exact name is contained in a modified formula name. Keep
+        # both unresolved endpoints; only lexical n-gram duplicates for other
+        # endpoint classes are collapsed here.
+        if candidate_type == "FORMULA":
+            retained.extend(items)
+            continue
         parents = list(range(len(items)))
 
         def find(index: int) -> int:
@@ -259,12 +266,34 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
             "predicate_types": len(distinct_predicates)}
 
 
-def validate(path: Path, units_path: Path) -> int:
+def validate(
+    path: Path,
+    units_path: Path,
+    context_candidates_path: Path | None = None,
+    mentions_path: Path | None = None,
+) -> int:
     units: dict[str, dict[str, Any]] = {}
     with gzip.open(units_path, "rt", encoding="utf-8", newline="") as stream:
         for raw in stream:
             unit = json.loads(raw)
             units[unit["unit_id"]] = unit
+
+    candidate_index: dict[tuple[str, str], dict[str, str]] | None = None
+    if (context_candidates_path is None) != (mentions_path is None):
+        raise ValueError("both context candidates and formula mentions are required for endpoint validation")
+    if context_candidates_path is not None and mentions_path is not None:
+        candidate_index = {}
+        for grouped in (
+            load_context_candidates(context_candidates_path),
+            load_formula_mentions(mentions_path),
+        ):
+            for source_unit_id, rows in grouped.items():
+                for candidate in rows:
+                    key = (source_unit_id, candidate["candidate_id"])
+                    if key in candidate_index:
+                        raise ValueError(f"duplicate endpoint candidate ID: {source_unit_id}:{candidate['candidate_id']}")
+                    candidate_index[key] = candidate
+
     count = 0
     seen = set()
     sentence_boundaries: dict[str, set[tuple[int, int]]] = {}
@@ -315,6 +344,27 @@ def validate(path: Path, units_path: Path) -> int:
             scope_break = RELATION_SCOPE_BREAKS.get(predicate)
             if scope_break and scope_break.search(between[:predicate_match.start()]):
                 raise ValueError(f"row {line}: relation crosses a source-attribution boundary")
+            if candidate_index is not None:
+                for role, candidate_id, candidate_type, term, span_start, span_end in (
+                    ("subject", row["subject_candidate_id"], row["subject_type"],
+                     row["subject_text"], subject_start, subject_end),
+                    ("object", row["object_candidate_id"], row["object_type"],
+                     row["object_text"], object_start, object_end),
+                ):
+                    candidate = candidate_index.get((row["unit_id"], candidate_id))
+                    if candidate is None:
+                        raise ValueError(f"row {line}: {role} candidate ID is absent from source candidate inputs")
+                    if (candidate["candidate_type"] != candidate_type
+                        or candidate["term"] != term
+                        or int(candidate["character_start"]) != span_start
+                        or int(candidate["character_end"]) != span_end):
+                        raise ValueError(f"row {line}: {role} candidate ID does not match endpoint type, text, or span")
+                    if (candidate["document"] != row["document"]
+                        or candidate["source_sha256"] != row["source_sha256"]
+                        or candidate["tree_position"] != row["tree_position"]
+                        or candidate["block_id"] != row["block_id"]):
+                        raise ValueError(f"row {line}: {role} candidate provenance differs from relation source")
+
             expected_relation_id = relation_identity(
                 predicate,
                 {"candidate_id": row["subject_candidate_id"],
@@ -346,11 +396,13 @@ def main() -> int:
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
     if args.validate:
-        count = validate(args.output, args.units)
+        count = validate(args.output, args.units, args.context_candidates, args.mentions)
         result = {"validated_contextual_relations": count}
     else:
         result = extract(args.context_candidates, args.mentions, args.units, args.output)
-        result["validated_contextual_relations"] = validate(args.output, args.units)
+        result["validated_contextual_relations"] = validate(
+            args.output, args.units, args.context_candidates, args.mentions
+        )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
