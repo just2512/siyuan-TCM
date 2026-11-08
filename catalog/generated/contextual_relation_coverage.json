@@ -5,12 +5,12 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 3582,
-      "pairs_with_predicate_between": 8,
+      "ordered_typed_pairs": 305,
+      "pairs_with_predicate_between": 4,
       "negated_pairs": 0,
-      "eligible_pairs": 8,
+      "eligible_pairs": 4,
       "marker_sentences_without_typed_pair": 62,
-      "typed_pair_sentences_without_marker": 104,
+      "typed_pair_sentences_without_marker": 101,
       "marker_sentences_with_subject_type": 13,
       "marker_sentences_with_object_type": 16,
       "marker_sentences_with_both_endpoint_types": 1,
@@ -20,21 +20,21 @@
       "marker_sentences_without_object_type": 47,
       "units_with_marker": 61,
       "units_with_eligible_pair": 1,
-      "extracted_rows": 8,
+      "extracted_rows": 4,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYNDROME": 25,
-        "SYMPTOM": 231,
+        "SYNDROME": 18,
+        "SYMPTOM": 45,
         "FORMULA": 2,
-        "TREATMENT": 3
+        "TREATMENT": 1
       }
     },
     "SYNDROME_TO_TREATMENT": {
       "marker_occurrences": 385,
       "sentences_with_marker": 384,
-      "ordered_typed_pairs": 11,
-      "pairs_with_predicate_between": 6,
+      "ordered_typed_pairs": 5,
+      "pairs_with_predicate_between": 2,
       "negated_pairs": 0,
-      "eligible_pairs": 6,
+      "eligible_pairs": 2,
       "marker_sentences_without_typed_pair": 383,
       "typed_pair_sentences_without_marker": 2,
       "marker_sentences_with_subject_type": 1,
@@ -46,10 +46,10 @@
       "marker_sentences_without_object_type": 32,
       "units_with_marker": 336,
       "units_with_eligible_pair": 1,
-      "extracted_rows": 6,
+      "extracted_rows": 2,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "TREATMENT": 557,
-        "SYMPTOM": 92,
+        "TREATMENT": 353,
+        "SYMPTOM": 28,
         "FORMULA": 42,
         "SYNDROME": 2
       }
@@ -57,7 +57,7 @@
     "TREATMENT_TO_FORMULA": {
       "marker_occurrences": 2954,
       "sentences_with_marker": 2837,
-      "ordered_typed_pairs": 78,
+      "ordered_typed_pairs": 40,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "eligible_pairs": 0,
@@ -75,9 +75,9 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 224,
-        "SYMPTOM": 1826,
-        "TREATMENT": 22,
-        "SYNDROME": 32
+        "SYMPTOM": 333,
+        "TREATMENT": 12,
+        "SYNDROME": 18
       }
     }
   },
@@ -184,20 +184,6 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_5ccd91f4181db651fcdad0ae",
-              "term": "主要",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 74
-            },
-            {
-              "candidate_id": "term_abafe019c119cfa1fbf321ab",
-              "term": "主要依",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 75
-            },
-            {
               "candidate_id": "term_08d27d496795d68a3fe0743a",
               "term": "主要依据",
               "candidate_type": "SYNDROME",
@@ -219,20 +205,6 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_5ccd91f4181db651fcdad0ae",
-              "term": "主要",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 74
-            },
-            {
-              "candidate_id": "term_abafe019c119cfa1fbf321ab",
-              "term": "主要依",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 75
-            },
-            {
               "candidate_id": "term_08d27d496795d68a3fe0743a",
               "term": "主要依据",
               "candidate_type": "SYNDROME",
@@ -253,20 +225,6 @@
           "sentence_text": "08/31/2007初诊，白人，女，67岁，被本地西医诊断得到红斑性狼疮， 她一被告知得到此病后的第一反应，就是来看我，因此完全没有被西医碰过，所以也从未吃过西药，自述近来体重少了10磅，全身呈现红斑到处，体无完肤，连续 三个月不断的落发，环唇一圈是又干又红，且很热痛，耳中自觉非常干热，问诊结果是，失眠严重，口中干燥，大便正常，喜喝冷饮，双脚冰冷，胃口很好，奇怪的 是一觉得饿，就必须立刻吃些食物，否则必头痛，脉诊得到数且大脉，舌苔中黄湿，四周红色且色深，督脉压诊在第五椎有压痛点，诊断为此人属于寒热并结，眼诊 可知其肝中有毒素造成损伤。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
-            {
-              "candidate_id": "term_26cff9dbc3c0f182717a1144",
-              "term": "寒热",
-              "candidate_type": "SYNDROME",
-              "start": 249,
-              "end": 251
-            },
-            {
-              "candidate_id": "term_7f5cbc589c421bd1c476e70c",
-              "term": "寒热并",
-              "candidate_type": "SYNDROME",
-              "start": 249,
-              "end": 252
-            },
             {
               "candidate_id": "term_963eb41f2c7b349ac0e39afe",
               "term": "寒热并结",
@@ -312,91 +270,14 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7e6f41473ceaf75a6082caeb",
-              "term": "症状",
+              "candidate_id": "term_c9de74e55e9f4eac4c3cb28e",
+              "term": "好转了",
               "candidate_type": "SYMPTOM",
-              "start": 78,
-              "end": 80
-            },
-            {
-              "candidate_id": "term_fdc854697b8b2018730cd221",
-              "term": "的症状",
-              "candidate_type": "SYMPTOM",
-              "start": 77,
-              "end": 80
-            },
-            {
-              "candidate_id": "term_5fea8fc0884db4b3510ca897",
-              "term": "癌的症状",
-              "candidate_type": "SYMPTOM",
-              "start": 76,
-              "end": 80
-            },
-            {
-              "candidate_id": "term_6aa744fb9e0f1e93a5bba2c3",
-              "term": "血癌的症状",
-              "candidate_type": "SYMPTOM",
-              "start": 75,
-              "end": 80
-            },
-            {
-              "candidate_id": "term_e54550a82a667a4aaedfd8b4",
-              "term": "双手",
-              "candidate_type": "SYMPTOM",
-              "start": 81,
-              "end": 83
-            },
-            {
-              "candidate_id": "term_17e494945d93e1a2913549a4",
-              "term": "手掌",
-              "candidate_type": "SYMPTOM",
-              "start": 82,
-              "end": 84
-            },
-            {
-              "candidate_id": "term_bb46a808af870cad9b1c7738",
-              "term": "掌皮",
-              "candidate_type": "SYMPTOM",
-              "start": 83,
-              "end": 85
-            },
-            {
-              "candidate_id": "term_123e218b573a70c20d6cc555",
-              "term": "温柔",
-              "candidate_type": "SYMPTOM",
-              "start": 85,
-              "end": 87
-            },
-            {
-              "candidate_id": "term_7b20786dfa2fe21611f594e1",
-              "term": "柔滑",
-              "candidate_type": "SYMPTOM",
-              "start": 86,
-              "end": 88
-            },
-            {
-              "candidate_id": "term_189081130079de01358d14d5",
-              "term": "滑润",
-              "candidate_type": "SYMPTOM",
-              "start": 87,
-              "end": 89
-            },
-            {
-              "candidate_id": "term_0a1dd0b8c94caf21cd8580c3",
-              "term": "手掌皮",
-              "candidate_type": "SYMPTOM",
-              "start": 82,
-              "end": 85
-            },
-            {
-              "candidate_id": "term_41417f490b88b05f85fdddd7",
-              "term": "可见",
-              "candidate_type": "SYMPTOM",
-              "start": 183,
-              "end": 185
+              "start": 185,
+              "end": 188
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "245acc5b67e306f2793e1fbc0429f4683252b0dea31e064cbe253ccb03da076b",
@@ -410,91 +291,42 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7e6f41473ceaf75a6082caeb",
-              "term": "症状",
-              "candidate_type": "SYMPTOM",
-              "start": 67,
-              "end": 69
-            },
-            {
-              "candidate_id": "term_e74ea87c3dfb876061c63c34",
-              "term": "状了",
-              "candidate_type": "SYMPTOM",
-              "start": 68,
-              "end": 70
-            },
-            {
-              "candidate_id": "term_f726889d5431de011e8d99d1",
-              "term": "症状了",
-              "candidate_type": "SYMPTOM",
-              "start": 67,
-              "end": 70
-            },
-            {
-              "candidate_id": "term_c90178f88c99017d850b9787",
-              "term": "有咳",
-              "candidate_type": "SYMPTOM",
-              "start": 73,
-              "end": 75
-            },
-            {
-              "candidate_id": "term_dd05a455a629d14c87a9980b",
-              "term": "咳嗽",
+              "candidate_id": "term_26359a0534740ba19e78c339",
+              "term": "咳嗽仍有",
               "candidate_type": "SYMPTOM",
               "start": 74,
-              "end": 76
-            },
-            {
-              "candidate_id": "term_dd05a455a629d14c87a9980b",
-              "term": "咳嗽",
-              "candidate_type": "SYMPTOM",
-              "start": 74,
-              "end": 76
-            },
-            {
-              "candidate_id": "term_378d3e987e357b2ce75004f7",
-              "term": "嗽仍",
-              "candidate_type": "SYMPTOM",
-              "start": 75,
-              "end": 77
-            },
-            {
-              "candidate_id": "term_378d3e987e357b2ce75004f7",
-              "term": "嗽仍",
-              "candidate_type": "SYMPTOM",
-              "start": 75,
-              "end": 77
-            },
-            {
-              "candidate_id": "term_7db2533ac803172cf593e398",
-              "term": "仍有",
-              "candidate_type": "SYMPTOM",
-              "start": 76,
               "end": 78
             },
             {
-              "candidate_id": "term_7db2533ac803172cf593e398",
-              "term": "仍有",
+              "candidate_id": "term_8c17c4b65c753fa4cec72809",
+              "term": "是因为奶水逆",
               "candidate_type": "SYMPTOM",
-              "start": 76,
-              "end": 78
+              "start": 80,
+              "end": 86
             },
             {
-              "candidate_id": "term_92c5f3ccc3622d6bc81d0da4",
-              "term": "有咳嗽",
+              "candidate_id": "term_fcb48ac3edccb6ad70f6dc75",
+              "term": "出现咳嗽",
               "candidate_type": "SYMPTOM",
-              "start": 73,
-              "end": 76
+              "start": 110,
+              "end": 114
             },
             {
-              "candidate_id": "term_92c5f3ccc3622d6bc81d0da4",
-              "term": "有咳嗽",
+              "candidate_id": "term_87dddcd5c0108e9eb1da4c32",
+              "term": "这是疾病",
               "candidate_type": "SYMPTOM",
-              "start": 73,
-              "end": 76
+              "start": 117,
+              "end": 121
+            },
+            {
+              "candidate_id": "term_32d3e59a37fdbc36e241ce53",
+              "term": "在做最",
+              "candidate_type": "SYMPTOM",
+              "start": 121,
+              "end": 124
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "d70df6074e1a8e6f9197763158f065a24c6a1eac27f6dd3446bad0f8ef53030f",
@@ -508,46 +340,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_dd05a455a629d14c87a9980b",
-              "term": "咳嗽",
+              "candidate_id": "term_77ea60dd77f308566fc5a829",
+              "term": "咳嗽出现",
               "candidate_type": "SYMPTOM",
               "start": 50,
-              "end": 52
-            },
-            {
-              "candidate_id": "term_6c7fbaa7f216928e30cc63b3",
-              "term": "嗽出",
-              "candidate_type": "SYMPTOM",
-              "start": 51,
-              "end": 53
-            },
-            {
-              "candidate_id": "term_105f559adeb990172c9aa712",
-              "term": "出现",
-              "candidate_type": "SYMPTOM",
-              "start": 52,
               "end": 54
-            },
-            {
-              "candidate_id": "term_105f559adeb990172c9aa712",
-              "term": "出现",
-              "candidate_type": "SYMPTOM",
-              "start": 52,
-              "end": 54
-            },
-            {
-              "candidate_id": "term_48344b15ec09b67357251f51",
-              "term": "现白",
-              "candidate_type": "SYMPTOM",
-              "start": 53,
-              "end": 55
-            },
-            {
-              "candidate_id": "term_48344b15ec09b67357251f51",
-              "term": "现白",
-              "candidate_type": "SYMPTOM",
-              "start": 53,
-              "end": 55
             },
             {
               "candidate_id": "term_66c4e60926566eaba8b9a163",
@@ -557,42 +354,21 @@
               "end": 56
             },
             {
-              "candidate_id": "term_66c4e60926566eaba8b9a163",
-              "term": "白痰",
+              "candidate_id": "term_cdc646318c82ff6a109d5966",
+              "term": "无胃口",
               "candidate_type": "SYMPTOM",
-              "start": 54,
-              "end": 56
+              "start": 57,
+              "end": 60
             },
             {
-              "candidate_id": "term_1e9e75ff72bc8ac51f30fd03",
-              "term": "咳嗽出",
-              "candidate_type": "SYMPTOM",
-              "start": 50,
-              "end": 53
-            },
-            {
-              "candidate_id": "term_d4519f7aaf16511ffcd30a30",
-              "term": "嗽出现",
-              "candidate_type": "SYMPTOM",
-              "start": 51,
-              "end": 54
-            },
-            {
-              "candidate_id": "term_d4519f7aaf16511ffcd30a30",
-              "term": "嗽出现",
-              "candidate_type": "SYMPTOM",
-              "start": 51,
-              "end": 54
-            },
-            {
-              "candidate_id": "term_851f8a4e87fce36aef2ca0b1",
-              "term": "出现白",
-              "candidate_type": "SYMPTOM",
-              "start": 52,
-              "end": 55
+              "candidate_id": "660250bbc068ea34dffa103900a23731e4769af775fc98be6041058f5d13262c",
+              "term": "大承气汤",
+              "candidate_type": "FORMULA",
+              "start": 123,
+              "end": 127
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "1c1302776a347f8c8c8c1e556cb155f689f3848e041ee8daeb247756f32f7fd7",
@@ -606,91 +382,21 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7e6f41473ceaf75a6082caeb",
-              "term": "症状",
-              "candidate_type": "SYMPTOM",
-              "start": 137,
-              "end": 139
-            },
-            {
-              "candidate_id": "term_14cc01b467b444cd159dc9ec",
-              "term": "状是",
-              "candidate_type": "SYMPTOM",
-              "start": 138,
-              "end": 140
-            },
-            {
-              "candidate_id": "term_e387eb2d426eccfbb5bbb148",
-              "term": "是四",
-              "candidate_type": "SYMPTOM",
-              "start": 139,
-              "end": 141
-            },
-            {
-              "candidate_id": "term_f80c2e3489f08e1e97daac3f",
-              "term": "四肢",
+              "candidate_id": "term_270516a672302de42d3e1651",
+              "term": "四肢肌肉",
               "candidate_type": "SYMPTOM",
               "start": 140,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_523d79ee514505b350158aad",
-              "term": "肢肌",
-              "candidate_type": "SYMPTOM",
-              "start": 141,
-              "end": 143
-            },
-            {
-              "candidate_id": "term_b9869870868f981e6b50f7f2",
-              "term": "肌肉",
-              "candidate_type": "SYMPTOM",
-              "start": 142,
               "end": 144
             },
             {
-              "candidate_id": "term_ae8de5b8043a24096911d974",
-              "term": "症状是",
+              "candidate_id": "term_8c7af90e26ce57c9cd2d8b9d",
+              "term": "大陆医",
               "candidate_type": "SYMPTOM",
-              "start": 137,
-              "end": 140
-            },
-            {
-              "candidate_id": "term_a1fb9216daaf22444c4e4b80",
-              "term": "状是四",
-              "candidate_type": "SYMPTOM",
-              "start": 138,
-              "end": 141
-            },
-            {
-              "candidate_id": "term_55f477d16f6de6838b6176a4",
-              "term": "是四肢",
-              "candidate_type": "SYMPTOM",
-              "start": 139,
-              "end": 142
-            },
-            {
-              "candidate_id": "term_4d042c0e9e992e6b1a72cf93",
-              "term": "四肢肌",
-              "candidate_type": "SYMPTOM",
-              "start": 140,
-              "end": 143
-            },
-            {
-              "candidate_id": "term_200646989e66ed12f5a7c7f5",
-              "term": "肢肌肉",
-              "candidate_type": "SYMPTOM",
-              "start": 141,
-              "end": 144
-            },
-            {
-              "candidate_id": "term_9d42deca10e56423f0f5fbc7",
-              "term": "症状是四",
-              "candidate_type": "SYMPTOM",
-              "start": 137,
-              "end": 141
+              "start": 196,
+              "end": 199
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         },
         {
           "unit_id": "bd7dc107e9c77f7a95a7c98b306fbf34bbec6e255f19e31a8e48c8b8268ea7c6",
@@ -704,91 +410,14 @@
           "sentence_truncated": true,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_105f559adeb990172c9aa712",
-              "term": "出现",
-              "candidate_type": "SYMPTOM",
-              "start": 508,
-              "end": 510
-            },
-            {
-              "candidate_id": "term_53fbd773086147e8ff433672",
-              "term": "现了",
-              "candidate_type": "SYMPTOM",
-              "start": 509,
-              "end": 511
-            },
-            {
               "candidate_id": "term_6a6ef4061bb5077b4289fa5f",
               "term": "了骨",
               "candidate_type": "SYMPTOM",
               "start": 510,
               "end": 512
-            },
-            {
-              "candidate_id": "term_cc2b92c4a2f16a5e383ae92d",
-              "term": "骨质",
-              "candidate_type": "SYMPTOM",
-              "start": 511,
-              "end": 513
-            },
-            {
-              "candidate_id": "term_2c51a591ac8266b54cb69a35",
-              "term": "质疏",
-              "candidate_type": "SYMPTOM",
-              "start": 512,
-              "end": 514
-            },
-            {
-              "candidate_id": "term_bda9b3199f50801ac542f0a8",
-              "term": "疏松",
-              "candidate_type": "SYMPTOM",
-              "start": 513,
-              "end": 515
-            },
-            {
-              "candidate_id": "term_20118498dc1ead1283245680",
-              "term": "松症",
-              "candidate_type": "SYMPTOM",
-              "start": 514,
-              "end": 516
-            },
-            {
-              "candidate_id": "term_bfb2b9d765f2cb246d2453d0",
-              "term": "都出现",
-              "candidate_type": "SYMPTOM",
-              "start": 507,
-              "end": 510
-            },
-            {
-              "candidate_id": "term_6415b8ea8c756ae3533a9920",
-              "term": "出现了",
-              "candidate_type": "SYMPTOM",
-              "start": 508,
-              "end": 511
-            },
-            {
-              "candidate_id": "term_3ccae462f7d9363c08dc3fd9",
-              "term": "骨质疏",
-              "candidate_type": "SYMPTOM",
-              "start": 511,
-              "end": 514
-            },
-            {
-              "candidate_id": "term_2d289873a62785e1c173458b",
-              "term": "质疏松",
-              "candidate_type": "SYMPTOM",
-              "start": 512,
-              "end": 515
-            },
-            {
-              "candidate_id": "term_b46a0e3702d944af8056c035",
-              "term": "疏松症",
-              "candidate_type": "SYMPTOM",
-              "start": 513,
-              "end": 516
             }
           ],
-          "candidate_spans_truncated": true
+          "candidate_spans_truncated": false
         }
       ]
     },
@@ -805,20 +434,6 @@
           "sentence_text": "【13-14】问曰：疟病以月一发者，当以十五日愈，甚者当月尽解，如其不差，当云何？",
           "sentence_truncated": false,
           "typed_candidate_spans": [
-            {
-              "candidate_id": "term_2f740e1769682233943b30f2",
-              "term": "十五",
-              "candidate_type": "TREATMENT",
-              "start": 20,
-              "end": 22
-            },
-            {
-              "candidate_id": "term_168baee354e0f5fa2d43b363",
-              "term": "十五日",
-              "candidate_type": "TREATMENT",
-              "start": 20,
-              "end": 23
-            },
             {
               "candidate_id": "term_7e68f81d86a12388a51d1174",
               "term": "十五日愈",
@@ -848,18 +463,18 @@
               "end": 19
             },
             {
-              "candidate_id": "term_85ae24c8dafac1016f4f5b1a",
-              "term": "附子汤温",
-              "candidate_type": "TREATMENT",
-              "start": 49,
-              "end": 53
-            },
-            {
               "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
               "term": "附子汤",
               "candidate_type": "FORMULA",
               "start": 49,
               "end": 52
+            },
+            {
+              "candidate_id": "term_85ae24c8dafac1016f4f5b1a",
+              "term": "附子汤温",
+              "candidate_type": "TREATMENT",
+              "start": 49,
+              "end": 53
             }
           ],
           "candidate_spans_truncated": false
@@ -875,20 +490,6 @@
           "sentence_text": "[桂林本 9-102]阳明病，腹满，胁下偏痛，发微热，其脉弦紧者，当以温药下之，宜大黄附子细辛汤。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
-            {
-              "candidate_id": "term_8476bbcf6f73d042f8d68a77",
-              "term": "温药",
-              "candidate_type": "TREATMENT",
-              "start": 35,
-              "end": 37
-            },
-            {
-              "candidate_id": "term_8adaf051c6e4e963a96478d1",
-              "term": "温药下",
-              "candidate_type": "TREATMENT",
-              "start": 35,
-              "end": 38
-            },
             {
               "candidate_id": "term_61b607e29d73215b5646e967",
               "term": "温药下之",
@@ -910,20 +511,6 @@
           "sentence_text": "那为什么说要用慢慢消化的方法，为什么不能快呢? 其实这还是蛮有道理的，那同学们看一下讲义里头有《金匮要略》的几句话，治疗痰饮的一些基本原则的一个论点，在42页的讲义的中间上面一点，就是《金匮要略》讲到痰饮的时候，他有说，“病痰饮者，当以温药和之”。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
-            {
-              "candidate_id": "term_8476bbcf6f73d042f8d68a77",
-              "term": "温药",
-              "candidate_type": "TREATMENT",
-              "start": 118,
-              "end": 120
-            },
-            {
-              "candidate_id": "term_69074e73386d9c323c8d2311",
-              "term": "温药和",
-              "candidate_type": "TREATMENT",
-              "start": 118,
-              "end": 121
-            },
             {
               "candidate_id": "term_2c9a998d65d9199f97c5a420",
               "term": "温药和之",
@@ -1227,34 +814,6 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_214125ba3c492a5bc54cfd72",
-              "term": "的这",
-              "candidate_type": "TREATMENT",
-              "start": 334,
-              "end": 336
-            },
-            {
-              "candidate_id": "term_3c5ab45408c921f938110436",
-              "term": "的这个",
-              "candidate_type": "TREATMENT",
-              "start": 334,
-              "end": 337
-            },
-            {
-              "candidate_id": "term_f14a19493c1ee6102fdca600",
-              "term": "的这个方",
-              "candidate_type": "TREATMENT",
-              "start": 334,
-              "end": 338
-            },
-            {
-              "candidate_id": "term_bcc646b70ee7a972da1648a2",
-              "term": "的这个方子",
-              "candidate_type": "TREATMENT",
-              "start": 334,
-              "end": 339
-            },
-            {
               "candidate_id": "term_2b49004a114acdd44264f287",
               "term": "的这个方子啊",
               "candidate_type": "TREATMENT",
@@ -1296,13 +855,6 @@
           "sentence_text": "所以说：气候寒凉的地方，多内热，可用寒凉药治之，并可以用汤液侵渍的方法，气候温湿的地方，多内寒，可治以温热的方法，以加强内部阳气的固守。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
-            {
-              "candidate_id": "term_787b997cd5caa03e00ce37cd",
-              "term": "温热",
-              "candidate_type": "TREATMENT",
-              "start": 142,
-              "end": 144
-            },
             {
               "candidate_id": "term_838526c929bf565d5eb3e88e",
               "term": "温热的",
@@ -1358,20 +910,6 @@
               "candidate_type": "SYNDROME",
               "start": 326,
               "end": 328
-            },
-            {
-              "candidate_id": "term_288e6acbd956e03ffdd75ae4",
-              "term": "健脾",
-              "candidate_type": "TREATMENT",
-              "start": 355,
-              "end": 357
-            },
-            {
-              "candidate_id": "term_21384582a70348a8e269f6b9",
-              "term": "健脾为",
-              "candidate_type": "TREATMENT",
-              "start": 355,
-              "end": 358
             },
             {
               "candidate_id": "term_453bc0d68ce920c4c8dfff66",
