@@ -267,6 +267,7 @@ def validate(path: Path, units_path: Path) -> int:
             units[unit["unit_id"]] = unit
     count = 0
     seen = set()
+    sentence_boundaries: dict[str, set[tuple[int, int]]] = {}
     with path.open("r", encoding="utf-8", newline="") as stream:
         reader = csv.DictReader(stream)
         missing = set(FIELDS) - set(reader.fieldnames or [])
@@ -294,7 +295,9 @@ def validate(path: Path, units_path: Path) -> int:
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
                 raise ValueError(f"row {line}: evidence span mismatch")
-            if (start, end) not in set(sentence_ranges(text)):
+            if row["unit_id"] not in sentence_boundaries:
+                sentence_boundaries[row["unit_id"]] = set(sentence_ranges(text))
+            if (start, end) not in sentence_boundaries[row["unit_id"]]:
                 raise ValueError(f"row {line}: evidence span crosses a source sentence boundary")
             subject_start, subject_end = int(row["subject_start"]), int(row["subject_end"])
             object_start, object_end = int(row["object_start"]), int(row["object_end"])
