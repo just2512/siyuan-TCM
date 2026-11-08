@@ -50,7 +50,7 @@
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "TREATMENT": 353,
         "SYMPTOM": 26,
-        "FORMULA": 42,
+        "FORMULA": 43,
         "SYNDROME": 2
       }
     },
@@ -74,7 +74,7 @@
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "FORMULA": 224,
+        "FORMULA": 242,
         "SYMPTOM": 245,
         "TREATMENT": 12,
         "SYNDROME": 18
