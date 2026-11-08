@@ -4,6 +4,8 @@ import importlib.util
 import json
 import tempfile
 import unittest
+
+from build_contextual_relation_candidates import relation_identity
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).with_name("export_semantic_graph.py")
@@ -160,6 +162,18 @@ class SemanticGraphExportTests(unittest.TestCase):
                 "lexicon_version": "1.3.0", "extraction_method": "EXACT_LEXICON_MATCH",
                 "resolution_status": "UNRESOLVED_CANDIDATE",
             }])
+            ctx_r1_id = relation_identity(
+                "SYMPTOM_TO_SYNDROME",
+                {"candidate_id": "sym-1", "character_start": "2", "character_end": "4"},
+                {"candidate_id": "syn-1", "character_start": "8", "character_end": "12"},
+                "u1", 0, len(source_text),
+            )
+            ctx_r2_id = relation_identity(
+                "TREATMENT_TO_FORMULA",
+                {"candidate_id": "treat-1", "character_start": "15", "character_end": "17"},
+                {"candidate_id": "formula-1", "character_start": "20", "character_end": "23"},
+                "u1", 0, len(source_text),
+            )
             relation_fields = ["relation_id", "predicate", "subject_candidate_id", "subject_text",
                 "subject_type", "subject_start", "subject_end", "object_candidate_id", "object_text",
                 "object_type", "object_start", "object_end", "unit_id", "document", "source_sha256",
@@ -169,7 +183,7 @@ class SemanticGraphExportTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=relation_fields)
                 writer.writeheader()
                 writer.writerows([
-                    {"relation_id": "ctx-r1", "predicate": "SYMPTOM_TO_SYNDROME",
+                    {"relation_id": ctx_r1_id, "predicate": "SYMPTOM_TO_SYNDROME",
                      "subject_candidate_id": "sym-1", "subject_text": "头痛", "subject_type": "SYMPTOM",
                      "subject_start": 2, "subject_end": 4, "object_candidate_id": "syn-1",
                      "object_text": "太阳中风", "object_type": "SYNDROME", "object_start": 8,
@@ -178,7 +192,7 @@ class SemanticGraphExportTests(unittest.TestCase):
                      "sentence_end": len(source_text), "evidence_text": source_text,
                      "predicate_text": "辨证为", "extraction_rule": "SYMPTOM_TO_SYNDROME_EXPLICIT_V1",
                      "resolution_status": "UNRESOLVED_CANDIDATE"},
-                    {"relation_id": "ctx-r2", "predicate": "TREATMENT_TO_FORMULA",
+                    {"relation_id": ctx_r2_id, "predicate": "TREATMENT_TO_FORMULA",
                      "subject_candidate_id": "treat-1", "subject_text": "解表", "subject_type": "TREATMENT",
                      "subject_start": 15, "subject_end": 17, "object_candidate_id": "formula-1",
                      "object_text": "桂枝汤", "object_type": "FORMULA", "object_start": 20,
@@ -214,7 +228,7 @@ class SemanticGraphExportTests(unittest.TestCase):
             connection = __import__("sqlite3").connect(database)
             connection.execute(
                 "UPDATE contextual_relation_candidates SET predicate_text=? WHERE relation_id=?",
-                ("证属", "ctx-r1"),
+                ("证属", ctx_r1_id),
             )
             connection.commit()
             connection.close()
@@ -225,7 +239,7 @@ class SemanticGraphExportTests(unittest.TestCase):
             connection = __import__("sqlite3").connect(database)
             connection.execute(
                 "UPDATE contextual_relation_candidates SET predicate_text=? WHERE relation_id=?",
-                ("辨证为", "ctx-r1"),
+                ("辨证为", ctx_r1_id),
             )
             connection.commit()
             connection.close()
