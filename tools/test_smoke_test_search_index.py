@@ -86,7 +86,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 CREATE TABLE node_relationships (id INTEGER);
                 CREATE TABLE entity_mentions (id INTEGER);
                 CREATE TABLE entity_catalog (id INTEGER);
-                CREATE TABLE semantic_relation_candidates (id INTEGER);
+                CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
                 CREATE TABLE contextual_term_type_candidates (id INTEGER);
                 CREATE TABLE contextual_relation_candidates (
