@@ -28,7 +28,7 @@ FIELDS = [
 SENTENCE_END = re.compile(r"[^。！？；\n]+[。！？；]?|；+|\n+")
 PREDICATES = {
     "SYMPTOM_TO_SYNDROME": re.compile(r"(?:辨证为|辨证属|证属|诊断为|辨为)"),
-    "SYNDROME_TO_TREATMENT": re.compile(r"(?:治宜|治法为|治以|法当|当以|宜用)"),
+    "SYNDROME_TO_TREATMENT": re.compile(r"(?:治宜|治法为|治以|当以)"),
     "TREATMENT_TO_FORMULA": re.compile(r"(?:方用|选用|用方|主方为|方选|可用)"),
 }
 SUBJECT_TYPES = {

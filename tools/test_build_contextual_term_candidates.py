@@ -142,8 +142,25 @@ class ContextualTermCandidateTests(unittest.TestCase):
     def test_recognizes_relation_predicate_prefix_forms_for_typed_endpoints(self):
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨为太阳中风", 2, 6))
-        self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("宜用解肌发表", 2, 6))
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("宜用解肌发表", 2, 6))
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("当以温中健脾", 2, 6))
+
+    def test_does_not_classify_generic_bianzheng_as_a_syndrome_prefix(self):
+        self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为主", 2, 4))
+        self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))
+
+    def test_does_not_classify_fadang_as_treatment_prefix(self):
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("法当腹满", 2, 4))
+
+    def test_yiyong_does_not_turn_a_formula_name_fragment_into_treatment(self):
+        text = "此证风涎潮于上，膈痹气不通，宜用救急稀涎散。"
+        start = text.index("救急")
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
+
+    def test_dangyi_remains_a_valid_treatment_prefix(self):
+        text = "证属不足，当以健脾为主。"
+        start = text.index("健脾")
+        self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
 
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
