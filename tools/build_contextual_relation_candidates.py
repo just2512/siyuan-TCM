@@ -307,6 +307,9 @@ def validate(path: Path, units_path: Path) -> int:
             if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
                 or NEGATION_PREFIX.search(between[:predicate_match.start()])):
                 raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
+            scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+            if scope_break and scope_break.search(between[:predicate_match.start()]):
+                raise ValueError(f"row {line}: relation crosses a source-attribution boundary")
             expected_relation_id = relation_identity(
                 predicate,
                 {"candidate_id": row["subject_candidate_id"],
