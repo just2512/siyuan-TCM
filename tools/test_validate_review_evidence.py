@@ -91,10 +91,15 @@ class ReviewEvidenceLedgerTests(unittest.TestCase):
 
             for updates, message in [
                 ({"context_reference": ""}, "原始 .sy 上下文定位"),
+                ({"context_reference": "folder/note.sy"}, "上下文/块定位"),
+                ({"context_reference": "folder/note.sy#"}, "上下文/块定位"),
                 ({"content_basis": ""}, "有效 content_basis"),
                 ({"content_basis": "FILENAME_AND_HASH_ONLY"}, "content_basis 无效"),
                 ({"inspection_method": "PROGRAMMATIC_STRUCTURE", "reviewer": "automated-test"}, "必须来自 HUMAN_DIRECT"),
                 ({"context_reference": "/home/user/note.sy"}, "绝对路径或路径穿越"),
+                ({"source_reference": "catalog/image.png"}, "assets/ 下的安全相对附件路径"),
+                ({"source_reference": "assets/../private.png"}, "assets/ 下的安全相对附件路径"),
+                ({"subject_key": "catalog/image.png"}, "assets/ 下的安全相对附件路径"),
             ]:
                 with self.subTest(updates=updates):
                     candidate = dict(base)

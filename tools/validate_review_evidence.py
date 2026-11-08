@@ -88,11 +88,27 @@ def validate_ledger(path: Path) -> dict[str, int]:
         if values["content_basis"] and values["content_basis"] not in ASSET_CONTENT_BASES:
             raise ValueError(f"{evidence_id} content_basis 无效：{values['content_basis']}")
         if values["evidence_kind"] == "asset_content":
+            if values["subject_type"] != "asset_reference":
+                raise ValueError(f"{evidence_id} asset_content 的 subject_type 必须为 asset_reference")
             if values["inspection_method"] != "HUMAN_DIRECT":
                 raise ValueError(f"{evidence_id} asset_content 必须来自 HUMAN_DIRECT 检查")
-            context_document = context_ref.split("#", 1)[0]
-            if not context_document.endswith(".sy"):
-                raise ValueError(f"{evidence_id} asset_content 缺少原始 .sy 上下文定位")
+            subject_key = values["subject_key"].replace("\\", "/")
+            source_reference = values["source_reference"].replace("\\", "/")
+            for label, reference in (("subject_key", subject_key), ("source_reference", source_reference)):
+                if (
+                    not reference.startswith("assets/")
+                    or reference.startswith(("/", "//"))
+                    or ".." in reference.split("/")
+                ):
+                    raise ValueError(
+                        f"{evidence_id} asset_content 的 {label} 必须使用 assets/ 下的安全相对附件路径"
+                    )
+            context_document, separator, context_anchor = context_ref.partition("#")
+            if (
+                not separator or not context_anchor
+                or not context_document.endswith(".sy")
+            ):
+                raise ValueError(f"{evidence_id} asset_content 缺少原始 .sy 上下文/块定位")
             if values["content_basis"] not in ASSET_CONTENT_BASES:
                 raise ValueError(f"{evidence_id} asset_content 缺少有效 content_basis")
         elif values["content_basis"]:

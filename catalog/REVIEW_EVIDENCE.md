@@ -111,3 +111,5 @@ EV-0001,document,folder/note.sy,original_sy,catalog/local-review/evidence-index.
 当 `evidence_kind=asset_content` 时，`subject_key` 是思源笔记中的原始附件引用，`source_reference` 是核验者实际打开检查的候选附件路径，两者可以不同。跨表校验要求 `source_reference` 必须属于该条 `asset_review_queue.csv` 的 `candidate_paths` 集合，避免把另一条附件的内容证据误挂到当前引用。
 
 若人工在本地搜索中发现候选清单之外的新文件，先将该文件的仓库相对路径补入本地候选清单并重新生成队列，再登记证据；不要仅在证据台账中填写未进入候选集合的路径。无可检查候选时，保留 `NEEDS_INSPECTION` / `UNRESOLVED`，不得提交内容匹配结论。
+
+附件内容证据的结构字段还必须满足：`subject_type=asset_reference`；`subject_key` 与 `source_reference` 均为 `assets/` 下安全相对路径；`context_reference` 必须包含原始 `.sy` 路径和非空块锚点（`#block-id`）。这些门槛只验证证据对象和定位格式，不证明附件内容与引用相符。
