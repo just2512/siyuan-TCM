@@ -10,15 +10,13 @@
     "semantic_relation_candidates": 158,
     "unclassified_term_candidates": 2363692,
     "contextual_term_type_candidates": 216473,
-    "contextual_relation_candidates": 2
+    "contextual_relation_candidates": 0
   },
   "checks": {
     "full_text": "PASS",
     "entity_span_and_source": "PASS",
     "formula_herb_relation": "PASS",
     "unclassified_terms": "PASS",
-    "contextual_term_candidates": "PASS",
-    "contextual_relation_evidence": "PASS",
-    "contextual_relation_predicate_direction": "PASS"
+    "contextual_term_candidates": "PASS"
   }
 }
