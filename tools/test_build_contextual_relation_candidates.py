@@ -182,12 +182,13 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             mentions = root / "mentions.csv.gz"
             units = root / "units.jsonl.gz"
             output = root / "relations.csv"
-            source_text = "症见头痛，症见头痛，辨证为太阳中风。"
+            source_text = "症见头痛加剧，症见头痛，辨证为太阳中风。"
             symptom_starts = [i for i in range(len(source_text)) if source_text.startswith("头痛", i)]
             syndrome_start = source_text.index("太阳中风")
             rows = [
-                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[0]),
-                ("symptom-1", "头痛", "SYMPTOM", symptom_starts[1]),
+                ("symptom-short-1", "头痛", "SYMPTOM", symptom_starts[0]),
+                ("symptom-long-1", "头痛加剧", "SYMPTOM", symptom_starts[0]),
+                ("symptom-2", "头痛", "SYMPTOM", symptom_starts[1]),
                 ("syndrome-1", "太阳中风", "SYNDROME", syndrome_start),
             ]
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
@@ -228,6 +229,10 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertEqual(
                 {int(row["subject_start"]) for row in relations},
                 set(symptom_starts),
+            )
+            self.assertEqual(
+                {row["subject_text"] for row in relations},
+                {"头痛加剧", "头痛"},
             )
 
 
