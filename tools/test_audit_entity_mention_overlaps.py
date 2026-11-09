@@ -42,6 +42,48 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             self.assertIn('"start": 0', report)
             self.assertIn('"start": 30', report)
 
+    def test_cross_references_nested_formula_herb_pair_to_relation_endpoint_ids(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mentions.csv.gz"
+            relations = root / "relations.csv"
+            output = root / "audit.json"
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id",
+            ]
+            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, kind, term, start, end in [
+                    ("f1", "FORMULA", "桂枝汤", 0, 3),
+                    ("h1", "HERB", "桂枝", 0, 2),
+                    ("f2", "FORMULA", "小柴胡汤", 10, 14),
+                    ("h2", "HERB", "柴胡", 11, 13),
+                ]:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": "u", "entity_type": kind,
+                        "matched_text": term, "character_start": start, "character_end": end,
+                        "document": "a.sy", "source_sha256": "a" * 64,
+                        "tree_position": "0.1", "block_id": "b",
+                    })
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "relation_id", "subject_mention_id", "object_mention_id"
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "r1", "subject_mention_id": "f1",
+                    "object_mention_id": "h1",
+                })
+            result = audit(source, output, relations_path=relations)
+            crossref = json.loads(output.read_text(encoding="utf-8"))["relation_candidate_cross_reference"]
+            self.assertEqual(result["overlap_pair_counts"]["nested_formula_herb_entity"], 2)
+            self.assertEqual(crossref["relation_candidate_rows"], 1)
+            self.assertEqual(crossref["linked_nested_pairs"], 1)
+            self.assertEqual(crossref["unlinked_nested_pairs"], 1)
+
     def test_reports_same_type_exact_duplicate_window_separately(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
