@@ -264,13 +264,22 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
         for raw in stream:
             unit = json.loads(raw)
             units[unit["unit_id"]] = unit
+
     count = 0
+    seen_relations: set[str] = set()
     with path.open("r", encoding="utf-8", newline="") as stream:
-        for line, row in enumerate(csv.DictReader(stream), 2):
+        reader = csv.DictReader(stream)
+        missing = set(FIELDS) - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError("relation output missing fields: " + ", ".join(sorted(missing)))
+        for line, row in enumerate(reader, 2):
             if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                 raise ValueError(f"row {line}: invalid resolution status")
             if row["predicate"] != "FORMULA_CONTAINS_HERB":
                 raise ValueError(f"row {line}: unsupported predicate")
+            rule = row["extraction_rule"]
+            if rule not in {"FORMULA_COMPOSITION_EXPLICIT_V1", "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"}:
+                raise ValueError(f"row {line}: unsupported formula-herb extraction rule")
             unit = units.get(row["unit_id"])
             if unit is None:
                 raise ValueError(f"row {line}: source unit not found")
@@ -280,6 +289,19 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                 or source["tree_position"] != row["tree_position"]
                 or source.get("block_id", "") != row["block_id"]):
                 raise ValueError(f"row {line}: source provenance mismatch")
+
+            text = unit["content"]["source_text"]
+            start, end = int(row["sentence_start"]), int(row["sentence_end"])
+            if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
+                raise ValueError(f"row {line}: evidence span mismatch")
+            if rule == "FORMULA_COMPOSITION_EXPLICIT_V1":
+                if (start, end) not in set(sentence_ranges(text)):
+                    raise ValueError(f"row {line}: explicit evidence crosses a source sentence boundary")
+            else:
+                if (start != 0 or end != len(text)
+                    or not re.match(r"^\\s*(?:【?组成】?|方剂组成)\\s*[:：]", text)):
+                    raise ValueError(f"row {line}: nearby composition evidence is not the complete composition block")
+
             if mentions_path is not None:
                 subject = mentions.get(row["subject_mention_id"])
                 obj = mentions.get(row["object_mention_id"])
@@ -290,6 +312,8 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                     or obj["matched_text"] != row["object_text"]
                     or obj["unit_id"] != row["unit_id"]):
                     raise ValueError(f"row {line}: relation endpoints do not match source mentions")
+
+                endpoint_records = {}
                 for endpoint_name, endpoint in (("subject", subject), ("object", obj)):
                     endpoint_unit = units.get(endpoint["unit_id"])
                     if endpoint_unit is None:
@@ -306,6 +330,9 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                     if (endpoint_start < 0 or endpoint_end <= endpoint_start
                         or endpoint_text[endpoint_start:endpoint_end] != endpoint["matched_text"]):
                         raise ValueError(f"row {line}: {endpoint_name} mention span mismatch")
+                    endpoint_records[endpoint_name] = (endpoint_unit, endpoint_text, endpoint_start, endpoint_end)
+
+                subject_unit, subject_source_text, subject_start, subject_end = endpoint_records["subject"]
                 if (subject["document"] != row["document"]
                     or subject["source_sha256"] != row["source_sha256"]):
                     raise ValueError(f"row {line}: formula mention belongs to a different source document")
@@ -314,10 +341,36 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                     or obj["tree_position"] != row["tree_position"]
                     or obj["block_id"] != row["block_id"]):
                     raise ValueError(f"row {line}: object mention does not belong to evidence source")
-            text = unit["content"]["source_text"]
-            start, end = int(row["sentence_start"]), int(row["sentence_end"])
-            if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
-                raise ValueError(f"row {line}: evidence span mismatch")
+
+                if rule == "FORMULA_COMPOSITION_EXPLICIT_V1":
+                    if (subject["unit_id"] != row["unit_id"]
+                        or not (start <= subject_start < subject_end <= end)):
+                        raise ValueError(f"row {line}: explicit formula endpoint is outside evidence sentence")
+                else:
+                    subject_record = dict(subject)
+                    subject_record["_source_text"] = subject_source_text
+                    subject_record["_unit_type"] = subject_unit["unit_type"]
+                    if not has_explicit_formula_context(subject_record):
+                        raise ValueError(f"row {line}: nearby formula candidate lacks an explicit formula anchor")
+                    if subject["unit_id"] != row["unit_id"]:
+                        subject_pos = position_parts(subject["tree_position"])
+                        evidence_pos = position_parts(row["tree_position"])
+                        if (len(subject_pos) < 2 or len(evidence_pos) < 2
+                            or subject_pos[:-1] != evidence_pos[:-1]
+                            or not 1 <= abs(subject_pos[-1] - evidence_pos[-1]) <= 5):
+                            raise ValueError(f"row {line}: nearby formula candidate is outside sibling proximity")
+                if not (start <= int(obj["character_start"]) < int(obj["character_end"]) <= end):
+                    raise ValueError(f"row {line}: herb endpoint is outside composition evidence")
+
+                expected_relation_id = hashlib.sha256("\\0".join((
+                    subject["mention_id"], row["predicate"], obj["mention_id"],
+                    row["unit_id"], str(start), str(end), rule,
+                )).encode("utf-8")).hexdigest()
+                if row["relation_id"] != expected_relation_id:
+                    raise ValueError(f"row {line}: relation ID does not match referenced source candidate IDs")
+            if row["relation_id"] in seen_relations:
+                raise ValueError(f"row {line}: duplicate relation ID")
+            seen_relations.add(row["relation_id"])
             count += 1
     return count
 
