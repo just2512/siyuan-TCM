@@ -43,7 +43,9 @@ def audit(path: Path, output: Path, max_examples: int = 50,
           relations_path: Path | None = None) -> dict[str, Any]:
     by_unit: dict[str, list[dict[str, str]]] = defaultdict(list)
     mention_ids: set[str] = set()
+    mentions_by_id: dict[str, dict[str, str]] = {}
     relation_pairs: set[tuple[str, str]] = set()
+    relation_rows: list[dict[str, str]] = []
     relation_count = 0
     if relations_path is not None:
         with relations_path.open("r", encoding="utf-8", newline="") as relation_stream:
@@ -57,10 +59,13 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 if not row["relation_id"] or row["relation_id"] in seen_relation_ids:
                     raise ValueError("relation input has a missing or duplicate relation_id")
                 seen_relation_ids.add(row["relation_id"])
+                if not row["subject_mention_id"] or not row["object_mention_id"]:
+                    raise ValueError("relation input has a missing endpoint mention_id")
                 pair = (row["subject_mention_id"], row["object_mention_id"])
                 if pair in relation_pairs:
                     raise ValueError("relation input has a duplicate endpoint pair")
                 relation_pairs.add(pair)
+                relation_rows.append(row)
                 relation_count += 1
 
     with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
@@ -77,10 +82,63 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             if not row["mention_id"] or row["mention_id"] in mention_ids:
                 raise ValueError("mention input has a missing or duplicate mention_id")
             mention_ids.add(row["mention_id"])
+            mentions_by_id[row["mention_id"]] = row
             start, end = int(row["character_start"]), int(row["character_end"])
             if start < 0 or end <= start or end - start != len(row["matched_text"]):
                 raise ValueError(f"invalid mention span: {row['mention_id']}")
             by_unit[row["unit_id"]].append(row)
+
+    endpoint_reference_counts: Counter[str] = Counter()
+    endpoint_reference_examples: list[dict[str, Any]] = []
+    for relation in relation_rows:
+        subject = mentions_by_id.get(relation["subject_mention_id"])
+        obj = mentions_by_id.get(relation["object_mention_id"])
+        if subject is None or obj is None:
+            missing = [
+                mention_id for mention_id, record in (
+                    (relation["subject_mention_id"], subject),
+                    (relation["object_mention_id"], obj),
+                ) if record is None
+            ]
+            raise ValueError(
+                "relation endpoint mention_id not found in input mentions: "
+                + ", ".join(missing)
+            )
+        endpoint_reference_counts["resolved_endpoint_references"] += 2
+        expected = (
+            (subject, "FORMULA", relation.get("subject_text", "")),
+            (obj, "HERB", relation.get("object_text", "")),
+        )
+        for mention, expected_type, expected_text in expected:
+            if mention["entity_type"] != expected_type:
+                raise ValueError(
+                    f"relation endpoint {mention['mention_id']} has type "
+                    f"{mention['entity_type']}, expected {expected_type}"
+                )
+            if expected_text and mention["matched_text"] != expected_text:
+                raise ValueError(
+                    f"relation endpoint {mention['mention_id']} text does not "
+                    "match the input mention candidate"
+                )
+            endpoint_reference_counts["type_text_matched_endpoint_references"] += 1
+        if len(endpoint_reference_examples) < max_examples:
+            endpoint_reference_examples.append({
+                "relation_id": relation["relation_id"],
+                "subject_mention_id": subject["mention_id"],
+                "subject_text": subject["matched_text"],
+                "subject_unit_id": subject["unit_id"],
+                "subject_document": subject["document"],
+                "subject_tree_position": subject["tree_position"],
+                "object_mention_id": obj["mention_id"],
+                "object_text": obj["matched_text"],
+                "object_unit_id": obj["unit_id"],
+                "object_document": obj["document"],
+                "object_tree_position": obj["tree_position"],
+                "evidence_unit_id": relation.get("unit_id", ""),
+                "evidence_document": relation.get("document", ""),
+                "evidence_block_id": relation.get("block_id", ""),
+                "evidence_text": relation.get("evidence_text", ""),
+            })
 
     pair_counts: Counter[str] = Counter()
     examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -187,6 +245,21 @@ def audit(path: Path, output: Path, max_examples: int = 50,
         },
         "relation_candidate_cross_reference": ({
             "relation_candidate_rows": relation_count,
+            "endpoint_reference": {
+                "endpoint_references": relation_count * 2,
+                "resolved_endpoint_references": endpoint_reference_counts.get(
+                    "resolved_endpoint_references", 0
+                ),
+                "type_text_matched_endpoint_references": endpoint_reference_counts.get(
+                    "type_text_matched_endpoint_references", 0
+                ),
+                "examples": endpoint_reference_examples,
+                "interpretation": (
+                    "Each subject/object mention ID must resolve to exactly one input "
+                    "candidate with the expected FORMULA/HERB type and matching text. "
+                    "Endpoint source locators are shown separately from the evidence unit."
+                ),
+            },
             "nested_formula_herb_pairs": sum(relation_link_counts.values()),
             "linked_nested_pairs": relation_link_counts.get("relation_candidate_linked", 0),
             "unlinked_nested_pairs": relation_link_counts.get("no_relation_candidate_link", 0),
