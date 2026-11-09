@@ -253,7 +253,13 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
     mentions = {}
     if mentions_path is not None:
         with gzip.open(mentions_path, "rt", encoding="utf-8", newline="") as mention_stream:
-            mentions = {row["mention_id"]: row for row in csv.DictReader(mention_stream)}
+            for mention_line, row in enumerate(csv.DictReader(mention_stream), 2):
+                mention_id = row["mention_id"]
+                if not mention_id:
+                    raise ValueError(f"mention row {mention_line}: missing mention_id")
+                if mention_id in mentions:
+                    raise ValueError(f"mention row {mention_line}: duplicate mention_id {mention_id}")
+                mentions[mention_id] = row
     with gzip.open(units_path, "rt", encoding="utf-8", newline="") as stream:
         for raw in stream:
             unit = json.loads(raw)
