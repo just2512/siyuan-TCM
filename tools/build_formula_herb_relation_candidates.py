@@ -235,14 +235,27 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
             # nearby formula title or indication block. Link only when the
             # composition header and formula mention share a document and
             # adjacent sibling position, with a unique nearest formula name.
-            if re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", text) and herbs:
+            # Composition blocks may contain multiple sentences. Treat each
+            # explicit composition sentence as its own evidence span; never
+            # let unrelated later sentences expand the relation evidence.
+            for start, end in sentence_ranges(text):
+                sentence = text[start:end]
+                if not re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", sentence):
+                    continue
+                sentence_herbs = [
+                    herb for herb in herbs
+                    if start <= int(herb["character_start"])
+                    and int(herb["character_end"]) <= end
+                ]
+                if not sentence_herbs:
+                    continue
                 formula = nearby_formula(
-                    formulas_by_document.get(source["document"], []), unit, herbs
+                    formulas_by_document.get(source["document"], []), unit, sentence_herbs
                 )
                 if formula is not None:
-                    for herb in herbs:
-                        if make_relation(writer, seen, formula, herb, unit, 0, len(text),
-                                         text, "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"):
+                    for herb in sentence_herbs:
+                        if make_relation(writer, seen, formula, herb, unit, start, end,
+                                         sentence, "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"):
                             count += 1
 
     return {"relation_candidates": count, "unique_relation_ids": len(seen)}
@@ -298,9 +311,9 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                 if (start, end) not in set(sentence_ranges(text)):
                     raise ValueError(f"row {line}: explicit evidence crosses a source sentence boundary")
             else:
-                if (start != 0 or end != len(text)
-                    or not re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", text)):
-                    raise ValueError(f"row {line}: nearby composition evidence is not the complete composition block")
+                if ((start, end) not in set(sentence_ranges(text))
+                    or not re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", row["evidence_text"])):
+                    raise ValueError(f"row {line}: nearby composition evidence is not one complete composition sentence")
 
             if mentions_path is not None:
                 subject = mentions.get(row["subject_mention_id"])
