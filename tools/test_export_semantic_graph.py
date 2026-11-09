@@ -92,7 +92,36 @@ class SemanticGraphExportTests(unittest.TestCase):
             edge = next(row for row in rows if row["record_type"] == "RELATION_CANDIDATE")
             self.assertEqual(edge["subject_entity_id"], "ef")
             self.assertEqual(edge["object_entity_id"], "eh")
+            self.assertEqual(edge["subject_mention"], {
+                "mention_id": "f1", "entity_id": "ef", "entity_type": "FORMULA",
+                "matched_text": "桂枝汤", "unit_id": "u1", "character_start": 0,
+                "character_end": 3, "document": "a.sy", "source_sha256": "hash",
+                "tree_position": "0.0", "block_id": "b1",
+            })
+            self.assertEqual(edge["object_mention"], {
+                "mention_id": "h1", "entity_id": "eh", "entity_type": "HERB",
+                "matched_text": "桂枝", "unit_id": "u1", "character_start": 4,
+                "character_end": 6, "document": "a.sy", "source_sha256": "hash",
+                "tree_position": "0.0", "block_id": "b1",
+            })
             self.assertEqual(edge["evidence"]["text"], "桂枝汤由桂枝组成。")
+            # A graph edge must retain the exact mention identity, not only the
+            # canonical lexical entity node. Its mention offsets must also resolve
+            # to the source block independently of the relation evidence span.
+            edge["subject_mention"]["mention_id"] = "missing-mention"
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+            with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
+                module.validate(database, output)
+            edge["subject_mention"]["mention_id"] = "f1"
+            edge["object_mention"]["character_start"] = 3
+            with gzip.open(output, "wt", encoding="utf-8") as stream:
+                for row in rows:
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+            with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
+                module.validate(database, output)
+            edge["object_mention"]["character_start"] = 4
             # Destructive checks: every exported relation field and endpoint mapping
             # must remain identical to the SQLite source row.
             edge["predicate"] = "FORMULA_CONTAINS_FORMULA"
