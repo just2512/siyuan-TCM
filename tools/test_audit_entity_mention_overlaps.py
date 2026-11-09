@@ -85,8 +85,8 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             crossref = json.loads(output.read_text(encoding="utf-8"))["relation_candidate_cross_reference"]
             self.assertEqual(result["overlap_pair_counts"]["nested_formula_herb_entity"], 2)
             self.assertEqual(crossref["relation_candidate_rows"], 1)
-            self.assertEqual(crossref["linked_nested_pairs"], 1)
-            self.assertEqual(crossref["unlinked_nested_pairs"], 1)
+            self.assertEqual(crossref["linked_same_unit_nested_pairs"], 1)
+            self.assertEqual(crossref["unlinked_same_unit_nested_pairs"], 1)
             self.assertEqual(
                 crossref["endpoint_reference"]["source_locator_matched_relations"], 1
             )
