@@ -658,14 +658,23 @@ def search_relation_candidates(database_path: Path, query: str, limit: int = 20)
     connection.row_factory = sqlite3.Row
     rows = connection.execute("""
         SELECT r.relation_id, r.predicate, r.subject_text, r.object_text,
-               s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id,
-               r.document AS evidence_document, r.tree_position AS evidence_tree_position,
-               r.block_id AS evidence_block_id, r.sentence_start, r.sentence_end,
-               r.evidence_text, r.extraction_rule, r.resolution_status, r.unit_id,
-               s.document AS subject_document, s.tree_position AS subject_tree_position,
-               s.block_id AS subject_block_id, s.section_path AS subject_section_path,
-               o.document AS object_document, o.tree_position AS object_tree_position,
-               o.block_id AS object_block_id, o.section_path AS object_section_path
+               r.subject_mention_id, r.object_mention_id,
+               s.entity_id AS subject_entity_id, s.entity_type AS subject_type,
+               s.matched_text AS subject_matched_text, s.unit_id AS subject_unit_id,
+               s.character_start AS subject_character_start, s.character_end AS subject_character_end,
+               s.document AS subject_document, s.source_sha256 AS subject_source_sha256,
+               s.tree_position AS subject_tree_position, s.block_id AS subject_block_id,
+               s.section_path AS subject_section_path,
+               o.entity_id AS object_entity_id, o.entity_type AS object_type,
+               o.matched_text AS object_matched_text, o.unit_id AS object_unit_id,
+               o.character_start AS object_character_start, o.character_end AS object_character_end,
+               o.document AS object_document, o.source_sha256 AS object_source_sha256,
+               o.tree_position AS object_tree_position, o.block_id AS object_block_id,
+               o.section_path AS object_section_path,
+               r.document AS evidence_document, r.source_sha256 AS evidence_source_sha256,
+               r.tree_position AS evidence_tree_position, r.block_id AS evidence_block_id,
+               r.sentence_start, r.sentence_end, r.evidence_text,
+               r.extraction_rule, r.resolution_status, r.unit_id
         FROM semantic_relation_candidates r
         LEFT JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
         LEFT JOIN entity_mentions o ON o.mention_id = r.object_mention_id
