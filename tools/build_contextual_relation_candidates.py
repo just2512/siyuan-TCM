@@ -46,7 +46,8 @@ NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|勿|忌|禁用|禁
 # A later quoted recommendation must not attach to syndrome candidates
 # appearing before a source-attribution boundary in the same long sentence.
 RELATION_SCOPE_BREAKS = {
-    "SYNDROME_TO_TREATMENT": re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])"),
+    predicate: re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])")
+    for predicate in PREDICATES
 }
 
 
@@ -232,7 +233,7 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
                                 if NEGATION_PREFIX.search(between[:match.start()]):
                                     continue
                                 scope_break = RELATION_SCOPE_BREAKS.get(predicate)
-                                if scope_break and scope_break.search(between[:match.start()]):
+                                if scope_break and scope_break.search(between):
                                     continue
                                 relation_id = relation_identity(predicate, subject, obj, unit_id, start, end)
                                 writer.writerow({
@@ -349,7 +350,7 @@ def validate(
                 or NEGATION_PREFIX.search(between[:predicate_match.start()])):
                 raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
             scope_break = RELATION_SCOPE_BREAKS.get(predicate)
-            if scope_break and scope_break.search(between[:predicate_match.start()]):
+            if scope_break and scope_break.search(between):
                 raise ValueError(f"row {line}: relation crosses a source-attribution boundary")
             if candidate_index is not None:
                 for role, candidate_id, candidate_type, term, span_start, span_end in (
