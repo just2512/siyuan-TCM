@@ -32,7 +32,19 @@ def records(database_path: Path):
         SELECT r.relation_id, r.predicate, r.subject_text, r.object_text, r.unit_id,
                r.document, r.source_sha256, r.tree_position, r.block_id,
                r.sentence_start, r.sentence_end, r.evidence_text, r.extraction_rule,
-               r.resolution_status, s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id
+               r.resolution_status,
+               s.mention_id AS subject_mention_id, s.entity_id AS subject_entity_id,
+               s.entity_type AS subject_entity_type, s.matched_text AS subject_mention_text,
+               s.unit_id AS subject_mention_unit_id, s.character_start AS subject_character_start,
+               s.character_end AS subject_character_end, s.document AS subject_mention_document,
+               s.source_sha256 AS subject_mention_source_sha256,
+               s.tree_position AS subject_mention_tree_position, s.block_id AS subject_mention_block_id,
+               o.mention_id AS object_mention_id, o.entity_id AS object_entity_id,
+               o.entity_type AS object_entity_type, o.matched_text AS object_mention_text,
+               o.unit_id AS object_mention_unit_id, o.character_start AS object_character_start,
+               o.character_end AS object_character_end, o.document AS object_mention_document,
+               o.source_sha256 AS object_mention_source_sha256,
+               o.tree_position AS object_mention_tree_position, o.block_id AS object_mention_block_id
         FROM semantic_relation_candidates r
         JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
         JOIN entity_mentions o ON o.mention_id = r.object_mention_id
@@ -63,8 +75,22 @@ def records(database_path: Path):
     for row in relations:
         yield {"record_type": "RELATION_CANDIDATE", "relation_id": row["relation_id"],
                "subject_entity_id": row["subject_entity_id"], "subject_text": row["subject_text"],
+               "subject_mention": {
+                   "mention_id": row["subject_mention_id"], "entity_id": row["subject_entity_id"],
+                   "entity_type": row["subject_entity_type"], "matched_text": row["subject_mention_text"],
+                   "unit_id": row["subject_mention_unit_id"], "character_start": row["subject_character_start"],
+                   "character_end": row["subject_character_end"], "document": row["subject_mention_document"],
+                   "source_sha256": row["subject_mention_source_sha256"],
+                   "tree_position": row["subject_mention_tree_position"], "block_id": row["subject_mention_block_id"]},
                "predicate": row["predicate"], "object_entity_id": row["object_entity_id"],
                "object_text": row["object_text"],
+               "object_mention": {
+                   "mention_id": row["object_mention_id"], "entity_id": row["object_entity_id"],
+                   "entity_type": row["object_entity_type"], "matched_text": row["object_mention_text"],
+                   "unit_id": row["object_mention_unit_id"], "character_start": row["object_character_start"],
+                   "character_end": row["object_character_end"], "document": row["object_mention_document"],
+                   "source_sha256": row["object_mention_source_sha256"],
+                   "tree_position": row["object_mention_tree_position"], "block_id": row["object_mention_block_id"]},
                "evidence": {"unit_id": row["unit_id"], "document": row["document"],
                    "source_sha256": row["source_sha256"], "tree_position": row["tree_position"],
                    "block_id": row["block_id"], "character_start": row["sentence_start"],
@@ -141,10 +167,28 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             "unit_id", "subject_text", "predicate", "object_text", "document",
             "source_sha256", "tree_position", "block_id", "sentence_start",
             "sentence_end", "evidence_text", "extraction_rule", "resolution_status",
-            "subject_entity_id", "object_entity_id",
+            "subject_entity_id", "object_entity_id", "subject_mention_id",
+            "subject_entity_type", "subject_mention_text", "subject_mention_unit_id",
+            "subject_character_start", "subject_character_end", "subject_mention_document",
+            "subject_mention_source_sha256", "subject_mention_tree_position", "subject_mention_block_id",
+            "object_mention_id", "object_entity_type", "object_mention_text", "object_mention_unit_id",
+            "object_character_start", "object_character_end", "object_mention_document",
+            "object_mention_source_sha256", "object_mention_tree_position", "object_mention_block_id",
         ))
         for row in connection.execute("""
-            SELECT r.*, s.entity_id AS subject_entity_id, o.entity_id AS object_entity_id
+            SELECT r.*,
+                   s.mention_id AS subject_mention_id, s.entity_id AS subject_entity_id,
+                   s.entity_type AS subject_entity_type, s.matched_text AS subject_mention_text,
+                   s.unit_id AS subject_mention_unit_id, s.character_start AS subject_character_start,
+                   s.character_end AS subject_character_end, s.document AS subject_mention_document,
+                   s.source_sha256 AS subject_mention_source_sha256,
+                   s.tree_position AS subject_mention_tree_position, s.block_id AS subject_mention_block_id,
+                   o.mention_id AS object_mention_id, o.entity_id AS object_entity_id,
+                   o.entity_type AS object_entity_type, o.matched_text AS object_mention_text,
+                   o.unit_id AS object_mention_unit_id, o.character_start AS object_character_start,
+                   o.character_end AS object_character_end, o.document AS object_mention_document,
+                   o.source_sha256 AS object_mention_source_sha256,
+                   o.tree_position AS object_mention_tree_position, o.block_id AS object_mention_block_id
             FROM semantic_relation_candidates r
             JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
             JOIN entity_mentions o ON o.mention_id = r.object_mention_id
@@ -193,6 +237,16 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     evidence["block_id"], evidence["character_start"], evidence["character_end"],
                     evidence["text"], row["extraction_rule"], row["resolution_status"],
                     row["subject_entity_id"], row["object_entity_id"],
+                    row["subject_mention"]["mention_id"], row["subject_mention"]["entity_type"],
+                    row["subject_mention"]["matched_text"], row["subject_mention"]["unit_id"],
+                    row["subject_mention"]["character_start"], row["subject_mention"]["character_end"],
+                    row["subject_mention"]["document"], row["subject_mention"]["source_sha256"],
+                    row["subject_mention"]["tree_position"], row["subject_mention"]["block_id"],
+                    row["object_mention"]["mention_id"], row["object_mention"]["entity_type"],
+                    row["object_mention"]["matched_text"], row["object_mention"]["unit_id"],
+                    row["object_mention"]["character_start"], row["object_mention"]["character_end"],
+                    row["object_mention"]["document"], row["object_mention"]["source_sha256"],
+                    row["object_mention"]["tree_position"], row["object_mention"]["block_id"],
                 )
                 if expected is None or expected != exported:
                     raise ValueError(f"relation graph/SQLite mismatch at line {line}")
@@ -200,6 +254,21 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"unknown relation endpoint at line {line}")
                 if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                     raise ValueError(f"unsafe relation status at line {line}")
+                for role in ("subject_mention", "object_mention"):
+                    endpoint = row[role]
+                    if endpoint["entity_id"] not in expected_entities or endpoint["entity_type"] not in {"FORMULA", "HERB"}:
+                        raise ValueError(f"invalid {role} entity reference at line {line}")
+                    if endpoint["matched_text"] != (row["subject_text"] if role == "subject_mention" else row["object_text"]):
+                        raise ValueError(f"{role} text mismatch at line {line}")
+                    endpoint_source = connection.execute("""SELECT content_text FROM content_blocks
+                        WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
+                        (endpoint["document"], endpoint["source_sha256"], endpoint["tree_position"], endpoint["block_id"])).fetchone()
+                    left, right = endpoint["character_start"], endpoint["character_end"]
+                    if (endpoint_source is None or right <= left
+                        or endpoint_source[0][left:right] != endpoint["matched_text"]):
+                        raise ValueError(f"{role} source span mismatch at line {line}")
+                if row["subject_mention"]["mention_id"] == row["object_mention"]["mention_id"]:
+                    raise ValueError(f"relation endpoints resolve to the same mention at line {line}")
                 evidence = row["evidence"]
                 start, end = evidence["character_start"], evidence["character_end"]
                 source = connection.execute("""SELECT content_text FROM content_blocks
