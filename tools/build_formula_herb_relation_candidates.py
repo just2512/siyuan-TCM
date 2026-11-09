@@ -299,7 +299,7 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                     raise ValueError(f"row {line}: explicit evidence crosses a source sentence boundary")
             else:
                 if (start != 0 or end != len(text)
-                    or not re.match(r"^\\s*(?:【?组成】?|方剂组成)\\s*[:：]", text)):
+                    or not re.match(r"^\s*(?:【?组成】?|方剂组成)\s*[:：]", text)):
                     raise ValueError(f"row {line}: nearby composition evidence is not the complete composition block")
 
             if mentions_path is not None:
@@ -362,7 +362,7 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                 if not (start <= int(obj["character_start"]) < int(obj["character_end"]) <= end):
                     raise ValueError(f"row {line}: herb endpoint is outside composition evidence")
 
-                expected_relation_id = hashlib.sha256("\\0".join((
+                expected_relation_id = hashlib.sha256("\0".join((
                     subject["mention_id"], row["predicate"], obj["mention_id"],
                     row["unit_id"], str(start), str(end), rule,
                 )).encode("utf-8")).hexdigest()
