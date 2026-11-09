@@ -67,6 +67,65 @@ class ContextualTermCandidateTests(unittest.TestCase):
             self.assertTrue(all(row["classification_status"] == "CONTEXT_RULE_CANDIDATE" for row in rows))
             self.assertTrue(all(row["evidence_document"] == "note.sy" for row in rows))
 
+    def test_intrinsic_clinical_cues_must_be_inside_the_candidate_span(self):
+        # “咳嗽” belongs to the preceding clause, not the following n-gram.
+        text = "咳嗽症状了，这是疾病在做最后挣扎阶段"
+        start = text.index("这是疾病")
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+            classify_span(text, start, start + len("这是疾病")),
+        )
+
+        # Pulse/tongue cues also cannot be borrowed from adjacent text.
+        text = "脉弦之后出现另一段叙述"
+        start = text.index("之后")
+        self.assertNotIn(
+            ("PULSE", "PULSE_CONTEXT_01"),
+            classify_span(text, start, start + len("之后")),
+        )
+        text = "舌红之后出现另一段叙述"
+        start = text.index("之后")
+        self.assertNotIn(
+            ("TONGUE", "TONGUE_CONTEXT_01"),
+            classify_span(text, start, start + len("之后")),
+        )
+
+    def test_intrinsic_clinical_cues_inside_candidate_remain_classifiable(self):
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+            classify_span("咳嗽", 0, 2),
+        )
+        self.assertIn(
+            ("PULSE", "PULSE_CONTEXT_01"),
+            classify_span("脉弦", 0, 2),
+        )
+        self.assertIn(
+            ("TONGUE", "TONGUE_CONTEXT_01"),
+            classify_span("舌红", 0, 2),
+        )
+
+    def test_validation_rejects_rule_from_another_candidate_type(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "typed.csv.gz"
+            with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "rule_id",
+                    "evidence_document", "source_sha256", "tree_position", "block_id",
+                    "unit_id", "character_start", "character_end", "evidence_start",
+                    "evidence_text", "classification_status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "candidate_id": candidate_id("少阳证"), "term": "少阳证",
+                    "candidate_type": "SYNDROME", "rule_id": "PULSE_CONTEXT_01",
+                    "evidence_document": "note.sy", "source_sha256": "sha",
+                    "tree_position": "1", "block_id": "b1", "unit_id": "u1",
+                    "character_start": 0, "character_end": 3, "evidence_start": 0,
+                    "evidence_text": "少阳证", "classification_status": "CONTEXT_RULE_CANDIDATE",
+                })
+            with self.assertRaisesRegex(ValueError, "rule does not belong"):
+                validate(path)
+
     def test_does_not_borrow_tongue_context_from_adjacent_symptom(self):
         sample = {
             "unit_id": "unit-2", "document": "note.sy", "source_sha256": "abc",

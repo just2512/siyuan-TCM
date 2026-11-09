@@ -104,6 +104,11 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
                     or non_symptom_clause.search(term)
                     else symptom_intro.search(symptom_before)
                 )
+            elif (candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_02") or candidate_type in {"PULSE", "TONGUE"}:
+                # Intrinsic clinical descriptors must occur inside the candidate
+                # span itself. A cue in the preceding ten characters belongs to
+                # the previous term and must not type this unrelated n-gram.
+                matched = re.search(pattern, term)
             else:
                 matched = re.search(pattern, before + term)
             if matched:
@@ -231,6 +236,12 @@ def build(source_path: Path, output_path: Path,
     }
 
 
+RULE_IDS_BY_TYPE = {
+    candidate_type: {rule_id for rule_id, _ in rules}
+    for candidate_type, rules in RULES.items()
+}
+
+
 def validate(path: Path) -> int:
     count = 0
     seen = set()
@@ -242,10 +253,9 @@ def validate(path: Path) -> int:
         for line, row in enumerate(reader, 2):
             if row["classification_status"] != "CONTEXT_RULE_CANDIDATE":
                 raise ValueError(f"row {line}: unsafe classification status")
-            if row["candidate_type"] not in RULES or row["rule_id"] not in {
-                rule_id for rules in RULES.values() for rule_id, _ in rules
-            }:
-                raise ValueError(f"row {line}: unknown rule/type")
+            if (row["candidate_type"] not in RULES
+                or row["rule_id"] not in RULE_IDS_BY_TYPE[row["candidate_type"]]):
+                raise ValueError(f"row {line}: rule does not belong to candidate type")
             if not all(row[field] for field in (
                 "candidate_id", "term", "unit_id", "evidence_document", "source_sha256"
             )):
