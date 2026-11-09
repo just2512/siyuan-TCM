@@ -71,12 +71,15 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                     })
             with relations.open("w", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
-                    "relation_id", "subject_mention_id", "object_mention_id"
+                    "relation_id", "subject_mention_id", "object_mention_id",
+                    "document", "source_sha256", "tree_position", "block_id", "unit_id",
                 ])
                 writer.writeheader()
                 writer.writerow({
                     "relation_id": "r1", "subject_mention_id": "f1",
-                    "object_mention_id": "h1",
+                    "object_mention_id": "h1", "document": "a.sy",
+                    "source_sha256": "a" * 64, "tree_position": "0.1",
+                    "block_id": "b", "unit_id": "u",
                 })
             result = audit(source, output, relations_path=relations)
             crossref = json.loads(output.read_text(encoding="utf-8"))["relation_candidate_cross_reference"]
@@ -84,6 +87,12 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             self.assertEqual(crossref["relation_candidate_rows"], 1)
             self.assertEqual(crossref["linked_nested_pairs"], 1)
             self.assertEqual(crossref["unlinked_nested_pairs"], 1)
+            self.assertEqual(
+                crossref["endpoint_reference"]["source_locator_matched_relations"], 1
+            )
+            self.assertEqual(
+                crossref["endpoint_reference"]["examples"][0]["object_character_start"], 0
+            )
 
     def test_rejects_relation_endpoints_missing_from_input_candidates(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -122,6 +131,46 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                     "object_text": "桂枝",
                 })
             with self.assertRaisesRegex(ValueError, "not found in input mentions"):
+                audit(source, output, relations_path=relations)
+
+    def test_rejects_relation_object_from_different_evidence_block(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mentions.csv.gz"
+            relations = root / "relations.csv"
+            output = root / "audit.json"
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id",
+            ]
+            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, kind, term, block in [
+                    ("f1", "FORMULA", "桂枝汤", "formula"),
+                    ("h1", "HERB", "桂枝", "other-block"),
+                ]:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": "u", "entity_type": kind,
+                        "matched_text": term, "character_start": 0,
+                        "character_end": len(term), "document": "a.sy",
+                        "source_sha256": "a" * 64, "tree_position": "0.1",
+                        "block_id": block,
+                    })
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "relation_id", "subject_mention_id", "object_mention_id",
+                    "document", "source_sha256", "tree_position", "block_id", "unit_id",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "r1", "subject_mention_id": "f1",
+                    "object_mention_id": "h1", "document": "a.sy",
+                    "source_sha256": "a" * 64, "tree_position": "0.1",
+                    "block_id": "evidence-block", "unit_id": "u",
+                })
+            with self.assertRaisesRegex(ValueError, "object source locator mismatch"):
                 audit(source, output, relations_path=relations)
 
     def test_rejects_relation_endpoint_text_mismatch(self):
