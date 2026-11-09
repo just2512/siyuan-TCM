@@ -204,6 +204,67 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "subject mention provenance mismatch"):
                 module.validate(output, units, mentions)
 
+    def test_nearby_composition_block_is_split_into_sentence_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            units = root / "units.jsonl.gz"
+            mentions = root / "mentions.csv.gz"
+            output = root / "relations.csv"
+            source_hash = "d" * 64
+            composition_text = "组成：桂枝、芍药。此方用于调和营卫。"
+            unit_rows = [
+                {
+                    "unit_id": "composition",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "book/multi.sy", "sha256": source_hash,
+                               "tree_position": "0.0", "block_id": "c1"},
+                    "content": {"source_text": composition_text},
+                },
+                {
+                    "unit_id": "formula",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "book/multi.sy", "sha256": source_hash,
+                               "tree_position": "0.1", "block_id": "c2"},
+                    "content": {"source_text": "桂枝汤主之"},
+                },
+            ]
+            with gzip.open(units, "wt", encoding="utf-8") as stream:
+                for unit in unit_rows:
+                    stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id", "content_type", "section_path",
+                "lexicon_version", "extraction_method", "resolution_status",
+            ]
+            rows = [
+                ("formula-m", "formula", "FORMULA", "桂枝汤", 0, 3, "0.1", "c2"),
+                ("herb-1", "composition", "HERB", "桂枝", 3, 5, "0.0", "c1"),
+                ("herb-2", "composition", "HERB", "芍药", 6, 8, "0.0", "c1"),
+            ]
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, unit_id, kind, term, start, end, position, block_id in rows:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": unit_id, "entity_type": kind,
+                        "matched_text": term, "character_start": start, "character_end": end,
+                        "document": "book/multi.sy", "source_sha256": source_hash,
+                        "tree_position": position, "block_id": block_id,
+                        "content_type": "PARAGRAPH", "section_path": "",
+                        "lexicon_version": "1.0.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                        "resolution_status": "UNRESOLVED_CANDIDATE",
+                    })
+            self.assertEqual(module.extract(mentions, units, output)["relation_candidates"], 2)
+            self.assertEqual(module.validate(output, units, mentions), 2)
+            with output.open("r", encoding="utf-8", newline="") as stream:
+                found = list(csv.DictReader(stream))
+            expected_evidence = "组成：桂枝、芍药。"
+            self.assertTrue(all(row["evidence_text"] == expected_evidence for row in found))
+            self.assertTrue(all(int(row["sentence_start"]) == 0 for row in found))
+            self.assertTrue(all(int(row["sentence_end"]) == len(expected_evidence) for row in found))
+            self.assertTrue(all("此方用于调和营卫" not in row["evidence_text"] for row in found))
+
     def test_extracts_only_explicit_composition_with_traceable_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
