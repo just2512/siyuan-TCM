@@ -111,14 +111,14 @@ class SemanticGraphExportTests(unittest.TestCase):
             edge["subject_mention"]["mention_id"] = "missing-mention"
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
                 module.validate(database, output)
             edge["subject_mention"]["mention_id"] = "f1"
             edge["object_mention"]["character_start"] = 3
             with gzip.open(output, "wt", encoding="utf-8") as stream:
                 for row in rows:
-                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\\n")
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "relation graph/SQLite mismatch"):
                 module.validate(database, output)
             edge["object_mention"]["character_start"] = 4
