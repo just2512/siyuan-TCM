@@ -1,4 +1,5 @@
 import csv
+import json
 import gzip
 import tempfile
 import unittest
