@@ -46,10 +46,12 @@ def audit(path: Path, output: Path, max_examples: int = 50,
     mentions_by_id: dict[str, dict[str, str]] = {}
     relation_pairs: set[tuple[str, str]] = set()
     relation_rows: list[dict[str, str]] = []
+    relation_fields: set[str] = set()
     relation_count = 0
     if relations_path is not None:
         with relations_path.open("r", encoding="utf-8", newline="") as relation_stream:
             reader = csv.DictReader(relation_stream)
+            relation_fields = set(reader.fieldnames or [])
             required_relations = {"subject_mention_id", "object_mention_id", "relation_id"}
             missing_relations = required_relations - set(reader.fieldnames or [])
             if missing_relations:
@@ -121,6 +123,23 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                     "match the input mention candidate"
                 )
             endpoint_reference_counts["type_text_matched_endpoint_references"] += 1
+
+        if {"document", "source_sha256", "tree_position", "block_id", "unit_id"}.issubset(relation_fields):
+            if (subject["document"] != relation["document"]
+                or subject["source_sha256"] != relation["source_sha256"]):
+                raise ValueError(
+                    f"relation {relation['relation_id']} subject source document mismatch"
+                )
+            if (obj["document"] != relation["document"]
+                or obj["source_sha256"] != relation["source_sha256"]
+                or obj["tree_position"] != relation["tree_position"]
+                or obj["block_id"] != relation["block_id"]
+                or obj["unit_id"] != relation["unit_id"]):
+                raise ValueError(
+                    f"relation {relation['relation_id']} object source locator mismatch"
+                )
+            endpoint_reference_counts["source_locator_matched_relations"] += 1
+
         if len(endpoint_reference_examples) < max_examples:
             endpoint_reference_examples.append({
                 "relation_id": relation["relation_id"],
@@ -129,15 +148,27 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 "subject_unit_id": subject["unit_id"],
                 "subject_document": subject["document"],
                 "subject_tree_position": subject["tree_position"],
+                "subject_block_id": subject["block_id"],
+                "subject_source_sha256": subject["source_sha256"],
+                "subject_character_start": int(subject["character_start"]),
+                "subject_character_end": int(subject["character_end"]),
                 "object_mention_id": obj["mention_id"],
                 "object_text": obj["matched_text"],
                 "object_unit_id": obj["unit_id"],
                 "object_document": obj["document"],
                 "object_tree_position": obj["tree_position"],
+                "object_block_id": obj["block_id"],
+                "object_source_sha256": obj["source_sha256"],
+                "object_character_start": int(obj["character_start"]),
+                "object_character_end": int(obj["character_end"]),
                 "evidence_unit_id": relation.get("unit_id", ""),
                 "evidence_document": relation.get("document", ""),
                 "evidence_block_id": relation.get("block_id", ""),
+                "evidence_sentence_start": relation.get("sentence_start", ""),
+                "evidence_sentence_end": relation.get("sentence_end", ""),
                 "evidence_text": relation.get("evidence_text", ""),
+                "extraction_rule": relation.get("extraction_rule", ""),
+                "resolution_status": relation.get("resolution_status", ""),
             })
 
     pair_counts: Counter[str] = Counter()
@@ -250,6 +281,9 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 "resolved_endpoint_references": endpoint_reference_counts.get(
                     "resolved_endpoint_references", 0
                 ),
+                "source_locator_matched_relations": endpoint_reference_counts.get(
+                    "source_locator_matched_relations", 0
+                ),
                 "type_text_matched_endpoint_references": endpoint_reference_counts.get(
                     "type_text_matched_endpoint_references", 0
                 ),
@@ -257,14 +291,14 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 "interpretation": (
                     "Each subject/object mention ID must resolve to exactly one input "
                     "candidate with the expected FORMULA/HERB type and matching text. "
-                    "Endpoint source locators are shown separately from the evidence unit."
+                    "Endpoint source locators are shown separately from the evidence unit. The subject must belong to the same source document; the object must belong to the exact evidence unit/block."
                 ),
             },
-            "nested_formula_herb_pairs": sum(relation_link_counts.values()),
-            "linked_nested_pairs": relation_link_counts.get("relation_candidate_linked", 0),
-            "unlinked_nested_pairs": relation_link_counts.get("no_relation_candidate_link", 0),
+            "same_unit_nested_formula_herb_pairs": sum(relation_link_counts.values()),
+            "linked_same_unit_nested_pairs": relation_link_counts.get("relation_candidate_linked", 0),
+            "unlinked_same_unit_nested_pairs": relation_link_counts.get("no_relation_candidate_link", 0),
             "examples": dict(sorted(relation_link_examples.items())),
-            "interpretation": "A linked pair is referenced by an extracted relation candidate; an unlinked nested pair is not thereby proven false or semantically invalid.",
+            "interpretation": "These linked/unlinked counts apply only to FORMULA/HERB mentions nested in the same source unit. Nearby-block relations intentionally reference a formula mention in a sibling unit, so they are audited separately by endpoint_reference and source-locator checks. An unlinked same-unit nested pair is not thereby proven false or semantically invalid.",
         } if relations_path is not None else None),
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
