@@ -182,6 +182,63 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertEqual(result["contextual_relation_candidates"], 0)
             self.assertEqual(validate(output, units), 0)
 
+    def test_extraction_rejects_author_attribution_crossings_for_all_predicates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "头痛，张三曰：辨证为太阳中风。解表，张三曰：方用桂枝汤。"
+            terms = [
+                ("symptom-1", "头痛", "SYMPTOM"),
+                ("syndrome-1", "太阳中风", "SYNDROME"),
+                ("treatment-1", "解表", "TREATMENT"),
+            ]
+            context_fields = [
+                "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                "character_end", "evidence_start", "evidence_text", "classification_status",
+            ]
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=context_fields)
+                writer.writeheader()
+                for candidate_id, term, candidate_type in terms:
+                    start = source_text.index(term)
+                    writer.writerow({
+                        "candidate_id": candidate_id, "term": term, "candidate_type": candidate_type,
+                        "rule_id": "R1", "evidence_document": "a.sy", "source_sha256": "sha",
+                        "tree_position": "0", "block_id": "b", "unit_id": "u",
+                        "character_start": start, "character_end": start + len(term),
+                        "evidence_start": 0, "evidence_text": source_text,
+                        "classification_status": "CONTEXT_RULE_CANDIDATE",
+                    })
+            mention_fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                "character_end", "document", "source_sha256", "tree_position", "block_id",
+            ]
+            formula_start = source_text.index("桂枝汤")
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=mention_fields)
+                writer.writeheader()
+                writer.writerow({
+                    "mention_id": "formula-1", "unit_id": "u", "entity_type": "FORMULA",
+                    "matched_text": "桂枝汤", "character_start": formula_start,
+                    "character_end": formula_start + len("桂枝汤"), "document": "a.sy",
+                    "source_sha256": "sha", "tree_position": "0", "block_id": "b",
+                })
+            unit = {
+                "unit_id": "u",
+                "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+
+            result = extract(context, mentions, units, output)
+            self.assertEqual(result["contextual_relation_candidates"], 0)
+            self.assertEqual(validate(output, units), 0)
+
     def test_does_not_link_prior_syndromes_to_later_attributed_treatment(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
