@@ -157,7 +157,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             fabricated_rows = [dict(row) for row in found]
             fabricated_rows[0]["subject_mention_id"] = "fabricated-formula-id"
             with fabricated.open("w", encoding="utf-8", newline="") as stream:
-                writer = csv.DictWriter(stream, fieldnames=FIELDS)
+                writer = csv.DictWriter(stream, fieldnames=module.FIELDS)
                 writer.writeheader()
                 writer.writerows(fabricated_rows)
             with self.assertRaisesRegex(ValueError, "relation mention reference not found"):
