@@ -150,6 +150,18 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             with output.open("r", encoding="utf-8", newline="") as stream:
                 found = list(csv.DictReader(stream))
             self.assertTrue(all(row["subject_mention_id"] == "formula-m" for row in found))
+
+            # A relation may not point to a fabricated candidate ID even when
+            # its text and character offsets happen to match the source.
+            fabricated = root / "fabricated-relations.csv"
+            fabricated_rows = [dict(row) for row in found]
+            fabricated_rows[0]["subject_mention_id"] = "fabricated-formula-id"
+            with fabricated.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=FIELDS)
+                writer.writeheader()
+                writer.writerows(fabricated_rows)
+            with self.assertRaisesRegex(ValueError, "relation mention reference not found"):
+                module.validate(fabricated, units, mentions)
             self.assertTrue(all(row["unit_id"] == "composition" for row in found))
             self.assertTrue(all(row["extraction_rule"] == "FORMULA_COMPOSITION_NEARBY_BLOCK_V1" for row in found))
             with gzip.open(mentions, "rt", encoding="utf-8", newline="") as stream:
