@@ -115,8 +115,7 @@ def has_explicit_formula_context(mention: dict[str, str]) -> bool:
 
 
 def nearby_formula(formula_mentions: list[dict[str, str]],
-                   evidence_unit: dict[str, Any],
-                   herbs: list[dict[str, str]] | None = None) -> dict[str, str] | None:
+                   evidence_unit: dict[str, Any]) -> dict[str, str] | None:
     """Choose a unique nearby formula only when its own block names it explicitly."""
     evidence_pos = position_parts(evidence_unit["source"]["tree_position"])
     if len(evidence_pos) < 2:
@@ -244,7 +243,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                 if not sentence_herbs:
                     continue
                 formula = nearby_formula(
-                    formulas_by_document.get(source["document"], []), unit, sentence_herbs
+                    formulas_by_document.get(source["document"], []), unit
                 )
                 if formula is not None:
                     for herb in sentence_herbs:
