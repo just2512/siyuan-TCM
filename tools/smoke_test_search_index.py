@@ -118,10 +118,43 @@ def smoke(database_path: Path) -> dict:
             "SELECT subject_text FROM semantic_relation_candidates ORDER BY document, tree_position LIMIT 1"
         ).fetchone()
         rows = search_relation_candidates(database_path, relation["subject_text"], limit=20)
-        if not rows or not all(row["evidence_text"] and row["evidence_document"] for row in rows):
-            raise AssertionError("formula-herb relation query lacks evidence/source fields")
-        if not any(row["subject_document"] and row["subject_block_id"] for row in rows):
-            raise AssertionError("formula-herb relation query lacks subject endpoint provenance")
+        if not rows:
+            raise AssertionError("formula-herb relation query returned no rows")
+        for row in rows:
+            if (not row["subject_mention_id"] or not row["object_mention_id"]
+                or row["subject_type"] != "FORMULA" or row["object_type"] != "HERB"
+                or row["subject_matched_text"] != row["subject_text"]
+                or row["object_matched_text"] != row["object_text"]):
+                raise AssertionError("formula-herb relation query has untraceable or mismatched mention endpoints")
+            if (row["subject_document"] != row["evidence_document"]
+                or row["subject_source_sha256"] != row["evidence_source_sha256"]
+                or row["object_document"] != row["evidence_document"]
+                or row["object_source_sha256"] != row["evidence_source_sha256"]
+                or row["object_unit_id"] != row["unit_id"]
+                or row["object_tree_position"] != row["evidence_tree_position"]
+                or row["object_block_id"] != row["evidence_block_id"]):
+                raise AssertionError("formula-herb relation query endpoint source locator mismatch")
+            for role in ("subject", "object"):
+                source = connection.execute(
+                    "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
+                    "AND tree_position=? AND block_id=? LIMIT 1",
+                    (row[f"{role}_document"], row[f"{role}_source_sha256"],
+                     row[f"{role}_tree_position"], row[f"{role}_block_id"]),
+                ).fetchone()
+                left, right = row[f"{role}_character_start"], row[f"{role}_character_end"]
+                if (source is None or right <= left
+                    or source["content_text"][left:right] != row[f"{role}_matched_text"]):
+                    raise AssertionError(f"formula-herb relation query {role} mention span cannot be resolved")
+            evidence_source = connection.execute(
+                "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
+                "AND tree_position=? AND block_id=? LIMIT 1",
+                (row["evidence_document"], row["evidence_source_sha256"],
+                 row["evidence_tree_position"], row["evidence_block_id"]),
+            ).fetchone()
+            start, end = row["sentence_start"], row["sentence_end"]
+            if (evidence_source is None or end <= start
+                or evidence_source["content_text"][start:end] != row["evidence_text"]):
+                raise AssertionError("formula-herb relation query evidence offset does not match source text")
         checks["formula_herb_relation"] = "PASS"
 
     if counts["unclassified_term_candidates"]:
