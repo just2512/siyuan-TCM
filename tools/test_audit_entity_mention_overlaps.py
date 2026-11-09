@@ -85,6 +85,84 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             self.assertEqual(crossref["linked_nested_pairs"], 1)
             self.assertEqual(crossref["unlinked_nested_pairs"], 1)
 
+    def test_rejects_relation_endpoints_missing_from_input_candidates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mentions.csv.gz"
+            relations = root / "relations.csv"
+            output = root / "audit.json"
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id",
+            ]
+            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, kind, term in [
+                    ("f1", "FORMULA", "桂枝汤"),
+                    ("h1", "HERB", "桂枝"),
+                ]:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": "u", "entity_type": kind,
+                        "matched_text": term, "character_start": 0,
+                        "character_end": len(term), "document": "a.sy",
+                        "source_sha256": "a" * 64, "tree_position": "0.1",
+                        "block_id": "b",
+                    })
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "relation_id", "subject_mention_id", "subject_text",
+                    "object_mention_id", "object_text",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "r1", "subject_mention_id": "missing",
+                    "subject_text": "桂枝汤", "object_mention_id": "h1",
+                    "object_text": "桂枝",
+                })
+            with self.assertRaisesRegex(ValueError, "not found in input mentions"):
+                audit(source, output, relations_path=relations)
+
+    def test_rejects_relation_endpoint_text_mismatch(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "mentions.csv.gz"
+            relations = root / "relations.csv"
+            output = root / "audit.json"
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id",
+            ]
+            with gzip.open(source, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, kind, term in [
+                    ("f1", "FORMULA", "桂枝汤"),
+                    ("h1", "HERB", "桂枝"),
+                ]:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": "u", "entity_type": kind,
+                        "matched_text": term, "character_start": 0,
+                        "character_end": len(term), "document": "a.sy",
+                        "source_sha256": "a" * 64, "tree_position": "0.1",
+                        "block_id": "b",
+                    })
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "relation_id", "subject_mention_id", "subject_text",
+                    "object_mention_id", "object_text",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "r1", "subject_mention_id": "f1",
+                    "subject_text": "小柴胡汤", "object_mention_id": "h1",
+                    "object_text": "桂枝",
+                })
+            with self.assertRaisesRegex(ValueError, "text does not match"):
+                audit(source, output, relations_path=relations)
+
     def test_reports_same_type_exact_duplicate_window_separately(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
