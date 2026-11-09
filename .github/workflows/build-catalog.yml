@@ -61,6 +61,8 @@ jobs:
         run: python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
       - name: Classify corpus terms from exact source context
         run: python tools/build_contextual_term_candidates.py | tee "$RUNNER_TEMP/contextual-terms.log"
+      - name: Audit nested entities and repeated mention windows
+        run: python tools/audit_entity_mention_overlaps.py --mentions catalog/generated/entity_mention_candidates.csv.gz --output catalog/generated/entity_mention_overlap_audit.json
       - name: Validate knowledge units, entity mentions, and term candidates in parallel
         shell: bash
         run: |
@@ -113,6 +115,7 @@ jobs:
             catalog/generated/contextual_relation_candidates.csv
             catalog/generated/contextual_relation_coverage.json
             catalog/generated/search_index_smoke.json
+            catalog/generated/entity_mention_overlap_audit.json
           if-no-files-found: error
           retention-days: 30
       - name: Publish full unclassified term candidate dataset
