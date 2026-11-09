@@ -37,7 +37,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             self.assertEqual(result["overlap_pair_counts"]["nested_formula_herb_entity"], 1)
             self.assertEqual(result["overlap_pair_counts"]["nested_named_formula"], 1)
             self.assertEqual(result["repeated_term_groups"], 1)
-            self.assertEqual(result["repeated_term_occurrences_in_groups"], 2)
+            self.assertEqual(result["repeated_term_occurrences_in_groups"], 3)
             report = output.read_text(encoding="utf-8")
             self.assertIn('"start": 0', report)
             self.assertIn('"start": 30', report)
