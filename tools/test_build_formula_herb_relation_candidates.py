@@ -116,6 +116,13 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                                "tree_position": "0.2", "block_id": "b2"},
                     "content": {"source_text": "桂枝汤主之"},
                 },
+                {
+                    "unit_id": "formula-alt",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "book/a.sy", "sha256": source_hash,
+                               "tree_position": "0.3", "block_id": "b3"},
+                    "content": {"source_text": "桂枝汤主之"},
+                },
             ]
             with gzip.open(units, "wt", encoding="utf-8") as stream:
                 for unit in unit_rows:
@@ -128,6 +135,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             ]
             rows = [
                 ("formula-m", "formula", "FORMULA", "桂枝汤", 0, 3, "0.2", "b2"),
+                ("formula-alt", "formula-alt", "FORMULA", "桂枝汤", 0, 3, "0.3", "b3"),
                 ("herb-1", "composition", "HERB", "桂枝", 3, 5, "0.0", "b1"),
                 ("herb-2", "composition", "HERB", "芍药", 6, 8, "0.0", "b1"),
             ]
@@ -162,6 +170,20 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 writer.writerows(fabricated_rows)
             with self.assertRaisesRegex(ValueError, "relation mention reference not found"):
                 module.validate(fabricated, units, mentions)
+
+            # A different, real formula candidate with identical text and a
+            # valid nearby source block is still not the candidate referenced
+            # by the original relation identity.
+            swapped = root / "swapped-real-candidate.csv"
+            swapped_rows = [dict(row) for row in found]
+            swapped_rows[0]["subject_mention_id"] = "formula-alt"
+            with swapped.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=module.FIELDS)
+                writer.writeheader()
+                writer.writerows(swapped_rows)
+            with self.assertRaisesRegex(ValueError, "relation ID does not match referenced source candidate IDs"):
+                module.validate(swapped, units, mentions)
+
             self.assertTrue(all(row["unit_id"] == "composition" for row in found))
             self.assertTrue(all(row["extraction_rule"] == "FORMULA_COMPOSITION_NEARBY_BLOCK_V1" for row in found))
             with gzip.open(mentions, "rt", encoding="utf-8", newline="") as stream:
