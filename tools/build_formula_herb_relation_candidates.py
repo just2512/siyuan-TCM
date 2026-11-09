@@ -138,18 +138,12 @@ def nearby_formula(formula_mentions: list[dict[str, str]],
         return None
     min_distance = min(distance for distance, _ in candidates)
     nearest = [mention for distance, mention in candidates if distance == min_distance]
+    # Ingredient-name overlap with a formula title is not evidence that the
+    # composition list belongs to that formula. If multiple distinct formula
+    # anchors are equally near, preserve the ambiguity instead of choosing one.
     terms = {mention["matched_text"] for mention in nearest}
     if len(terms) != 1:
-        herb_terms = [herb["matched_text"] for herb in (herbs or [])]
-        scores = {
-            term: sum(1 for herb_term in herb_terms if herb_term in term)
-            for term in terms
-        }
-        best = max(scores.values(), default=0)
-        winners = {term for term, score in scores.items() if score == best and score > 0}
-        if len(winners) != 1:
-            return None
-        nearest = [mention for mention in nearest if mention["matched_text"] in winners]
+        return None
     return sorted(nearest, key=lambda item: item["mention_id"])[0]
 
 
