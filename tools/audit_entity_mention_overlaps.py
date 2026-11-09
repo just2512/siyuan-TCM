@@ -39,8 +39,30 @@ def classify_pair(left: dict[str, str], right: dict[str, str]) -> str | None:
     return "partial_overlap"
 
 
-def audit(path: Path, output: Path, max_examples: int = 50) -> dict[str, Any]:
+def audit(path: Path, output: Path, max_examples: int = 50,
+          relations_path: Path | None = None) -> dict[str, Any]:
     by_unit: dict[str, list[dict[str, str]]] = defaultdict(list)
+    mention_ids: set[str] = set()
+    relation_pairs: set[tuple[str, str]] = set()
+    relation_count = 0
+    if relations_path is not None:
+        with relations_path.open("r", encoding="utf-8", newline="") as relation_stream:
+            reader = csv.DictReader(relation_stream)
+            required_relations = {"subject_mention_id", "object_mention_id", "relation_id"}
+            missing_relations = required_relations - set(reader.fieldnames or [])
+            if missing_relations:
+                raise ValueError("relation input missing fields: " + ", ".join(sorted(missing_relations)))
+            seen_relation_ids: set[str] = set()
+            for row in reader:
+                if not row["relation_id"] or row["relation_id"] in seen_relation_ids:
+                    raise ValueError("relation input has a missing or duplicate relation_id")
+                seen_relation_ids.add(row["relation_id"])
+                pair = (row["subject_mention_id"], row["object_mention_id"])
+                if pair in relation_pairs:
+                    raise ValueError("relation input has a duplicate endpoint pair")
+                relation_pairs.add(pair)
+                relation_count += 1
+
     with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
         reader = csv.DictReader(stream)
         required = {
@@ -52,6 +74,9 @@ def audit(path: Path, output: Path, max_examples: int = 50) -> dict[str, Any]:
         if missing:
             raise ValueError("mention input missing fields: " + ", ".join(sorted(missing)))
         for row in reader:
+            if not row["mention_id"] or row["mention_id"] in mention_ids:
+                raise ValueError("mention input has a missing or duplicate mention_id")
+            mention_ids.add(row["mention_id"])
             start, end = int(row["character_start"]), int(row["character_end"])
             if start < 0 or end <= start or end - start != len(row["matched_text"]):
                 raise ValueError(f"invalid mention span: {row['mention_id']}")
@@ -59,6 +84,8 @@ def audit(path: Path, output: Path, max_examples: int = 50) -> dict[str, Any]:
 
     pair_counts: Counter[str] = Counter()
     examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    relation_link_counts: Counter[str] = Counter()
+    relation_link_examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
     repeated_groups = 0
     repeated_occurrences = 0
     repeated_examples = []
@@ -78,6 +105,27 @@ def audit(path: Path, output: Path, max_examples: int = 50) -> dict[str, Any]:
                 if kind is None:
                     continue
                 pair_counts[kind] += 1
+                if kind == "nested_formula_herb_entity" and relations_path is not None:
+                    formula = prior if prior["entity_type"] == "FORMULA" else current
+                    herb = prior if prior["entity_type"] == "HERB" else current
+                    link_kind = ("relation_candidate_linked"
+                                 if (formula["mention_id"], herb["mention_id"]) in relation_pairs
+                                 else "no_relation_candidate_link")
+                    relation_link_counts[link_kind] += 1
+                    if len(relation_link_examples[link_kind]) < max_examples:
+                        relation_link_examples[link_kind].append({
+                            "unit_id": unit_id,
+                            "document": current["document"],
+                            "tree_position": current["tree_position"],
+                            "formula_mention_id": formula["mention_id"],
+                            "formula_text": formula["matched_text"],
+                            "formula_start": int(formula["character_start"]),
+                            "formula_end": int(formula["character_end"]),
+                            "herb_mention_id": herb["mention_id"],
+                            "herb_text": herb["matched_text"],
+                            "herb_start": int(herb["character_start"]),
+                            "herb_end": int(herb["character_end"]),
+                        })
                 if len(examples[kind]) < max_examples:
                     examples[kind].append({
                         "unit_id": unit_id,
@@ -130,7 +178,21 @@ def audit(path: Path, output: Path, max_examples: int = 50) -> dict[str, Any]:
         "source_mentions": str(path),
         "source_units": len(by_unit),
         "total_mentions": total_mentions,
-        "overlap_pair_counts": dict(sorted(pair_counts.items())),
+        "overlap_pair_counts": {
+            key: pair_counts.get(key, 0) for key in (
+                "same_type_exact_duplicate_window", "cross_type_exact_span",
+                "nested_formula_herb_entity", "nested_named_formula",
+                "nested_same_type_window", "nested_cross_type_entity", "partial_overlap",
+            )
+        },
+        "relation_candidate_cross_reference": ({
+            "relation_candidate_rows": relation_count,
+            "nested_formula_herb_pairs": sum(relation_link_counts.values()),
+            "linked_nested_pairs": relation_link_counts.get("relation_candidate_linked", 0),
+            "unlinked_nested_pairs": relation_link_counts.get("no_relation_candidate_link", 0),
+            "examples": dict(sorted(relation_link_examples.items())),
+            "interpretation": "A linked pair is referenced by an extracted relation candidate; an unlinked nested pair is not thereby proven false or semantically invalid.",
+        } if relations_path is not None else None),
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
         "examples_limit_per_category": max_examples,
@@ -163,10 +225,12 @@ def main() -> int:
     parser.add_argument("--output", type=Path,
                         default=Path("catalog/generated/entity_mention_overlap_audit.json"))
     parser.add_argument("--max-examples", type=int, default=50)
+    parser.add_argument("--relations", type=Path,
+                        help="optional formula-herb relation CSV for endpoint cross-reference")
     args = parser.parse_args()
     if args.max_examples < 1:
         parser.error("--max-examples must be >= 1")
-    print(json.dumps(audit(args.mentions, args.output, args.max_examples),
+    print(json.dumps(audit(args.mentions, args.output, args.max_examples, args.relations),
                      ensure_ascii=False, sort_keys=True))
     return 0
 
