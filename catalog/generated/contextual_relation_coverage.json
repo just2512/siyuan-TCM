@@ -5,7 +5,7 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 179,
+      "ordered_typed_pairs": 125,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
@@ -24,7 +24,7 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "SYNDROME": 18,
-        "SYMPTOM": 12,
+        "SYMPTOM": 7,
         "FORMULA": 2,
         "TREATMENT": 1
       }
@@ -51,7 +51,7 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "TREATMENT": 353,
-        "SYMPTOM": 19,
+        "SYMPTOM": 13,
         "FORMULA": 39,
         "SYNDROME": 2
       }
@@ -78,7 +78,7 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
-        "SYMPTOM": 198,
+        "SYMPTOM": 142,
         "TREATMENT": 11,
         "SYNDROME": 15
       }
@@ -280,32 +280,11 @@
               "end": 78
             },
             {
-              "candidate_id": "term_8c17c4b65c753fa4cec72809",
-              "term": "是因为奶水逆",
-              "candidate_type": "SYMPTOM",
-              "start": 80,
-              "end": 86
-            },
-            {
               "candidate_id": "term_fcb48ac3edccb6ad70f6dc75",
               "term": "出现咳嗽",
               "candidate_type": "SYMPTOM",
               "start": 110,
               "end": 114
-            },
-            {
-              "candidate_id": "term_87dddcd5c0108e9eb1da4c32",
-              "term": "这是疾病",
-              "candidate_type": "SYMPTOM",
-              "start": 117,
-              "end": 121
-            },
-            {
-              "candidate_id": "term_32d3e59a37fdbc36e241ce53",
-              "term": "在做最",
-              "candidate_type": "SYMPTOM",
-              "start": 121,
-              "end": 124
             }
           ],
           "candidate_spans_truncated": false
@@ -327,20 +306,6 @@
               "candidate_type": "SYMPTOM",
               "start": 50,
               "end": 54
-            },
-            {
-              "candidate_id": "term_66c4e60926566eaba8b9a163",
-              "term": "白痰",
-              "candidate_type": "SYMPTOM",
-              "start": 54,
-              "end": 56
-            },
-            {
-              "candidate_id": "term_cdc646318c82ff6a109d5966",
-              "term": "无胃口",
-              "candidate_type": "SYMPTOM",
-              "start": 57,
-              "end": 60
             },
             {
               "candidate_id": "660250bbc068ea34dffa103900a23731e4769af775fc98be6041058f5d13262c",
