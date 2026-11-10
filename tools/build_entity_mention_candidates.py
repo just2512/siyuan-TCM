@@ -30,7 +30,7 @@ OUTPUT_FIELDS = [
 
 
 def unit_id(row: dict[str, str]) -> str:
-            identity = "\0".join((
+    identity = "\0".join((
         row["document"], row["source_sha256"], row["tree_position"],
         row.get("block_id", ""),
     ))
@@ -196,7 +196,7 @@ def validate(path: Path, knowledge_units_path: Path | None = None) -> int:
                 raise ValueError(f"row {line}: missing identity or provenance")
             if row["mention_id"] in seen_ids:
                 raise ValueError(f"row {line}: duplicate mention identity")
-            identity = "\\0".join((
+            identity = "\0".join((
                 row["unit_id"], row["entity_type"], str(start), str(end), row["matched_text"]
             ))
             expected_mention_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
