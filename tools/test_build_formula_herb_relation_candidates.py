@@ -343,5 +343,140 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             self.assertTrue(all(row["resolution_status"] == "UNRESOLVED_CANDIDATE" for row in found))
 
 
+
+    def test_fullwidth_period_splits_formula_herb_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            units = root / "units.jsonl.gz"
+            mentions = root / "mentions.csv.gz"
+            output = root / "relations.csv"
+            text = "桂枝汤由桂枝组成．麻黄汤由麻黄组成"
+            source_hash = "e" * 64
+            unit = {
+                "unit_id": "u1",
+                "unit_type": "SOURCE_PARAGRAPH",
+                "source": {"document": "a.sy", "sha256": source_hash,
+                           "tree_position": "0.0", "block_id": "b1"},
+                "content": {"source_text": text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id", "content_type", "section_path",
+                "lexicon_version", "extraction_method", "resolution_status",
+            ]
+            rows = [
+                ("f1", "FORMULA", "桂枝汤", 0, 3),
+                ("h1", "HERB", "桂枝", 4, 6),
+                ("f2", "FORMULA", "麻黄汤", 9, 12),
+                ("h2", "HERB", "麻黄", 13, 15),
+            ]
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, kind, term, start, end in rows:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": "u1", "entity_type": kind,
+                        "matched_text": term, "character_start": start, "character_end": end,
+                        "document": "a.sy", "source_sha256": source_hash,
+                        "tree_position": "0.0", "block_id": "b1",
+                        "content_type": "PARAGRAPH", "section_path": "",
+                        "lexicon_version": "1.0.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                        "resolution_status": "UNRESOLVED_CANDIDATE",
+                    })
+            result = module.extract(mentions, units, output)
+            self.assertEqual(result["relation_candidates"], 2)
+            self.assertEqual(module.validate(output, units, mentions), 2)
+            with output.open("r", encoding="utf-8", newline="") as stream:
+                found = list(csv.DictReader(stream))
+            self.assertEqual(
+                [row["evidence_text"] for row in found],
+                ["桂枝汤由桂枝组成．", "麻黄汤由麻黄组成"],
+            )
+
+    def test_nearby_formula_relation_cannot_cross_author_attribution_block(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            units = root / "units.jsonl.gz"
+            mentions = root / "mentions.csv.gz"
+            output = root / "relations.csv"
+            source_hash = "f" * 64
+            unit_rows = [
+                {
+                    "unit_id": "formula",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "a.sy", "sha256": source_hash,
+                               "tree_position": "0.0", "block_id": "b0"},
+                    "content": {"source_text": "桂枝汤主之"},
+                },
+                {
+                    "unit_id": "attribution",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "a.sy", "sha256": source_hash,
+                               "tree_position": "0.1", "block_id": "b1"},
+                    "content": {"source_text": "丹溪曰："},
+                },
+                {
+                    "unit_id": "composition",
+                    "unit_type": "SOURCE_PARAGRAPH",
+                    "source": {"document": "a.sy", "sha256": source_hash,
+                               "tree_position": "0.2", "block_id": "b2"},
+                    "content": {"source_text": "组成：桂枝"},
+                },
+            ]
+            with gzip.open(units, "wt", encoding="utf-8") as stream:
+                for unit in unit_rows:
+                    stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id", "content_type", "section_path",
+                "lexicon_version", "extraction_method", "resolution_status",
+            ]
+            mention_rows = [
+                ("formula-m", "formula", "FORMULA", "桂枝汤", 0, 3, "0.0", "b0"),
+                ("herb-m", "composition", "HERB", "桂枝", 3, 5, "0.2", "b2"),
+            ]
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                for mid, unit_id, kind, term, start, end, position, block_id in mention_rows:
+                    writer.writerow({
+                        "mention_id": mid, "unit_id": unit_id, "entity_type": kind,
+                        "matched_text": term, "character_start": start, "character_end": end,
+                        "document": "a.sy", "source_sha256": source_hash,
+                        "tree_position": position, "block_id": block_id,
+                        "content_type": "PARAGRAPH", "section_path": "",
+                        "lexicon_version": "1.0.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                        "resolution_status": "UNRESOLVED_CANDIDATE",
+                    })
+
+            self.assertEqual(module.extract(mentions, units, output)["relation_candidates"], 0)
+            self.assertEqual(module.validate(output, units, mentions), 0)
+
+            formula = {
+                "mention_id": "formula-m", "unit_id": "formula",
+                "matched_text": "桂枝汤", "character_start": "0", "character_end": "3",
+            }
+            herb = {
+                "mention_id": "herb-m", "unit_id": "composition",
+                "matched_text": "桂枝", "character_start": "3", "character_end": "5",
+            }
+            evidence_unit = unit_rows[2]
+            with output.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=module.FIELDS)
+                writer.writeheader()
+                module.make_relation(
+                    writer, set(), formula, herb, evidence_unit, 0, 5,
+                    "组成：桂枝", "FORMULA_COMPOSITION_NEARBY_BLOCK_V1",
+                )
+            with self.assertRaisesRegex(ValueError, "author-attribution boundary"):
+                module.validate(output, units, mentions)
+
+
+if __name__ == "__main__":
+    unittest.main()
 if __name__ == "__main__":
     unittest.main()
