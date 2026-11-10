@@ -383,6 +383,22 @@ class ContextualTermCandidateTests(unittest.TestCase):
             self.assertNotIn("附子汤温", treatment_terms)
             self.assertIn("温药下之", treatment_terms)
 
+    def test_raw_state_phrase_is_not_a_treatment_method(self):
+        text = "此等药中不可用之，当以一生者为佳。"
+        start = text.index("一生")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("一生")),
+        )
+
+        # The scope exception must not suppress a genuine treatment method.
+        text = "证属不足，当以健脾为主。"
+        start = text.index("健脾")
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("健脾")),
+        )
+
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
