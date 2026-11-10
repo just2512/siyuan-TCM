@@ -81,7 +81,7 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
             if (
                 candidate_type == "SYNDROME"
                 and term.endswith("名")
-                and re.search(r"辨为[\\s:：、]{0,2}$", before)
+                and re.search(r"辨为[\s:：、]{0,2}$", before)
             ):
                 continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
