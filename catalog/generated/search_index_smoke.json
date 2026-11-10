@@ -9,7 +9,7 @@
     "entity_catalog": 312,
     "semantic_relation_candidates": 122,
     "unclassified_term_candidates": 2363692,
-    "contextual_term_type_candidates": 124551,
+    "contextual_term_type_candidates": 124550,
     "contextual_relation_candidates": 0
   },
   "relation_predicate_counts": {

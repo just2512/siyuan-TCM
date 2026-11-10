@@ -66,12 +66,12 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 2846,
       "typed_pair_sentences_without_marker": 30,
-      "marker_sentences_with_subject_type": 11,
+      "marker_sentences_with_subject_type": 10,
       "marker_sentences_with_object_type": 146,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
-      "marker_sentences_without_subject_type": 2836,
+      "marker_sentences_without_subject_type": 2837,
       "marker_sentences_without_object_type": 2701,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 0,
@@ -79,7 +79,7 @@
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
         "SYMPTOM": 142,
-        "TREATMENT": 11,
+        "TREATMENT": 10,
         "SYNDROME": 15
       }
     }
@@ -792,27 +792,6 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "99c4cd14367d53718460cd8304ac1c476496b0dc134827315d83c79112828a21",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240520153422-lw22wa1/20240520165024-7x0daz4.sy",
-          "source_sha256": "0adf37dd001c8eb73ae624421d21c38309afe4d8e6a0708e11997641ff7e1b8e",
-          "tree_position": "0.761",
-          "block_id": "20240521103506-mycgnii",
-          "sentence_start": 140,
-          "sentence_end": 161,
-          "sentence_text": "治法可用溫中健脾、燥濕健脾、芳香健脾等藥。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_4d99c976beb8827ecac5f423",
-              "term": "可用",
-              "candidate_type": "TREATMENT",
-              "start": 142,
-              "end": 144
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "22bf89245c217392d0224f92d26904b58728955ff698f23d302ef008c629a4e5",
           "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153444-tvptdx5.sy",
           "source_sha256": "10737ee743a76450db758e20244a970913f6c36631bee80563b32f8e2d696aa7",
@@ -885,6 +864,27 @@
               "candidate_type": "TREATMENT",
               "start": 355,
               "end": 359
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "47a351872a6f78615ac65af66fdb8e983df3b4179964c1bb211011ed0276b74e",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153847-eepruzr.sy",
+          "source_sha256": "18325c145629e57c391e3bbccbe8aa80480c2f480b242b5fb2e37e106bdcd1f6",
+          "tree_position": "0.408",
+          "block_id": "20240607114914-xue8i9z",
+          "sentence_start": 11,
+          "sentence_end": 125,
+          "sentence_text": "治法：喷粉法-洗净患者肠内容物，凡使用乙状结肠镜可窥视到的溃疡及其他炎症病变，均可用带有长金属臂的喷粉器.将黄连粉直接喷到溃疡或病变部位，每次用药6～8分，隔日1次，9次为一个疗程，以后视病情需要可每隔1周进行第二或第三个疗程。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_3642ddd757d405d3d29f7b55",
+              "term": "喷粉",
+              "candidate_type": "TREATMENT",
+              "start": 14,
+              "end": 16
             }
           ],
           "candidate_spans_truncated": false
