@@ -189,6 +189,22 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertNotIn(("FORMULA", "FORMULA_CONTEXT_01"), classify_span("方用", 0, 2))
         self.assertIn(("FORMULA", "FORMULA_CONTEXT_01"), classify_span("方用桂枝汤", 2, 5))
 
+    def test_bare_treatment_label_requires_a_delimiter_before_its_value(self):
+        text = "但是晚上这个治法的这个方子啊"
+        start = text.index("的这个方子")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("的这个方子")),
+        )
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span("治法：温中健脾", 3, 7),
+        )
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span("治法为温中健脾", 3, 7),
+        )
+
     def test_prefix_cues_do_not_type_unrelated_later_terms_in_same_clause(self):
         text = "治法：喷粉法-洗净患者肠内容物"
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, 3, 5))
