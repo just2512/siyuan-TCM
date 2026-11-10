@@ -12,19 +12,19 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 63,
       "typed_pair_sentences_without_marker": 67,
-      "marker_sentences_with_subject_type": 5,
-      "marker_sentences_with_object_type": 16,
+      "marker_sentences_with_subject_type": 4,
+      "marker_sentences_with_object_type": 14,
       "marker_sentences_with_both_endpoint_types": 0,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
-      "marker_sentences_without_subject_type": 58,
-      "marker_sentences_without_object_type": 47,
+      "marker_sentences_without_subject_type": 59,
+      "marker_sentences_without_object_type": 49,
       "units_with_marker": 61,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYNDROME": 18,
-        "SYMPTOM": 7,
+        "SYNDROME": 16,
+        "SYMPTOM": 5,
         "FORMULA": 2,
         "TREATMENT": 1
       }
@@ -176,48 +176,6 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "eab67ea91c94c5bb68b20ebb1c37776a5aa744237efba858a443fb03bfbc135f",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.177",
-          "block_id": "20240511101226-y418udq",
-          "sentence_start": 0,
-          "sentence_end": 142,
-          "sentence_text": "目前台湾以及大陆的中医包含卫生署在内,中药药理方面都是以本草纲目为标准,方剂学是以汤头歌诀 或是医宗金鉴删补名医方论为主,处方依据是以温病条辨为主要依据,大家都知道黄帝内经,神农本草经,难经,伤寒论,金匮为中医的经典之作,但是都流于嘴上 说说而已,实际上很少人懂得如何真正的使用它 .",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_08d27d496795d68a3fe0743a",
-              "term": "主要依据",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 76
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "0f4c1050bb5c1868c03670f86fcd173d29ae68970b0ace279a8c8f0e83809fc9",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.327",
-          "block_id": "20240511101226-bousowz",
-          "sentence_start": 0,
-          "sentence_end": 141,
-          "sentence_text": "目前台湾以及大陆的中医包含卫生署在内,中药药理方面都是以本草纲目为标准,方剂学是以汤头歌诀 或是医宗金鉴删补名医方论为主,处方依据是以温病条辨为主要依据,大家都知道黄帝内经,神农本草经,难经,伤寒论,金匮为中医的经典之作,但是都流于嘴上说说而已,实际上很少人懂得如何真正的使用它 .",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_08d27d496795d68a3fe0743a",
-              "term": "主要依据",
-              "candidate_type": "SYNDROME",
-              "start": 72,
-              "end": 76
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "5fc605446b969375905a36a6f63689bb8af6dd539316f2fb039b1393c1dd263a",
           "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
           "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
@@ -255,6 +213,48 @@
               "candidate_type": "SYNDROME",
               "start": 249,
               "end": 253
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
+          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
+          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
+          "tree_position": "0.59",
+          "block_id": "20231122160010-q88onhz",
+          "sentence_start": 0,
+          "sentence_end": 31,
+          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_63dae4ae4cb531caeef3d458",
+              "term": "寒痢",
+              "candidate_type": "SYNDROME",
+              "start": 28,
+              "end": 30
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "77eaddb1048db319406127d6a22b0806a75b59fb7e99a24046e34b1cdb86c0de",
+          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154329-ftp35pn.sy",
+          "source_sha256": "f1f27b559ed61a811dd3c5c328c658553799dca782a315a65f6a7a1efbdfefce",
+          "tree_position": "0.1",
+          "block_id": "20231122162332-y0vs00p",
+          "sentence_start": 0,
+          "sentence_end": 48,
+          "sentence_text": "【原文】 黄帝 日余闻人有精、气、津、液、血、脉，余意以为一气耳，今乃辨为六名，余不知其所以然。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_a9a822f777e68919d4d69381",
+              "term": "六名",
+              "candidate_type": "SYNDROME",
+              "start": 37,
+              "end": 39
             }
           ],
           "candidate_spans_truncated": false
@@ -318,34 +318,6 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "3b43e49b151ff1366da9bea20be721814d24ef4e0a1415c14164132eddcc450c",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511105921-ssbnxpw/20240511110546-hd9orqs.sy",
-          "source_sha256": "59803eeb01b1a85f4994216965439819a8e83552461eda6feba57f6bc88a3db0",
-          "tree_position": "0.17",
-          "block_id": "20240511132144-x3ltg09",
-          "sentence_start": 0,
-          "sentence_end": 97,
-          "sentence_text": "尤其季节一变换，则许多人打喷嚏、流鼻水、鼻痒、流眼泪等症状相继出现，几乎人人都被诊断为过敏，为了寻找过敏原，打了上百针，也不见得知道，有时就算知道了，是对花粉或尘土或猫狗毛等过敏，谁又能避免呢？",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_96e77d824c04622a8498cea3",
-              "term": "相继",
-              "candidate_type": "SYMPTOM",
-              "start": 29,
-              "end": 31
-            },
-            {
-              "candidate_id": "term_65f5a81a2ec1ec91b833b9c3",
-              "term": "几乎人人",
-              "candidate_type": "SYMPTOM",
-              "start": 34,
-              "end": 38
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
           "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
           "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
@@ -357,11 +329,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_43f58b43ae8b16536da49646",
-              "term": "只是由于",
+              "candidate_id": "term_b1fc7d44fe496c5871621e63",
+              "term": "只是由",
               "candidate_type": "SYMPTOM",
               "start": 11,
-              "end": 15
+              "end": 14
             }
           ],
           "candidate_spans_truncated": false
@@ -378,11 +350,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_43f58b43ae8b16536da49646",
-              "term": "只是由于",
+              "candidate_id": "term_b1fc7d44fe496c5871621e63",
+              "term": "只是由",
               "candidate_type": "SYMPTOM",
               "start": 11,
-              "end": 15
+              "end": 14
             }
           ],
           "candidate_spans_truncated": false
