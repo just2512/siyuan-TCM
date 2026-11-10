@@ -22,7 +22,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 "症见头痛，辨证为太阳中风，治宜解肌发表，方用桂枝汤。"
                 "头痛，不宜辨证为太阳中风。"
                 "治宜解肌发表。"
-                "太阳中风，丹溪曰∶治宜解肌发表。"
+                "太阳中风，治宜丹溪曰∶解肌发表。"
             )
             second_sentence = source_text.index("头痛", source_text.index("。") + 1)
             second_syndrome = source_text.index("太阳中风", source_text.index("。") + 1)
