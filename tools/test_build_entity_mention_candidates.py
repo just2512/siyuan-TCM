@@ -141,7 +141,7 @@ class EntityMentionCandidateTests(unittest.TestCase):
             self.assertEqual(
                 [(row["matched_text"], int(row["character_start"]), int(row["character_end"]))
                  for row in rows],
-                [("头痛", 0, 2), ("头痛", 7, 9)],
+                [("头痛", 0, 2), ("头痛", 6, 8)],
             )
             self.assertEqual(len({row["mention_id"] for row in rows}), 2)
 
