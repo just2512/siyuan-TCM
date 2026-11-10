@@ -182,6 +182,7 @@ def validate(path: Path, knowledge_units_path: Path | None = None) -> int:
                 unit = json.loads(raw)
                 units[unit["unit_id"]] = unit
     count = 0
+    seen_ids: set[str] = set()
     with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
         for line, row in enumerate(csv.DictReader(stream), 2):
             start, end = int(row["character_start"]), int(row["character_end"])
@@ -193,6 +194,15 @@ def validate(path: Path, knowledge_units_path: Path | None = None) -> int:
                 raise ValueError(f"row {line}: unexpected extraction method")
             if not row["mention_id"] or not row["unit_id"] or not row["document"]:
                 raise ValueError(f"row {line}: missing identity or provenance")
+            if row["mention_id"] in seen_ids:
+                raise ValueError(f"row {line}: duplicate mention identity")
+            identity = "\0".join((
+                row["unit_id"], row["entity_type"], str(start), str(end), row["matched_text"]
+            ))
+            expected_mention_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+            if row["mention_id"] != expected_mention_id:
+                raise ValueError(f"row {line}: mention ID does not match occurrence identity")
+            seen_ids.add(row["mention_id"])
             if knowledge_units_path is not None:
                 unit = units.get(row["unit_id"])
                 if unit is None:
