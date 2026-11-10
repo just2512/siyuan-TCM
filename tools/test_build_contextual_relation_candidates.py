@@ -188,7 +188,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
                 "content": {"source_text": source_text},
             }
             with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
-                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
             result = extract(context, mentions, units, output)
             self.assertEqual(result["contextual_relation_candidates"], 0)
             self.assertEqual(validate(output, units), 0)
