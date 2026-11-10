@@ -89,6 +89,38 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
         }
         self.assertFalse(module.has_explicit_formula_context(incidental))
 
+    def test_rejects_formula_suffixes_embedded_in_longer_formula_names(self):
+        cases = [
+            ("乌头桂枝汤主之", "桂枝汤"),
+            ("人参附子汤主之", "附子汤"),
+            ("厚朴四物汤主之", "四物汤"),
+            ("桂枝芍药知母甘草汤主之", "甘草汤"),
+        ]
+        for text, term in cases:
+            with self.subTest(text=text, term=term):
+                start = text.index(term)
+                mention = {
+                    "character_start": str(start),
+                    "character_end": str(start + len(term)),
+                    "matched_text": term,
+                    "_source_text": text,
+                    "_unit_type": "SOURCE_PARAGRAPH",
+                }
+                self.assertFalse(module.has_explicit_formula_context(mention))
+
+    def test_accepts_formula_name_after_a_grammatical_introducer(self):
+        for text in ("用桂枝汤主之", "宜桂枝汤主之", "服用桂枝汤主之"):
+            with self.subTest(text=text):
+                start = text.index("桂枝汤")
+                mention = {
+                    "character_start": str(start),
+                    "character_end": str(start + len("桂枝汤")),
+                    "matched_text": "桂枝汤",
+                    "_source_text": text,
+                    "_unit_type": "SOURCE_PARAGRAPH",
+                }
+                self.assertTrue(module.has_explicit_formula_context(mention))
+
     def test_links_composition_list_to_unique_nearby_formula_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
