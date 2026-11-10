@@ -271,10 +271,18 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span("今乃辨为太阳中风", 4, 8),
         )
 
+        text = "余意以为一气耳，今乃辨为六名，余不知其所以然。"
+        start = text.index("六名")
+        self.assertNotIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span(text, start, start + len("六名")),
+        )
+
     def test_symptom_list_intro_does_not_type_narrative_connectors_as_symptoms(self):
         for text, term in [
             ("尤其季节一变换，则许多人打喷嚏、流鼻水、鼻痒、流眼泪等症状相继出现", "相继"),
             ("同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重", "只是由于"),
+            ("同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重", "只是由"),
         ]:
             start = text.index(term)
             self.assertNotIn(
