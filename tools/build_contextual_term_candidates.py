@@ -75,6 +75,15 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
             # do not let the generic “治法” prefix type this two-character span.
             if candidate_type == "TREATMENT" and term == "可用":
                 continue
+            # “辨为六名” is a classical naming/counting construction, not a
+            # syndrome assertion. Keep the exception tied to the grammatical
+            # object shape (a term ending in 名), not a global term blacklist.
+            if (
+                candidate_type == "SYNDROME"
+                and term.endswith("名")
+                and re.search(r"辨为[\\s:：、]{0,2}$", before)
+            ):
+                continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
             if candidate_type in PREFIX_ONLY_TYPES:
@@ -101,7 +110,7 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
                 # narrative clause (diagnosis, attribution, treatment, etc.).
                 non_symptom_clause = re.compile(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
-                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由于)"
+                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由)"
                 )
                 matched = (
                     None if non_symptom_clause.search(symptom_before)
