@@ -393,7 +393,7 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     or NEGATION_PREFIX.search(between[:predicate_match.start()])):
                     raise ValueError(f"contextual relation predicate evidence mismatch at line {line}")
                 scope_break = RELATION_SCOPE_BREAKS.get(predicate)
-                if scope_break and scope_break.search(between[:predicate_match.start()]):
+                if scope_break and scope_break.search(between):
                     raise ValueError(f"contextual relation crosses a source-attribution boundary at line {line}")
                 expected_id = relation_identity(
                     predicate,
