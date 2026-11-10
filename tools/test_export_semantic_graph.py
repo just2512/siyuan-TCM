@@ -2,6 +2,7 @@ import csv
 import gzip
 import importlib.util
 import json
+import sqlite3
 import tempfile
 import unittest
 
@@ -138,6 +139,21 @@ class SemanticGraphExportTests(unittest.TestCase):
                 for row in rows:
                     stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "entity graph/SQLite mismatch"):
+                module.validate(database, output)
+
+            # A graph and SQLite row can agree byte-for-byte yet still encode
+            # the wrong semantic direction. Corrupt the stored edge itself to
+            # ensure graph validation enforces FORMULA -> HERB, not merely
+            # membership in the allowed endpoint-type set.
+            with sqlite3.connect(database) as connection:
+                connection.execute("""
+                    UPDATE semantic_relation_candidates
+                    SET subject_mention_id='h1', subject_text='桂枝',
+                        object_mention_id='f1', object_text='桂枝汤'
+                    WHERE relation_id='r1'
+                """)
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "invalid subject_mention relation endpoint direction/type"):
                 module.validate(database, output)
 
 
