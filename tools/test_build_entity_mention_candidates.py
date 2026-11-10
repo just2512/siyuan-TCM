@@ -99,6 +99,52 @@ class EntityMentionCandidateTests(unittest.TestCase):
             (len("乌头麻黄黄芪"), len("乌头麻黄黄芪芍药甘草汤"), "芍药甘草汤"),
         ])
 
+    def test_repeated_same_term_keeps_distinct_occurrence_ids_and_offsets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            lexicon = root / "lexicon.csv"
+            output = root / "out"
+            units_path = root / "knowledge_units.jsonl.gz"
+            source_text = "头痛缓解后，头痛再次出现。"
+            source = {
+                "document": "notes/repeated.sy", "source_sha256": "b" * 64,
+                "tree_position": "0.4", "block_id": "repeat-block",
+                "content_type": "PARAGRAPH", "section_path": "",
+            }
+            with gzip.open(content, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "document", "source_sha256", "tree_position", "block_id",
+                    "content_type", "section_path", "content_text",
+                ])
+                writer.writeheader()
+                writer.writerow({**source, "content_text": source_text})
+            with lexicon.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=["entity_type", "term"])
+                writer.writeheader()
+                writer.writerow({"entity_type": "SYMPTOM", "term": "头痛"})
+
+            result = module.extract(content, lexicon, output)
+            self.assertEqual(result["mentions"], 2)
+            path = output / "entity_mention_candidates.csv.gz"
+            unit = {
+                "unit_id": module.unit_id(source),
+                "source": {"document": source["document"], "sha256": source["source_sha256"],
+                           "tree_position": source["tree_position"], "block_id": source["block_id"]},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units_path, "wt", encoding="utf-8") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+            self.assertEqual(module.validate(path, units_path), 2)
+            with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(
+                [(row["matched_text"], int(row["character_start"]), int(row["character_end"]))
+                 for row in rows],
+                [("头痛", 0, 2), ("头痛", 7, 9)],
+            )
+            self.assertEqual(len({row["mention_id"] for row in rows}), 2)
+
     def test_validator_rejects_mention_id_not_derived_from_occurrence(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
