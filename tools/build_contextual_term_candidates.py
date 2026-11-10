@@ -62,7 +62,10 @@ PUNCTUATION = "，。！？；、\n"
 PREFIX_ONLY_TYPES = {"SYNDROME", "TREATMENT", "FORMULA", "HERB"}
 
 
-def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
+def classify_span(
+    text: str, start: int, end: int,
+    formula_spans: tuple[tuple[int, int], ...] | list[tuple[int, int]] = (),
+) -> list[tuple[str, str]]:
     if start < 0 or end <= start or end > len(text):
         raise ValueError("candidate span is outside source text")
     term = text[start:end]
@@ -70,10 +73,25 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
     before = text[max(left_boundary, start - 10):start]
     found = []
     for candidate_type, rules in RULES.items():
+        # A lexical formula mention owns its exact source span. A longer
+        # n-gram that merely overlaps that formula must not be retyped as a
+        # treatment method (e.g. "附子汤温" around the formula "附子汤").
+        if candidate_type == "TREATMENT" and any(
+            start < formula_end and formula_start < end
+            for formula_start, formula_end in formula_spans
+        ):
+            continue
         for rule_id, pattern in rules:
             # “可用” is an operational phrase, not a treatment entity;
             # do not let the generic “治法” prefix type this two-character span.
             if candidate_type == "TREATMENT" and term == "可用":
+                continue
+            # Duration + outcome expressions are prognosis, not treatment methods.
+            # Keep this morphology-specific so valid "当以" treatment phrases survive.
+            if (
+                candidate_type == "TREATMENT"
+                and re.fullmatch(r"[零〇一二三四五六七八九十百千万两\d]+日(?:愈|解|差)", term)
+            ):
                 continue
             # “辨为六名” is a classical naming/counting construction, not a
             # syndrome assertion. Keep the exception tied to the grammatical
@@ -165,11 +183,35 @@ def load_candidate_terms(source_path: Path) -> set[str]:
     return terms
 
 
+def load_formula_spans(path: Path) -> dict[str, list[tuple[int, int]]]:
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    grouped: dict[str, list[tuple[int, int]]] = {}
+    with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
+        reader = csv.DictReader(stream)
+        required = {"unit_id", "entity_type", "character_start", "character_end"}
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError("entity mention input missing fields: " + ", ".join(sorted(missing)))
+        for line, row in enumerate(reader, 2):
+            if row["entity_type"] != "FORMULA":
+                continue
+            start, end = int(row["character_start"]), int(row["character_end"])
+            if start < 0 or end <= start:
+                raise ValueError(f"entity mention row {line}: invalid formula span")
+            grouped.setdefault(row["unit_id"], []).append((start, end))
+    return grouped
+
+
 def build(source_path: Path, output_path: Path,
-          units_path: Path = Path("catalog/generated/knowledge_units.jsonl.gz")) -> dict[str, int]:
+          units_path: Path = Path("catalog/generated/knowledge_units.jsonl.gz"),
+          entity_mentions_path: Path | None = None) -> dict[str, int]:
     if not units_path.is_file():
         raise FileNotFoundError(units_path)
     candidate_terms = load_candidate_terms(source_path)
+    formula_spans_by_unit = (
+        load_formula_spans(entity_mentions_path) if entity_mentions_path is not None else {}
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     rows = 0
     classified_terms: set[str] = set()
@@ -202,7 +244,9 @@ def build(source_path: Path, output_path: Path,
                             continue
                         start = run.start() + match.start(1)
                         end = start + length
-                        classifications = classify_span(text, start, end)
+                        classifications = classify_span(
+                            text, start, end, formula_spans_by_unit.get(unit_id, ())
+                        )
                         if not classifications:
                             continue
                         evidence_start = max(0, start - 12)
@@ -299,9 +343,12 @@ def main() -> int:
     parser.add_argument("--input", type=Path, default=Path("catalog/generated/unclassified_term_candidates.csv.gz"))
     parser.add_argument("--units", type=Path, default=Path("catalog/generated/knowledge_units.jsonl.gz"))
     parser.add_argument("--output", type=Path, default=Path("catalog/generated/contextual_term_type_candidates.csv.gz"))
+    parser.add_argument("--entity-mentions", type=Path, default=Path("catalog/generated/entity_mention_candidates.csv.gz"))
     parser.add_argument("--validate", action="store_true")
     args = parser.parse_args()
-    result = {"validated_candidates": validate(args.output)} if args.validate else build(args.input, args.output, args.units)
+    result = {"validated_candidates": validate(args.output)} if args.validate else build(
+        args.input, args.output, args.units, args.entity_mentions
+    )
     if not args.validate:
         result["validated_candidates"] = validate(args.output)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))

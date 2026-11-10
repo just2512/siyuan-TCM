@@ -335,6 +335,54 @@ class ContextualTermCandidateTests(unittest.TestCase):
         start = text.index("健脾")
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
 
+    def test_day_outcome_phrase_is_not_a_treatment_method(self):
+        text = "病程当以十五日愈"
+        start = text.index("十五日愈")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("十五日愈")),
+        )
+
+        # The exception must not disable a genuine treatment instruction.
+        text = "证属不足，当以健脾为主。"
+        start = text.index("健脾")
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("健脾")),
+        )
+
+    def test_formula_mention_span_prevents_overlapping_treatment_retyping(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "terms.csv.gz"
+            units = root / "units.jsonl.gz"
+            mentions = root / "mentions.csv.gz"
+            output = root / "typed.csv.gz"
+            text = "当以附子汤温之，另当以温药下之。"
+            write_candidates(source, ["附子汤温", "温药下之"])
+            write_units(units, text)
+            formula_start = text.index("附子汤")
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "unit_id", "entity_type", "character_start", "character_end",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "unit_id": "unit-1", "entity_type": "FORMULA",
+                    "character_start": formula_start,
+                    "character_end": formula_start + len("附子汤"),
+                })
+
+            result = build(source, output, units, mentions)
+            self.assertGreater(result["contextual_classification_candidates"], 0)
+            with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            treatment_terms = {
+                row["term"] for row in rows if row["candidate_type"] == "TREATMENT"
+            }
+            self.assertNotIn("附子汤温", treatment_terms)
+            self.assertIn("温药下之", treatment_terms)
+
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
