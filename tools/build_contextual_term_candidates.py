@@ -93,6 +93,16 @@ def classify_span(
                 and re.fullmatch(r"[零〇一二三四五六七八九十百千万两\d]+日(?:愈|解|差)", term)
             ):
                 continue
+            # In "当以一生者为佳", 一生 means the raw/unprocessed state,
+            # not a treatment method. Keep the exception bound to this exact
+            # grammatical construction rather than blacklisting the term globally.
+            if (
+                candidate_type == "TREATMENT"
+                and term == "一生"
+                and re.search(r"当以[\\s:：、]{0,2}$", before)
+                and re.match(r"者为佳(?:[。！？；，、]|$)", text[end:])
+            ):
+                continue
             # “辨为六名” is a classical naming/counting construction, not a
             # syndrome assertion. Keep the exception tied to the grammatical
             # object shape (a term ending in 名), not a global term blacklist.
