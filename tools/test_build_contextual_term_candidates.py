@@ -259,6 +259,36 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为主", 2, 4))
         self.assertIn(("SYNDROME", "SYNDROME_CONTEXT_01"), classify_span("辨证为太阳中风", 3, 7))
 
+    def test_embedded_book_title_bianwei_does_not_type_following_phrase_as_syndrome(self):
+        text = "处方依据是以温病条辨为主要依据"
+        start = text.index("主要依据")
+        self.assertNotIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span(text, start, start + len("主要依据")),
+        )
+        self.assertIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span("今乃辨为太阳中风", 5, 9),
+        )
+
+    def test_symptom_list_intro_does_not_type_narrative_connectors_as_symptoms(self):
+        for text, term in [
+            ("尤其季节一变换，则许多人打喷嚏、流鼻水、鼻痒、流眼泪等症状相继出现", "相继"),
+            ("同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重", "只是由于"),
+        ]:
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+            )
+
+        text = "症状是头痛、恶心、呕吐"
+        start = text.index("头痛")
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, start, start + len("头痛")),
+        )
+
     def test_does_not_classify_fadang_as_treatment_prefix(self):
         self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span("法当腹满", 2, 4))
 
