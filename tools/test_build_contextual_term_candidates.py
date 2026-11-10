@@ -268,7 +268,7 @@ class ContextualTermCandidateTests(unittest.TestCase):
         )
         self.assertIn(
             ("SYNDROME", "SYNDROME_CONTEXT_01"),
-            classify_span("今乃辨为太阳中风", 5, 9),
+            classify_span("今乃辨为太阳中风", 4, 8),
         )
 
     def test_symptom_list_intro_does_not_type_narrative_connectors_as_symptoms(self):
