@@ -31,7 +31,15 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
                 CREATE TABLE contextual_term_type_candidates (id INTEGER);
-                CREATE TABLE contextual_relation_candidates (id INTEGER, predicate TEXT);
+                CREATE TABLE contextual_relation_candidates (
+                    relation_id TEXT, predicate TEXT, subject_candidate_id TEXT,
+                    subject_text TEXT, subject_type TEXT, subject_start INTEGER, subject_end INTEGER,
+                    object_candidate_id TEXT, object_text TEXT, object_type TEXT,
+                    object_start INTEGER, object_end INTEGER, unit_id TEXT, document TEXT,
+                    source_sha256 TEXT, tree_position TEXT, block_id TEXT,
+                    sentence_start INTEGER, sentence_end INTEGER, evidence_text TEXT,
+                    predicate_text TEXT, extraction_rule TEXT, resolution_status TEXT
+                );
             """)
             text = "桂枝汤治疗太阳中风"
             connection.execute(
@@ -71,6 +79,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 "SYNDROME_TO_TREATMENT": 0,
                 "TREATMENT_TO_FORMULA": 0,
             })
+            self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
 
 
     def test_smoke_checks_contextual_relation_predicate_and_direction(self):
@@ -128,6 +137,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             result = smoke(db)
             self.assertEqual(result["checks"]["contextual_relation_evidence"], "PASS")
             self.assertEqual(result["checks"]["contextual_relation_predicate_direction"], "PASS")
+            self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
             self.assertEqual(result["relation_predicate_counts"]["SYMPTOM_TO_SYNDROME"], 1)
 
 

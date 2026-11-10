@@ -29,6 +29,30 @@ TABLES = (
 )
 
 
+
+CONTEXTUAL_PREDICATE_TYPES = {
+    "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
+    "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
+    "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+}
+
+
+def validate_contextual_predicate_queries(database_path: Path, predicate_counts: dict[str, int]) -> None:
+    """Exercise all supported predicate queries, including audited zero-row results."""
+    for predicate, (expected_subject, expected_object) in CONTEXTUAL_PREDICATE_TYPES.items():
+        rows = search_contextual_relation_candidates(database_path, predicate, limit=20)
+        if predicate_counts[predicate] == 0 and rows:
+            raise AssertionError(f"zero-row contextual predicate query returned records: {predicate}")
+        if predicate_counts[predicate] > 0 and not rows:
+            raise AssertionError(f"contextual predicate query returned no records: {predicate}")
+        if any(
+            row["predicate"] != predicate
+            or row["subject_type"] != expected_subject
+            or row["object_type"] != expected_object
+            for row in rows
+        ):
+            raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
+
 def smoke(database_path: Path) -> dict:
     if not database_path.is_file():
         raise FileNotFoundError(database_path)
@@ -205,6 +229,9 @@ def smoke(database_path: Path) -> dict:
         if not grounded:
             raise AssertionError("contextual relation query failed source/endpoint/predicate evidence checks")
         checks["contextual_relation_evidence"] = "PASS"
+
+    validate_contextual_predicate_queries(database_path, contextual_predicates)
+    checks["contextual_relation_predicate_queries"] = "PASS"
 
     if counts["contextual_relation_candidates"]:
         contracts = {
