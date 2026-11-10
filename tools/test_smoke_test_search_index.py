@@ -1,5 +1,6 @@
 import sqlite3
 import tempfile
+import smoke_test_search_index as smoke_module
 import unittest
 from pathlib import Path
 
@@ -187,7 +188,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                  "u-composition", "book/a.sy", "sha-a", "0.1", "composition",
                  0, len(evidence), evidence),
             )
-            self.assertEqual(smoke.validate_all_formula_herb_relation_rows(connection), 1)
+            self.assertEqual(smoke_module.validate_all_formula_herb_relation_rows(connection), 1)
 
             # A damaged endpoint offset must be rejected even though the
             # relation row remains discoverable through its lexical IDs.
