@@ -239,7 +239,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             mentions = root / "mentions.csv.gz"
             units = root / "units.jsonl.gz"
             output = root / "relations.csv"
-            source_text = "头痛，张三曰：辨证为太阳中风。解表，张三曰：方用桂枝汤。"
+            source_text = "头痛辨证为张三曰：太阳中风。解表方用张三曰：桂枝汤。"
             terms = [
                 ("symptom-1", "头痛", "SYMPTOM"),
                 ("syndrome-1", "太阳中风", "SYNDROME"),
@@ -548,7 +548,7 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             root = Path(temp)
             units = root / "units.jsonl.gz"
             output = root / "relations.csv"
-            source_text = "太阳中风，丹溪曰：治宜健脾"
+            source_text = "太阳中风，治宜丹溪曰：健脾"
             unit = {
                 "unit_id": "u",
                 "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
