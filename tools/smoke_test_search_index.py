@@ -53,6 +53,72 @@ def validate_contextual_predicate_queries(database_path: Path, predicate_counts:
         ):
             raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
 
+def validate_all_formula_herb_relation_rows(connection: sqlite3.Connection) -> int:
+    """Validate every indexed formula-herb edge, not just a sampled search result."""
+    rows = connection.execute("""
+        SELECT r.relation_id, r.predicate, r.subject_mention_id, r.subject_text,
+               r.object_mention_id, r.object_text, r.unit_id,
+               r.document AS evidence_document, r.source_sha256 AS evidence_source_sha256,
+               r.tree_position AS evidence_tree_position, r.block_id AS evidence_block_id,
+               r.sentence_start, r.sentence_end, r.evidence_text,
+               s.entity_type AS subject_type, s.matched_text AS subject_matched_text,
+               s.character_start AS subject_start, s.character_end AS subject_end,
+               s.document AS subject_document, s.source_sha256 AS subject_source_sha256,
+               s.tree_position AS subject_tree_position, s.block_id AS subject_block_id,
+               o.entity_type AS object_type, o.matched_text AS object_matched_text,
+               o.character_start AS object_start, o.character_end AS object_end,
+               o.unit_id AS object_unit_id, o.document AS object_document,
+               o.source_sha256 AS object_source_sha256, o.tree_position AS object_tree_position,
+               o.block_id AS object_block_id
+        FROM semantic_relation_candidates r
+        LEFT JOIN entity_mentions s ON s.mention_id = r.subject_mention_id
+        LEFT JOIN entity_mentions o ON o.mention_id = r.object_mention_id
+        ORDER BY r.relation_id
+    """).fetchall()
+    expected_count = connection.execute(
+        "SELECT COUNT(*) FROM semantic_relation_candidates"
+    ).fetchone()[0]
+    if len(rows) != expected_count:
+        raise AssertionError("formula-herb relation scan did not cover every indexed row")
+    for row in rows:
+        if (row["predicate"] != "FORMULA_CONTAINS_HERB"
+            or row["subject_type"] != "FORMULA" or row["object_type"] != "HERB"
+            or row["subject_matched_text"] != row["subject_text"]
+            or row["object_matched_text"] != row["object_text"]):
+            raise AssertionError(f"formula-herb relation endpoint identity mismatch: {row['relation_id']}")
+        if (not row["subject_mention_id"] or not row["object_mention_id"]
+            or row["subject_document"] != row["evidence_document"]
+            or row["subject_source_sha256"] != row["evidence_source_sha256"]
+            or row["object_document"] != row["evidence_document"]
+            or row["object_source_sha256"] != row["evidence_source_sha256"]
+            or row["object_unit_id"] != row["unit_id"]
+            or row["object_tree_position"] != row["evidence_tree_position"]
+            or row["object_block_id"] != row["evidence_block_id"]):
+            raise AssertionError(f"formula-herb relation source locator mismatch: {row['relation_id']}")
+        for role in ("subject", "object"):
+            source = connection.execute(
+                "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
+                "AND tree_position=? AND block_id=? LIMIT 1",
+                (row[f"{role}_document"], row[f"{role}_source_sha256"],
+                 row[f"{role}_tree_position"], row[f"{role}_block_id"]),
+            ).fetchone()
+            left, right = row[f"{role}_start"], row[f"{role}_end"]
+            if (source is None or left < 0 or right <= left
+                or source["content_text"][left:right] != row[f"{role}_matched_text"]):
+                raise AssertionError(f"formula-herb relation {role} mention span mismatch: {row['relation_id']}")
+        evidence_source = connection.execute(
+            "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
+            "AND tree_position=? AND block_id=? LIMIT 1",
+            (row["evidence_document"], row["evidence_source_sha256"],
+             row["evidence_tree_position"], row["evidence_block_id"]),
+        ).fetchone()
+        start, end = row["sentence_start"], row["sentence_end"]
+        if (evidence_source is None or start < 0 or end <= start
+            or evidence_source["content_text"][start:end] != row["evidence_text"]):
+            raise AssertionError(f"formula-herb relation evidence offset mismatch: {row['relation_id']}")
+    return len(rows)
+
+
 def smoke(database_path: Path) -> dict:
     if not database_path.is_file():
         raise FileNotFoundError(database_path)
@@ -107,6 +173,9 @@ def smoke(database_path: Path) -> dict:
             )
 
     checks: dict[str, str] = {}
+    if counts["semantic_relation_candidates"]:
+        validate_all_formula_herb_relation_rows(connection)
+        checks["formula_herb_all_rows_provenance"] = "PASS"
 
     source = connection.execute(
         "SELECT document, content_text FROM content_blocks "
