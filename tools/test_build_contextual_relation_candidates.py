@@ -143,6 +143,56 @@ class ContextualRelationCandidateTests(unittest.TestCase):
             self.assertEqual(result["contextual_relation_candidates"], 0)
             self.assertEqual(validate(output, units), 0)
 
+    def test_rejects_negated_unusable_formula_marker(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            output = root / "relations.csv"
+            source_text = "温中健脾不可用桂枝汤。"
+            term = "温中健脾"
+            start = source_text.index(term)
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                    "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                    "character_end", "evidence_start", "evidence_text", "classification_status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "candidate_id": "treatment-1", "term": term,
+                    "candidate_type": "TREATMENT", "rule_id": "TREATMENT_RULE",
+                    "evidence_document": "a.sy", "source_sha256": "sha",
+                    "tree_position": "0", "block_id": "b", "unit_id": "u",
+                    "character_start": start, "character_end": start + len(term),
+                    "evidence_start": 0, "evidence_text": source_text,
+                    "classification_status": "CONTEXT_RULE_CANDIDATE",
+                })
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                    "character_end", "document", "source_sha256", "tree_position", "block_id",
+                ])
+                writer.writeheader()
+                formula_start = source_text.index("桂枝汤")
+                writer.writerow({
+                    "mention_id": "formula-1", "unit_id": "u", "entity_type": "FORMULA",
+                    "matched_text": "桂枝汤", "character_start": formula_start,
+                    "character_end": formula_start + len("桂枝汤"), "document": "a.sy",
+                    "source_sha256": "sha", "tree_position": "0", "block_id": "b",
+                })
+            unit = {
+                "unit_id": "u",
+                "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+            result = extract(context, mentions, units, output)
+            self.assertEqual(result["contextual_relation_candidates"], 0)
+            self.assertEqual(validate(output, units), 0)
+
     def test_does_not_infer_relation_from_cooccurrence_without_predicate(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
