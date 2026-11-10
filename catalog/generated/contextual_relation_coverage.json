@@ -40,17 +40,17 @@
       "marker_sentences_without_typed_pair": 383,
       "typed_pair_sentences_without_marker": 1,
       "marker_sentences_with_subject_type": 1,
-      "marker_sentences_with_object_type": 352,
+      "marker_sentences_with_object_type": 345,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 383,
-      "marker_sentences_without_object_type": 32,
+      "marker_sentences_without_object_type": 39,
       "units_with_marker": 336,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "TREATMENT": 353,
+        "TREATMENT": 346,
         "SYMPTOM": 13,
         "FORMULA": 39,
         "SYNDROME": 2
@@ -382,46 +382,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_7e68f81d86a12388a51d1174",
-              "term": "十五日愈",
+              "candidate_id": "term_168baee354e0f5fa2d43b363",
+              "term": "十五日",
               "candidate_type": "TREATMENT",
               "start": 20,
-              "end": 24
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "1c611ba84c79a68ed5265018d68b6cede43e1b10c3397cdca4a84fd509ef24a7",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926173646-98s53iv.sy",
-          "source_sha256": "2a61b9b763a4cdde74cdc975ee082db7496de5e94d1f7fc210c65855a923a42f",
-          "tree_position": "0.3",
-          "block_id": "20230926173713-53m002f",
-          "sentence_start": 0,
-          "sentence_end": 55,
-          "sentence_text": "[16.3]妇人怀孕六七月，脉弦，发热，其胎愈胀，腹痛，恶寒，少腹如扇，所以然者，子藏开故也，当以附子汤温之。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_85385f4a812bbf2a5a241774",
-              "term": "发热",
-              "candidate_type": "SYMPTOM",
-              "start": 17,
-              "end": 19
-            },
-            {
-              "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
-              "term": "附子汤",
-              "candidate_type": "FORMULA",
-              "start": 49,
-              "end": 52
-            },
-            {
-              "candidate_id": "term_85ae24c8dafac1016f4f5b1a",
-              "term": "附子汤温",
-              "candidate_type": "TREATMENT",
-              "start": 49,
-              "end": 53
+              "end": 23
             }
           ],
           "candidate_spans_truncated": false
@@ -488,9 +453,107 @@
             }
           ],
           "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "8a2400ab89a031760c4850a46c4e0ecb70e309098bad5486ebe941c36c8bada2",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230927173157-fdyc5bb.sy",
+          "source_sha256": "8cd33e0d82a97529845e15ed9761716f0a6b2dc4b035c2bc99dd079b65d1590c",
+          "tree_position": "0.3",
+          "block_id": "20230927173200-n467eqe",
+          "sentence_start": 78,
+          "sentence_end": 104,
+          "sentence_text": "这种病常见，治以栀子豆豉的结构搭配其它药物，疗效佳。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_8a9b1f5890998e2acfa89d87",
+              "term": "栀子豆豉的结",
+              "candidate_type": "TREATMENT",
+              "start": 86,
+              "end": 92
+            }
+          ],
+          "candidate_spans_truncated": false
         }
       ],
       "missing_both_endpoint_types": [
+        {
+          "unit_id": "1c611ba84c79a68ed5265018d68b6cede43e1b10c3397cdca4a84fd509ef24a7",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926173646-98s53iv.sy",
+          "source_sha256": "2a61b9b763a4cdde74cdc975ee082db7496de5e94d1f7fc210c65855a923a42f",
+          "tree_position": "0.3",
+          "block_id": "20230926173713-53m002f",
+          "sentence_start": 0,
+          "sentence_end": 55,
+          "sentence_text": "[16.3]妇人怀孕六七月，脉弦，发热，其胎愈胀，腹痛，恶寒，少腹如扇，所以然者，子藏开故也，当以附子汤温之。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_85385f4a812bbf2a5a241774",
+              "term": "发热",
+              "candidate_type": "SYMPTOM",
+              "start": 17,
+              "end": 19
+            },
+            {
+              "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
+              "term": "附子汤",
+              "candidate_type": "FORMULA",
+              "start": 49,
+              "end": 52
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "d930e87f3e69852135e5d0d10585cb122c7eb1340933f7cca956cdd9799e4197",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240508180416-c665q99.sy",
+          "source_sha256": "e627fc80eda413f7f06e27b7d5682fcb75e131c67f5ba5d0d00dceee8ac7e8f9",
+          "tree_position": "0.504",
+          "block_id": "20240508190053-z3bo9ns",
+          "sentence_start": 45,
+          "sentence_end": 63,
+          "sentence_text": "他说如果汗不停的话，当以四逆汤收功。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "8f8aa52a93b43c3e51bd94a64332a4a09e8da8c840370206f897dae319edb83e",
+              "term": "四逆汤",
+              "candidate_type": "FORMULA",
+              "start": 57,
+              "end": 60
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "7ed3d6af3ff263a46bca11d7201985d249263b39d618921af969d4241c46f9f9",
+          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510093906-t9n2u80.sy",
+          "source_sha256": "ebade5c915a6c868cce1667551e17c7ad10675ca35628d43e63433d7cea34a57",
+          "tree_position": "0.342",
+          "block_id": "20240510100227-hxcvko1",
+          "sentence_start": 0,
+          "sentence_end": 57,
+          "sentence_text": "【16.3】  妇人怀孕六七月，脉弦，发热，其胎愈胀，腹痛，恶寒，少腹如扇，所以然者，子藏开故也，当以附子汤温之。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_85385f4a812bbf2a5a241774",
+              "term": "发热",
+              "candidate_type": "SYMPTOM",
+              "start": 19,
+              "end": 21
+            },
+            {
+              "candidate_id": "6bc6c7e7b6356adb5570fbdafc6f161dbce5404a0c3ca81c0ff5681073b3bb7b",
+              "term": "附子汤",
+              "candidate_type": "FORMULA",
+              "start": 51,
+              "end": 54
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
         {
           "unit_id": "11020bee5155a55f636771236c62788a4b254fe1457cac44d9a935a1f4fad6e7",
           "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
@@ -515,53 +578,6 @@
           "sentence_text": "对称治疗法，除了左病右治，右病左治以外。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "ec796c58ec00b781a6d5acd9b1c7b959a14a39708f9d35c9df7d21bedb4f7329",
-          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
-          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
-          "tree_position": "0.432",
-          "block_id": "20240524084808-tcapgqm",
-          "sentence_start": 89,
-          "sentence_end": 168,
-          "sentence_text": "其地高陵居，住在高山上面，风寒冰冽，非常得冷，人民呢，乐野处而乳食，吃乳肉的制品很多，居住在荒郊野外的地方，那脏就比较寒，生满病，其治宜，用灸治，都从北方来。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "7c306526a52aa7e38bcb7562561cccf26c348ec3e8cfe5cd7ca545e3d3703005",
-          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
-          "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
-          "tree_position": "0.242",
-          "block_id": "20240606085950-akk0tgl",
-          "sentence_start": 50,
-          "sentence_end": 60,
-          "sentence_text": "其病挛痹，其治宜微。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "d2569a28ff477bda415e641d446a3e5f9e1e24b76e1865b317a671a9692893a4",
-          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
-          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
-          "tree_position": "0.803",
-          "block_id": "20240220100730-jxzjg18",
-          "sentence_start": 44,
-          "sentence_end": 112,
-          "sentence_text": "治以「小柴胡汤」,则之随脑、咽喉、气管、支气管、肺、肋膜、心脏、胃、肠、肝、脾、膵（胰脏）、肾、子宫等病证之治愈,而此抵抗物亦渐次缩消。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "5ac644179188f4457cddad949f6362ff8bb8557d3de8b8f87d859a0035506ed8",
-              "term": "小柴胡汤",
-              "candidate_type": "FORMULA",
-              "start": 47,
-              "end": 51
-            }
-          ],
           "candidate_spans_truncated": false
         }
       ]

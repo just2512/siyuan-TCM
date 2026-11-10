@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "database_bytes": 8154935296,
+  "database_bytes": 8154927104,
   "search_backend": "fts5-trigram",
   "table_counts": {
     "content_blocks": 236987,
@@ -9,7 +9,7 @@
     "entity_catalog": 312,
     "semantic_relation_candidates": 139,
     "unclassified_term_candidates": 2363692,
-    "contextual_term_type_candidates": 124032,
+    "contextual_term_type_candidates": 124018,
     "contextual_relation_candidates": 0
   },
   "relation_predicate_counts": {
@@ -23,6 +23,7 @@
     "entity_span_and_source": "PASS",
     "formula_herb_relation": "PASS",
     "unclassified_terms": "PASS",
-    "contextual_term_candidates": "PASS"
+    "contextual_term_candidates": "PASS",
+    "contextual_relation_predicate_queries": "PASS"
   }
 }
