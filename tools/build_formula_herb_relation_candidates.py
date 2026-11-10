@@ -98,6 +98,18 @@ def position_parts(value: str) -> tuple[int, ...]:
 def has_explicit_formula_context(mention: dict[str, str]) -> bool:
     source_text = mention.get("_source_text", "")
     start, end = int(mention["character_start"]), int(mention["character_end"])
+    # A lexicon hit at the suffix of a longer formula name is not an
+    # independent formula anchor (e.g. “桂枝汤” inside “乌头桂枝汤”).
+    # Permit common grammatical introducers, but reject an unseparated
+    # Chinese modifier immediately before the candidate span.
+    if start > 0 and re.fullmatch(r"[\u3400-\u9fff]", source_text[start - 1]):
+        prefix = source_text[max(0, start - 8):start]
+        if not re.search(
+            r"(?:使用|采用|选用|选择|推荐|给予|处以|改用|再用|可用|当用|"
+            r"应服|再服|服|用|加|予|与|给|宜|投|以|如|若|治|为|是|方)$",
+            prefix,
+        ):
+            return False
     after = source_text[end:end + 16]
     if re.match(
         r"^\s*(?:(?:亦|也|可|亦可)?主之|主治|组成|方名|方剂|[:：])",
