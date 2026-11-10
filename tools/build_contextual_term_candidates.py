@@ -33,7 +33,7 @@ RULES = {
         ("TONGUE_CONTEXT_01", r"(?:舌象|舌质|舌苔|舌红|舌淡|舌绛|苔白|苔黄|苔腻)"),
     ],
     "SYNDROME": [
-        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|辨为|证属|属于|证候|证型|此证|本证)"),
+        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|属于|证候|证型|此证|本证)"),
     ],
     "TREATMENT": [
         ("TREATMENT_CONTEXT_01", r"(?:治法为|治法|治宜|宜.{0,4}法|治以|当以|治疗原则|治疗方法)"),
@@ -101,7 +101,7 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
                 # narrative clause (diagnosis, attribution, treatment, etc.).
                 non_symptom_clause = re.compile(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
-                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示)"
+                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由于)"
                 )
                 matched = (
                     None if non_symptom_clause.search(symptom_before)
