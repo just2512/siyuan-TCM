@@ -99,6 +99,40 @@ class EntityMentionCandidateTests(unittest.TestCase):
             (len("乌头麻黄黄芪"), len("乌头麻黄黄芪芍药甘草汤"), "芍药甘草汤"),
         ])
 
+    def test_validator_rejects_mention_id_not_derived_from_occurrence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            lexicon = root / "lexicon.csv"
+            output = root / "out"
+            fields = ["document", "source_sha256", "tree_position", "block_id",
+                      "content_type", "section_path", "content_text"]
+            with gzip.open(content, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "notes/a.sy", "source_sha256": "a" * 64,
+                    "tree_position": "0.1", "block_id": "b1",
+                    "content_type": "PARAGRAPH", "section_path": "",
+                    "content_text": "头痛与头痛",
+                })
+            with lexicon.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=["entity_type", "term"])
+                writer.writeheader()
+                writer.writerow({"entity_type": "SYMPTOM", "term": "头痛"})
+            module.extract(content, lexicon, output)
+            path = output / "entity_mention_candidates.csv.gz"
+            with gzip.open(path, "rt", encoding="utf-8", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+                fieldnames = rows[0].keys()
+            rows[0]["mention_id"] = "fabricated-id"
+            with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+            with self.assertRaisesRegex(ValueError, "mention ID does not match occurrence identity"):
+                module.validate(path)
+
     def test_rejects_missing_content_fields(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
