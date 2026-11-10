@@ -99,7 +99,7 @@ def classify_span(
             if (
                 candidate_type == "TREATMENT"
                 and term == "一生"
-                and re.search(r"当以[\\s:：、]{0,2}$", before)
+                and re.search(r"当以[\s:：、]{0,2}$", before)
                 and re.match(r"者为佳(?:[。！？；，、]|$)", text[end:])
             ):
                 continue
