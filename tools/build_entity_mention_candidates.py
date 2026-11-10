@@ -30,7 +30,7 @@ OUTPUT_FIELDS = [
 
 
 def unit_id(row: dict[str, str]) -> str:
-    identity = "\0".join((
+            identity = "\0".join((
         row["document"], row["source_sha256"], row["tree_position"],
         row.get("block_id", ""),
     ))
