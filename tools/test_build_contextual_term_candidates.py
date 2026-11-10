@@ -267,6 +267,15 @@ class ContextualTermCandidateTests(unittest.TestCase):
         start = text.index("救急")
         self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
 
+    def test_ke_yong_is_not_a_treatment_but_following_method_remains_valid(self):
+        text = "治法可用温中健脾"
+        start = text.index("可用")
+        self.assertNotIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
+
+        text = "治法：温中健脾"
+        start = text.index("温中健脾")
+        self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 4))
+
     def test_dangyi_remains_a_valid_treatment_prefix(self):
         text = "证属不足，当以健脾为主。"
         start = text.index("健脾")
