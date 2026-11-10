@@ -22,7 +22,7 @@ FIELDS = [
     "tree_position", "block_id", "sentence_start", "sentence_end",
     "evidence_text", "extraction_rule", "resolution_status",
 ]
-SENTENCE_END = re.compile(r"[^。！？；\n]+[。！？；]?|；+|\n+")
+SENTENCE_END = re.compile(r"[^。！？；．\n]+[。！？；．]?|；+|\n+")
 
 
 def read_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
@@ -93,6 +93,65 @@ def position_parts(value: str) -> tuple[int, ...]:
         return tuple(int(part) for part in value.split("."))
     except ValueError:
         return ()
+
+
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])")
+
+
+def crosses_author_attribution_boundary(
+    formula: dict[str, str],
+    herb: dict[str, str],
+    units_by_id: dict[str, dict[str, Any]],
+) -> bool:
+    """Reject overlapping endpoints or endpoint pairs separated by an author boundary."""
+    formula_unit = units_by_id.get(formula.get("unit_id", ""))
+    herb_unit = units_by_id.get(herb.get("unit_id", ""))
+    if formula_unit is None or herb_unit is None:
+        return True
+
+    formula_text = formula_unit["content"]["source_text"]
+    herb_text = herb_unit["content"]["source_text"]
+    formula_start = int(formula["character_start"])
+    formula_end = int(formula["character_end"])
+    herb_start = int(herb["character_start"])
+    herb_end = int(herb["character_end"])
+
+    if formula_unit["unit_id"] == herb_unit["unit_id"]:
+        if formula_start < herb_end and herb_start < formula_end:
+            return True
+        left, right = (
+            (formula_end, herb_start)
+            if formula_end <= herb_start
+            else (herb_end, formula_start)
+        )
+        return bool(AUTHOR_ATTRIBUTION_BOUNDARY.search(formula_text[left:right]))
+
+    formula_pos = position_parts(formula_unit["source"]["tree_position"])
+    herb_pos = position_parts(herb_unit["source"]["tree_position"])
+    if (len(formula_pos) < 2 or len(herb_pos) < 2
+        or formula_pos[:-1] != herb_pos[:-1]
+        or formula_pos == herb_pos):
+        return True
+
+    sibling_units = []
+    for candidate in units_by_id.values():
+        source = candidate["source"]
+        position = position_parts(source["tree_position"])
+        if (source["document"] == formula_unit["source"]["document"]
+            and len(position) >= 2 and position[:-1] == formula_pos[:-1]
+            and min(formula_pos[-1], herb_pos[-1]) < position[-1] < max(formula_pos[-1], herb_pos[-1])):
+            sibling_units.append((position[-1], candidate))
+    sibling_units.sort(key=lambda item: item[0])
+
+    if formula_pos[-1] < herb_pos[-1]:
+        segments = [formula_text[formula_end:]]
+        segments.extend(item["content"]["source_text"] for _, item in sibling_units)
+        segments.append(herb_text[:herb_start])
+    else:
+        segments = [herb_text[herb_end:]]
+        segments.extend(item["content"]["source_text"] for _, item in sibling_units)
+        segments.append(formula_text[:formula_start])
+    return any(AUTHOR_ATTRIBUTION_BOUNDARY.search(segment) for segment in segments)
 
 
 def has_explicit_formula_context(mention: dict[str, str]) -> bool:
@@ -209,6 +268,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                     formula_record["_unit_type"] = unit["unit_type"]
                     formulas_by_document[mention["document"]].append(formula_record)
 
+    units_by_id = {unit["unit_id"]: unit for unit in units}
     output_path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     seen: set[str] = set()
@@ -232,6 +292,8 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                     if start <= int(m["character_start"]) and int(m["character_end"]) <= end]
                 for formula in sentence_formulas:
                     for herb in explicit_composition(formula, sentence_herbs, sentence, start):
+                        if crosses_author_attribution_boundary(formula, herb, units_by_id):
+                            continue
                         if make_relation(writer, seen, formula, herb, unit, start, end,
                                          sentence, "FORMULA_COMPOSITION_EXPLICIT_V1"):
                             count += 1
@@ -259,6 +321,8 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                 )
                 if formula is not None:
                     for herb in sentence_herbs:
+                        if crosses_author_attribution_boundary(formula, herb, units_by_id):
+                            continue
                         if make_relation(writer, seen, formula, herb, unit, start, end,
                                          sentence, "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"):
                             count += 1
@@ -379,6 +443,8 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                             raise ValueError(f"row {line}: nearby formula candidate is outside sibling proximity")
                 if not (start <= int(obj["character_start"]) < int(obj["character_end"]) <= end):
                     raise ValueError(f"row {line}: herb endpoint is outside composition evidence")
+                if crosses_author_attribution_boundary(subject, obj, units):
+                    raise ValueError(f"row {line}: relation crosses an author-attribution boundary or has overlapping endpoints")
 
                 expected_relation_id = hashlib.sha256("\0".join((
                     subject["mention_id"], row["predicate"], obj["mention_id"],
