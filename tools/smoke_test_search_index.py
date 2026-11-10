@@ -104,6 +104,7 @@ def validate_all_formula_herb_relation_rows(connection: sqlite3.Connection) -> i
             ).fetchone()
             left, right = row[f"{role}_start"], row[f"{role}_end"]
             if (source is None or left < 0 or right <= left
+                or right > len(source["content_text"])
                 or source["content_text"][left:right] != row[f"{role}_matched_text"]):
                 raise AssertionError(f"formula-herb relation {role} mention span mismatch: {row['relation_id']}")
         evidence_source = connection.execute(
@@ -114,6 +115,7 @@ def validate_all_formula_herb_relation_rows(connection: sqlite3.Connection) -> i
         ).fetchone()
         start, end = row["sentence_start"], row["sentence_end"]
         if (evidence_source is None or start < 0 or end <= start
+            or end > len(evidence_source["content_text"])
             or evidence_source["content_text"][start:end] != row["evidence_text"]):
             raise AssertionError(f"formula-herb relation evidence offset mismatch: {row['relation_id']}")
     return len(rows)
