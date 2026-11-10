@@ -360,7 +360,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 "content": {"source_text": text},
             }
             with gzip.open(units, "wt", encoding="utf-8") as stream:
-                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
             fields = [
                 "mention_id", "unit_id", "entity_type", "matched_text",
                 "character_start", "character_end", "document", "source_sha256",
@@ -428,7 +428,7 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
             ]
             with gzip.open(units, "wt", encoding="utf-8") as stream:
                 for unit in unit_rows:
-                    stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                    stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
             fields = [
                 "mention_id", "unit_id", "entity_type", "matched_text",
                 "character_start", "character_end", "document", "source_sha256",
@@ -476,7 +476,5 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 module.validate(output, units, mentions)
 
 
-if __name__ == "__main__":
-    unittest.main()
 if __name__ == "__main__":
     unittest.main()
