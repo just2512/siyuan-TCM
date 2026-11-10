@@ -13,32 +13,32 @@
       "marker_sentences_without_typed_pair": 63,
       "typed_pair_sentences_without_marker": 67,
       "marker_sentences_with_subject_type": 4,
-      "marker_sentences_with_object_type": 14,
+      "marker_sentences_with_object_type": 12,
       "marker_sentences_with_both_endpoint_types": 0,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 59,
-      "marker_sentences_without_object_type": 49,
+      "marker_sentences_without_object_type": 51,
       "units_with_marker": 61,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYNDROME": 16,
         "SYMPTOM": 5,
         "FORMULA": 2,
+        "SYNDROME": 14,
         "TREATMENT": 1
       }
     },
     "SYNDROME_TO_TREATMENT": {
       "marker_occurrences": 385,
       "sentences_with_marker": 384,
-      "ordered_typed_pairs": 5,
+      "ordered_typed_pairs": 3,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "scope_break_pairs": 2,
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 383,
-      "typed_pair_sentences_without_marker": 2,
+      "typed_pair_sentences_without_marker": 1,
       "marker_sentences_with_subject_type": 1,
       "marker_sentences_with_object_type": 352,
       "marker_sentences_with_both_endpoint_types": 1,
@@ -59,19 +59,19 @@
     "TREATMENT_TO_FORMULA": {
       "marker_occurrences": 2954,
       "sentences_with_marker": 2847,
-      "ordered_typed_pairs": 40,
+      "ordered_typed_pairs": 30,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 2846,
-      "typed_pair_sentences_without_marker": 30,
-      "marker_sentences_with_subject_type": 10,
+      "typed_pair_sentences_without_marker": 23,
+      "marker_sentences_with_subject_type": 9,
       "marker_sentences_with_object_type": 146,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
-      "marker_sentences_without_subject_type": 2837,
+      "marker_sentences_without_subject_type": 2838,
       "marker_sentences_without_object_type": 2701,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 0,
@@ -79,8 +79,8 @@
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
         "SYMPTOM": 142,
-        "TREATMENT": 10,
-        "SYNDROME": 15
+        "SYNDROME": 15,
+        "TREATMENT": 9
       }
     }
   },
@@ -114,6 +114,19 @@
           "candidate_spans_truncated": false
         },
         {
+          "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150243-3qj6v6b.sy",
+          "source_sha256": "53833f1b305d669444d0f9bd37c0092b895611d62c157abbec8eba8aff56db49",
+          "tree_position": "0.11",
+          "block_id": "20240220115925-pj76tsk",
+          "sentence_start": 0,
+          "sentence_end": 43,
+          "sentence_text": "黄帝曰：余闻人有精、气、津、液、血、脉,余意以为一气耳,今乃辨为六名,余不知其所以然。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [],
+          "candidate_spans_truncated": false
+        },
+        {
           "unit_id": "badaa1c3c02c47f418662331065760df54d3e812c4e65049ebe10719a9ec3343",
           "document": "20230928080422-67pnka7/20240219110805-0eup175/20240221144836-rutoq7f.sy",
           "source_sha256": "d25086e62497684d86ea63d3d43a7628e85c52cbccc745eb8188091b3b998c8c",
@@ -137,126 +150,6 @@
           "sentence_text": "星星王子因为心肌炎三度转院治疗，在署立丰原医院，日前也有一名二十六岁的纪姓男子，因突然晕倒到院急诊，起初怀疑是癫痫，经检查后，诊断为「急性心肌炎」。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "56bd87d9e17b3e2427de12a53a3dc9b686ee5010ee742505d729acbfba04defd",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-dttef46.sy",
-          "source_sha256": "9a1dace9d52dfa46b6123e65a2db5765ddd9ccff96b5b765ca9784d56f1f28b3",
-          "tree_position": "0.254",
-          "block_id": "20240511095102-678fb9v",
-          "sentence_start": 0,
-          "sentence_end": 64,
-          "sentence_text": "张烈宾说，有名40岁女性台商，有大肠癌家族病史，最近她返台体检，筛检出如成人拳头大小的大肠恶性肿瘤，诊断为第二期大肠癌，已切除。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
-        }
-      ],
-      "missing_subject_type": [
-        {
-          "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
-          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150243-3qj6v6b.sy",
-          "source_sha256": "53833f1b305d669444d0f9bd37c0092b895611d62c157abbec8eba8aff56db49",
-          "tree_position": "0.11",
-          "block_id": "20240220115925-pj76tsk",
-          "sentence_start": 0,
-          "sentence_end": 43,
-          "sentence_text": "黄帝曰：余闻人有精、气、津、液、血、脉,余意以为一气耳,今乃辨为六名,余不知其所以然。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_a9a822f777e68919d4d69381",
-              "term": "六名",
-              "candidate_type": "SYNDROME",
-              "start": 32,
-              "end": 34
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "5fc605446b969375905a36a6f63689bb8af6dd539316f2fb039b1393c1dd263a",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.1338",
-          "block_id": "20240511101226-1kbz6qe",
-          "sentence_start": 0,
-          "sentence_end": 305,
-          "sentence_text": "03/23/2007，晴，白人，女，1956年生，初诊日期02/09/2007，本州岛岛西医诊断为 : Auto Immune--Kidney Failure，她自去年9月19日开始洗肾至今，服用药物是Lisinopril，Clonidine，Renal Vitamin+phosphate binder，初诊时症状是，眼多赤筋，呕心，头昏，西医认为是自体免疫系统不全，所以造成肾衰竭，她时常会瞬间血压升高，问诊 : 睡眠尚好，大便秘结，小便黄，仍有些便意，无胃口，因为呕心，身体多觉寒冷，双脚冰冷，月经有两年都没有来，脉弦，诊断为 : 里寒湿盛，心阳不足，肾阳尚存一游丝气息，体内饮积，是属于里寒表又虚之症。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_c0f9f2747f298eaf889e7aa2",
-              "term": "里寒表",
-              "candidate_type": "SYNDROME",
-              "start": 297,
-              "end": 300
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.1466",
-          "block_id": "20240511101226-mci07sp",
-          "sentence_start": 0,
-          "sentence_end": 270,
-          "sentence_text": "08/31/2007初诊，白人，女，67岁，被本地西医诊断得到红斑性狼疮， 她一被告知得到此病后的第一反应，就是来看我，因此完全没有被西医碰过，所以也从未吃过西药，自述近来体重少了10磅，全身呈现红斑到处，体无完肤，连续 三个月不断的落发，环唇一圈是又干又红，且很热痛，耳中自觉非常干热，问诊结果是，失眠严重，口中干燥，大便正常，喜喝冷饮，双脚冰冷，胃口很好，奇怪的 是一觉得饿，就必须立刻吃些食物，否则必头痛，脉诊得到数且大脉，舌苔中黄湿，四周红色且色深，督脉压诊在第五椎有压痛点，诊断为此人属于寒热并结，眼诊 可知其肝中有毒素造成损伤。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_963eb41f2c7b349ac0e39afe",
-              "term": "寒热并结",
-              "candidate_type": "SYNDROME",
-              "start": 249,
-              "end": 253
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
-          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
-          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
-          "tree_position": "0.59",
-          "block_id": "20231122160010-q88onhz",
-          "sentence_start": 0,
-          "sentence_end": 31,
-          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_63dae4ae4cb531caeef3d458",
-              "term": "寒痢",
-              "candidate_type": "SYNDROME",
-              "start": 28,
-              "end": 30
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
-          "unit_id": "77eaddb1048db319406127d6a22b0806a75b59fb7e99a24046e34b1cdb86c0de",
-          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154329-ftp35pn.sy",
-          "source_sha256": "f1f27b559ed61a811dd3c5c328c658553799dca782a315a65f6a7a1efbdfefce",
-          "tree_position": "0.1",
-          "block_id": "20231122162332-y0vs00p",
-          "sentence_start": 0,
-          "sentence_end": 48,
-          "sentence_text": "【原文】 黄帝 日余闻人有精、气、津、液、血、脉，余意以为一气耳，今乃辨为六名，余不知其所以然。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_a9a822f777e68919d4d69381",
-              "term": "六名",
-              "candidate_type": "SYNDROME",
-              "start": 37,
-              "end": 39
-            }
-          ],
           "candidate_spans_truncated": false
         }
       ],
@@ -329,11 +222,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_b1fc7d44fe496c5871621e63",
-              "term": "只是由",
+              "candidate_id": "term_3fb2673f8e43a434131a92b9",
+              "term": "只是",
               "candidate_type": "SYMPTOM",
               "start": 11,
-              "end": 14
+              "end": 13
             }
           ],
           "candidate_spans_truncated": false
@@ -350,11 +243,125 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_b1fc7d44fe496c5871621e63",
-              "term": "只是由",
+              "candidate_id": "term_3fb2673f8e43a434131a92b9",
+              "term": "只是",
               "candidate_type": "SYMPTOM",
               "start": 11,
-              "end": 14
+              "end": 13
+            }
+          ],
+          "candidate_spans_truncated": false
+        }
+      ],
+      "missing_subject_type": [
+        {
+          "unit_id": "5fc605446b969375905a36a6f63689bb8af6dd539316f2fb039b1393c1dd263a",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1338",
+          "block_id": "20240511101226-1kbz6qe",
+          "sentence_start": 0,
+          "sentence_end": 305,
+          "sentence_text": "03/23/2007，晴，白人，女，1956年生，初诊日期02/09/2007，本州岛岛西医诊断为 : Auto Immune--Kidney Failure，她自去年9月19日开始洗肾至今，服用药物是Lisinopril，Clonidine，Renal Vitamin+phosphate binder，初诊时症状是，眼多赤筋，呕心，头昏，西医认为是自体免疫系统不全，所以造成肾衰竭，她时常会瞬间血压升高，问诊 : 睡眠尚好，大便秘结，小便黄，仍有些便意，无胃口，因为呕心，身体多觉寒冷，双脚冰冷，月经有两年都没有来，脉弦，诊断为 : 里寒湿盛，心阳不足，肾阳尚存一游丝气息，体内饮积，是属于里寒表又虚之症。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_c0f9f2747f298eaf889e7aa2",
+              "term": "里寒表",
+              "candidate_type": "SYNDROME",
+              "start": 297,
+              "end": 300
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1466",
+          "block_id": "20240511101226-mci07sp",
+          "sentence_start": 0,
+          "sentence_end": 270,
+          "sentence_text": "08/31/2007初诊，白人，女，67岁，被本地西医诊断得到红斑性狼疮， 她一被告知得到此病后的第一反应，就是来看我，因此完全没有被西医碰过，所以也从未吃过西药，自述近来体重少了10磅，全身呈现红斑到处，体无完肤，连续 三个月不断的落发，环唇一圈是又干又红，且很热痛，耳中自觉非常干热，问诊结果是，失眠严重，口中干燥，大便正常，喜喝冷饮，双脚冰冷，胃口很好，奇怪的 是一觉得饿，就必须立刻吃些食物，否则必头痛，脉诊得到数且大脉，舌苔中黄湿，四周红色且色深，督脉压诊在第五椎有压痛点，诊断为此人属于寒热并结，眼诊 可知其肝中有毒素造成损伤。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_963eb41f2c7b349ac0e39afe",
+              "term": "寒热并结",
+              "candidate_type": "SYNDROME",
+              "start": 249,
+              "end": 253
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
+          "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122152450-zoponeh.sy",
+          "source_sha256": "31e8ea9b7bd1c7457425991a2fb3edc79f00d133fd191619aa5826a9f80f32c4",
+          "tree_position": "0.59",
+          "block_id": "20231122160010-q88onhz",
+          "sentence_start": 0,
+          "sentence_end": 31,
+          "sentence_text": "⑦肠澼下白沫：痢疾的一种，大便以白色脓液为主，现在辨证为寒痢。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_63dae4ae4cb531caeef3d458",
+              "term": "寒痢",
+              "candidate_type": "SYNDROME",
+              "start": 28,
+              "end": 30
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "f6959b2a1d855590ca07dcbe01ea2702600c0d6b5ce07b8779be54bcbf0684f3",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
+          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
+          "tree_position": "0.53",
+          "block_id": "20240614123926-oi0g2p6",
+          "sentence_start": 114,
+          "sentence_end": 190,
+          "sentence_text": "（颠多喜笑、尚知畏惧、证属不足、狂多忿怒、人莫能制、证属有余、因惊忧痰血塞于心窍所致、用郁金七两、白矾三两、薄荷糊丸、名白金丸、郁金散恶血、白矾化顽痰．",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_1a5219a8272afb1380afb9bd",
+              "term": "不足",
+              "candidate_type": "SYNDROME",
+              "start": 127,
+              "end": 129
+            },
+            {
+              "candidate_id": "term_bd1a606d3c16c28d465dc826",
+              "term": "有余",
+              "candidate_type": "SYNDROME",
+              "start": 142,
+              "end": 144
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "f216a55701e70a772a9eac987ba83691c89bf3eb44d630a50e556822f04c5741",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
+          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
+          "tree_position": "0.108",
+          "block_id": "20240614123655-7i0t9er",
+          "sentence_start": 46,
+          "sentence_end": 89,
+          "sentence_text": "痰中带血者，加竹沥），血气诸痛，产后败血攻心，癫狂失心（癫多喜笑，尚知畏惧，证属不足；",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_1a5219a8272afb1380afb9bd",
+              "term": "不足",
+              "candidate_type": "SYNDROME",
+              "start": 86,
+              "end": 88
             }
           ],
           "candidate_spans_truncated": false
@@ -743,27 +750,6 @@
       ],
       "missing_object_type": [
         {
-          "unit_id": "0da5790d41f550f251e5d5fd8f8cde407ccba837eabceb2b66f05fae7fac8384",
-          "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509093133-ogrbnqq.sy",
-          "source_sha256": "7a94cb68c0a17aa714e81246ccbed322203131b07daa7478122a7695c2e0cab2",
-          "tree_position": "0.59",
-          "block_id": "20240509093431-rry7rhp",
-          "sentence_start": 326,
-          "sentence_end": 427,
-          "sentence_text": "但是晚上这个治法的这个方子啊，就傅青主的方用得很漂亮了，就是说他用的是很多滋阴的药，然后在滋阴的药里加一些能够袪邪的药，那傅青主这种在阴药里面袪邪的药，其实用的是，他的漂亮的程度是远远超过很多其它医者。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_2b49004a114acdd44264f287",
-              "term": "的这个方子啊",
-              "candidate_type": "TREATMENT",
-              "start": 334,
-              "end": 340
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "22bf89245c217392d0224f92d26904b58728955ff698f23d302ef008c629a4e5",
           "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153444-tvptdx5.sy",
           "source_sha256": "10737ee743a76450db758e20244a970913f6c36631bee80563b32f8e2d696aa7",
@@ -857,6 +843,27 @@
               "candidate_type": "TREATMENT",
               "start": 14,
               "end": 16
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "e4f270c412ceb7d1e8e43bafa43944372fe1d8c1c9bc12bc5b7b751c46f00d6e",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153847-eepruzr.sy",
+          "source_sha256": "18325c145629e57c391e3bbccbe8aa80480c2f480b242b5fb2e37e106bdcd1f6",
+          "tree_position": "0.579",
+          "block_id": "20240607114914-o41yu9c",
+          "sentence_start": 23,
+          "sentence_end": 139,
+          "sentence_text": "治法： 喷粉法--洗净患者肠内容物，凡使用乙状结肠镜可窥视到的溃疡及其他炎症病变，均可用带有长金属管的喷粉器，将黄连粉直接喷到溃疡或病变部位，每次用药6-8分，隔日1次，9次为一个疗程，以后视病情需要可每隔1周进行第二或第三个疗程。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_3642ddd757d405d3d29f7b55",
+              "term": "喷粉",
+              "candidate_type": "TREATMENT",
+              "start": 27,
+              "end": 29
             }
           ],
           "candidate_spans_truncated": false
