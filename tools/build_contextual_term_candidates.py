@@ -71,6 +71,10 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
     found = []
     for candidate_type, rules in RULES.items():
         for rule_id, pattern in rules:
+            # “可用” is an operational phrase, not a treatment entity;
+            # do not let the generic “治法” prefix type this two-character span.
+            if candidate_type == "TREATMENT" and term == "可用":
+                continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
             if candidate_type in PREFIX_ONLY_TYPES:
