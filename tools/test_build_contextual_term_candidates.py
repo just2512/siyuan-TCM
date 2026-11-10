@@ -335,6 +335,22 @@ class ContextualTermCandidateTests(unittest.TestCase):
         start = text.index("健脾")
         self.assertIn(("TREATMENT", "TREATMENT_CONTEXT_01"), classify_span(text, start, start + 2))
 
+    def test_day_outcome_phrase_is_not_a_treatment_method(self):
+        text = "病程当以十五日愈"
+        start = text.index("十五日愈")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("十五日愈")),
+        )
+
+        # The exception must not disable a genuine treatment instruction.
+        text = "证属不足，当以健脾为主。"
+        start = text.index("健脾")
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("健脾")),
+        )
+
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
