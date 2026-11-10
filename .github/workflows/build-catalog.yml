@@ -60,7 +60,7 @@ jobs:
       - name: Build corpus-derived unclassified term candidates
         run: python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
       - name: Classify corpus terms from exact source context
-        run: python tools/build_contextual_term_candidates.py | tee "$RUNNER_TEMP/contextual-terms.log"
+        run: python tools/build_contextual_term_candidates.py --entity-mentions catalog/generated/entity_mention_candidates.csv.gz | tee "$RUNNER_TEMP/contextual-terms.log"
       - name: Validate knowledge units, entity mentions, and term candidates in parallel
         shell: bash
         run: |
