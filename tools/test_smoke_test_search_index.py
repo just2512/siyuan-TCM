@@ -196,7 +196,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 "UPDATE entity_mentions SET character_start=2 WHERE mention_id='h1'"
             )
             with self.assertRaisesRegex(AssertionError, "object mention span mismatch"):
-                smoke.validate_all_formula_herb_relation_rows(connection)
+                smoke_module.validate_all_formula_herb_relation_rows(connection)
             connection.close()
 
 if __name__ == "__main__":
