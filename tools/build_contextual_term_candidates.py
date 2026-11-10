@@ -75,6 +75,13 @@ def classify_span(text: str, start: int, end: int) -> list[tuple[str, str]]:
             # do not let the generic “治法” prefix type this two-character span.
             if candidate_type == "TREATMENT" and term == "可用":
                 continue
+            # Duration + outcome expressions are prognosis, not treatment methods.
+            # Keep this morphology-specific so valid "当以" treatment phrases survive.
+            if (
+                candidate_type == "TREATMENT"
+                and re.fullmatch(r"[零〇一二三四五六七八九十百千万两\\d]+日(?:愈|解|差)", term)
+            ):
+                continue
             # “辨为六名” is a classical naming/counting construction, not a
             # syndrome assertion. Keep the exception tied to the grammatical
             # object shape (a term ending in 名), not a global term blacklist.
