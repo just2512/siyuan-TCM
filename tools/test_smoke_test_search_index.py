@@ -8,6 +8,42 @@ from smoke_test_search_index import smoke
 
 
 class SearchIndexSmokeTests(unittest.TestCase):
+    def test_fts_index_schema_and_content_match_every_source_block(self):
+        connection = sqlite3.connect(":memory:")
+        columns = (
+            "document TEXT, source_sha256 TEXT, tree_position TEXT, block_id TEXT, "
+            "content_type TEXT, section_path TEXT, content_text TEXT"
+        )
+        connection.execute("CREATE TABLE content_blocks (" + columns + ")")
+        connection.execute("CREATE TABLE content_fts (" + columns + ")")
+        rows = [
+            ("book/a.sy", "sha-a", "0.0", "p1", "PARAGRAPH", "经方", "桂枝汤治疗太阳中风"),
+            ("book/b.sy", "sha-b", "0.1", "p2", "PARAGRAPH", "中药", "麻黄用于发汗"),
+        ]
+        connection.executemany("INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+        connection.executemany("INSERT INTO content_fts VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+        smoke_module.validate_full_text_index_schema(connection)
+        self.assertEqual(smoke_module.validate_full_text_index_count(connection, 2), 2)
+        smoke_module.validate_full_text_index_content_parity(connection)
+
+        connection.execute(
+            "UPDATE content_fts SET content_text=? WHERE document=?",
+            ("错误索引文本", "book/b.sy"),
+        )
+        with self.assertRaisesRegex(AssertionError, "content/source mismatch"):
+            smoke_module.validate_full_text_index_content_parity(connection)
+        connection.close()
+
+        incomplete = sqlite3.connect(":memory:")
+        incomplete.execute(
+            "CREATE TABLE content_fts (content_text TEXT, document TEXT, block_id TEXT, "
+            "content_type TEXT, section_path TEXT)"
+        )
+        with self.assertRaisesRegex(AssertionError, "schema is incomplete"):
+            smoke_module.validate_full_text_index_schema(incomplete)
+        incomplete.close()
+
+
     def test_smoke_checks_real_sqlite_text_and_entity_source_spans(self):
         with tempfile.TemporaryDirectory() as temp:
             db = Path(temp) / "search.sqlite3"
