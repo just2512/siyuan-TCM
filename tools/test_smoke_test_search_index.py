@@ -151,7 +151,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             connection.commit()
             connection.row_factory = sqlite3.Row
             with self.assertRaisesRegex(AssertionError, "evidence offset mismatch"):
-                module.validate_all_contextual_relation_rows(connection)
+                smoke_module.validate_all_contextual_relation_rows(connection)
             connection.close()
 
 
