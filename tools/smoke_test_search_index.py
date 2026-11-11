@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sqlite3
 from pathlib import Path
 
+from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS
 from build_siyuan_search_db import (
     search_contextual_relation_candidates,
     search_contextual_term_candidates,
@@ -174,10 +174,12 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
             or text[object_start:object_end] != row["object_text"]):
             raise AssertionError(f"contextual relation endpoint text/offset mismatch: {row['relation_id']}")
         between = text[subject_end:object_start]
-        if not row["predicate_text"] or row["predicate_text"] not in between:
+        predicate_match = PREDICATES[row["predicate"]].search(between)
+        if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
             raise AssertionError(f"contextual relation predicate is outside endpoint scope: {row['relation_id']}")
-        if not re.fullmatch(r".*", row["predicate_text"]):
-            raise AssertionError(f"contextual relation predicate text invalid: {row['relation_id']}")
+        scope_break = RELATION_SCOPE_BREAKS.get(row["predicate"])
+        if scope_break and scope_break.search(between):
+            raise AssertionError(f"contextual relation crosses source-attribution boundary: {row['relation_id']}")
     return len(rows)
 
 
