@@ -312,6 +312,34 @@ class SemanticGraphExportTests(unittest.TestCase):
             self.assertEqual(formula_edge["object_candidate_id"], "formula-1")
             self.assertEqual(edge["evidence"]["text"], source_text)
 
+            # Contextual term evidence offsets are absolute source positions and
+            # must be bounded before source slicing.
+            with sqlite3.connect(database) as connection:
+                connection.execute(
+                    "UPDATE contextual_term_type_candidates SET evidence_start=-1 WHERE candidate_id='sym-1'"
+                )
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual term evidence mismatch"):
+                module.validate(database, output)
+            with sqlite3.connect(database) as connection:
+                connection.execute(
+                    "UPDATE contextual_term_type_candidates SET evidence_start=0 WHERE candidate_id='sym-1'"
+                )
+            module.export(database, output)
+            with sqlite3.connect(database) as connection:
+                connection.execute(
+                    "UPDATE contextual_term_type_candidates SET evidence_start=? WHERE candidate_id='sym-1'",
+                    (len(source_text),),
+                )
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual term evidence mismatch"):
+                module.validate(database, output)
+            with sqlite3.connect(database) as connection:
+                connection.execute(
+                    "UPDATE contextual_term_type_candidates SET evidence_start=0 WHERE candidate_id='sym-1'"
+                )
+            module.export(database, output)
+
             # Graph validation independently checks the explicit predicate against source text,
             # rather than relying only on graph/SQLite field equality.
             connection = __import__("sqlite3").connect(database)
@@ -329,6 +357,42 @@ class SemanticGraphExportTests(unittest.TestCase):
             connection.execute(
                 "UPDATE contextual_relation_candidates SET predicate_text=? WHERE relation_id=?",
                 ("辨证为", ctx_r1_id),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+
+            # Contextual relation evidence must reject negative and out-of-range
+            # offsets before Python's permissive slicing can accept them.
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=-length(evidence_text), "
+                "sentence_end=-1 WHERE relation_id=?",
+                (ctx_r1_id,),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual relation evidence mismatch"):
+                module.validate(database, output)
+
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=0, "
+                "sentence_end=? WHERE relation_id=?",
+                (len(source_text) + 1, ctx_r1_id),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual relation evidence mismatch"):
+                module.validate(database, output)
+
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=0, "
+                "sentence_end=?, evidence_text=? WHERE relation_id=?",
+                (len(source_text), source_text, ctx_r1_id),
             )
             connection.commit()
             connection.close()
