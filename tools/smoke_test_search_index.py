@@ -7,6 +7,7 @@ import json
 import sqlite3
 from pathlib import Path
 
+from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS
 from build_siyuan_search_db import (
     search_contextual_relation_candidates,
     search_contextual_term_candidates,
@@ -118,6 +119,99 @@ def validate_all_formula_herb_relation_rows(connection: sqlite3.Connection) -> i
             or end > len(evidence_source["content_text"])
             or evidence_source["content_text"][start:end] != row["evidence_text"]):
             raise AssertionError(f"formula-herb relation evidence offset mismatch: {row['relation_id']}")
+    return len(rows)
+
+
+def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int:
+    """Validate every contextual relation row against its exact source block and predicate contract."""
+    rows = connection.execute("""
+        SELECT relation_id, predicate, subject_candidate_id, subject_text, subject_type,
+               subject_start, subject_end, object_candidate_id, object_text, object_type,
+               object_start, object_end, unit_id, document, source_sha256, tree_position,
+               block_id, sentence_start, sentence_end, evidence_text, predicate_text
+        FROM contextual_relation_candidates
+        ORDER BY relation_id
+    """).fetchall()
+    expected_count = connection.execute(
+        "SELECT COUNT(*) FROM contextual_relation_candidates"
+    ).fetchone()[0]
+    if len(rows) != expected_count:
+        raise AssertionError("contextual relation scan did not cover every indexed row")
+
+    contracts = {
+        "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
+        "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
+        "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+    }
+    for row in rows:
+        contract = contracts.get(row["predicate"])
+        if contract is None:
+            raise AssertionError(f"unsupported contextual relation predicate: {row['predicate']}")
+        if (row["subject_type"], row["object_type"]) != contract:
+            raise AssertionError(f"contextual relation endpoint direction mismatch: {row['relation_id']}")
+        if not row["subject_candidate_id"] or not row["object_candidate_id"]:
+            raise AssertionError(f"contextual relation endpoint identity missing: {row['relation_id']}")
+
+        for endpoint, candidate_id, term, candidate_type, start, end in (
+            ("subject", row["subject_candidate_id"], row["subject_text"], row["subject_type"],
+             row["subject_start"], row["subject_end"]),
+            ("object", row["object_candidate_id"], row["object_text"], row["object_type"],
+             row["object_start"], row["object_end"]),
+        ):
+            if candidate_type == "FORMULA":
+                matches = connection.execute("""
+                    SELECT mention_id FROM entity_mentions
+                    WHERE mention_id=? AND matched_text=? AND entity_type=? AND unit_id=?
+                      AND document=? AND source_sha256=? AND tree_position=?
+                      AND COALESCE(block_id, '')=COALESCE(?, '')
+                      AND character_start=? AND character_end=?
+                """, (
+                    candidate_id, term, candidate_type, row["unit_id"], row["document"],
+                    row["source_sha256"], row["tree_position"], row["block_id"], start, end,
+                )).fetchall()
+            else:
+                matches = connection.execute("""
+                    SELECT candidate_id FROM contextual_term_type_candidates
+                    WHERE candidate_id=? AND candidate_type=? AND term=? AND unit_id=?
+                      AND character_start=? AND character_end=? AND evidence_document=?
+                      AND source_sha256=? AND tree_position=? AND COALESCE(block_id, '')=COALESCE(?, '')
+                """, (
+                    candidate_id, candidate_type, term, row["unit_id"], start, end,
+                    row["document"], row["source_sha256"], row["tree_position"], row["block_id"],
+                )).fetchall()
+            if not matches:
+                raise AssertionError(
+                    f"contextual relation {endpoint} candidate identity/source mismatch: {row['relation_id']}"
+                )
+
+        source = connection.execute(
+            "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
+            "AND tree_position=? AND block_id=? LIMIT 1",
+            (row["document"], row["source_sha256"], row["tree_position"], row["block_id"]),
+        ).fetchone()
+        if source is None:
+            raise AssertionError(f"contextual relation source locator missing: {row['relation_id']}")
+        text = source["content_text"]
+        sentence_start, sentence_end = row["sentence_start"], row["sentence_end"]
+        subject_start, subject_end = row["subject_start"], row["subject_end"]
+        object_start, object_end = row["object_start"], row["object_end"]
+        if (sentence_start < 0 or sentence_end <= sentence_start or sentence_end > len(text)
+            or text[sentence_start:sentence_end] != row["evidence_text"]):
+            raise AssertionError(f"contextual relation evidence offset mismatch: {row['relation_id']}")
+        if not (sentence_start <= subject_start < subject_end <= sentence_end
+                and sentence_start <= object_start < object_end <= sentence_end
+                and subject_end <= object_start):
+            raise AssertionError(f"contextual relation endpoint outside ordered evidence: {row['relation_id']}")
+        if (text[subject_start:subject_end] != row["subject_text"]
+            or text[object_start:object_end] != row["object_text"]):
+            raise AssertionError(f"contextual relation endpoint text/offset mismatch: {row['relation_id']}")
+        between = text[subject_end:object_start]
+        predicate_match = PREDICATES[row["predicate"]].search(between)
+        if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
+            raise AssertionError(f"contextual relation predicate is outside endpoint scope: {row['relation_id']}")
+        scope_break = RELATION_SCOPE_BREAKS.get(row["predicate"])
+        if scope_break and scope_break.search(between):
+            raise AssertionError(f"contextual relation crosses source-attribution boundary: {row['relation_id']}")
     return len(rows)
 
 
@@ -302,6 +396,8 @@ def smoke(database_path: Path) -> dict:
         checks["contextual_relation_evidence"] = "PASS"
 
     validate_contextual_predicate_queries(database_path, contextual_predicates)
+    validate_all_contextual_relation_rows(connection)
+    checks["contextual_relation_all_rows_provenance"] = "PASS"
     checks["contextual_relation_predicate_queries"] = "PASS"
 
     if counts["contextual_relation_candidates"]:
