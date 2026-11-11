@@ -103,7 +103,12 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 CREATE TABLE entity_catalog (id INTEGER);
                 CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
-                CREATE TABLE contextual_term_type_candidates (id INTEGER);
+                CREATE TABLE contextual_term_type_candidates (
+                    id INTEGER PRIMARY KEY, candidate_id TEXT, term TEXT, candidate_type TEXT,
+                    rule_id TEXT, evidence_document TEXT, source_sha256 TEXT, tree_position TEXT,
+                    block_id TEXT, unit_id TEXT, character_start INTEGER, character_end INTEGER,
+                    evidence_start INTEGER, evidence_text TEXT, classification_status TEXT
+                );
                 CREATE TABLE contextual_relation_candidates (
                     relation_id TEXT, predicate TEXT, subject_candidate_id TEXT,
                     subject_text TEXT, subject_type TEXT, subject_start INTEGER, subject_end INTEGER,
