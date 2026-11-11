@@ -38,6 +38,29 @@ CONTEXTUAL_PREDICATE_TYPES = {
 }
 
 
+
+def validate_full_text_index_count(
+    connection: sqlite3.Connection, backend: str, content_block_count: int,
+) -> int | None:
+    """Require one FTS row per source block when the FTS5 backend is active."""
+    if backend == "sqlite-instr-fallback":
+        return None
+    if backend != "fts5-trigram":
+        raise AssertionError(f"unsupported full-text search backend: {backend!r}")
+    try:
+        indexed_count = connection.execute("SELECT COUNT(*) FROM content_fts").fetchone()[0]
+    except sqlite3.Error as exc:
+        raise AssertionError("FTS5 backend is declared but content_fts is unavailable") from exc
+    if indexed_count != content_block_count:
+        raise AssertionError(
+            f"full-text index row count mismatch: content_blocks={content_block_count}, "
+            f"content_fts={indexed_count}"
+        )
+    return indexed_count
+
+
+
+
 def validate_full_text_index_schema(connection: sqlite3.Connection) -> None:
     """Require FTS search results to carry the complete source locator."""
     columns = {row[1] for row in connection.execute("PRAGMA table_info(content_fts)")}
@@ -50,16 +73,6 @@ def validate_full_text_index_schema(connection: sqlite3.Connection) -> None:
         raise AssertionError(
             "FTS5 source locator schema is incomplete: " + ", ".join(sorted(missing))
         )
-
-
-def validate_full_text_index_count(connection: sqlite3.Connection, content_block_count: int) -> int:
-    indexed_count = connection.execute("SELECT COUNT(*) FROM content_fts").fetchone()[0]
-    if indexed_count != content_block_count:
-        raise AssertionError(
-            f"full-text index row count mismatch: content_blocks={content_block_count}, "
-            f"content_fts={indexed_count}"
-        )
-    return indexed_count
 
 
 def validate_full_text_index_content_parity(connection: sqlite3.Connection) -> None:
@@ -312,14 +325,14 @@ def smoke(database_path: Path) -> dict:
             )
 
     checks: dict[str, str] = {}
-    if metadata.get("search_backend") == "fts5-trigram":
+    fts_count = validate_full_text_index_count(
+        connection, metadata.get("search_backend", ""), counts["content_blocks"]
+    )
+    if fts_count is not None:
         validate_full_text_index_schema(connection)
-        validate_full_text_index_count(connection, counts["content_blocks"])
         validate_full_text_index_content_parity(connection)
         checks["full_text_index_rows"] = "PASS"
         checks["full_text_index_source_parity"] = "PASS"
-    elif metadata.get("search_backend") != "sqlite-instr-fallback":
-        raise AssertionError(f"unsupported full-text search backend: {metadata.get('search_backend')!r}")
     if counts["semantic_relation_candidates"]:
         validate_all_formula_herb_relation_rows(connection)
         checks["formula_herb_all_rows_provenance"] = "PASS"
