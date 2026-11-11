@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -73,6 +74,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
 
     source_blocks: dict[tuple[str, str, str, str], str] = {}
     source_span_checked = 0
+    unit_identity_checked = 0
     if content_index_path is not None:
         with gzip.open(content_index_path, "rt", encoding="utf-8-sig", newline="") as content_stream:
             content_reader = csv.DictReader(content_stream)
@@ -107,6 +109,14 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 raise ValueError(f"invalid mention span: {row['mention_id']}")
             if content_index_path is not None:
                 locator = (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])
+                expected_unit_id = hashlib.sha256(
+                    "\0".join(locator).encode("utf-8")
+                ).hexdigest()
+                if row["unit_id"] != expected_unit_id:
+                    raise ValueError(
+                        f"mention unit_id does not match source locator: {row['mention_id']}"
+                    )
+                unit_identity_checked += 1
                 source_text = source_blocks.get(locator)
                 if source_text is None:
                     raise ValueError(f"mention source locator cannot be resolved: {row['mention_id']}")
@@ -295,6 +305,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
         "source_span_validation": ({
             "source_blocks": len(source_blocks),
             "checked_mentions": source_span_checked,
+            "unit_identity_checked": unit_identity_checked,
             "status": "PASS",
         } if content_index_path is not None else {"status": "NOT_RUN"}),
         "overlap_pair_counts": {
@@ -351,6 +362,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
         "source_span_validation": ({
             "source_blocks": len(source_blocks),
             "checked_mentions": source_span_checked,
+            "unit_identity_checked": unit_identity_checked,
             "status": "PASS",
         } if content_index_path is not None else {"status": "NOT_RUN"}),
         "overlap_pair_counts": dict(sorted(pair_counts.items())),

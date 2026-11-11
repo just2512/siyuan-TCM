@@ -44,7 +44,7 @@ def read_lexicon(path: Path) -> list[dict[str, str]]:
         if missing:
             raise ValueError("lexicon missing fields: " + ", ".join(sorted(missing)))
         terms = []
-        seen = set()
+        seen: dict[tuple[str, str], str] = {}
         for row in reader:
             entity_type = (row.get("entity_type") or "").strip().upper()
             term = (row.get("term") or "").strip()
@@ -53,8 +53,13 @@ def read_lexicon(path: Path) -> list[dict[str, str]]:
                 raise ValueError("lexicon entity_type and term must be non-empty")
             key = (entity_type, term)
             if key in seen:
+                if seen[key] != version:
+                    raise ValueError(
+                        "conflicting lexicon_version for "
+                        f"{entity_type} term {term!r}: {seen[key]!r} vs {version!r}"
+                    )
                 continue
-            seen.add(key)
+            seen[key] = version
             terms.append({"entity_type": entity_type, "term": term, "lexicon_version": version})
     return sorted(terms, key=lambda item: (item["entity_type"], item["term"]))
 

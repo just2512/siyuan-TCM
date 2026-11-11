@@ -194,5 +194,37 @@ class EntityMentionCandidateTests(unittest.TestCase):
                 module.extract(content, lexicon, root / "out")
 
 
+    def test_rejects_conflicting_lexicon_versions_for_same_type_and_term(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "lexicon.csv"
+            with path.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(
+                    stream, fieldnames=["entity_type", "term", "lexicon_version"]
+                )
+                writer.writeheader()
+                writer.writerows([
+                    {"entity_type": "HERB", "term": "桂枝", "lexicon_version": "1.0.0"},
+                    {"entity_type": "HERB", "term": "桂枝", "lexicon_version": "2.0.0"},
+                ])
+            with self.assertRaisesRegex(ValueError, "conflicting lexicon_version"):
+                module.read_lexicon(path)
+
+    def test_deduplicates_identical_lexicon_rows_without_losing_version(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "lexicon.csv"
+            with path.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(
+                    stream, fieldnames=["entity_type", "term", "lexicon_version"]
+                )
+                writer.writeheader()
+                writer.writerows([
+                    {"entity_type": "HERB", "term": "桂枝", "lexicon_version": "1.2.0"},
+                    {"entity_type": "HERB", "term": "桂枝", "lexicon_version": "1.2.0"},
+                ])
+            self.assertEqual(module.read_lexicon(path), [{
+                "entity_type": "HERB", "term": "桂枝", "lexicon_version": "1.2.0",
+            }])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -80,6 +80,26 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             self.assertEqual(result["predicates"]["SYNDROME_TO_TREATMENT"]["eligible_pairs"], 1)
             self.assertEqual(result["predicates"]["SYNDROME_TO_TREATMENT"]["scope_break_pairs"], 1)
             self.assertEqual(result["predicates"]["TREATMENT_TO_FORMULA"]["eligible_pairs"], 1)
+            # Matching counts alone are insufficient: a fabricated row with
+            # the same predicate/count must not pass the independent audit.
+            with relations.open("r", encoding="utf-8", newline="") as stream:
+                relation_reader = csv.DictReader(stream)
+                relation_fields = relation_reader.fieldnames
+                relation_rows = list(relation_reader)
+            original_relation_id = relation_rows[0]["relation_id"]
+            relation_rows[0]["relation_id"] = "fabricated-relation-id"
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=relation_fields)
+                writer.writeheader()
+                writer.writerows(relation_rows)
+            with self.assertRaisesRegex(ValueError, "not an independently eligible pair"):
+                audit(context, mentions, units, relations, report)
+            relation_rows[0]["relation_id"] = original_relation_id
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=relation_fields)
+                writer.writeheader()
+                writer.writerows(relation_rows)
+            result = audit(context, mentions, units, relations, report)
             self.assertTrue(report.is_file())
             parsed = json.loads(report.read_text(encoding="utf-8"))
             self.assertEqual(parsed["schema_version"], 2)

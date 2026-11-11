@@ -278,7 +278,8 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 source = connection.execute("""SELECT content_text FROM content_blocks
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                     (evidence["document"], evidence["source_sha256"], evidence["tree_position"], evidence["block_id"])).fetchone()
-                if source is None or end <= start or source[0][start:end] != evidence["text"]:
+                if (source is None or start < 0 or end <= start
+                    or end > len(source[0]) or source[0][start:end] != evidence["text"]):
                     raise ValueError(f"relation evidence mismatch at line {line}")
                 seen_relations.add(relation_id)
                 edge_count += 1
@@ -299,9 +300,12 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                     (evidence["document"], evidence["source_sha256"], evidence["tree_position"], evidence["block_id"])).fetchone()
                 left, right, offset = evidence["character_start"], evidence["character_end"], evidence["evidence_start"]
-                if source is None or evidence["text"] != source[0][offset:offset+len(evidence["text"])]:
+                if (source is None or offset < 0
+                    or offset + len(evidence["text"]) > len(source[0])
+                    or evidence["text"] != source[0][offset:offset+len(evidence["text"])]):
                     raise ValueError(f"contextual term evidence mismatch at line {line}")
-                if left < offset or right <= left or right > offset+len(evidence["text"]):
+                if (left < offset or left < 0 or right <= left
+                    or right > offset+len(evidence["text"]) or right > len(source[0])):
                     raise ValueError(f"contextual term span invalid at line {line}")
                 if evidence["text"][left-offset:right-offset] != row["term"]:
                     raise ValueError(f"contextual term text mismatch at line {line}")
@@ -376,11 +380,12 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 source = connection.execute("""SELECT content_text FROM content_blocks
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                     (evidence["document"], evidence["source_sha256"], evidence["tree_position"], evidence["block_id"])).fetchone()
-                if source is None or end <= start or source[0][start:end] != evidence["text"]:
+                if (source is None or start < 0 or end <= start
+                    or end > len(source[0]) or source[0][start:end] != evidence["text"]):
                     raise ValueError(f"contextual relation evidence mismatch at line {line}")
                 ss, se = row["subject_start"], row["subject_end"]
                 os, oe = row["object_start"], row["object_end"]
-                if not (start <= ss < se <= os < oe <= end):
+                if not (0 <= start <= ss < se <= os < oe <= end <= len(source[0])):
                     raise ValueError(f"contextual relation endpoint spans invalid at line {line}")
                 if source[0][ss:se] != row["subject_text"] or source[0][os:oe] != row["object_text"]:
                     raise ValueError(f"contextual relation endpoint text mismatch at line {line}")

@@ -1078,5 +1078,23 @@ class ContextualRelationCandidateTests(unittest.TestCase):
                 {"头痛加剧", "头痛"},
             )
 
+    def test_scope_break_recognizes_named_author_and_book_attributions(self):
+        from build_contextual_relation_candidates import RELATION_SCOPE_BREAKS
+
+        attribution_samples = (
+            "张三曰：",
+            "仲景曰∶",
+            "丹溪曰:",
+            "某氏云：",
+            "《伤寒论》曰∶",
+            "《金匮要略》云：",
+        )
+        for predicate, pattern in RELATION_SCOPE_BREAKS.items():
+            for sample in attribution_samples:
+                with self.subTest(predicate=predicate, sample=sample):
+                    self.assertIsNotNone(pattern.search(sample))
+            self.assertIsNone(pattern.search("普通治法说明文字"))
+
+
 if __name__ == "__main__":
     unittest.main()

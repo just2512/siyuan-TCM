@@ -22,6 +22,7 @@ from build_contextual_relation_candidates import (
     load_context_candidates,
     load_formula_mentions,
     sentence_ranges,
+    relation_identity,
 )
 
 
@@ -56,6 +57,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
     marker_units = {key: set() for key in PREDICATES}
     eligible_units = {key: set() for key in PREDICATES}
     examples = {key: defaultdict(list) for key in PREDICATES}
+    expected_relation_ids: dict[str, str] = {}
 
     def add_example(predicate: str, diagnosis: str, unit: dict,
                     sentence_start: int, sentence_end: int, sentence: str,
@@ -157,7 +159,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         for object_start, object_end, obj in spans:
                             if obj["candidate_type"] not in object_types or object_start < subject_end:
                                 continue
-                            pairs.append((subject_end, object_start))
+                            pairs.append((subject_end, object_start, subject, obj))
                     counts[predicate]["ordered_typed_pairs"] += len(pairs)
                     if marker_matches and not pairs:
                         counts[predicate]["marker_sentences_without_typed_pair"] += 1
@@ -168,7 +170,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                     if pairs and marker_matches:
                         between_any = any(
                             marker.search(sentence[subject_end - sentence_start:object_start - sentence_start])
-                            for subject_end, object_start in pairs
+                            for subject_end, object_start, _, _ in pairs
                         )
                         if not between_any:
                             counts[predicate]["marker_sentences_with_ordered_pair_but_no_predicate_between"] += 1
@@ -177,7 +179,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                     if pairs and not marker_matches:
                         counts[predicate]["typed_pair_sentences_without_marker"] += 1
 
-                    for subject_end, object_start in pairs:
+                    for subject_end, object_start, subject, obj in pairs:
                         between = sentence[subject_end - sentence_start:object_start - sentence_start]
                         match = marker.search(between)
                         if match is None:
@@ -192,13 +194,42 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                             continue
                         counts[predicate]["eligible_pairs"] += 1
                         eligible_units[predicate].add(unit_id)
+                        expected_id = relation_identity(
+                            predicate, subject, obj, unit_id, sentence_start, sentence_end
+                        )
+                        if expected_id in expected_relation_ids:
+                            raise ValueError(f"duplicate independently derived relation identity: {expected_id}")
+                        expected_relation_ids[expected_id] = predicate
 
+    observed_relation_ids: set[str] = set()
     with relations_path.open("r", encoding="utf-8", newline="") as stream:
-        for row in csv.DictReader(stream):
+        reader = csv.DictReader(stream)
+        required_relation_fields = {"relation_id", "predicate"}
+        missing_relation_fields = required_relation_fields - set(reader.fieldnames or [])
+        if missing_relation_fields:
+            raise ValueError("relation output missing fields: " + ", ".join(sorted(missing_relation_fields)))
+        for row in reader:
             predicate = row["predicate"]
+            relation_id = row["relation_id"]
             if predicate not in counts:
                 raise ValueError(f"unsupported extracted predicate: {predicate}")
+            if not relation_id or relation_id in observed_relation_ids:
+                raise ValueError("relation output has a missing or duplicate relation_id")
+            observed_relation_ids.add(relation_id)
+            expected_predicate = expected_relation_ids.get(relation_id)
+            if expected_predicate is None:
+                raise ValueError(f"extracted relation is not an independently eligible pair: {relation_id}")
+            if expected_predicate != predicate:
+                raise ValueError(f"extracted relation predicate mismatch: {relation_id}")
             counts[predicate]["extracted_rows"] += 1
+
+    missing_relation_ids = set(expected_relation_ids) - observed_relation_ids
+    if missing_relation_ids:
+        sample = sorted(missing_relation_ids)[:5]
+        raise ValueError(
+            "independently eligible relation identities missing from extractor output: "
+            + ", ".join(sample)
+        )
 
     for predicate in PREDICATES:
         counts[predicate]["units_with_marker"] = len(marker_units[predicate])
