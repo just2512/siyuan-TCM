@@ -1,6 +1,6 @@
 import sqlite3
-import tempfile
 import smoke_test_search_index as smoke_module
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -31,7 +31,12 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 );
                 CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
-                CREATE TABLE contextual_term_type_candidates (id INTEGER);
+                CREATE TABLE contextual_term_type_candidates (
+                    id INTEGER PRIMARY KEY, candidate_id TEXT, term TEXT, candidate_type TEXT,
+                    rule_id TEXT, evidence_document TEXT, source_sha256 TEXT, tree_position TEXT,
+                    block_id TEXT, unit_id TEXT, character_start INTEGER, character_end INTEGER,
+                    evidence_start INTEGER, evidence_text TEXT, classification_status TEXT
+                );
                 CREATE TABLE contextual_relation_candidates (
                     relation_id TEXT, predicate TEXT, subject_candidate_id TEXT,
                     subject_text TEXT, subject_type TEXT, subject_start INTEGER, subject_end INTEGER,
@@ -98,7 +103,12 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 CREATE TABLE entity_catalog (id INTEGER);
                 CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
                 CREATE TABLE unclassified_term_candidates (id INTEGER);
-                CREATE TABLE contextual_term_type_candidates (id INTEGER);
+                CREATE TABLE contextual_term_type_candidates (
+                    id INTEGER PRIMARY KEY, candidate_id TEXT, term TEXT, candidate_type TEXT,
+                    rule_id TEXT, evidence_document TEXT, source_sha256 TEXT, tree_position TEXT,
+                    block_id TEXT, unit_id TEXT, character_start INTEGER, character_end INTEGER,
+                    evidence_start INTEGER, evidence_text TEXT, classification_status TEXT
+                );
                 CREATE TABLE contextual_relation_candidates (
                     relation_id TEXT, predicate TEXT, subject_candidate_id TEXT,
                     subject_text TEXT, subject_type TEXT, subject_start INTEGER, subject_end INTEGER,
@@ -114,6 +124,15 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 "INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
                 ("book/a.sy", "sha-a", "0.0", "p1", "PARAGRAPH", "", source),
             )
+            connection.executemany(
+                "INSERT INTO contextual_term_type_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    (1, "s1", "头痛", "SYMPTOM", "RULE_S", "book/a.sy", "sha-a", "0.0",
+                     "p1", "u1", 0, 2, 0, source, "CONTEXT_RULE_CANDIDATE"),
+                    (2, "z1", "太阳中风", "SYNDROME", "RULE_Z", "book/a.sy", "sha-a", "0.0",
+                     "p1", "u1", 5, 9, 0, source, "CONTEXT_RULE_CANDIDATE"),
+                ],
+            )
             connection.execute(
                 "INSERT INTO contextual_relation_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 ("r1", "SYMPTOM_TO_SYNDROME", "s1", "头痛", "SYMPTOM", 0, 2,
@@ -124,7 +143,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             counts = {
                 "content_blocks": 1, "relationships": 0, "entity_mentions": 0,
                 "lexical_entities": 0, "relation_candidates": 0,
-                "unclassified_term_candidates": 0, "contextual_term_type_candidates": 0,
+                "unclassified_term_candidates": 0, "contextual_term_type_candidates": 2,
                 "contextual_relation_candidates": 1,
             }
             connection.executemany(
@@ -140,6 +159,30 @@ class SearchIndexSmokeTests(unittest.TestCase):
             self.assertEqual(result["checks"]["contextual_relation_predicate_direction"], "PASS")
             self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
             self.assertEqual(result["relation_predicate_counts"]["SYMPTOM_TO_SYNDROME"], 1)
+
+            # The real-data validator must inspect every contextual relation row,
+            # not merely one row returned by a limited search query.
+            connection = sqlite3.connect(db)
+            connection.row_factory = sqlite3.Row
+            connection.execute(
+                "UPDATE contextual_term_type_candidates SET term=? WHERE candidate_id=?",
+                ("头痛误写", "s1"),
+            )
+            connection.commit()
+            with self.assertRaisesRegex(AssertionError, "candidate identity/source mismatch"):
+                smoke_module.validate_all_contextual_relation_rows(connection)
+            connection.execute(
+                "UPDATE contextual_term_type_candidates SET term=? WHERE candidate_id=?",
+                ("头痛", "s1"),
+            )
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET evidence_text=? WHERE relation_id=?",
+                ("头痛辨证为太阳", "r1"),
+            )
+            connection.commit()
+            with self.assertRaisesRegex(AssertionError, "evidence offset mismatch"):
+                smoke_module.validate_all_contextual_relation_rows(connection)
+            connection.close()
 
 
     def test_full_sqlite_scan_validates_every_formula_herb_endpoint_and_evidence(self):
