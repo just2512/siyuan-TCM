@@ -1,6 +1,7 @@
 import csv
 import json
 import gzip
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -238,6 +239,39 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             )
 
 
+    def test_rejects_unit_id_that_does_not_match_source_locator(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            mentions = root / "mentions.csv.gz"
+            content = root / "content.csv.gz"
+            output = root / "audit.json"
+            fields = [
+                "mention_id", "unit_id", "entity_type", "matched_text",
+                "character_start", "character_end", "document", "source_sha256",
+                "tree_position", "block_id",
+            ]
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=fields)
+                writer.writeheader()
+                writer.writerow({
+                    "mention_id": "m1", "unit_id": "forged-unit-id",
+                    "entity_type": "HERB", "matched_text": "桂枝",
+                    "character_start": 2, "character_end": 4,
+                    "document": "a.sy", "source_sha256": "a" * 64,
+                    "tree_position": "0.1", "block_id": "b1",
+                })
+            content_fields = ["document", "source_sha256", "tree_position", "block_id", "content_text"]
+            with gzip.open(content, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=content_fields)
+                writer.writeheader()
+                writer.writerow({
+                    "document": "a.sy", "source_sha256": "a" * 64,
+                    "tree_position": "0.1", "block_id": "b1",
+                    "content_text": "症见桂枝，脉浮。",
+                })
+            with self.assertRaisesRegex(ValueError, "unit_id does not match source locator"):
+                audit(mentions, output, content_index_path=content)
+
     def test_validates_every_mention_offset_against_exact_source_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -253,7 +287,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=fields)
                 writer.writeheader()
                 writer.writerow({
-                    "mention_id": "m1", "unit_id": "u1", "entity_type": "HERB",
+                    "mention_id": "m1", "unit_id": hashlib.sha256("\\0".join(("a.sy", "a" * 64, "0.1", "b1")).encode("utf-8")).hexdigest(), "entity_type": "HERB",
                     "matched_text": "桂枝", "character_start": 2, "character_end": 4,
                     "document": "a.sy", "source_sha256": "a" * 64,
                     "tree_position": "0.1", "block_id": "b1",
@@ -269,7 +303,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                 })
             result = audit(mentions, output, content_index_path=content)
             self.assertEqual(result["source_span_validation"], {
-                "source_blocks": 1, "checked_mentions": 1, "status": "PASS",
+                "source_blocks": 1, "checked_mentions": 1, "unit_identity_checked": 1, "status": "PASS",
             })
             with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=fields)
