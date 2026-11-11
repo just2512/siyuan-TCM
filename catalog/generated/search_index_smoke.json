@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "database_bytes": 8154923008,
+  "database_bytes": 8174600192,
   "search_backend": "fts5-trigram",
   "table_counts": {
     "content_blocks": 236987,
@@ -19,6 +19,8 @@
     "TREATMENT_TO_FORMULA": 0
   },
   "checks": {
+    "full_text_index_rows": "PASS",
+    "full_text_index_source_parity": "PASS",
     "formula_herb_all_rows_provenance": "PASS",
     "full_text": "PASS",
     "entity_span_and_source": "PASS",

@@ -6,6 +6,7 @@
   "source_span_validation": {
     "source_blocks": 236987,
     "checked_mentions": 421850,
+    "unit_identity_checked": 421850,
     "status": "PASS"
   },
   "overlap_pair_counts": {
