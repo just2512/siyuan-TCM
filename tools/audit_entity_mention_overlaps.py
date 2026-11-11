@@ -348,6 +348,11 @@ def audit(path: Path, output: Path, max_examples: int = 50,
     return {
         "source_units": len(by_unit),
         "total_mentions": total_mentions,
+        "source_span_validation": ({
+            "source_blocks": len(source_blocks),
+            "checked_mentions": source_span_checked,
+            "status": "PASS",
+        } if content_index_path is not None else {"status": "NOT_RUN"}),
         "overlap_pair_counts": dict(sorted(pair_counts.items())),
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
