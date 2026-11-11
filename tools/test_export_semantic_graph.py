@@ -308,6 +308,42 @@ class SemanticGraphExportTests(unittest.TestCase):
             connection.close()
             module.export(database, output)
 
+            # Contextual relation evidence must reject negative and out-of-range
+            # offsets before Python's permissive slicing can accept them.
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=-len(evidence_text), "
+                "sentence_end=-1 WHERE relation_id=?",
+                (ctx_r1_id,),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual relation evidence mismatch"):
+                module.validate(database, output)
+
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=0, "
+                "sentence_end=? WHERE relation_id=?",
+                (len(source_text) + 1, ctx_r1_id),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "contextual relation evidence mismatch"):
+                module.validate(database, output)
+
+            connection = __import__("sqlite3").connect(database)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET sentence_start=0, "
+                "sentence_end=?, evidence_text=? WHERE relation_id=?",
+                (len(source_text), source_text, ctx_r1_id),
+            )
+            connection.commit()
+            connection.close()
+            module.export(database, output)
+
             # Tampering with contextual classification metadata must be rejected.
             term = next(row for row in rows if row["record_type"] == "CONTEXTUAL_TERM_CANDIDATE")
             term["rule_id"] = "TAMPERED_RULE"
