@@ -25,6 +25,7 @@
     "formula_herb_relation": "PASS",
     "unclassified_terms": "PASS",
     "contextual_term_candidates": "PASS",
+    "contextual_relation_all_rows_provenance": "PASS",
     "contextual_relation_predicate_queries": "PASS"
   }
 }
