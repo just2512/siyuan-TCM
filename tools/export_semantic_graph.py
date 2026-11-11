@@ -256,8 +256,11 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"unsafe relation status at line {line}")
                 for role in ("subject_mention", "object_mention"):
                     endpoint = row[role]
-                    if endpoint["entity_id"] not in expected_entities or endpoint["entity_type"] not in {"FORMULA", "HERB"}:
-                        raise ValueError(f"invalid {role} entity reference at line {line}")
+                    expected_endpoint_type = "FORMULA" if role == "subject_mention" else "HERB"
+                    if (row["predicate"] != "FORMULA_CONTAINS_HERB"
+                        or endpoint["entity_id"] not in expected_entities
+                        or endpoint["entity_type"] != expected_endpoint_type):
+                        raise ValueError(f"invalid {role} relation endpoint direction/type at line {line}")
                     if endpoint["matched_text"] != (row["subject_text"] if role == "subject_mention" else row["object_text"]):
                         raise ValueError(f"{role} text mismatch at line {line}")
                     endpoint_source = connection.execute("""SELECT content_text FROM content_blocks
