@@ -40,7 +40,8 @@ def classify_pair(left: dict[str, str], right: dict[str, str]) -> str | None:
 
 
 def audit(path: Path, output: Path, max_examples: int = 50,
-          relations_path: Path | None = None) -> dict[str, Any]:
+          relations_path: Path | None = None,
+          content_index_path: Path | None = None) -> dict[str, Any]:
     by_unit: dict[str, list[dict[str, str]]] = defaultdict(list)
     mention_ids: set[str] = set()
     mentions_by_id: dict[str, dict[str, str]] = {}
@@ -70,6 +71,22 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 relation_rows.append(row)
                 relation_count += 1
 
+    source_blocks: dict[tuple[str, str, str, str], str] = {}
+    source_span_checked = 0
+    if content_index_path is not None:
+        with gzip.open(content_index_path, "rt", encoding="utf-8-sig", newline="") as content_stream:
+            content_reader = csv.DictReader(content_stream)
+            required_content = {"document", "source_sha256", "tree_position", "block_id", "content_text"}
+            missing_content = required_content - set(content_reader.fieldnames or [])
+            if missing_content:
+                raise ValueError("content index missing fields: " + ", ".join(sorted(missing_content)))
+            for content_row in content_reader:
+                locator = (content_row["document"], content_row["source_sha256"],
+                           content_row["tree_position"], content_row["block_id"])
+                if locator in source_blocks:
+                    raise ValueError("content index has a duplicate source locator: " + repr(locator))
+                source_blocks[locator] = content_row["content_text"]
+
     with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
         reader = csv.DictReader(stream)
         required = {
@@ -88,6 +105,14 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             start, end = int(row["character_start"]), int(row["character_end"])
             if start < 0 or end <= start or end - start != len(row["matched_text"]):
                 raise ValueError(f"invalid mention span: {row['mention_id']}")
+            if content_index_path is not None:
+                locator = (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])
+                source_text = source_blocks.get(locator)
+                if source_text is None:
+                    raise ValueError(f"mention source locator cannot be resolved: {row['mention_id']}")
+                if end > len(source_text) or source_text[start:end] != row["matched_text"]:
+                    raise ValueError(f"mention source span does not match source text: {row['mention_id']}")
+                source_span_checked += 1
             by_unit[row["unit_id"]].append(row)
 
     endpoint_reference_counts: Counter[str] = Counter()
@@ -267,6 +292,11 @@ def audit(path: Path, output: Path, max_examples: int = 50,
         "source_mentions": str(path),
         "source_units": len(by_unit),
         "total_mentions": total_mentions,
+        "source_span_validation": ({
+            "source_blocks": len(source_blocks),
+            "checked_mentions": source_span_checked,
+            "status": "PASS",
+        } if content_index_path is not None else {"status": "NOT_RUN"}),
         "overlap_pair_counts": {
             key: pair_counts.get(key, 0) for key in (
                 "same_type_exact_duplicate_window", "cross_type_exact_span",
@@ -318,6 +348,11 @@ def audit(path: Path, output: Path, max_examples: int = 50,
     return {
         "source_units": len(by_unit),
         "total_mentions": total_mentions,
+        "source_span_validation": ({
+            "source_blocks": len(source_blocks),
+            "checked_mentions": source_span_checked,
+            "status": "PASS",
+        } if content_index_path is not None else {"status": "NOT_RUN"}),
         "overlap_pair_counts": dict(sorted(pair_counts.items())),
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
@@ -334,11 +369,13 @@ def main() -> int:
     parser.add_argument("--max-examples", type=int, default=50)
     parser.add_argument("--relations", type=Path,
                         help="optional formula-herb relation CSV for endpoint cross-reference")
+    parser.add_argument("--content-index", type=Path,
+                        help="optional exact source-block index for validating every mention offset")
     args = parser.parse_args()
     if args.max_examples < 1:
         parser.error("--max-examples must be >= 1")
-    print(json.dumps(audit(args.mentions, args.output, args.max_examples, args.relations),
-                     ensure_ascii=False, sort_keys=True))
+    print(json.dumps(audit(args.mentions, args.output, args.max_examples, args.relations,
+                            args.content_index), ensure_ascii=False, sort_keys=True))
     return 0
 
 
