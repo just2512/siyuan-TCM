@@ -278,5 +278,25 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 smoke_module.validate_all_formula_herb_relation_rows(connection)
             connection.close()
 
+    def test_full_text_index_row_count_matches_source_blocks(self):
+        connection = sqlite3.connect(":memory:")
+        connection.execute("CREATE TABLE content_fts (content_text TEXT)")
+        connection.executemany(
+            "INSERT INTO content_fts(content_text) VALUES (?)",
+            [("源文一",), ("源文二",)],
+        )
+        self.assertEqual(
+            smoke_module.validate_full_text_index_count(connection, "fts5-trigram", 2),
+            2,
+        )
+        connection.execute("DELETE FROM content_fts WHERE content_text='源文二'")
+        with self.assertRaisesRegex(AssertionError, "full-text index row count mismatch"):
+            smoke_module.validate_full_text_index_count(connection, "fts5-trigram", 2)
+        self.assertIsNone(
+            smoke_module.validate_full_text_index_count(connection, "sqlite-instr-fallback", 2)
+        )
+        connection.close()
+
+
 if __name__ == "__main__":
     unittest.main()
