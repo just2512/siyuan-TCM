@@ -299,9 +299,12 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                     (evidence["document"], evidence["source_sha256"], evidence["tree_position"], evidence["block_id"])).fetchone()
                 left, right, offset = evidence["character_start"], evidence["character_end"], evidence["evidence_start"]
-                if source is None or evidence["text"] != source[0][offset:offset+len(evidence["text"])]:
+                if (source is None or offset < 0
+                    or offset + len(evidence["text"]) > len(source[0])
+                    or evidence["text"] != source[0][offset:offset+len(evidence["text"])]):
                     raise ValueError(f"contextual term evidence mismatch at line {line}")
-                if left < offset or right <= left or right > offset+len(evidence["text"]):
+                if (left < offset or left < 0 or right <= left
+                    or right > offset+len(evidence["text"]) or right > len(source[0])):
                     raise ValueError(f"contextual term span invalid at line {line}")
                 if evidence["text"][left-offset:right-offset] != row["term"]:
                     raise ValueError(f"contextual term text mismatch at line {line}")
