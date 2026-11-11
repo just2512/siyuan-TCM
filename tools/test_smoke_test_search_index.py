@@ -149,9 +149,10 @@ class SearchIndexSmokeTests(unittest.TestCase):
                 ("头痛辨证为太阳", "r1"),
             )
             connection.commit()
-            connection.close()
+            connection.row_factory = sqlite3.Row
             with self.assertRaisesRegex(AssertionError, "evidence offset mismatch"):
-                smoke(db)
+                module.validate_all_contextual_relation_rows(connection)
+            connection.close()
 
 
     def test_full_sqlite_scan_validates_every_formula_herb_endpoint_and_evidence(self):
