@@ -287,7 +287,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                 writer = csv.DictWriter(stream, fieldnames=fields)
                 writer.writeheader()
                 writer.writerow({
-                    "mention_id": "m1", "unit_id": hashlib.sha256("\\0".join(("a.sy", "a" * 64, "0.1", "b1")).encode("utf-8")).hexdigest(), "entity_type": "HERB",
+                    "mention_id": "m1", "unit_id": hashlib.sha256("\0".join(("a.sy", "a" * 64, "0.1", "b1")).encode("utf-8")).hexdigest(), "entity_type": "HERB",
                     "matched_text": "桂枝", "character_start": 2, "character_end": 4,
                     "document": "a.sy", "source_sha256": "a" * 64,
                     "tree_position": "0.1", "block_id": "b1",
