@@ -19,6 +19,7 @@
     "TREATMENT_TO_FORMULA": 0
   },
   "checks": {
+    "formula_herb_all_rows_provenance": "PASS",
     "full_text": "PASS",
     "entity_span_and_source": "PASS",
     "formula_herb_relation": "PASS",
