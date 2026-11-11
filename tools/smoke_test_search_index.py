@@ -152,6 +152,28 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
         if not row["subject_candidate_id"] or not row["object_candidate_id"]:
             raise AssertionError(f"contextual relation endpoint identity missing: {row['relation_id']}")
 
+        for endpoint, candidate_id, term, candidate_type, start, end in (
+            ("subject", row["subject_candidate_id"], row["subject_text"], row["subject_type"],
+             row["subject_start"], row["subject_end"]),
+            ("object", row["object_candidate_id"], row["object_text"], row["object_type"],
+             row["object_start"], row["object_end"]),
+        ):
+            matches = connection.execute("""
+                SELECT candidate_id, term, candidate_type, evidence_document, source_sha256,
+                       tree_position, block_id, unit_id, character_start, character_end
+                FROM contextual_term_type_candidates
+                WHERE candidate_id=? AND candidate_type=? AND term=? AND unit_id=?
+                  AND character_start=? AND character_end=? AND evidence_document=?
+                  AND source_sha256=? AND tree_position=? AND COALESCE(block_id, '')=COALESCE(?, '')
+            """, (
+                candidate_id, candidate_type, term, row["unit_id"], start, end,
+                row["document"], row["source_sha256"], row["tree_position"], row["block_id"],
+            )).fetchall()
+            if not matches:
+                raise AssertionError(
+                    f"contextual relation {endpoint} candidate identity/source mismatch: {row['relation_id']}"
+                )
+
         source = connection.execute(
             "SELECT content_text FROM content_blocks WHERE document=? AND source_sha256=? "
             "AND tree_position=? AND block_id=? LIMIT 1",
