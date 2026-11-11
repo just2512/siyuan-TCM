@@ -267,7 +267,8 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                         WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                         (endpoint["document"], endpoint["source_sha256"], endpoint["tree_position"], endpoint["block_id"])).fetchone()
                     left, right = endpoint["character_start"], endpoint["character_end"]
-                    if (endpoint_source is None or right <= left
+                    if (endpoint_source is None or left < 0 or right <= left
+                        or right > len(endpoint_source[0])
                         or endpoint_source[0][left:right] != endpoint["matched_text"]):
                         raise ValueError(f"{role} source span mismatch at line {line}")
                 if row["subject_mention"]["mention_id"] == row["object_mention"]["mention_id"]:

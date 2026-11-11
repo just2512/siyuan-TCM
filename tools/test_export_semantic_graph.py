@@ -156,6 +156,24 @@ class SemanticGraphExportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "invalid subject_mention relation endpoint direction/type"):
                 module.validate(database, output)
 
+            # Python accepts negative slice indexes. A negative source offset
+            # can therefore resolve to the correct characters unless bounds
+            # are checked explicitly.
+            with sqlite3.connect(database) as connection:
+                connection.execute("""
+                    UPDATE semantic_relation_candidates
+                    SET subject_mention_id='f1', subject_text='桂枝汤',
+                        object_mention_id='h1', object_text='桂枝'
+                    WHERE relation_id='r1'
+                """)
+                connection.execute("""
+                    UPDATE entity_mentions SET character_start=-5, character_end=-3
+                    WHERE mention_id='h1'
+                """)
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "object_mention source span mismatch"):
+                module.validate(database, output)
+
 
     def test_exports_contextual_terms_and_explicit_relation_edges(self):
         with tempfile.TemporaryDirectory() as temp:
