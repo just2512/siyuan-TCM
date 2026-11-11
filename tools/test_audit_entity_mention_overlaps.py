@@ -96,7 +96,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
             result = audit(source, output)
             report = json.loads(output.read_text(encoding="utf-8"))
             self.assertEqual(report["mention_counts_by_entity_type"], {
-                "FORMULA": 4, "HERB": 4, "SYMPTOM": 3,
+                "FORMULA": 4, "HERB": 5, "SYMPTOM": 3,
                 "SYNDROME": 1, "TREATMENT": 2,
             })
             self.assertEqual(report["overlap_pair_counts_by_entity_type"], {
