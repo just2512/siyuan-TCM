@@ -23,7 +23,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
         connection.executemany("INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
         connection.executemany("INSERT INTO content_fts VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
         smoke_module.validate_full_text_index_schema(connection)
-        self.assertEqual(smoke_module.validate_full_text_index_count(connection, 2), 2)
+        self.assertEqual(smoke_module.validate_full_text_index_count(connection, "fts5-trigram", 2), 2)
         smoke_module.validate_full_text_index_content_parity(connection)
 
         connection.execute(
