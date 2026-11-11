@@ -111,6 +111,7 @@ class EntityMentionOverlapAuditTests(unittest.TestCase):
                 "SYNDROME|TREATMENT": {"partial_overlap": 1},
             })
             self.assertEqual(report["repeated_occurrence_counts_by_entity_type"], {
+                "FORMULA": {"groups": 2, "occurrences": 4},
                 "HERB": {"groups": 1, "occurrences": 3},
             })
             self.assertEqual(result["overlap_pair_counts_by_entity_type"],
