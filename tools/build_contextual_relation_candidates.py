@@ -46,7 +46,7 @@ NEGATION_PREFIX = re.compile(r"(?:不宜|不应|不可|不能|不|勿|忌|禁用
 # A relation must not connect endpoints across a source-attribution boundary
 # anywhere in the text between the subject and object.
 RELATION_SCOPE_BREAKS = {
-    predicate: re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])")
+    predicate: re.compile(r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])")
     for predicate in PREDICATES
 }
 
