@@ -44,6 +44,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
           relations_path: Path | None = None,
           content_index_path: Path | None = None) -> dict[str, Any]:
     by_unit: dict[str, list[dict[str, str]]] = defaultdict(list)
+    mention_counts_by_entity_type: Counter[str] = Counter()
     mention_ids: set[str] = set()
     mentions_by_id: dict[str, dict[str, str]] = {}
     relation_pairs: set[tuple[str, str]] = set()
@@ -124,6 +125,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                     raise ValueError(f"mention source span does not match source text: {row['mention_id']}")
                 source_span_checked += 1
             by_unit[row["unit_id"]].append(row)
+            mention_counts_by_entity_type[row["entity_type"]] += 1
 
     endpoint_reference_counts: Counter[str] = Counter()
     endpoint_reference_examples: list[dict[str, Any]] = []
@@ -207,6 +209,8 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             })
 
     pair_counts: Counter[str] = Counter()
+    pair_counts_by_entity_type: dict[str, Counter[str]] = defaultdict(Counter)
+    repeated_counts_by_entity_type: dict[str, Counter[str]] = defaultdict(Counter)
     examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
     relation_link_counts: Counter[str] = Counter()
     relation_link_examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -229,6 +233,10 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 if kind is None:
                     continue
                 pair_counts[kind] += 1
+                entity_type_pair = "|".join(sorted((
+                    prior["entity_type"], current["entity_type"]
+                )))
+                pair_counts_by_entity_type[entity_type_pair][kind] += 1
                 if kind == "nested_formula_herb_entity" and relations_path is not None:
                     formula = prior if prior["entity_type"] == "FORMULA" else current
                     herb = prior if prior["entity_type"] == "HERB" else current
@@ -281,6 +289,8 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 continue
             repeated_groups += 1
             repeated_occurrences += len(hits)
+            repeated_counts_by_entity_type[entity_type]["groups"] += 1
+            repeated_counts_by_entity_type[entity_type]["occurrences"] += len(hits)
             if len(repeated_examples) < max_examples:
                 repeated_examples.append({
                     "unit_id": unit_id,
@@ -298,7 +308,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
                 })
 
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "source_mentions": str(path),
         "source_units": len(by_unit),
         "total_mentions": total_mentions,
@@ -308,12 +318,17 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             "unit_identity_checked": unit_identity_checked,
             "status": "PASS",
         } if content_index_path is not None else {"status": "NOT_RUN"}),
+        "mention_counts_by_entity_type": dict(sorted(mention_counts_by_entity_type.items())),
         "overlap_pair_counts": {
             key: pair_counts.get(key, 0) for key in (
                 "same_type_exact_duplicate_window", "cross_type_exact_span",
                 "nested_formula_herb_entity", "nested_named_formula",
                 "nested_same_type_window", "nested_cross_type_entity", "partial_overlap",
             )
+        },
+        "overlap_pair_counts_by_entity_type": {
+            key: dict(sorted(counts.items()))
+            for key, counts in sorted(pair_counts_by_entity_type.items())
         },
         "relation_candidate_cross_reference": ({
             "relation_candidate_rows": relation_count,
@@ -343,6 +358,10 @@ def audit(path: Path, output: Path, max_examples: int = 50,
         } if relations_path is not None else None),
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
+        "repeated_occurrence_counts_by_entity_type": {
+            key: dict(sorted(counts.items()))
+            for key, counts in sorted(repeated_counts_by_entity_type.items())
+        },
         "examples_limit_per_category": max_examples,
         "overlap_examples": dict(sorted(examples.items())),
         "repeated_occurrence_examples": repeated_examples,
@@ -365,9 +384,18 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             "unit_identity_checked": unit_identity_checked,
             "status": "PASS",
         } if content_index_path is not None else {"status": "NOT_RUN"}),
+        "mention_counts_by_entity_type": dict(sorted(mention_counts_by_entity_type.items())),
         "overlap_pair_counts": dict(sorted(pair_counts.items())),
+        "overlap_pair_counts_by_entity_type": {
+            key: dict(sorted(counts.items()))
+            for key, counts in sorted(pair_counts_by_entity_type.items())
+        },
         "repeated_term_groups": repeated_groups,
         "repeated_term_occurrences_in_groups": repeated_occurrences,
+        "repeated_occurrence_counts_by_entity_type": {
+            key: dict(sorted(counts.items()))
+            for key, counts in sorted(repeated_counts_by_entity_type.items())
+        },
         "output": str(output),
     }
 
