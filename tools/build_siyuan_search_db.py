@@ -224,6 +224,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
             CREATE VIRTUAL TABLE content_fts USING fts5(
                 content_text,
                 document UNINDEXED,
+                source_sha256 UNINDEXED,
+                tree_position UNINDEXED,
                 block_id UNINDEXED,
                 content_type UNINDEXED,
                 section_path UNINDEXED,
@@ -247,7 +249,8 @@ def build_database(content_index: Path, relationship_index: Path | None,
             row["content_text"],
         ))
         fts_batch.append((
-            row["content_text"], row["document"], row.get("block_id", ""),
+            row["content_text"], row["document"], row["source_sha256"],
+            row["tree_position"], row.get("block_id", ""),
             row["content_type"], row.get("section_path", ""),
         ))
         if len(content_batch) >= 2000:
@@ -261,8 +264,9 @@ def build_database(content_index: Path, relationship_index: Path | None,
             if fts_enabled:
                 connection.executemany("""
                     INSERT INTO content_fts
-                    (content_text, document, block_id, content_type, section_path)
-                    VALUES (?, ?, ?, ?, ?)
+                    (content_text, document, source_sha256, tree_position,
+                     block_id, content_type, section_path)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                 """, fts_batch)
             content_count += len(content_batch)
             content_batch, fts_batch = [], []
@@ -278,8 +282,9 @@ def build_database(content_index: Path, relationship_index: Path | None,
         if fts_enabled:
             connection.executemany("""
                 INSERT INTO content_fts
-                (content_text, document, block_id, content_type, section_path)
-                VALUES (?, ?, ?, ?, ?)
+                (content_text, document, source_sha256, tree_position,
+                 block_id, content_type, section_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, fts_batch)
         content_count += len(content_batch)
 
@@ -520,8 +525,8 @@ def search_database(database_path: Path, query: str, limit: int = 20) -> list[di
         expression = '"' + query.replace('"', '""') + '"'
         try:
             rows = connection.execute("""
-                SELECT document, block_id, content_type, section_path,
-                       tree_position, content_text
+                SELECT document, source_sha256, tree_position, block_id,
+                       content_type, section_path, content_text
                 FROM content_fts
                 WHERE content_fts MATCH ?
                 LIMIT ?
@@ -530,8 +535,8 @@ def search_database(database_path: Path, query: str, limit: int = 20) -> list[di
             rows = []
     if not rows:
         rows = connection.execute("""
-            SELECT document, block_id, content_type, section_path,
-                   tree_position, content_text
+            SELECT document, source_sha256, tree_position, block_id,
+                   content_type, section_path, content_text
             FROM content_blocks
             WHERE instr(content_text, ?) > 0
             LIMIT ?

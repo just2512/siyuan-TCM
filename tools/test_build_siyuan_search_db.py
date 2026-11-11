@@ -86,6 +86,35 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(len(resolved), 1)
             self.assertEqual(resolved[0]["matched_text"], "桂枝汤")
 
+    def test_fts_search_returns_source_locator_without_content_blocks_fallback(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            db = root / "search.sqlite3"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "book/a.sy", "source_sha256": "sha-a",
+                "tree_position": "0.0", "block_id": "p1",
+                "content_type": "PARAGRAPH", "section_path": "经方",
+                "characters": 9, "content_text": "桂枝汤治疗太阳中风",
+            }])
+            result = search_db.build_database(content, None, db)
+            if result["search_backend"] != "fts5-trigram":
+                self.skipTest("SQLite build does not provide FTS5 trigram support")
+
+            # Make the fallback source table deliberately unable to satisfy the
+            # query. A successful result must therefore come from content_fts.
+            with sqlite3.connect(db) as connection:
+                connection.execute(
+                    "UPDATE content_blocks SET content_text=? WHERE document=?",
+                    ("回退表中已不存在目标词", "book/a.sy"),
+                )
+            rows = search_db.search_database(db, "桂枝汤")
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["document"], "book/a.sy")
+            self.assertEqual(rows[0]["source_sha256"], "sha-a")
+            self.assertEqual(rows[0]["tree_position"], "0.0")
+            self.assertEqual(rows[0]["content_text"], "桂枝汤治疗太阳中风")
+
     def test_indexes_and_queries_explicit_relation_candidates(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
