@@ -291,13 +291,12 @@ def smoke(database_path: Path) -> dict:
                 f"{table} count mismatch: metadata={metadata.get(key)!r}, actual={counts[table]}"
             )
 
+    checks: dict[str, str] = {}
     fts_count = validate_full_text_index_count(
         connection, metadata.get("search_backend", ""), counts["content_blocks"]
     )
     if fts_count is not None:
         checks["full_text_index_rows"] = "PASS"
-
-    checks: dict[str, str] = {}
     if counts["semantic_relation_candidates"]:
         validate_all_formula_herb_relation_rows(connection)
         checks["formula_herb_all_rows_provenance"] = "PASS"
