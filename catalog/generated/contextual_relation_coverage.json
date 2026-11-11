@@ -40,17 +40,17 @@
       "marker_sentences_without_typed_pair": 383,
       "typed_pair_sentences_without_marker": 1,
       "marker_sentences_with_subject_type": 1,
-      "marker_sentences_with_object_type": 345,
+      "marker_sentences_with_object_type": 344,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
       "marker_sentences_without_subject_type": 383,
-      "marker_sentences_without_object_type": 39,
+      "marker_sentences_without_object_type": 40,
       "units_with_marker": 336,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "TREATMENT": 346,
+        "TREATMENT": 345,
         "SYMPTOM": 13,
         "FORMULA": 39,
         "SYNDROME": 2
@@ -66,12 +66,12 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 2846,
       "typed_pair_sentences_without_marker": 23,
-      "marker_sentences_with_subject_type": 9,
+      "marker_sentences_with_subject_type": 8,
       "marker_sentences_with_object_type": 146,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
-      "marker_sentences_without_subject_type": 2838,
+      "marker_sentences_without_subject_type": 2839,
       "marker_sentences_without_object_type": 2701,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 0,
@@ -80,7 +80,7 @@
         "FORMULA": 238,
         "SYMPTOM": 142,
         "SYNDROME": 15,
-        "TREATMENT": 9
+        "TREATMENT": 8
       }
     }
   },
@@ -787,27 +787,6 @@
           "candidate_spans_truncated": false
         },
         {
-          "unit_id": "5df33fe71bc2d7d403cf7e8d8e89ccb39e91cce1ec951650616f151f44981ff6",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153657-nr3s17p.sy",
-          "source_sha256": "cfc678e8624c4499755a9c5a980d69f54eb7f60ddd0e22077b1bf4abb3cf7786",
-          "tree_position": "0.241",
-          "block_id": "20240614090802-n1e5wuv",
-          "sentence_start": 37,
-          "sentence_end": 82,
-          "sentence_text": "大都佳果，多是圃人以他木接根上栽之，遂至肥美，殊失本性，此等药中不可用之，当以一生者为佳。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_92b0ef01cb61f908dbf33a66",
-              "term": "一生",
-              "candidate_type": "TREATMENT",
-              "start": 76,
-              "end": 78
-            }
-          ],
-          "candidate_spans_truncated": false
-        },
-        {
           "unit_id": "fe6841b0dc35191e3b85bb521bc2b14ee555afe02ad2ab91573d2bfc829e63eb",
           "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153814-j2kwwow.sy",
           "source_sha256": "5fe711d74eaecbe77596a371cfafad57b66dcf97119ad9cdc05dbb0600a828c8",
@@ -880,6 +859,27 @@
               "candidate_type": "TREATMENT",
               "start": 27,
               "end": 29
+            }
+          ],
+          "candidate_spans_truncated": false
+        },
+        {
+          "unit_id": "f289c7a7dad8f0725d65f19c2a06e93aedebc43358d8f97604794a144f56ed0a",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205165628-u3pxv3y.sy",
+          "source_sha256": "ec042da417cadfb2bd557cf1aeaa9f0c55e85508f370105ee5e33e1e42a3df06",
+          "tree_position": "0.223",
+          "block_id": "20240614170240-num1dt6",
+          "sentence_start": 826,
+          "sentence_end": 889,
+          "sentence_text": "若右手虚大而嗽者，虽有火邪，此为虚火上炎，肾水不足，乃刑金之火，非肺金之火，正当以人参救肺，但须多用方始得力，若少用必增胀满。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_12eddb4ae2737b20d43b5292",
+              "term": "人参救",
+              "candidate_type": "TREATMENT",
+              "start": 867,
+              "end": 870
             }
           ],
           "candidate_spans_truncated": false
