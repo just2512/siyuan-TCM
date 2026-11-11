@@ -396,6 +396,39 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 ["桂枝汤由桂枝组成．", "麻黄汤由麻黄组成"],
             )
 
+    def test_author_attribution_boundary_recognizes_yun_and_named_books(self):
+        formula = {
+            "mention_id": "formula-m", "unit_id": "formula",
+            "matched_text": "桂枝汤", "character_start": "0", "character_end": "3",
+        }
+        herb = {
+            "mention_id": "herb-m", "unit_id": "composition",
+            "matched_text": "桂枝", "character_start": "3", "character_end": "5",
+        }
+        for marker in ("张三曰：", "某氏云：", "《伤寒论》曰∶", "《金匮要略》云："):
+            with self.subTest(marker=marker):
+                units = {
+                    "formula": {
+                        "unit_id": "formula",
+                        "source": {"document": "a.sy", "sha256": "hash", "tree_position": "0.0", "block_id": "b0"},
+                        "content": {"source_text": "桂枝汤"},
+                    },
+                    "attribution": {
+                        "unit_id": "attribution",
+                        "source": {"document": "a.sy", "sha256": "hash", "tree_position": "0.1", "block_id": "b1"},
+                        "content": {"source_text": marker},
+                    },
+                    "composition": {
+                        "unit_id": "composition",
+                        "source": {"document": "a.sy", "sha256": "hash", "tree_position": "0.2", "block_id": "b2"},
+                        "content": {"source_text": "组成：桂枝"},
+                    },
+                }
+                self.assertTrue(
+                    module.crosses_author_attribution_boundary(formula, herb, units)
+                )
+
+
     def test_nearby_formula_relation_cannot_cross_author_attribution_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
