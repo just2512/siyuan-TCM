@@ -141,6 +141,18 @@ class SearchIndexSmokeTests(unittest.TestCase):
             self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
             self.assertEqual(result["relation_predicate_counts"]["SYMPTOM_TO_SYNDROME"], 1)
 
+            # The real-data validator must inspect every contextual relation row,
+            # not merely one row returned by a limited search query.
+            connection = sqlite3.connect(db)
+            connection.execute(
+                "UPDATE contextual_relation_candidates SET evidence_text=? WHERE relation_id=?",
+                ("头痛辨证为太阳", "r1"),
+            )
+            connection.commit()
+            connection.close()
+            with self.assertRaisesRegex(AssertionError, "evidence offset mismatch"):
+                smoke(db)
+
 
     def test_full_sqlite_scan_validates_every_formula_herb_endpoint_and_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
