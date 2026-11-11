@@ -312,7 +312,7 @@ class SemanticGraphExportTests(unittest.TestCase):
             # offsets before Python's permissive slicing can accept them.
             connection = __import__("sqlite3").connect(database)
             connection.execute(
-                "UPDATE contextual_relation_candidates SET sentence_start=-len(evidence_text), "
+                "UPDATE contextual_relation_candidates SET sentence_start=-length(evidence_text), "
                 "sentence_end=-1 WHERE relation_id=?",
                 (ctx_r1_id,),
             )
