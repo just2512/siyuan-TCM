@@ -110,7 +110,7 @@ def audit(path: Path, output: Path, max_examples: int = 50,
             if content_index_path is not None:
                 locator = (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])
                 expected_unit_id = hashlib.sha256(
-                    "\\0".join(locator).encode("utf-8")
+                    "\0".join(locator).encode("utf-8")
                 ).hexdigest()
                 if row["unit_id"] != expected_unit_id:
                     raise ValueError(
