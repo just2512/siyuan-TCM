@@ -95,7 +95,7 @@ def position_parts(value: str) -> tuple[int, ...]:
         return ()
 
 
-AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(r"(?:[\u3400-\u9fff]{1,8}曰[：:∶])")
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])")
 
 
 def crosses_author_attribution_boundary(
