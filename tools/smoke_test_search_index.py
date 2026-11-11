@@ -38,6 +38,49 @@ CONTEXTUAL_PREDICATE_TYPES = {
 }
 
 
+def validate_full_text_index_schema(connection: sqlite3.Connection) -> None:
+    """Require FTS search results to carry the complete source locator."""
+    columns = {row[1] for row in connection.execute("PRAGMA table_info(content_fts)")}
+    required = {
+        "content_text", "document", "source_sha256", "tree_position",
+        "block_id", "content_type", "section_path",
+    }
+    missing = required - columns
+    if missing:
+        raise AssertionError(
+            "FTS5 source locator schema is incomplete: " + ", ".join(sorted(missing))
+        )
+
+
+def validate_full_text_index_count(connection: sqlite3.Connection, content_block_count: int) -> int:
+    indexed_count = connection.execute("SELECT COUNT(*) FROM content_fts").fetchone()[0]
+    if indexed_count != content_block_count:
+        raise AssertionError(
+            f"full-text index row count mismatch: content_blocks={content_block_count}, "
+            f"content_fts={indexed_count}"
+        )
+    return indexed_count
+
+
+def validate_full_text_index_content_parity(connection: sqlite3.Connection) -> None:
+    """Compare indexed text and locator metadata against every source block."""
+    missing = connection.execute("""
+        SELECT COUNT(*) FROM (
+            SELECT document, source_sha256, tree_position, COALESCE(block_id, ''),
+                   content_type, section_path, content_text
+            FROM content_blocks
+            EXCEPT
+            SELECT document, source_sha256, tree_position, COALESCE(block_id, ''),
+                   content_type, section_path, content_text
+            FROM content_fts
+        )
+    """).fetchone()[0]
+    if missing:
+        raise AssertionError(
+            f"full-text index content/source mismatch: {missing} source blocks missing or altered"
+        )
+
+
 def validate_contextual_predicate_queries(database_path: Path, predicate_counts: dict[str, int]) -> None:
     """Exercise all supported predicate queries, including audited zero-row results."""
     for predicate, (expected_subject, expected_object) in CONTEXTUAL_PREDICATE_TYPES.items():
@@ -269,6 +312,14 @@ def smoke(database_path: Path) -> dict:
             )
 
     checks: dict[str, str] = {}
+    if metadata.get("search_backend") == "fts5-trigram":
+        validate_full_text_index_schema(connection)
+        validate_full_text_index_count(connection, counts["content_blocks"])
+        validate_full_text_index_content_parity(connection)
+        checks["full_text_index_rows"] = "PASS"
+        checks["full_text_index_source_parity"] = "PASS"
+    elif metadata.get("search_backend") != "sqlite-instr-fallback":
+        raise AssertionError(f"unsupported full-text search backend: {metadata.get('search_backend')!r}")
     if counts["semantic_relation_candidates"]:
         validate_all_formula_herb_relation_rows(connection)
         checks["formula_herb_all_rows_provenance"] = "PASS"
