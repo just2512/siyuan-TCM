@@ -278,7 +278,8 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 source = connection.execute("""SELECT content_text FROM content_blocks
                     WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=? LIMIT 1""",
                     (evidence["document"], evidence["source_sha256"], evidence["tree_position"], evidence["block_id"])).fetchone()
-                if source is None or end <= start or source[0][start:end] != evidence["text"]:
+                if (source is None or start < 0 or end <= start
+                    or end > len(source[0]) or source[0][start:end] != evidence["text"]):
                     raise ValueError(f"relation evidence mismatch at line {line}")
                 seen_relations.add(relation_id)
                 edge_count += 1

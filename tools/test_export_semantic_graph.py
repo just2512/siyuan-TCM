@@ -174,6 +174,32 @@ class SemanticGraphExportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "object_mention source span mismatch"):
                 module.validate(database, output)
 
+            # Evidence offsets need explicit bounds too: Python negative slices
+            # and slices extending past EOF can still return matching text.
+            with sqlite3.connect(database) as connection:
+                connection.execute("""
+                    UPDATE entity_mentions SET character_start=4, character_end=6
+                    WHERE mention_id='h1'
+                """)
+                connection.execute("""
+                    UPDATE semantic_relation_candidates
+                    SET sentence_start=-6, sentence_end=-1, evidence_text='由桂枝组成'
+                    WHERE relation_id='r1'
+                """)
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "relation evidence mismatch"):
+                module.validate(database, output)
+
+            with sqlite3.connect(database) as connection:
+                connection.execute("""
+                    UPDATE semantic_relation_candidates
+                    SET sentence_start=0, sentence_end=14, evidence_text='桂枝汤由桂枝组成。'
+                    WHERE relation_id='r1'
+                """)
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "relation evidence mismatch"):
+                module.validate(database, output)
+
 
     def test_exports_contextual_terms_and_explicit_relation_edges(self):
         with tempfile.TemporaryDirectory() as temp:
