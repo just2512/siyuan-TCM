@@ -158,12 +158,23 @@ class SearchIndexSmokeTests(unittest.TestCase):
             # The real-data validator must inspect every contextual relation row,
             # not merely one row returned by a limited search query.
             connection = sqlite3.connect(db)
+            connection.row_factory = sqlite3.Row
+            connection.execute(
+                "UPDATE contextual_term_type_candidates SET term=? WHERE candidate_id=?",
+                ("头痛误写", "s1"),
+            )
+            connection.commit()
+            with self.assertRaisesRegex(AssertionError, "candidate identity/source mismatch"):
+                smoke_module.validate_all_contextual_relation_rows(connection)
+            connection.execute(
+                "UPDATE contextual_term_type_candidates SET term=? WHERE candidate_id=?",
+                ("头痛", "s1"),
+            )
             connection.execute(
                 "UPDATE contextual_relation_candidates SET evidence_text=? WHERE relation_id=?",
                 ("头痛辨证为太阳", "r1"),
             )
             connection.commit()
-            connection.row_factory = sqlite3.Row
             with self.assertRaisesRegex(AssertionError, "evidence offset mismatch"):
                 smoke_module.validate_all_contextual_relation_rows(connection)
             connection.close()
