@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import gzip
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -71,7 +72,15 @@ class EntityMentionOverlapReviewQueueTests(unittest.TestCase):
             "relation_id": "relation-1", "subject_mention_id": "formula-1",
             "object_mention_id": "herb-1",
         }])
-        result = build_review_queue(self.mentions, self.content, self.output, self.report, self.relations)
+        overlap_audit = self.root / "overlap-audit.json"
+        overlap_audit.write_text(json.dumps({
+            "overlap_pair_counts_by_entity_type": {
+                "FORMULA|HERB": {"nested_formula_herb_entity": 1}
+            }
+        }), encoding="utf-8")
+        result = build_review_queue(
+            self.mentions, self.content, self.output, self.report, self.relations, overlap_audit
+        )
         with self.output.open(encoding="utf-8-sig", newline="") as stream:
             rows = list(csv.DictReader(stream))
         self.assertEqual(result["cross_type_overlap_pairs"], 1)
@@ -114,6 +123,22 @@ class EntityMentionOverlapReviewQueueTests(unittest.TestCase):
         self.write_csv(self.relations, ["relation_id", "subject_mention_id", "object_mention_id"], [])
         with self.assertRaisesRegex(ValueError, "duplicate source locator"):
             build_review_queue(self.mentions, self.content, self.output, self.report)
+
+    def test_rejects_queue_count_that_does_not_reconcile_with_overlap_audit(self):
+        source = "桂枝汤"
+        formula = self.mention("formula-1", "FORMULA", "桂枝汤", 0)
+        herb = self.mention("herb-1", "HERB", "桂枝", 0)
+        self.prepare(source, [formula, herb])
+        overlap_audit = self.root / "overlap-audit.json"
+        overlap_audit.write_text(json.dumps({
+            "overlap_pair_counts_by_entity_type": {
+                "FORMULA|HERB": {"nested_formula_herb_entity": 2}
+            }
+        }), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "does not reconcile"):
+            build_review_queue(
+                self.mentions, self.content, self.output, self.report, None, overlap_audit
+            )
 
     def test_rejects_relation_endpoint_not_present_in_mention_input(self):
         source = "桂枝汤"
