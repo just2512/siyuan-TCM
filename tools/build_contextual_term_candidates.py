@@ -8,6 +8,7 @@ the bounded sample snippets retained for vocabulary discovery.
 from __future__ import annotations
 
 import argparse
+from bisect import bisect_left
 import csv
 import gzip
 import json
@@ -62,9 +63,43 @@ PUNCTUATION = "，。！？；、\n"
 PREFIX_ONLY_TYPES = {"SYNDROME", "TREATMENT", "FORMULA", "HERB"}
 
 
+class FormulaSpanIndex:
+    """Immutable per-unit interval index for repeated formula-overlap queries."""
+
+    __slots__ = ("starts", "prefix_max_ends")
+
+    def __init__(self, spans: list[tuple[int, int]]):
+        ordered = sorted((int(start), int(end)) for start, end in spans)
+        self.starts = tuple(start for start, _ in ordered)
+        prefix_max_ends: list[int] = []
+        maximum_end = -1
+        for _, end in ordered:
+            maximum_end = max(maximum_end, end)
+            prefix_max_ends.append(maximum_end)
+        self.prefix_max_ends = tuple(prefix_max_ends)
+
+    def overlaps(self, start: int, end: int) -> bool:
+        # Find the last formula span whose start is before candidate end.
+        # Prefix maxima are necessary: a long earlier interval may contain
+        # the candidate even when the immediately preceding interval is short.
+        index = bisect_left(self.starts, end) - 1
+        return index >= 0 and self.prefix_max_ends[index] > start
+
+
+def _overlaps_formula_span(
+    start: int, end: int,
+    formula_spans: FormulaSpanIndex | tuple[tuple[int, int], ...] | list[tuple[int, int]],
+) -> bool:
+    if isinstance(formula_spans, FormulaSpanIndex):
+        return formula_spans.overlaps(start, end)
+    # Keep the public helper compatible with callers that pass raw spans.
+    return any(start < formula_end and formula_start < end
+               for formula_start, formula_end in formula_spans)
+
+
 def classify_span(
     text: str, start: int, end: int,
-    formula_spans: tuple[tuple[int, int], ...] | list[tuple[int, int]] = (),
+    formula_spans: FormulaSpanIndex | tuple[tuple[int, int], ...] | list[tuple[int, int]] = (),
 ) -> list[tuple[str, str]]:
     if start < 0 or end <= start or end > len(text):
         raise ValueError("candidate span is outside source text")
@@ -76,9 +111,8 @@ def classify_span(
         # A lexical formula mention owns its exact source span. A longer
         # n-gram that merely overlaps that formula must not be retyped as a
         # treatment method (e.g. "附子汤温" around the formula "附子汤").
-        if candidate_type == "TREATMENT" and any(
-            start < formula_end and formula_start < end
-            for formula_start, formula_end in formula_spans
+        if candidate_type == "TREATMENT" and _overlaps_formula_span(
+            start, end, formula_spans
         ):
             continue
         for rule_id, pattern in rules:
@@ -193,7 +227,7 @@ def load_candidate_terms(source_path: Path) -> set[str]:
     return terms
 
 
-def load_formula_spans(path: Path) -> dict[str, list[tuple[int, int]]]:
+def load_formula_spans(path: Path) -> dict[str, FormulaSpanIndex]:
     if not path.is_file():
         raise FileNotFoundError(path)
     grouped: dict[str, list[tuple[int, int]]] = {}
@@ -210,7 +244,7 @@ def load_formula_spans(path: Path) -> dict[str, list[tuple[int, int]]]:
             if start < 0 or end <= start:
                 raise ValueError(f"entity mention row {line}: invalid formula span")
             grouped.setdefault(row["unit_id"], []).append((start, end))
-    return grouped
+    return {unit_id: FormulaSpanIndex(spans) for unit_id, spans in grouped.items()}
 
 
 def build(source_path: Path, output_path: Path,
