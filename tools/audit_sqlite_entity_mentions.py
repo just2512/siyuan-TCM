@@ -64,6 +64,13 @@ def audit(database_path: Path) -> dict:
             )
             if row["unit_id"] != expected_unit:
                 raise ValueError(f"entity mention unit_id/source locator mismatch: {mention_id}")
+            start, end = row["character_start"], row["character_end"]
+            mention_identity = "\\0".join((
+                row["unit_id"], row["entity_type"], str(start), str(end), row["matched_text"],
+            ))
+            expected_mention_id = hashlib.sha256(mention_identity.encode("utf-8")).hexdigest()
+            if mention_id != expected_mention_id:
+                raise ValueError(f"entity mention ID/occurrence identity mismatch: {mention_id}")
             if row["content_text"] is None:
                 raise ValueError(f"entity mention source locator cannot be resolved: {mention_id}")
             if (row["content_type"] != row["source_content_type"]
