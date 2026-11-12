@@ -15,6 +15,11 @@ assert SPEC and SPEC.loader
 SPEC.loader.exec_module(module)
 
 
+def expected_mention_id(unit_id, entity_type, start, end, matched_text):
+    raw = "\\0".join((unit_id, entity_type, str(start), str(end), matched_text))
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
 class SQLiteEntityMentionAuditTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -74,9 +79,15 @@ class SQLiteEntityMentionAuditTests(unittest.TestCase):
             module.audit(self.db)
 
     def test_rejects_unresolvable_source_locator(self):
-        self.connection.execute("UPDATE entity_mentions SET block_id='missing' WHERE character_start=0")
+        wrong_unit = hashlib.sha256("\\0".join(
+            ("book/a.sy", "sha-a", "0.0", "missing")
+        ).encode()).hexdigest()
+        self.connection.execute(
+            "UPDATE entity_mentions SET block_id='missing', unit_id=? WHERE character_start=0",
+            (wrong_unit,),
+        )
         self.connection.commit()
-        with self.assertRaisesRegex(ValueError, "unit_id/source locator mismatch"):
+        with self.assertRaisesRegex(ValueError, "source locator cannot be resolved"):
             module.audit(self.db)
 
     def test_rejects_mention_id_not_derived_from_occurrence(self):
