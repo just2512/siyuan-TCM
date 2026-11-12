@@ -22,9 +22,9 @@ def source_unit_id(document: str, source_sha256: str, tree_position: str, block_
 
 
 
-SENTENCE_BOUNDARIES = "。！？；\\n"
+SENTENCE_BOUNDARIES = "。！？；\n"
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
-    r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
+    r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
 )
 
 
