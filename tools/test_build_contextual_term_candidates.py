@@ -5,7 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_contextual_term_candidates import build, validate, classify_sample, classify_span
+from build_contextual_term_candidates import (
+    FormulaSpanIndex, build, validate, classify_sample, classify_span,
+)
 from build_unclassified_term_candidates import candidate_id
 
 
@@ -349,6 +351,38 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertIn(
             ("TREATMENT", "TREATMENT_CONTEXT_01"),
             classify_span(text, start, start + len("健脾")),
+        )
+
+
+    def test_formula_span_index_matches_interval_overlap_semantics(self):
+        # A long earlier interval still overlaps even when the immediately
+        # preceding interval does not; the prefix maximum must preserve it.
+        spans = [(0, 10), (5, 6), (12, 14)]
+        index = FormulaSpanIndex(spans)
+        self.assertTrue(index.overlaps(8, 9))
+        self.assertTrue(index.overlaps(5, 6))
+        self.assertFalse(index.overlaps(10, 12))
+        self.assertFalse(index.overlaps(14, 15))
+
+    def test_indexed_formula_overlap_preserves_treatment_exclusion(self):
+        text = "当以附子汤温之，另当以温药下之。"
+        formula_start = text.index("附子汤")
+        spans = [(formula_start, formula_start + len("附子汤"))]
+        indexed = FormulaSpanIndex(spans)
+        candidate_start = text.index("附子汤温")
+        candidate_end = candidate_start + len("附子汤温")
+        self.assertEqual(
+            classify_span(text, candidate_start, candidate_end, spans),
+            classify_span(text, candidate_start, candidate_end, indexed),
+        )
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, candidate_start, candidate_end, indexed),
+        )
+        valid_start = text.index("温药下之")
+        self.assertIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, valid_start, valid_start + len("温药下之"), indexed),
         )
 
     def test_formula_mention_span_prevents_overlapping_treatment_retyping(self):
