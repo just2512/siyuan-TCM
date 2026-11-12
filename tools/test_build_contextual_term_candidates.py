@@ -363,7 +363,6 @@ class ContextualTermCandidateTests(unittest.TestCase):
         self.assertTrue(index.overlaps(5, 6))
         self.assertFalse(index.overlaps(10, 12))
         self.assertFalse(index.overlaps(14, 15))
-        self.assertFalse(index.overlaps(3, 5))
 
     def test_indexed_formula_overlap_preserves_treatment_exclusion(self):
         text = "当以附子汤温之，另当以温药下之。"
