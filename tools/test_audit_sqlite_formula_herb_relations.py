@@ -41,6 +41,7 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
         text = "桂枝汤由桂枝组成。"
         self.connection.execute("INSERT INTO content_blocks VALUES (?,?,?,?,?)", (*locator, text))
         unit_id = hashlib.sha256("\0".join(locator).encode()).hexdigest()
+        self.unit_id = unit_id
         self.connection.executemany(
             "INSERT INTO entity_mentions VALUES (?,?,?,?,?,?,?,?,?,?)",
             [
