@@ -82,9 +82,11 @@ class SQLiteEntityMentionAuditTests(unittest.TestCase):
 
     def test_rejects_unresolvable_source_locator(self):
         wrong_unit = module.source_unit_id("book/a.sy", "sha-a", "0.0", "missing")
+        wrong_mention_id = expected_mention_id(wrong_unit, "FORMULA", 0, 3, "桂枝汤")
         self.connection.execute(
-            "UPDATE entity_mentions SET block_id='missing', unit_id=? WHERE character_start=0",
-            (wrong_unit,),
+            "UPDATE entity_mentions SET block_id='missing', unit_id=?, mention_id=? "
+            "WHERE character_start=0",
+            (wrong_unit, wrong_mention_id),
         )
         self.connection.commit()
         with self.assertRaisesRegex(ValueError, "source locator cannot be resolved"):
