@@ -86,7 +86,7 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
             "SELECT subject_mention_id, object_mention_id, unit_id, sentence_end, extraction_rule "
             "FROM semantic_relation_candidates"
         ).fetchone()
-        identity = "\\0".join((
+        identity = "\0".join((
             row[0], "FORMULA_CONTAINS_HERB", row[1], row[2], "1",
             str(row[3]), row[4],
         ))
