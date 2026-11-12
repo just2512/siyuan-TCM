@@ -29,7 +29,7 @@ def expected_relation_id(row: sqlite3.Row) -> str:
 
 
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
-    r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
+    r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
 )
 
 
