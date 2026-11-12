@@ -429,6 +429,101 @@ class FormulaHerbRelationCandidateTests(unittest.TestCase):
                 )
 
 
+
+
+    def test_nearby_formula_ignores_anchors_from_another_source_revision(self):
+        evidence_unit = {
+            "unit_id": "composition",
+            "source": {"document": "a.sy", "sha256": "rev-a", "tree_position": "0.0"},
+        }
+        wrong_revision = {
+            "mention_id": "old-formula", "unit_id": "old",
+            "tree_position": "0.1", "document": "a.sy", "source_sha256": "rev-b",
+            "character_start": "0", "character_end": "3",
+            "matched_text": "麻黄汤", "_source_text": "麻黄汤主之",
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        matching_revision = {
+            "mention_id": "current-formula", "unit_id": "current",
+            "tree_position": "0.3", "document": "a.sy", "source_sha256": "rev-a",
+            "character_start": "0", "character_end": "3",
+            "matched_text": "桂枝汤", "_source_text": "桂枝汤主之",
+            "_unit_type": "SOURCE_PARAGRAPH",
+        }
+        self.assertEqual(
+            module.nearby_formula([wrong_revision, matching_revision], evidence_unit),
+            matching_revision,
+        )
+
+    def test_formula_herb_endpoints_from_different_source_revisions_are_rejected(self):
+        formula = {
+            "mention_id": "formula-m", "unit_id": "formula",
+            "matched_text": "桂枝汤", "character_start": "0", "character_end": "3",
+        }
+        herb = {
+            "mention_id": "herb-m", "unit_id": "composition",
+            "matched_text": "桂枝", "character_start": "3", "character_end": "5",
+        }
+        units = {
+            "formula": {
+                "unit_id": "formula",
+                "source": {"document": "a.sy", "sha256": "rev-a", "tree_position": "0.0"},
+                "content": {"source_text": "桂枝汤主之"},
+            },
+            "composition": {
+                "unit_id": "composition",
+                "source": {"document": "a.sy", "sha256": "rev-b", "tree_position": "0.1"},
+                "content": {"source_text": "组成：桂枝"},
+            },
+        }
+        self.assertTrue(module.crosses_author_attribution_boundary(formula, herb, units))
+
+    def test_sibling_unit_index_is_revision_scoped_and_matches_direct_boundary_check(self):
+        formula = {
+            "mention_id": "formula-m", "unit_id": "formula",
+            "matched_text": "桂枝汤", "character_start": "0", "character_end": "3",
+        }
+        herb = {
+            "mention_id": "herb-m", "unit_id": "composition",
+            "matched_text": "桂枝", "character_start": "3", "character_end": "5",
+        }
+        units = {
+            "formula": {
+                "unit_id": "formula",
+                "source": {"document": "a.sy", "sha256": "rev-a", "tree_position": "0.0", "block_id": "b0"},
+                "content": {"source_text": "桂枝汤"},
+            },
+            "attribution": {
+                "unit_id": "attribution",
+                "source": {"document": "a.sy", "sha256": "rev-a", "tree_position": "0.1", "block_id": "b1"},
+                "content": {"source_text": "张三曰："},
+            },
+            "composition": {
+                "unit_id": "composition",
+                "source": {"document": "a.sy", "sha256": "rev-a", "tree_position": "0.2", "block_id": "b2"},
+                "content": {"source_text": "组成：桂枝"},
+            },
+            "unrelated-revision": {
+                "unit_id": "unrelated-revision",
+                "source": {"document": "a.sy", "sha256": "rev-b", "tree_position": "0.1", "block_id": "old-b1"},
+                "content": {"source_text": "无关修订版本"},
+            },
+            "unrelated-document": {
+                "unit_id": "unrelated-document",
+                "source": {"document": "b.sy", "sha256": "rev-a", "tree_position": "0.1", "block_id": "other-b1"},
+                "content": {"source_text": "无关文档"},
+            },
+        }
+        index = module.build_sibling_unit_index(units)
+        self.assertTrue(module.crosses_author_attribution_boundary(formula, herb, units))
+        self.assertTrue(module.crosses_author_attribution_boundary(formula, herb, units, index))
+
+        # Removing the same-revision attribution sibling must allow the
+        # unrelated revision/document rows to remain irrelevant.
+        del units["attribution"]
+        index = module.build_sibling_unit_index(units)
+        self.assertFalse(module.crosses_author_attribution_boundary(formula, herb, units, index))
+
     def test_nearby_formula_relation_cannot_cross_author_attribution_block(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
