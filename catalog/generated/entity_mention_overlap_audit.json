@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_mentions": "catalog/generated/entity_mention_candidates.csv.gz",
   "source_units": 93541,
   "total_mentions": 421850,
@@ -9,6 +9,13 @@
     "unit_identity_checked": 421850,
     "status": "PASS"
   },
+  "mention_counts_by_entity_type": {
+    "FORMULA": 41233,
+    "HERB": 158951,
+    "ORGAN": 200776,
+    "POINT": 1818,
+    "SYNDROME": 19072
+  },
   "overlap_pair_counts": {
     "same_type_exact_duplicate_window": 0,
     "cross_type_exact_span": 0,
@@ -17,6 +24,35 @@
     "nested_same_type_window": 1665,
     "nested_cross_type_entity": 2677,
     "partial_overlap": 902
+  },
+  "overlap_pair_counts_by_entity_type": {
+    "FORMULA|FORMULA": {
+      "nested_named_formula": 3041
+    },
+    "FORMULA|HERB": {
+      "nested_formula_herb_entity": 27419,
+      "partial_overlap": 2
+    },
+    "FORMULA|ORGAN": {
+      "nested_cross_type_entity": 2106
+    },
+    "HERB|HERB": {
+      "nested_same_type_window": 831,
+      "partial_overlap": 300
+    },
+    "HERB|ORGAN": {
+      "nested_cross_type_entity": 370
+    },
+    "ORGAN|ORGAN": {
+      "nested_same_type_window": 831
+    },
+    "ORGAN|SYNDROME": {
+      "nested_cross_type_entity": 201
+    },
+    "SYNDROME|SYNDROME": {
+      "nested_same_type_window": 3,
+      "partial_overlap": 600
+    }
   },
   "relation_candidate_cross_reference": {
     "relation_candidate_rows": 139,
@@ -2140,6 +2176,28 @@
   },
   "repeated_term_groups": 77641,
   "repeated_term_occurrences_in_groups": 266813,
+  "repeated_occurrence_counts_by_entity_type": {
+    "FORMULA": {
+      "groups": 8116,
+      "occurrences": 25224
+    },
+    "HERB": {
+      "groups": 27793,
+      "occurrences": 97441
+    },
+    "ORGAN": {
+      "groups": 38422,
+      "occurrences": 134997
+    },
+    "POINT": {
+      "groups": 285,
+      "occurrences": 917
+    },
+    "SYNDROME": {
+      "groups": 3025,
+      "occurrences": 8234
+    }
+  },
   "examples_limit_per_category": 50,
   "overlap_examples": {
     "nested_cross_type_entity": [
