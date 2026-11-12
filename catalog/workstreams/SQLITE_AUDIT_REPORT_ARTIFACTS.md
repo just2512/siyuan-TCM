@@ -20,3 +20,9 @@ The SQLite audit scripts return detailed machine-readable dictionaries, but the 
 - Fast Python CI and Module CI pass.
 - Full-corpus workflow writes all four reports only after their corresponding audits pass.
 - No generated report is committed as implementation code; it remains a build output/artifact.
+
+## Report paths
+- `catalog/generated/sqlite_entity_mention_audit.json`
+- `catalog/generated/sqlite_contextual_term_audit.json`
+- `catalog/generated/sqlite_contextual_relation_audit.json`
+- `catalog/generated/sqlite_formula_herb_relation_audit.json`
