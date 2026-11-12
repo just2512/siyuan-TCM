@@ -109,7 +109,7 @@ jobs:
       - name: Export machine-readable semantic graph
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence
-        run: python tools/export_semantic_graph.py --validate
+        run: python tools/export_semantic_graph.py --validate --report catalog/generated/semantic_graph_validation.json
       - name: Smoke-test full-corpus SQLite query paths
         run: python tools/smoke_test_search_index.py --db catalog/generated/siyuan_search.sqlite3 --output catalog/generated/search_index_smoke.json
       - name: Publish queryable SQLite and semantic graph artifacts
@@ -128,6 +128,7 @@ jobs:
             catalog/generated/sqlite_contextual_term_audit.json
             catalog/generated/sqlite_contextual_relation_audit.json
             catalog/generated/sqlite_formula_herb_relation_audit.json
+            catalog/generated/semantic_graph_validation.json
           if-no-files-found: error
           retention-days: 30
       - name: Publish full unclassified term candidate dataset
