@@ -58,6 +58,26 @@ NGRAM_PATTERNS = {
     for length in range(2, 7)
 }
 PUNCTUATION = "，。！？；、\n"
+SENTENCE_BOUNDARIES = "。！？；\n"
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
+    r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
+)
+
+
+def evidence_window(text: str, start: int, end: int, context: int = 12) -> tuple[int, int]:
+    """Return a bounded evidence window that cannot cross sentence or attribution boundaries."""
+    if start < 0 or end <= start or end > len(text):
+        raise ValueError("candidate span is outside source text")
+    left = max(text.rfind(mark, 0, start) for mark in SENTENCE_BOUNDARIES) + 1
+    right_candidates = [text.find(mark, end) for mark in SENTENCE_BOUNDARIES]
+    right_candidates = [pos for pos in right_candidates if pos >= 0]
+    right = min(right_candidates) if right_candidates else len(text)
+    for match in AUTHOR_ATTRIBUTION_BOUNDARY.finditer(text, left, start):
+        left = max(left, match.end())
+    next_attribution = AUTHOR_ATTRIBUTION_BOUNDARY.search(text, end, right)
+    if next_attribution:
+        right = min(right, next_attribution.start())
+    return max(left, start - context), min(right, end + context)
 
 
 PREFIX_ONLY_TYPES = {"SYNDROME", "TREATMENT", "FORMULA", "HERB"}
@@ -293,8 +313,8 @@ def build(source_path: Path, output_path: Path,
                         )
                         if not classifications:
                             continue
-                        evidence_start = max(0, start - 12)
-                        evidence_text = text[evidence_start:min(len(text), end + 12)]
+                        evidence_start, evidence_end = evidence_window(text, start, end)
+                        evidence_text = text[evidence_start:evidence_end]
                         cid = candidate_id(term)
                         for candidate_type, rule_id in classifications:
                             writer.writerow({

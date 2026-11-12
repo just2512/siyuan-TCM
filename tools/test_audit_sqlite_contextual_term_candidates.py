@@ -104,6 +104,19 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
             module.audit(self.db)
 
 
+    def test_rejects_evidence_window_crossing_sentence_or_author_boundary(self):
+        source = "症见头痛。张仲景曰：后文"
+        start = source.index("头痛")
+        self.connection.execute("UPDATE content_blocks SET content_text=?", (source,))
+        self.connection.execute(
+            "UPDATE contextual_term_type_candidates SET character_start=?, character_end=?, "
+            "evidence_start=0, evidence_text=?",
+            (start, start + 2, source),
+        )
+        self.connection.commit()
+        with self.assertRaisesRegex(ValueError, "evidence offset/text mismatch"):
+            module.audit(self.db)
+
     def test_keeps_repeated_term_occurrences_at_distinct_offsets(self):
         source = "前文，症见头痛，复见头痛，后文"
         self.connection.execute("UPDATE content_blocks SET content_text=?", (source,))

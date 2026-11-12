@@ -11,7 +11,7 @@ from pathlib import Path
 
 from audit_report import write_audit_report
 
-from build_contextual_term_candidates import RULE_IDS_BY_TYPE
+from build_contextual_term_candidates import RULE_IDS_BY_TYPE, evidence_window
 from build_unclassified_term_candidates import candidate_id
 
 
@@ -83,8 +83,7 @@ def audit(database_path: Path) -> dict:
             if (start < 0 or end <= start or end > len(source_text)
                 or source_text[start:end] != row["term"]):
                 raise ValueError(f"contextual term source span mismatch: {key}")
-            expected_evidence_start = max(0, start - 12)
-            expected_evidence_end = min(len(source_text), end + 12)
+            expected_evidence_start, expected_evidence_end = evidence_window(source_text, start, end)
             if (evidence_start != expected_evidence_start
                 or evidence_end != expected_evidence_end
                 or source_text[evidence_start:evidence_end] != row["evidence_text"]
