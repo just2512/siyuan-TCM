@@ -103,7 +103,7 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
     def test_rejects_formula_herb_relation_crossing_author_attribution(self):
         text = "桂枝汤，张三曰：桂枝组成。"
         end = len(text)
-        identity = "\\0".join((
+        identity = "\0".join((
             "m-formula", "FORMULA_CONTAINS_HERB", "m-herb",
             self.unit_id, "0", str(end), "FORMULA_COMPOSITION_EXPLICIT_V1",
         ))
