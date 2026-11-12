@@ -10,6 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 from build_contextual_term_candidates import RULE_IDS_BY_TYPE
+from build_unclassified_term_candidates import candidate_id
 
 
 def source_unit_id(document: str, source_sha256: str, tree_position: str, block_id: str) -> str:
@@ -58,6 +59,8 @@ def audit(database_path: Path) -> dict:
                         row["rule_id"], row["evidence_document"], row["source_sha256"],
                         row["tree_position"], row["unit_id"], row["evidence_text"])):
                 raise ValueError(f"contextual term candidate has empty identity/provenance: {key}")
+            if row["candidate_id"] != candidate_id(row["term"]):
+                raise ValueError(f"contextual term candidate ID/term identity mismatch: {key}")
             if row["candidate_type"] not in RULE_IDS_BY_TYPE:
                 raise ValueError(f"unsupported contextual term type: {row['candidate_type']}")
             if row["rule_id"] not in RULE_IDS_BY_TYPE[row["candidate_type"]]:
