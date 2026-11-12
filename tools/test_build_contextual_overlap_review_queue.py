@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import gzip
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -46,16 +47,38 @@ class ContextualOverlapReviewQueueTests(unittest.TestCase):
                 self.row(candidate_id="symptom-1", term="咳嗽", kind="SYMPTOM", start=2),
                 self.row(candidate_id="pulse-1", term="咳嗽发", kind="PULSE", start=2),
             ])
-            result = build_review_queue(source, output, report)
+            overlap_audit = root / "overlap-audit.json"
+            overlap_audit.write_text(json.dumps({
+                "overlap_pair_candidate_type_counts": {"PULSE|SYMPTOM": 1},
+                "overlap_pair_type_relation_counts": {"cross_type": 1},
+            }), encoding="utf-8")
+            result = build_review_queue(source, output, report, overlap_audit)
             with output.open(encoding="utf-8-sig", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual(result["cross_type_overlap_pairs"], 1)
+            self.assertEqual(result["reconciliation"]["status"], "PASS")
             self.assertEqual(rows[0]["candidate_type_pair"], "PULSE|SYMPTOM")
             self.assertEqual(rows[0]["left_start"], "2")
             self.assertEqual(rows[0]["right_end"], "5")
             self.assertEqual(rows[0]["evidence_text"], "患者咳嗽发热")
             self.assertEqual(rows[0]["review_status"], "UNREVIEWED")
             self.assertEqual(rows[0]["document"], "doc.sy")
+
+    def test_rejects_review_queue_count_that_does_not_match_overlap_audit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output, report = root / "terms.csv.gz", root / "review.csv", root / "report.json"
+            self.write_input(source, [
+                self.row(candidate_id="symptom-1", term="咳嗽", kind="SYMPTOM", start=2),
+                self.row(candidate_id="pulse-1", term="咳嗽发", kind="PULSE", start=2),
+            ])
+            overlap_audit = root / "overlap-audit.json"
+            overlap_audit.write_text(json.dumps({
+                "overlap_pair_candidate_type_counts": {"PULSE|SYMPTOM": 2},
+                "overlap_pair_type_relation_counts": {"cross_type": 2},
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "does not reconcile"):
+                build_review_queue(source, output, report, overlap_audit)
 
     def test_same_type_overlap_is_not_misreported_as_cross_type_review(self):
         with tempfile.TemporaryDirectory() as temp:

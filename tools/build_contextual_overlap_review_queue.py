@@ -81,7 +81,7 @@ def overlap_kind(left: dict, right: dict) -> str:
     return "partial_overlap"
 
 
-def build_review_queue(input_path: Path, output_path: Path, report_path: Path) -> dict:
+def build_review_queue(input_path: Path, output_path: Path, report_path: Path, overlap_audit_path: Path | None = None) -> dict:
     occurrences = load_occurrences(input_path)
     by_unit: dict[str, list[dict]] = defaultdict(list)
     for item in occurrences.values():
@@ -148,6 +148,35 @@ def build_review_queue(input_path: Path, output_path: Path, report_path: Path) -
                 by_overlap_kind[kind] += 1
             active.append(current)
 
+    reconciliation = {"status": "NOT_RUN"}
+    if overlap_audit_path is not None:
+        overlap_audit = json.loads(overlap_audit_path.read_text(encoding="utf-8"))
+        expected_by_pair = {}
+        for pair, count in overlap_audit.get("overlap_pair_candidate_type_counts", {}).items():
+            entity_types = pair.split("|")
+            if len(entity_types) == 2 and entity_types[0] != entity_types[1] and int(count):
+                expected_by_pair[pair] = int(count)
+        actual_by_pair = dict(sorted(by_pair_type.items()))
+        if expected_by_pair != actual_by_pair:
+            raise ValueError(
+                "cross-type contextual review queue does not reconcile with overlap audit: "
+                f"expected={expected_by_pair}, actual={actual_by_pair}"
+            )
+        reported_cross_type = int(
+            overlap_audit.get("overlap_pair_type_relation_counts", {}).get("cross_type", -1)
+        )
+        if reported_cross_type != len(rows):
+            raise ValueError(
+                "cross-type contextual review queue total does not reconcile with overlap audit: "
+                f"expected={reported_cross_type}, actual={len(rows)}"
+            )
+        reconciliation = {
+            "status": "PASS",
+            "expected_cross_type_overlap_pairs": reported_cross_type,
+            "queued_cross_type_overlap_pairs": len(rows),
+            "pairs_by_type_match": True,
+        }
+
     rows.sort(key=lambda row: (row["document"], row["tree_position"], row["block_id"],
         row["left_start"], row["right_start"], row["pair_id"]))
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -168,6 +197,7 @@ def build_review_queue(input_path: Path, output_path: Path, report_path: Path) -
         "schema_version": 1,
         "distinct_occurrences": len(occurrences),
         "cross_type_overlap_pairs": len(rows),
+        "reconciliation": reconciliation,
         "same_type_overlap_pairs_not_queued": same_type_pairs,
         "cross_type_pairs_by_type": dict(sorted(by_pair_type.items())),
         "cross_type_pairs_by_overlap_kind": dict(sorted(by_overlap_kind.items())),
@@ -193,8 +223,10 @@ def main() -> int:
         default=Path("catalog/generated/contextual_term_cross_type_overlap_review.csv"))
     parser.add_argument("--report", type=Path,
         default=Path("catalog/generated/contextual_term_cross_type_overlap_review.json"))
+    parser.add_argument("--overlap-audit", type=Path,
+        default=Path("catalog/generated/contextual_term_overlap_audit.json"))
     args = parser.parse_args()
-    build_review_queue(args.input, args.output, args.report)
+    build_review_queue(args.input, args.output, args.report, args.overlap_audit)
     return 0
 
 
