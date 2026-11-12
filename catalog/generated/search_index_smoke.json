@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "database_bytes": 8174600192,
+  "database_bytes": 8173756416,
   "search_backend": "fts5-trigram",
   "table_counts": {
     "content_blocks": 236987,

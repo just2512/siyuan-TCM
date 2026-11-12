@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
@@ -98,7 +98,14 @@
           "sentence_text": "所以，我们常常会遇到被西医诊断为不同的病。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 135,
+              "end": 138
+            }
+          ]
         },
         {
           "unit_id": "67bbc2d6435a09ee4e52765b2716a95526eddc9f6755b4354305b6ee0695bb1f",
@@ -111,7 +118,14 @@
           "sentence_text": "临床上我们有选用，选用的法则呢，我们以经方为主，以张仲景的处方为主，他的条辨、辨证为主。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "辨证为",
+              "start": 62,
+              "end": 65
+            }
+          ]
         },
         {
           "unit_id": "a24f72039f4d879cb99c3b8267dc84e65edcaa1ce13879b3e5904106a1b86030",
@@ -124,7 +138,14 @@
           "sentence_text": "黄帝曰：余闻人有精、气、津、液、血、脉,余意以为一气耳,今乃辨为六名,余不知其所以然。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "辨为",
+              "start": 30,
+              "end": 32
+            }
+          ]
         },
         {
           "unit_id": "badaa1c3c02c47f418662331065760df54d3e812c4e65049ebe10719a9ec3343",
@@ -137,7 +158,14 @@
           "sentence_text": "44、胸前鼓起一块，西医可能诊断为肺炎、肺积水、肺脓疡：大陷胸丸；",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 14,
+              "end": 17
+            }
+          ]
         },
         {
           "unit_id": "346488815f6d1f1824d91052e6ba3f7e687e7ca8a6384231ac434861c05b2e01",
@@ -150,7 +178,14 @@
           "sentence_text": "星星王子因为心肌炎三度转院治疗，在署立丰原医院，日前也有一名二十六岁的纪姓男子，因突然晕倒到院急诊，起初怀疑是癫痫，经检查后，诊断为「急性心肌炎」。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 63,
+              "end": 66
+            }
+          ]
         }
       ],
       "missing_object_type": [
@@ -180,7 +215,14 @@
               "end": 114
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 18,
+              "end": 21
+            }
+          ]
         },
         {
           "unit_id": "d70df6074e1a8e6f9197763158f065a24c6a1eac27f6dd3446bad0f8ef53030f",
@@ -208,7 +250,14 @@
               "end": 127
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 10,
+              "end": 13
+            }
+          ]
         },
         {
           "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
@@ -229,7 +278,14 @@
               "end": 13
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 47,
+              "end": 50
+            }
+          ]
         },
         {
           "unit_id": "df27bd3624e78baae7b8097d914d11b8c590f537d83a830e536c34197b2018b3",
@@ -250,7 +306,14 @@
               "end": 13
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 47,
+              "end": 50
+            }
+          ]
         }
       ],
       "missing_subject_type": [
@@ -273,7 +336,19 @@
               "end": 300
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 46,
+              "end": 49
+            },
+            {
+              "text": "诊断为",
+              "start": 263,
+              "end": 266
+            }
+          ]
         },
         {
           "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
@@ -294,7 +369,14 @@
               "end": 253
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 242,
+              "end": 245
+            }
+          ]
         },
         {
           "unit_id": "4c30933497a97e013564e3c46dbc9261d0aafd1f6e035a8d4306aad40be304ae",
@@ -315,7 +397,14 @@
               "end": 30
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "辨证为",
+              "start": 25,
+              "end": 28
+            }
+          ]
         },
         {
           "unit_id": "f6959b2a1d855590ca07dcbe01ea2702600c0d6b5ce07b8779be54bcbf0684f3",
@@ -343,7 +432,19 @@
               "end": 144
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "证属",
+              "start": 125,
+              "end": 127
+            },
+            {
+              "text": "证属",
+              "start": 140,
+              "end": 142
+            }
+          ]
         },
         {
           "unit_id": "f216a55701e70a772a9eac987ba83691c89bf3eb44d630a50e556822f04c5741",
@@ -364,7 +465,14 @@
               "end": 88
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "证属",
+              "start": 84,
+              "end": 86
+            }
+          ]
         }
       ]
     },
@@ -389,7 +497,14 @@
               "end": 23
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 18,
+              "end": 20
+            }
+          ]
         },
         {
           "unit_id": "bdefa7e48d586eb91adcf55f98e198025c3f8d704d1a9126192f195bf17a39df",
@@ -410,7 +525,14 @@
               "end": 39
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 33,
+              "end": 35
+            }
+          ]
         },
         {
           "unit_id": "107b8fb8d22b633865b5c4c199d1f024fcc26f30c6892240f767e194a0a05047",
@@ -431,7 +553,14 @@
               "end": 122
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 116,
+              "end": 118
+            }
+          ]
         },
         {
           "unit_id": "70caaa2a94950af2020b95c4286f1cf4f49c708f49cb560420e01e8242c77666",
@@ -452,7 +581,14 @@
               "end": 441
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 437,
+              "end": 439
+            }
+          ]
         },
         {
           "unit_id": "8a2400ab89a031760c4850a46c4e0ecb70e309098bad5486ebe941c36c8bada2",
@@ -473,7 +609,14 @@
               "end": 92
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "治以",
+              "start": 84,
+              "end": 86
+            }
+          ]
         }
       ],
       "missing_both_endpoint_types": [
@@ -503,7 +646,14 @@
               "end": 52
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 47,
+              "end": 49
+            }
+          ]
         },
         {
           "unit_id": "d930e87f3e69852135e5d0d10585cb122c7eb1340933f7cca956cdd9799e4197",
@@ -524,7 +674,14 @@
               "end": 60
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 55,
+              "end": 57
+            }
+          ]
         },
         {
           "unit_id": "7ed3d6af3ff263a46bca11d7201985d249263b39d618921af969d4241c46f9f9",
@@ -552,7 +709,14 @@
               "end": 54
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "当以",
+              "start": 49,
+              "end": 51
+            }
+          ]
         },
         {
           "unit_id": "11020bee5155a55f636771236c62788a4b254fe1457cac44d9a935a1f4fad6e7",
@@ -565,7 +729,14 @@
           "sentence_text": "在治病时，要因时因地治宜。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "治宜",
+              "start": 35,
+              "end": 37
+            }
+          ]
         },
         {
           "unit_id": "3097781a63b1d533658b9a42c4f2271086fea5a149b2034995cef07acedb2834",
@@ -578,7 +749,14 @@
           "sentence_text": "对称治疗法，除了左病右治，右病左治以外。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "治以",
+              "start": 16,
+              "end": 18
+            }
+          ]
         }
       ]
     },
@@ -595,7 +773,14 @@
           "sentence_text": "170、 薏仁可以说一味可以松筋的药，如果是抽筋或风湿类造成的手脚筋缩之类的问题，可用单味薏仁，如一次150公克开下去，几乎都松的开 。",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 41,
+              "end": 43
+            }
+          ]
         },
         {
           "unit_id": "3e193d1a0f3be3bbdfda4de04c105c02c46feab729d7f064dff0bbfc1678d807",
@@ -608,7 +793,14 @@
           "sentence_text": "180、苦参中毒，可用生蛋白或浓茶解；",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 9,
+              "end": 11
+            }
+          ]
         },
         {
           "unit_id": "10c5c4ce7eb008944a746709869f70b12329dcf647c77ab7ae1e345cf2cfe3f6",
@@ -621,7 +813,14 @@
           "sentence_text": "如果是肺痈初期，即正在发炎要化脓的时候，可用苇茎汤；",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 29,
+              "end": 31
+            }
+          ]
         },
         {
           "unit_id": "f3a16de1aa03bf9bea636c7b2a93d3413a69e2b7a5101bc39509a73fc094a041",
@@ -634,7 +833,14 @@
           "sentence_text": "服用方法：早晚各服用三钱，调热水里面化开喝掉（或煮软后用果汁机之类机器直接打浆，开火收干制造成果酱，再加明矾调和）；",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "用方",
+              "start": 102,
+              "end": 104
+            }
+          ]
         },
         {
           "unit_id": "d8ca00513fca9a1b402fef7b562db727d2e210bc87fd96ef68ee13684ca1ad58",
@@ -647,7 +853,14 @@
           "sentence_text": "100、失眠：温胆汤（无差别可用方，百分之七十有效）；",
           "sentence_truncated": false,
           "typed_candidate_spans": [],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 14,
+              "end": 16
+            }
+          ]
         }
       ],
       "missing_subject_type": [
@@ -670,7 +883,14 @@
               "end": 17
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 11,
+              "end": 13
+            }
+          ]
         },
         {
           "unit_id": "459d0d7312dd8828a27d77c4bfa59f8ba4655f23c82ab15645884f6a1ce0b391",
@@ -691,7 +911,14 @@
               "end": 12
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 25,
+              "end": 27
+            }
+          ]
         },
         {
           "unit_id": "3ab0128b64566cf5cd1c080c4c1ab058306971eb52692dd5c3686462c07410a2",
@@ -712,7 +939,14 @@
               "end": 15
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 21,
+              "end": 23
+            }
+          ]
         },
         {
           "unit_id": "dc826a88425c3d39a4d5e290e4be6a9c2ff1485bcf7650ccc1b54852b4b3f64b",
@@ -740,7 +974,14 @@
               "end": 124
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "用方",
+              "start": 99,
+              "end": 101
+            }
+          ]
         },
         {
           "unit_id": "3f8b1f2370bb3ca1cb7bf166b7184c60bc53b63d90fce747e4e19b1557f38ea5",
@@ -761,7 +1002,14 @@
               "end": 9
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 25,
+              "end": 27
+            }
+          ]
         }
       ],
       "missing_object_type": [
@@ -784,7 +1032,14 @@
               "end": 145
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 107,
+              "end": 109
+            }
+          ]
         },
         {
           "unit_id": "fe6841b0dc35191e3b85bb521bc2b14ee555afe02ad2ab91573d2bfc829e63eb",
@@ -819,7 +1074,14 @@
               "end": 359
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 211,
+              "end": 213
+            }
+          ]
         },
         {
           "unit_id": "47a351872a6f78615ac65af66fdb8e983df3b4179964c1bb211011ed0276b74e",
@@ -840,7 +1102,14 @@
               "end": 16
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 51,
+              "end": 53
+            }
+          ]
         },
         {
           "unit_id": "e4f270c412ceb7d1e8e43bafa43944372fe1d8c1c9bc12bc5b7b751c46f00d6e",
@@ -861,7 +1130,14 @@
               "end": 29
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 65,
+              "end": 67
+            }
+          ]
         },
         {
           "unit_id": "f289c7a7dad8f0725d65f19c2a06e93aedebc43358d8f97604794a144f56ed0a",
@@ -882,7 +1158,14 @@
               "end": 870
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "用方",
+              "start": 875,
+              "end": 877
+            }
+          ]
         }
       ],
       "ordered_pair_but_no_predicate_between": [
@@ -926,7 +1209,14 @@
               "end": 185
             }
           ],
-          "candidate_spans_truncated": false
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 204,
+              "end": 206
+            }
+          ]
         }
       ]
     }

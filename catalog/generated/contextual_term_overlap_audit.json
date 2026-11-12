@@ -1,0 +1,1292 @@
+{
+  "distinct_occurrence_rows": 123851,
+  "overlap_examples": [
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_dd05a455a629d14c87a9980b",
+        "candidate_type": "SYMPTOM",
+        "end": 5,
+        "start": 3,
+        "term": "咳嗽"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_192e2527a6dd2b8624115a99",
+        "candidate_type": "SYMPTOM",
+        "end": 6,
+        "start": 3,
+        "term": "咳嗽最"
+      },
+      "type_relation": "same_type",
+      "unit_id": "4b90e693f9e1650c68f206c91e162a499e5dde1481048a46c4285c7e8833f27b"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_dd05a455a629d14c87a9980b",
+        "candidate_type": "SYMPTOM",
+        "end": 5,
+        "start": 3,
+        "term": "咳嗽"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_8ce116ef3abeea93c2b93b50",
+        "candidate_type": "SYMPTOM",
+        "end": 7,
+        "start": 3,
+        "term": "咳嗽最后"
+      },
+      "type_relation": "same_type",
+      "unit_id": "4b90e693f9e1650c68f206c91e162a499e5dde1481048a46c4285c7e8833f27b"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_192e2527a6dd2b8624115a99",
+        "candidate_type": "SYMPTOM",
+        "end": 6,
+        "start": 3,
+        "term": "咳嗽最"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_8ce116ef3abeea93c2b93b50",
+        "candidate_type": "SYMPTOM",
+        "end": 7,
+        "start": 3,
+        "term": "咳嗽最后"
+      },
+      "type_relation": "same_type",
+      "unit_id": "4b90e693f9e1650c68f206c91e162a499e5dde1481048a46c4285c7e8833f27b"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_1cf0908f4c31abe40c053b0b",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 17,
+        "term": "但速"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_097ff15ca70ba415a032cc88",
+        "candidate_type": "SYMPTOM",
+        "end": 20,
+        "start": 17,
+        "term": "但速度"
+      },
+      "type_relation": "same_type",
+      "unit_id": "8af64d99dfef2aff01ba21d96671a9d164452698c9cd25f0c2df971deb6709c0"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5a709e059d57e5d1b6e069c2",
+        "candidate_type": "SYMPTOM",
+        "end": 32,
+        "start": 30,
+        "term": "跳得"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_335b437fabd9ce908bcb9396",
+        "candidate_type": "SYMPTOM",
+        "end": 33,
+        "start": 30,
+        "term": "跳得快"
+      },
+      "type_relation": "same_type",
+      "unit_id": "8af64d99dfef2aff01ba21d96671a9d164452698c9cd25f0c2df971deb6709c0"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_dd05a455a629d14c87a9980b",
+        "candidate_type": "SYMPTOM",
+        "end": 21,
+        "start": 19,
+        "term": "咳嗽"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_6a5f875bf849dce47ad3ff82",
+        "candidate_type": "SYMPTOM",
+        "end": 22,
+        "start": 19,
+        "term": "咳嗽时"
+      },
+      "type_relation": "same_type",
+      "unit_id": "cdfc4f29e488aaf24bf00a28d76d2b230e78e780c01a36abca1540b84f456d65"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_cebc14c454095e4ec0734d87",
+        "candidate_type": "PULSE",
+        "end": 66,
+        "start": 64,
+        "term": "脉迟"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_dfd86666b3291f3f0f4f6647",
+        "candidate_type": "PULSE",
+        "end": 67,
+        "start": 64,
+        "term": "脉迟微"
+      },
+      "type_relation": "same_type",
+      "unit_id": "d5e63ad33d775e3b992d696051db3051bc0cc3c92679a7650be6cfe2226c3442"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5a75962cdb280b4fcbcbb4f8",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 8,
+        "term": "虽身疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_ff169b14ffc7dfb116a9a196",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 9,
+        "term": "身疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "a4ce5d58b7f8cc519dbd94d810e8e6be8b040ffcf6679aa1de15ccb27a9c1be1"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5a75962cdb280b4fcbcbb4f8",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 8,
+        "term": "虽身疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 10,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "a4ce5d58b7f8cc519dbd94d810e8e6be8b040ffcf6679aa1de15ccb27a9c1be1"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_ff169b14ffc7dfb116a9a196",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 9,
+        "term": "身疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 12,
+        "start": 10,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "a4ce5d58b7f8cc519dbd94d810e8e6be8b040ffcf6679aa1de15ccb27a9c1be1"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_40a5224bca7cbb5a25cfebb7",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 103,
+        "term": "容易呕吐"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_112927a7024e90ae6a097ea6",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 104,
+        "term": "易呕吐"
+      },
+      "type_relation": "same_type",
+      "unit_id": "ba657525a1b36d925f2e5e62d5e054ec5a8f78dba50d4ff53997053cf77002c9"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_40a5224bca7cbb5a25cfebb7",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 103,
+        "term": "容易呕吐"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85618f8e38029dfe96ff7013",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 105,
+        "term": "呕吐"
+      },
+      "type_relation": "same_type",
+      "unit_id": "ba657525a1b36d925f2e5e62d5e054ec5a8f78dba50d4ff53997053cf77002c9"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_112927a7024e90ae6a097ea6",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 104,
+        "term": "易呕吐"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85618f8e38029dfe96ff7013",
+        "candidate_type": "SYMPTOM",
+        "end": 107,
+        "start": 105,
+        "term": "呕吐"
+      },
+      "type_relation": "same_type",
+      "unit_id": "ba657525a1b36d925f2e5e62d5e054ec5a8f78dba50d4ff53997053cf77002c9"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_6e00617adb28e129b8c2b03e",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 4,
+        "term": "虚劳发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_accb67738cb01f1fcb4224fc",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 5,
+        "term": "劳发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_6e00617adb28e129b8c2b03e",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 4,
+        "term": "虚劳发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 6,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_accb67738cb01f1fcb4224fc",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 5,
+        "term": "劳发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 8,
+        "start": 6,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 27,
+        "start": 25,
+        "term": "发热"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_56770375c443a7c146456afa",
+        "candidate_type": "SYMPTOM",
+        "end": 28,
+        "start": 25,
+        "term": "发热比"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 27,
+        "start": 25,
+        "term": "发热"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_e00a292266e9447ad25f6543",
+        "candidate_type": "SYMPTOM",
+        "end": 29,
+        "start": 25,
+        "term": "发热比较"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_56770375c443a7c146456afa",
+        "candidate_type": "SYMPTOM",
+        "end": 28,
+        "start": 25,
+        "term": "发热比"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_e00a292266e9447ad25f6543",
+        "candidate_type": "SYMPTOM",
+        "end": 29,
+        "start": 25,
+        "term": "发热比较"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 45,
+        "start": 43,
+        "term": "发热"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_b6dea1b8f7b03599afd71b7b",
+        "candidate_type": "SYMPTOM",
+        "end": 46,
+        "start": 43,
+        "term": "发热到"
+      },
+      "type_relation": "same_type",
+      "unit_id": "3e91405926bb4cf5c722ad113d7f5361138f5d3dc14146372fa8ffe800ee6134"
+    },
+    {
+      "candidate_type_pair": "HERB|HERB",
+      "left": {
+        "candidate_id": "term_3944603e04fc4e026dbf2c9c",
+        "candidate_type": "HERB",
+        "end": 25,
+        "start": 23,
+        "term": "把肾"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_ffc194037ee3fd6d94cd557e",
+        "candidate_type": "HERB",
+        "end": 26,
+        "start": 23,
+        "term": "把肾阳"
+      },
+      "type_relation": "same_type",
+      "unit_id": "8a799f7db636ffafeec6bf324b43b597a662ccdf1d2db03a2c971876e1f0bce5"
+    },
+    {
+      "candidate_type_pair": "TREATMENT|TREATMENT",
+      "left": {
+        "candidate_id": "term_241496bfc2c49ca73a29fbcc",
+        "candidate_type": "TREATMENT",
+        "end": 14,
+        "start": 12,
+        "term": "百合"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_497e747b792426a2f72b6a1e",
+        "candidate_type": "TREATMENT",
+        "end": 15,
+        "start": 12,
+        "term": "百合病"
+      },
+      "type_relation": "same_type",
+      "unit_id": "98942813d11a1f6f0e4834c847ef66a050e637e444dff6297e9dcb12cfc00b94"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_949b2e18adbb5261c7a1da2f",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 6,
+        "term": "风水脉浮"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_49abb7bc715fafd95c67ec06",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 7,
+        "term": "水脉浮"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_949b2e18adbb5261c7a1da2f",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 6,
+        "term": "风水脉浮"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 8,
+        "term": "脉浮"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_49abb7bc715fafd95c67ec06",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 7,
+        "term": "水脉浮"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 8,
+        "term": "脉浮"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_949b2e18adbb5261c7a1da2f",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 6,
+        "term": "风水脉浮"
+      },
+      "overlap_kind": "partial_overlap",
+      "right": {
+        "candidate_id": "term_2a5929f33fa0665673143f26",
+        "candidate_type": "PULSE",
+        "end": 11,
+        "start": 8,
+        "term": "脉浮恶"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_49abb7bc715fafd95c67ec06",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 7,
+        "term": "水脉浮"
+      },
+      "overlap_kind": "partial_overlap",
+      "right": {
+        "candidate_id": "term_2a5929f33fa0665673143f26",
+        "candidate_type": "PULSE",
+        "end": 11,
+        "start": 8,
+        "term": "脉浮恶"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 10,
+        "start": 8,
+        "term": "脉浮"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_2a5929f33fa0665673143f26",
+        "candidate_type": "PULSE",
+        "end": 11,
+        "start": 8,
+        "term": "脉浮恶"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_8b8d75bc9a88d3e1052921d7",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 13,
+        "term": "其证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_b7805531710b87dfb16c2e89",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 14,
+        "term": "证骨节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_8b8d75bc9a88d3e1052921d7",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 13,
+        "term": "其证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 15,
+        "term": "骨节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_b7805531710b87dfb16c2e89",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 14,
+        "term": "证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 15,
+        "term": "骨节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_8b8d75bc9a88d3e1052921d7",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 13,
+        "term": "其证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_5c7de54290a43520e03ec4e3",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 16,
+        "term": "节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_b7805531710b87dfb16c2e89",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 14,
+        "term": "证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_5c7de54290a43520e03ec4e3",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 16,
+        "term": "节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 15,
+        "term": "骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_5c7de54290a43520e03ec4e3",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 16,
+        "term": "节疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_8b8d75bc9a88d3e1052921d7",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 13,
+        "term": "其证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 17,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_b7805531710b87dfb16c2e89",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 14,
+        "term": "证骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 17,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 15,
+        "term": "骨节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 17,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5c7de54290a43520e03ec4e3",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 16,
+        "term": "节疼痛"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+        "candidate_type": "SYMPTOM",
+        "end": 19,
+        "start": 17,
+        "term": "疼痛"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_49abb7bc715fafd95c67ec06",
+        "candidate_type": "PULSE",
+        "end": 24,
+        "start": 21,
+        "term": "水脉浮"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 24,
+        "start": 22,
+        "term": "脉浮"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_77827b62cfcb2c221eebf9c9",
+        "candidate_type": "PULSE",
+        "end": 52,
+        "start": 50,
+        "term": "脉沉"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_f782b73bdf7d4e59f58290b9",
+        "candidate_type": "PULSE",
+        "end": 53,
+        "start": 50,
+        "term": "脉沉迟"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_77827b62cfcb2c221eebf9c9",
+        "candidate_type": "PULSE",
+        "end": 81,
+        "start": 79,
+        "term": "脉沉"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_f782b73bdf7d4e59f58290b9",
+        "candidate_type": "PULSE",
+        "end": 82,
+        "start": 79,
+        "term": "脉沉迟"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_da8d01e1795a2a685493bd77",
+        "candidate_type": "SYMPTOM",
+        "end": 87,
+        "start": 84,
+        "term": "证发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 87,
+        "start": 85,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "516fa32bc8134d223e2eca42b6404b0c9cc6e8bc3d8474a64c7aed0d6801c5ff"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 18,
+        "start": 16,
+        "term": "脉浮"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_b143099d99805c6ac20b7de9",
+        "candidate_type": "PULSE",
+        "end": 19,
+        "start": 16,
+        "term": "脉浮大"
+      },
+      "type_relation": "same_type",
+      "unit_id": "d99413124bd2caccdfd602fa30a6619fff1548015014268d1b8c2cd4f3702d41"
+    },
+    {
+      "candidate_type_pair": "PULSE|PULSE",
+      "left": {
+        "candidate_id": "term_0f2a189feb69c1e9935a2553",
+        "candidate_type": "PULSE",
+        "end": 45,
+        "start": 43,
+        "term": "脉浮"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_66c66f0905fe89f7cb4f0a1d",
+        "candidate_type": "PULSE",
+        "end": 46,
+        "start": 43,
+        "term": "脉浮者"
+      },
+      "type_relation": "same_type",
+      "unit_id": "d99413124bd2caccdfd602fa30a6619fff1548015014268d1b8c2cd4f3702d41"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_7764e2177607aa44197f44e4",
+        "candidate_type": "SYMPTOM",
+        "end": 14,
+        "start": 11,
+        "term": "脚麻木"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_52ceb042f136fe2ae16e56f5",
+        "candidate_type": "SYMPTOM",
+        "end": 14,
+        "start": 12,
+        "term": "麻木"
+      },
+      "type_relation": "same_type",
+      "unit_id": "391d4c0d963c76fdabb327bf512fccf519f46b5f0f2c9bbeb34a219b88088fc2"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_fe679887faa3fe3e536c3828",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 11,
+        "term": "阴虚发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_796f19dc88b8918c62366e80",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 12,
+        "term": "虚发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_fe679887faa3fe3e536c3828",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 11,
+        "term": "阴虚发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 13,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_796f19dc88b8918c62366e80",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 12,
+        "term": "虚发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 15,
+        "start": 13,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_dff2853d1e3ad3b41a174ab9",
+        "candidate_type": "SYMPTOM",
+        "end": 20,
+        "start": 16,
+        "term": "气虚发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_796f19dc88b8918c62366e80",
+        "candidate_type": "SYMPTOM",
+        "end": 20,
+        "start": 17,
+        "term": "虚发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_dff2853d1e3ad3b41a174ab9",
+        "candidate_type": "SYMPTOM",
+        "end": 20,
+        "start": 16,
+        "term": "气虚发热"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_85385f4a812bbf2a5a241774",
+        "candidate_type": "SYMPTOM",
+        "end": 20,
+        "start": 18,
+        "term": "发热"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    }
+  ],
+  "overlap_pair_candidate_type_counts": {
+    "FORMULA|FORMULA": 12140,
+    "FORMULA|HERB": 470,
+    "FORMULA|SYMPTOM": 39,
+    "FORMULA|SYNDROME": 4,
+    "HERB|HERB": 14287,
+    "HERB|SYMPTOM": 126,
+    "PULSE|PULSE": 24611,
+    "PULSE|SYMPTOM": 501,
+    "PULSE|TREATMENT": 6,
+    "SYMPTOM|SYMPTOM": 113786,
+    "SYMPTOM|SYNDROME": 53,
+    "SYMPTOM|TONGUE": 285,
+    "SYMPTOM|TREATMENT": 2,
+    "SYNDROME|SYNDROME": 3592,
+    "TONGUE|TONGUE": 5977,
+    "TONGUE|TREATMENT": 12,
+    "TREATMENT|TREATMENT": 413
+  },
+  "overlap_pair_counts": {
+    "current_nested": 60326,
+    "exact_span": 111,
+    "partial_overlap": 34524,
+    "prior_nested": 81343
+  },
+  "overlap_pair_type_relation_counts": {
+    "cross_type": 1498,
+    "same_type": 174806
+  },
+  "policy": {
+    "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
+    "repeated_term": "same lexical form at different source offsets remains separate"
+  },
+  "repeated_lexical_forms_with_multiple_occurrences": 14592,
+  "repeated_occurrence_examples": [
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 4106,
+      "term": "咳嗽"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 3338,
+      "term": "疼痛"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 2843,
+      "term": "发热"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 2023,
+      "term": "呕吐"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 1341,
+      "term": "脉浮"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 998,
+      "term": "恶心"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 777,
+      "term": "大辞"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 777,
+      "term": "大辞典"
+    },
+    {
+      "candidate_type": "TONGUE",
+      "distinct_occurrences": 771,
+      "term": "舌苔"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 743,
+      "term": "脉象"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 718,
+      "term": "经疏"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 681,
+      "term": "脉沉"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 544,
+      "term": "纲目"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 540,
+      "term": "经集"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 537,
+      "term": "图经"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 535,
+      "term": "经集注"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 525,
+      "term": "衍义"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 451,
+      "term": "麻木"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 432,
+      "term": "汇言"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 403,
+      "term": "求真"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 399,
+      "term": "刺痛"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 344,
+      "term": "从新"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 342,
+      "term": "的咳嗽"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 333,
+      "term": "咳嗽的"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 315,
+      "term": "备要"
+    },
+    {
+      "candidate_type": "FORMULA",
+      "distinct_occurrences": 309,
+      "term": "的时"
+    },
+    {
+      "candidate_type": "FORMULA",
+      "distinct_occurrences": 306,
+      "term": "的时候"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 284,
+      "term": "的脉象"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 274,
+      "term": "再新"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 258,
+      "term": "脉弦"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 249,
+      "term": "胀痛"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 245,
+      "term": "蒙筌"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 239,
+      "term": "拾遗"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 234,
+      "term": "新编"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 222,
+      "term": "脉浮而"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 217,
+      "term": "节疼痛"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 208,
+      "term": "治咳嗽"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 207,
+      "term": "崇原"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 206,
+      "term": "脉数"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 206,
+      "term": "瘙痒"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 204,
+      "term": "发热的"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 201,
+      "term": "便读"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 197,
+      "term": "正义"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 194,
+      "term": "呕吐的"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 190,
+      "term": "述钩"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 190,
+      "term": "述钩元"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 188,
+      "term": "身疼痛"
+    },
+    {
+      "candidate_type": "PULSE",
+      "distinct_occurrences": 187,
+      "term": "脉为"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 184,
+      "term": "疼痛的"
+    },
+    {
+      "candidate_type": "HERB",
+      "distinct_occurrences": 180,
+      "term": "经赞"
+    }
+  ],
+  "schema_version": 2
+}
