@@ -66,7 +66,7 @@ jobs:
       - name: Audit contextual occurrence rule assignments
         run: python tools/audit_contextual_occurrence_rule_assignments.py --input catalog/generated/contextual_term_type_candidates.csv.gz --output catalog/generated/contextual_occurrence_rule_assignment_audit.json
       - name: Build source-grounded cross-type overlap review queue
-        run: python tools/build_contextual_overlap_review_queue.py --input catalog/generated/contextual_term_type_candidates.csv.gz --output catalog/generated/contextual_term_cross_type_overlap_review.csv --report catalog/generated/contextual_term_cross_type_overlap_review.json
+        run: python tools/build_contextual_overlap_review_queue.py --input catalog/generated/contextual_term_type_candidates.csv.gz --overlap-audit catalog/generated/contextual_term_overlap_audit.json --output catalog/generated/contextual_term_cross_type_overlap_review.csv --report catalog/generated/contextual_term_cross_type_overlap_review.json
       - name: Validate knowledge units, entity mentions, and term candidates in parallel
         shell: bash
         run: |
