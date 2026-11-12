@@ -20,3 +20,6 @@ The full-corpus workflow validates graph nodes, relation edges, contextual term 
 - Report is written only after successful validation.
 - Zero edge counts remain explicit zeros, not missing keys.
 - No candidate extraction, graph schema, or source-boundary semantics change.
+
+## Full-corpus output
+- The master-only build writes `catalog/generated/semantic_graph_validation.json` after graph validation succeeds and publishes it with the SQLite search-index artifact.
