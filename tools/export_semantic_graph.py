@@ -431,17 +431,28 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             "validated_contextual_term_candidates": contextual_term_count,
             "validated_contextual_relation_edges": contextual_edge_count}
 
+def write_validation_report(path: Path, result: dict) -> None:
+    report = {"schema_version": 1, **result}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
+                    encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, default=Path("catalog/generated/siyuan_search.sqlite3"))
     parser.add_argument("--output", type=Path, default=Path("catalog/generated/semantic_graph.jsonl.gz"))
     parser.add_argument("--validate", action="store_true")
+    parser.add_argument("--report", type=Path,
+                        help="Optional JSON file for the graph/SQLite validation summary.")
     args = parser.parse_args()
     if args.validate:
         result = validate(args.db, args.output)
     else:
-        result = export(args.db, args.output)
-        validate(args.db, args.output)
+        export(args.db, args.output)
+        result = validate(args.db, args.output)
+    if args.report:
+        write_validation_report(args.report, result)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
