@@ -1,0 +1,1829 @@
+{
+  "candidate_rows": 124017,
+  "distinct_occurrences": 123851,
+  "extra_rule_assignments": 166,
+  "multi_rule_examples": [
+    {
+      "block_id": "20230926162426-i159b0e",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 27,
+      "character_start": 25,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926162423-uy2rj4s.sy",
+      "evidence_start": "13",
+      "evidence_text": "枝当归汤，他的这个症状是发热里头啊 ，忽然会——他说",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "3076816dd5075a78498c3445f22d7ed19965686bf784f8246059c63c2219f8de",
+      "term": "发热",
+      "tree_position": "0.27",
+      "unit_id": "d92712cf0f6ed3d2e1fb3a24520b8e14f2684f75c789927c60b24bd0c236acd2"
+    },
+    {
+      "block_id": "20230926162426-i159b0e",
+      "candidate_id": "term_57d8e0d6fbed7ae1284d1ca0",
+      "candidate_type": "SYMPTOM",
+      "character_end": 27,
+      "character_start": 24,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20230926162423-uy2rj4s.sy",
+      "evidence_start": "12",
+      "evidence_text": "桂枝当归汤，他的这个症状是发热里头啊 ，忽然会——他说",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "3076816dd5075a78498c3445f22d7ed19965686bf784f8246059c63c2219f8de",
+      "term": "是发热",
+      "tree_position": "0.27",
+      "unit_id": "d92712cf0f6ed3d2e1fb3a24520b8e14f2684f75c789927c60b24bd0c236acd2"
+    },
+    {
+      "block_id": "20240205084700-8nnpkrm",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 48,
+      "character_start": 46,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153922-ggqmq3y/20240205083241-83q2d5c.sy",
+      "evidence_start": "34",
+      "evidence_text": "讲的话，觉得头昏、头胀、呕吐、呕酸水……这样来讲，开",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "a6222b797e0f0d31abdabe1689d0f2b20c03120ba97685fb5613ac963912c50e",
+      "term": "呕吐",
+      "tree_position": "0.61",
+      "unit_id": "aff0e397cc888c07b80da134d7b343803ee9ae47505712554bf71df5bdafed6f"
+    },
+    {
+      "block_id": "20240509151943-hjuga7j",
+      "candidate_id": "term_c635faf82918155c296aa770",
+      "candidate_type": "SYMPTOM",
+      "character_end": 191,
+      "character_start": 187,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509145524-f5na8na.sy",
+      "evidence_start": "176",
+      "evidence_text": "因为里面的症状太像了，手心发热脚心发热之类的，或者是“",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e42c0fb011b3596f994799f015e6473061dd645e5acdeb99b91991b4227f2034",
+      "term": "手心发热",
+      "tree_position": "0.302",
+      "unit_id": "720a8285b00c1c6e0b7aad5d2500d57538b1b26f2f48077a6bacace91664b795"
+    },
+    {
+      "block_id": "20240509151943-clupywa",
+      "candidate_id": "term_6bb5a1b135e15eaeca9e3c5f",
+      "candidate_type": "SYMPTOM",
+      "character_end": 37,
+      "character_start": 32,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509145524-f5na8na.sy",
+      "evidence_start": "20",
+      "evidence_text": "到肺的话是比较症状明显，那个人咳嗽啊，或者是午后发潮热啊，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e42c0fb011b3596f994799f015e6473061dd645e5acdeb99b91991b4227f2034",
+      "term": "那个人咳嗽",
+      "tree_position": "0.322",
+      "unit_id": "1f2c223b910bfc6f4fc4c83a320922e17680e6f408d5a5ff32354ec6dbd6e02f"
+    },
+    {
+      "block_id": "20240509171350-251c2fd",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 19,
+      "character_start": 17,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509145524-f5na8na.sy",
+      "evidence_start": "5",
+      "evidence_text": "你要说症状的话，燥热啦，发热出大汗啦，这是白虎汤",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e42c0fb011b3596f994799f015e6473061dd645e5acdeb99b91991b4227f2034",
+      "term": "发热",
+      "tree_position": "0.1507",
+      "unit_id": "419ffe8f852335977851e7614230a24afd2d9e9288d8eb606f979e7a5baa23f9"
+    },
+    {
+      "block_id": "20240509171350-251c2fd",
+      "candidate_id": "term_c90392c9030e25adf9ec8b34",
+      "candidate_type": "SYMPTOM",
+      "character_end": 20,
+      "character_start": 17,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509145524-f5na8na.sy",
+      "evidence_start": "5",
+      "evidence_text": "你要说症状的话，燥热啦，发热出大汗啦，这是白虎汤",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e42c0fb011b3596f994799f015e6473061dd645e5acdeb99b91991b4227f2034",
+      "term": "发热出",
+      "tree_position": "0.1507",
+      "unit_id": "419ffe8f852335977851e7614230a24afd2d9e9288d8eb606f979e7a5baa23f9"
+    },
+    {
+      "block_id": "20240509172238-quvotgd",
+      "candidate_id": "term_d58f4accc760285f428c74f1",
+      "candidate_type": "SYMPTOM",
+      "character_end": 40,
+      "character_start": 36,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509145524-f5na8na.sy",
+      "evidence_start": "24",
+      "evidence_text": "到他那个头痛啊，呕逆啊，然后咳嗽，然后呢，你看他舌苔，你",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e42c0fb011b3596f994799f015e6473061dd645e5acdeb99b91991b4227f2034",
+      "term": "然后咳嗽",
+      "tree_position": "0.1714",
+      "unit_id": "10049bb1a17db150afd4040f0161495a96648d7ead712de0aabc0abea56c6f10"
+    },
+    {
+      "block_id": "20240510084600-brqh2us",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 57,
+      "character_start": 55,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509173558-u0yvgxm.sy",
+      "evidence_start": "43",
+      "evidence_text": "讲的话，觉得头昏、头胀、呕吐、呕酸水……这样来讲，开",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5bd3e483ec2909948c9d177c5a3b19a5c5a7107f0985f9454d85bc2b5d91cae1",
+      "term": "呕吐",
+      "tree_position": "0.597",
+      "unit_id": "eef18207702c5de2513f53d40d3e41e335d78f1ff88be85304ff8bb58443cb16"
+    },
+    {
+      "block_id": "20240510101851-vuf7zn3",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 24,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510093906-t9n2u80.sy",
+      "evidence_start": "12",
+      "evidence_text": "当归汤啊，他的这个症状是发热里头啊，忽然会——他说“",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "ebade5c915a6c868cce1667551e17c7ad10675ca35628d43e63433d7cea34a57",
+      "term": "发热",
+      "tree_position": "0.792",
+      "unit_id": "9fb0c3310d91989f58cde419ebe64d45fa76810acaffd987e40e8d6412c71b8a"
+    },
+    {
+      "block_id": "20240510101851-vuf7zn3",
+      "candidate_id": "term_57d8e0d6fbed7ae1284d1ca0",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 23,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510093906-t9n2u80.sy",
+      "evidence_start": "11",
+      "evidence_text": "枝当归汤啊，他的这个症状是发热里头啊，忽然会——他说“",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "ebade5c915a6c868cce1667551e17c7ad10675ca35628d43e63433d7cea34a57",
+      "term": "是发热",
+      "tree_position": "0.792",
+      "unit_id": "9fb0c3310d91989f58cde419ebe64d45fa76810acaffd987e40e8d6412c71b8a"
+    },
+    {
+      "block_id": "20240510122829-ntf41xy",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 147,
+      "character_start": 145,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "133",
+      "evidence_text": "口干这是对的，肺冷的症状咳嗽篇讲过了",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "咳嗽",
+      "tree_position": "0.82",
+      "unit_id": "51a80b9bba1f7deff71ef1fe823baeb6addbacc7b18cb6fb70eb74f4e70cc4f9"
+    },
+    {
+      "block_id": "20240510122829-ntf41xy",
+      "candidate_id": "term_52d3902ac205eb7dd491f352",
+      "candidate_type": "SYMPTOM",
+      "character_end": 148,
+      "character_start": 145,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "133",
+      "evidence_text": "口干这是对的，肺冷的症状咳嗽篇讲过了",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "咳嗽篇",
+      "tree_position": "0.82",
+      "unit_id": "51a80b9bba1f7deff71ef1fe823baeb6addbacc7b18cb6fb70eb74f4e70cc4f9"
+    },
+    {
+      "block_id": "20240510122829-owo4a64",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 192,
+      "character_start": 190,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "178",
+      "evidence_text": "劳倦、脸红、下重、自烦、发热这是什么汤证啊",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "发热",
+      "tree_position": "0.123",
+      "unit_id": "b16fed7f0400150a3e594d512618d26ec7a61645e79a97d5c08bbe7be78a3798"
+    },
+    {
+      "block_id": "20240510122829-owo4a64",
+      "candidate_id": "term_4496168ca3b8c8002e2cc8cf",
+      "candidate_type": "SYMPTOM",
+      "character_end": 193,
+      "character_start": 190,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "178",
+      "evidence_text": "劳倦、脸红、下重、自烦、发热这是什么汤证啊",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "发热这",
+      "tree_position": "0.123",
+      "unit_id": "b16fed7f0400150a3e594d512618d26ec7a61645e79a97d5c08bbe7be78a3798"
+    },
+    {
+      "block_id": "20240510125244-v22zufa",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 142,
+      "character_start": 140,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "128",
+      "evidence_text": "黄汗的症状啊，会有肿啊，发热啊，那那个的话，经络痰饮",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "发热",
+      "tree_position": "0.649",
+      "unit_id": "1ca35ae60a46c2e6ea2b10c1e42891f3bfed467c02fa71e500be801d1841a282"
+    },
+    {
+      "block_id": "20240510125244-v22zufa",
+      "candidate_id": "term_a82a88c86f648a90e0506ce5",
+      "candidate_type": "SYMPTOM",
+      "character_end": 143,
+      "character_start": 140,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "128",
+      "evidence_text": "黄汗的症状啊，会有肿啊，发热啊，那那个的话，经络痰饮的",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "发热啊",
+      "tree_position": "0.649",
+      "unit_id": "1ca35ae60a46c2e6ea2b10c1e42891f3bfed467c02fa71e500be801d1841a282"
+    },
+    {
+      "block_id": "20240510130003-ghxfnwe",
+      "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 179,
+      "character_start": 175,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "163",
+      "evidence_text": "脉呢是浮的，那它的症状是骨节疼痛的，那后面就有修正条文说",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "骨节疼痛",
+      "tree_position": "0.835",
+      "unit_id": "a11f4674abcbf4d06e9017688118a159b7204a768faf86e431ad4532e6f0947b"
+    },
+    {
+      "block_id": "20240510130003-ghxfnwe",
+      "candidate_id": "term_e3bd5b0c89761b2ca2545307",
+      "candidate_type": "SYMPTOM",
+      "character_end": 179,
+      "character_start": 174,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "162",
+      "evidence_text": "的脉呢是浮的，那它的症状是骨节疼痛的，那后面就有修正条文说",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "是骨节疼痛",
+      "tree_position": "0.835",
+      "unit_id": "a11f4674abcbf4d06e9017688118a159b7204a768faf86e431ad4532e6f0947b"
+    },
+    {
+      "block_id": "20240510130003-ghxfnwe",
+      "candidate_id": "term_d2531603b6ef1a98de8881c9",
+      "candidate_type": "SYMPTOM",
+      "character_end": 180,
+      "character_start": 175,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510122425-s6znpwz.sy",
+      "evidence_start": "163",
+      "evidence_text": "脉呢是浮的，那它的症状是骨节疼痛的，那后面就有修正条文说骨",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "c82517b376a0dcdece691dee398e077fdb718d285ac9a18729172a77d1116f79",
+      "term": "骨节疼痛的",
+      "tree_position": "0.835",
+      "unit_id": "a11f4674abcbf4d06e9017688118a159b7204a768faf86e431ad4532e6f0947b"
+    },
+    {
+      "block_id": "20240510132421-krhz1bv",
+      "candidate_id": "term_7764e2177607aa44197f44e4",
+      "candidate_type": "SYMPTOM",
+      "character_end": 106,
+      "character_start": 103,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240510132003-9b5lbrq.sy",
+      "evidence_start": "91",
+      "evidence_text": "个脚气病呢，主要的症状是脚麻木，那也有些人他是伴随着脚",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "2991a9ab2b6ca9d9326dbef1ff9aa2ead4d5594bb3a97ea250f4e62d9a7c3dfc",
+      "term": "脚麻木",
+      "tree_position": "0.121",
+      "unit_id": "8c5fc582a84d764d7f5622b62ca87b514a4fc0e228e2d9ec41e2083ec585d8d8"
+    },
+    {
+      "block_id": "20230928081816-y5bpy1n",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 36,
+      "character_start": 34,
+      "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+      "evidence_start": "22",
+      "evidence_text": "症状，如呼吸短气、气喘、咳嗽、心脏痛、胃痛等",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+      "term": "咳嗽",
+      "tree_position": "0.214",
+      "unit_id": "cf0acff9d7069ef4b622db96b47204b54427df37c037b88c266260cc931bcd53"
+    },
+    {
+      "block_id": "20231012095700-svfvc6i",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 94,
+      "character_start": 92,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "80",
+      "evidence_text": "看到看到症状如往来寒热、咳嗽，到冬天时，因为冬为水，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "咳嗽",
+      "tree_position": "0.33",
+      "unit_id": "3a6d11416acc0d80ed86a73128b69fdfdbc8b4ff75c750f9eb06394c9c6f1587"
+    },
+    {
+      "block_id": "20231129104622-cqqetsi",
+      "candidate_id": "term_2625e9076bc0f297e56f5617",
+      "candidate_type": "SYMPTOM",
+      "character_end": 52,
+      "character_start": 48,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "42",
+      "evidence_text": "胃咳的症状，咳而呕吐，甚至呕出蛔虫",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "咳而呕吐",
+      "tree_position": "0.693",
+      "unit_id": "cfe5d9182db70aa97d345d97d3317995439e8e6d9842718326cbc8f13fe5c921"
+    },
+    {
+      "block_id": "20231129104622-cqqetsi",
+      "candidate_id": "term_2625e9076bc0f297e56f5617",
+      "candidate_type": "SYMPTOM",
+      "character_end": 81,
+      "character_start": 77,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "65",
+      "evidence_text": "则胆就受病，胆咳的症状是咳而呕吐胆汁",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "咳而呕吐",
+      "tree_position": "0.693",
+      "unit_id": "cfe5d9182db70aa97d345d97d3317995439e8e6d9842718326cbc8f13fe5c921"
+    },
+    {
+      "block_id": "20231206102858-w9uqnkz",
+      "candidate_id": "term_5de4b9c5a044c263fdd3cff7",
+      "candidate_type": "SYMPTOM",
+      "character_end": 40,
+      "character_start": 36,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "24",
+      "evidence_text": "出如水渍一样，不耐劳动，周身疼痛发冷",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "周身疼痛",
+      "tree_position": "0.752",
+      "unit_id": "fc429f8b54a710387b2720ae64b5a91c728d0707fc269a43ef5e6498aa0e3422"
+    },
+    {
+      "block_id": "20231206114141-xvsfub0",
+      "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 115,
+      "character_start": 113,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "101",
+      "evidence_text": "多惊，饮水多而小便频数，疼痛循肝经由上而下牵引少腹如",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "疼痛",
+      "tree_position": "0.761",
+      "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
+    },
+    {
+      "block_id": "20231206114141-xvsfub0",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 187,
+      "character_start": 185,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "173",
+      "evidence_text": "痹的症状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "咳嗽",
+      "tree_position": "0.761",
+      "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
+    },
+    {
+      "block_id": "20231206114141-xvsfub0",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 190,
+      "character_start": 188,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "176",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "呕吐",
+      "tree_position": "0.761",
+      "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
+    },
+    {
+      "block_id": "20231206114141-xvsfub0",
+      "candidate_id": "term_a78c38bdda09191b9e378ad2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 191,
+      "character_start": 188,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "176",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "呕吐清",
+      "tree_position": "0.761",
+      "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
+    },
+    {
+      "block_id": "20231206114141-xvsfub0",
+      "candidate_id": "term_9437b9792179c3198f6edd71",
+      "candidate_type": "SYMPTOM",
+      "character_end": 192,
+      "character_start": 188,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "176",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "呕吐清水",
+      "tree_position": "0.761",
+      "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
+    },
+    {
+      "block_id": "20240524163035-fbs5bks",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 120,
+      "character_start": 118,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+      "evidence_start": "106",
+      "evidence_text": "，一定可以看到胃的症状，呕吐，所以肾脏在衰竭之前的时",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+      "term": "呕吐",
+      "tree_position": "0.1278",
+      "unit_id": "547dfb52b909a5d0daab4973707cbf8c6769ff94867e82e825b6e6353e9e8ab7"
+    },
+    {
+      "block_id": "20240606100030-63mgrmr",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 46,
+      "character_start": 44,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "32",
+      "evidence_text": "胃欬症状，必欬中兼呕吐，呕吐剧烈时，会有吐虫出的症状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "呕吐",
+      "tree_position": "0.1234",
+      "unit_id": "8655fba5a85add65e786781154609a00c0aabbb5e4b88c31ba43c7ce69fa28f3"
+    },
+    {
+      "block_id": "20240606100030-63mgrmr",
+      "candidate_id": "term_192ad8f37941d2947fb25902",
+      "candidate_type": "SYMPTOM",
+      "character_end": 47,
+      "character_start": 44,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "32",
+      "evidence_text": "胃欬症状，必欬中兼呕吐，呕吐剧烈时，会有吐虫出的症状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "呕吐剧",
+      "tree_position": "0.1234",
+      "unit_id": "8655fba5a85add65e786781154609a00c0aabbb5e4b88c31ba43c7ce69fa28f3"
+    },
+    {
+      "block_id": "20240606100030-63mgrmr",
+      "candidate_id": "term_6de63c1f89dd9bed91901a0e",
+      "candidate_type": "SYMPTOM",
+      "character_end": 48,
+      "character_start": 44,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "32",
+      "evidence_text": "胃欬症状，必欬中兼呕吐，呕吐剧烈时，会有吐虫出的症状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "呕吐剧烈",
+      "tree_position": "0.1234",
+      "unit_id": "8655fba5a85add65e786781154609a00c0aabbb5e4b88c31ba43c7ce69fa28f3"
+    },
+    {
+      "block_id": "20240606101807-f0r98cg",
+      "candidate_id": "term_0cf75e9d93bc0e52479a862d",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 22,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "10",
+      "evidence_text": "汗惧风吹，脸面呈浮肿状，背脊疼痛无法久站",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "背脊疼痛",
+      "tree_position": "0.1447",
+      "unit_id": "4c8cf90ce978bcbbfa4c1abf4edbc804e741f131f368e11bbf9fd23b7a912210"
+    },
+    {
+      "block_id": "20240606104401-c3xvejm",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 85,
+      "character_start": 83,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "71",
+      "evidence_text": "状立刻会好，盗汗也会好，咳嗽的人须多穿农服吃些食物，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "咳嗽",
+      "tree_position": "0.2158",
+      "unit_id": "bc397e031d767959ccb2fd3084f8d8a9cd3cbb53411121326bc3ed83fcf1a0f4"
+    },
+    {
+      "block_id": "20240606104401-c3xvejm",
+      "candidate_id": "term_7267b911d34e710d96db86ce",
+      "candidate_type": "SYMPTOM",
+      "character_end": 86,
+      "character_start": 83,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "71",
+      "evidence_text": "状立刻会好，盗汗也会好，咳嗽的人须多穿农服吃些食物，一",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "咳嗽的",
+      "tree_position": "0.2158",
+      "unit_id": "bc397e031d767959ccb2fd3084f8d8a9cd3cbb53411121326bc3ed83fcf1a0f4"
+    },
+    {
+      "block_id": "20240606104401-c3xvejm",
+      "candidate_id": "term_c3c875a6715fbfc9890a6cfe",
+      "candidate_type": "SYMPTOM",
+      "character_end": 87,
+      "character_start": 83,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "71",
+      "evidence_text": "状立刻会好，盗汗也会好，咳嗽的人须多穿农服吃些食物，一日",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "咳嗽的人",
+      "tree_position": "0.2158",
+      "unit_id": "bc397e031d767959ccb2fd3084f8d8a9cd3cbb53411121326bc3ed83fcf1a0f4"
+    },
+    {
+      "block_id": "20240220104007-ijti6ge",
+      "candidate_id": "term_828f5fb0a36700556457022c",
+      "candidate_type": "SYMPTOM",
+      "character_end": 84,
+      "character_start": 80,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+      "evidence_start": "68",
+      "evidence_text": "也,小结胸一定会有的症状就是恶心的现象",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+      "term": "就是恶心",
+      "tree_position": "0.1031",
+      "unit_id": "6103327d6fd3d64c953d480b65d9d91ebb7b7f75f354911af5472dd92cbb8667"
+    },
+    {
+      "block_id": "20240220131918-d297xuq",
+      "candidate_id": "term_6e3b2d236cce1df4cc84cd21",
+      "candidate_type": "SYMPTOM",
+      "character_end": 66,
+      "character_start": 63,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "51",
+      "evidence_text": "要的症状呢，他没有恶寒，但发热而渴，这个定义叫做温病，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "但发热",
+      "tree_position": "0.65",
+      "unit_id": "0d1e00ba8af23da14ddcf8e8528024ec1f6c261ed506ff0e8227dbdbdb2d667a"
+    },
+    {
+      "block_id": "20240220131918-2gk5n4j",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 10,
+      "character_start": 8,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "0",
+      "evidence_text": "主要症状，头痛，发热，身疼腰痛，骨节疼痛，恶",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "发热",
+      "tree_position": "0.326",
+      "unit_id": "180b7fa0ceb0a69c174ffe47c0255aa4d43f90f637e89ede6a0a4dd94983bbff"
+    },
+    {
+      "block_id": "20240220131918-2gk5n4j",
+      "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 20,
+      "character_start": 16,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "4",
+      "evidence_text": "，头痛，发热，身疼腰痛，骨节疼痛，恶风无汗而喘，为什么没",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "骨节疼痛",
+      "tree_position": "0.326",
+      "unit_id": "180b7fa0ceb0a69c174ffe47c0255aa4d43f90f637e89ede6a0a4dd94983bbff"
+    },
+    {
+      "block_id": "20240220131918-2w4q46v",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 68,
+      "character_start": 66,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "54",
+      "evidence_text": "症状应该会感觉到咽喉痛，呕吐和下痢",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "呕吐",
+      "tree_position": "0.2350",
+      "unit_id": "2e7ff4e4c4687eae0e38daec02d347b230040795575576476c3a097b4efd2158"
+    },
+    {
+      "block_id": "20240220131918-2w4q46v",
+      "candidate_id": "term_dbf4670c353b02bc6336fb74",
+      "candidate_type": "SYMPTOM",
+      "character_end": 69,
+      "character_start": 66,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "54",
+      "evidence_text": "症状应该会感觉到咽喉痛，呕吐和下痢",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "呕吐和",
+      "tree_position": "0.2350",
+      "unit_id": "2e7ff4e4c4687eae0e38daec02d347b230040795575576476c3a097b4efd2158"
+    },
+    {
+      "block_id": "20240312150958-6dk9h4o",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 10,
+      "character_start": 8,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132644-tddzcth.sy",
+      "evidence_start": "0",
+      "evidence_text": "主要症状，头痛，发热，身疼腰痛，骨节疼痛，恶",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f624aa2c4616d16467af8504f21f0f5011ead3ddb7577e550deb8e9101a78057",
+      "term": "发热",
+      "tree_position": "0.7",
+      "unit_id": "8283284d8644c8072d88856647183a5e964bf3cd976de9d43c16aa11cfde0235"
+    },
+    {
+      "block_id": "20240312150958-6dk9h4o",
+      "candidate_id": "term_cd59bb3ff531ac1429f164b2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 20,
+      "character_start": 16,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132644-tddzcth.sy",
+      "evidence_start": "4",
+      "evidence_text": "，头痛，发热，身疼腰痛，骨节疼痛，恶风无汗而喘，为什么没",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f624aa2c4616d16467af8504f21f0f5011ead3ddb7577e550deb8e9101a78057",
+      "term": "骨节疼痛",
+      "tree_position": "0.7",
+      "unit_id": "8283284d8644c8072d88856647183a5e964bf3cd976de9d43c16aa11cfde0235"
+    },
+    {
+      "block_id": "20240314085241-a2xllp0",
+      "candidate_id": "term_2d8a44bf397f0a9dfecbc62e",
+      "candidate_type": "SYMPTOM",
+      "character_end": 25,
+      "character_start": 21,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+      "evidence_start": "9",
+      "evidence_text": "的症状，哦，比如恶风啊，这个发热啊，统统有了，“ 身体强",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+      "term": "这个发热",
+      "tree_position": "0.272",
+      "unit_id": "783fde910af4aa25624a938a8239a9db2aebc9cd2346f2abff10381b3ec81e8a"
+    },
+    {
+      "block_id": "20240314085241-a2xllp0",
+      "candidate_id": "term_7c461ef634a37d60a1683588",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 21,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+      "evidence_start": "9",
+      "evidence_text": "的症状，哦，比如恶风啊，这个发热啊，统统有了，“ 身体强，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+      "term": "这个发热啊",
+      "tree_position": "0.272",
+      "unit_id": "783fde910af4aa25624a938a8239a9db2aebc9cd2346f2abff10381b3ec81e8a"
+    },
+    {
+      "block_id": "20240314085241-44yq7gc",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 80,
+      "character_start": 78,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+      "evidence_start": "66",
+      "evidence_text": "赤而下重，心中痛而自烦，发热，当脐跳，脉弦，此为心脏",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+      "term": "发热",
+      "tree_position": "0.1647",
+      "unit_id": "77b850afdf2ae38a96f5db9b86bd3bc9b36f9f3e84d3309b78413a120020d67b"
+    },
+    {
+      "block_id": "20240314085241-uhsbas6",
+      "candidate_id": "term_47ff51733cc6bc3cdf99736a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 144,
+      "character_start": 139,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+      "evidence_start": "127",
+      "evidence_text": "都是她的症状， 不大便，烦躁又发热 ，切脉呢这个脉非常的实",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+      "term": "烦躁又发热",
+      "tree_position": "0.3564",
+      "unit_id": "984bd476e7c2b95be6c7bb10e3cd5ac75a543a5f1104dab3b805d66a9fc747ca"
+    },
+    {
+      "block_id": "20240421112538-b7bvm64",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 33,
+      "character_start": 31,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+      "evidence_start": "19",
+      "evidence_text": "出白泡沫的痰，一般来讲，咳嗽严重转成白泡沫的痰，都是",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+      "term": "咳嗽",
+      "tree_position": "0.4398",
+      "unit_id": "3ce46d29c0c82d770f8eb3e5b46fe14b4cd0d2345d6b863867534ffe439e322b"
+    },
+    {
+      "block_id": "20240422153800-853hfip",
+      "candidate_id": "term_47ff51733cc6bc3cdf99736a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 144,
+      "character_start": 139,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314092421-2r8j142.sy",
+      "evidence_start": "127",
+      "evidence_text": "都是她的症状， 不大便，烦躁又发热 ，切脉呢这个脉非常的实",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4916a1b57f5e388ca2926f2bec6b9218748a59a18527d8685124bc763fee0d38",
+      "term": "烦躁又发热",
+      "tree_position": "0.21",
+      "unit_id": "2e0ee7da6f3231c195f6c7cdb82e2af3bed65a0efeecb5a4b306cd50a6b801cc"
+    },
+    {
+      "block_id": "20240422152903-doqrffl",
+      "candidate_id": "term_2d8a44bf397f0a9dfecbc62e",
+      "candidate_type": "SYMPTOM",
+      "character_end": 25,
+      "character_start": 21,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314092433-mjup7wn.sy",
+      "evidence_start": "9",
+      "evidence_text": "的症状，哦，比如恶风啊，这个发热啊，统统有了，“ 身体强",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5cbe215ea43b14069562372d36c4e354dacc7c97cedab2fa70e7f5827f97f4e9",
+      "term": "这个发热",
+      "tree_position": "0.4",
+      "unit_id": "5efe378896cbf35944ff37c9c1af06315a260b7f1326520d531b6a72360f96e8"
+    },
+    {
+      "block_id": "20240422152903-doqrffl",
+      "candidate_id": "term_7c461ef634a37d60a1683588",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 21,
+      "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314092433-mjup7wn.sy",
+      "evidence_start": "9",
+      "evidence_text": "的症状，哦，比如恶风啊，这个发热啊，统统有了，“ 身体强，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5cbe215ea43b14069562372d36c4e354dacc7c97cedab2fa70e7f5827f97f4e9",
+      "term": "这个发热啊",
+      "tree_position": "0.4",
+      "unit_id": "5efe378896cbf35944ff37c9c1af06315a260b7f1326520d531b6a72360f96e8"
+    },
+    {
+      "block_id": "20240828171608-g5bdy6a",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 39,
+      "character_start": 37,
+      "document": "20230928080422-67pnka7/20240423082909-k37mv7v.sy",
+      "evidence_start": "25",
+      "evidence_text": "，但是又口渴，喜欢冷饮，咳嗽黄痰都代表里面是热的，所",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "a14d719a15b59ae3e96e7eea6623634df687bc987b76120d291da0c67eaf69c0",
+      "term": "咳嗽",
+      "tree_position": "0.277",
+      "unit_id": "b91b8561c9434cb61c041f0f93c70ddc8d2f159a9d5abdb7a6dc716b32e6abfa"
+    },
+    {
+      "block_id": "20240511092028-5hms7yw",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 73,
+      "character_start": 71,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "61",
+      "evidence_text": "常见症状为呼吸困难、咳嗽、气喘、痰多等，由于呼吸",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "咳嗽",
+      "tree_position": "0.423",
+      "unit_id": "e11a64bbda4de7ccb740ccbf80bfa4e68776d259fb8211c92d3e8a2cf4bb4424"
+    },
+    {
+      "block_id": "20240511092028-hczoifb",
+      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
+      "candidate_type": "SYMPTOM",
+      "character_end": 79,
+      "character_start": 77,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "65",
+      "evidence_text": "征可能呈现上腹痛、腹胀、恶心、呕吐、黄疸、全身倦怠、",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "恶心",
+      "tree_position": "0.1166",
+      "unit_id": "b81fae482fea68a54da91be74babd3eeaea7fc410e331c8b14c0cf0a2f73b8e2"
+    },
+    {
+      "block_id": "20240511092028-hczoifb",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 82,
+      "character_start": 80,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "68",
+      "evidence_text": "呈现上腹痛、腹胀、恶心、呕吐、黄疸、全身倦怠、贫血、",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "呕吐",
+      "tree_position": "0.1166",
+      "unit_id": "b81fae482fea68a54da91be74babd3eeaea7fc410e331c8b14c0cf0a2f73b8e2"
+    },
+    {
+      "block_id": "20240511092028-hroz2pm",
+      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
+      "candidate_type": "SYMPTOM",
+      "character_end": 23,
+      "character_start": 21,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "9",
+      "evidence_text": "状是眼压高，会有偏头痛、恶心、想吐、眼睛红、视力模糊",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "恶心",
+      "tree_position": "0.2962",
+      "unit_id": "3f25bf4fb978caf7bf108e9441113a0807fc88fca745afca66eea4c54b2c95fd"
+    },
+    {
+      "block_id": "20240511092028-wuwfgn6",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 179,
+      "character_start": 177,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "165",
+      "evidence_text": "包括有，发烧、肌肉酸痛、呕吐、头痛、喉咙痛、虚弱、淋",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "呕吐",
+      "tree_position": "0.3022",
+      "unit_id": "947c716ec55c37b0afd2f2a0729b0cf188f69d9a4f5ef12d5b1ee724594059f4"
+    },
+    {
+      "block_id": "20240511101226-ph44x6w",
+      "candidate_id": "term_096adb3655f4afca213af56d",
+      "candidate_type": "SYMPTOM",
+      "character_end": 153,
+      "character_start": 149,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+      "evidence_start": "137",
+      "evidence_text": "年前完全停经,现在症状是双脚麻木,过胖,便秘,失眠,读者",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+      "term": "双脚麻木",
+      "tree_position": "0.784",
+      "unit_id": "1e4b73665e778c3859be54889aaf23a9dbc42e7dae26dc0c5d24c3d1947318ae"
+    },
+    {
+      "block_id": "20240511113641-y1exmf5",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 34,
+      "character_start": 32,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511113619-m31skvl.sy",
+      "evidence_start": "20",
+      "evidence_text": "，一寒一热，寒症的症状是咳嗽咳出清白透明痰，带有泡沫",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7c703007fafb8802cc43f6a968170a122eddd43c65a517996e2256a165cc9b36",
+      "term": "咳嗽",
+      "tree_position": "0.22",
+      "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511113641-y1exmf5",
+      "candidate_id": "term_7b3d28513e7c858f6ca18bcb",
+      "candidate_type": "SYMPTOM",
+      "character_end": 34,
+      "character_start": 31,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511113619-m31skvl.sy",
+      "evidence_start": "19",
+      "evidence_text": "现，一寒一热，寒症的症状是咳嗽咳出清白透明痰，带有泡沫",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7c703007fafb8802cc43f6a968170a122eddd43c65a517996e2256a165cc9b36",
+      "term": "是咳嗽",
+      "tree_position": "0.22",
+      "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511113641-y1exmf5",
+      "candidate_id": "term_44e0b7f0b24fd1e6fd5ad9b2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 35,
+      "character_start": 32,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511113619-m31skvl.sy",
+      "evidence_start": "20",
+      "evidence_text": "，一寒一热，寒症的症状是咳嗽咳出清白透明痰，带有泡沫状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7c703007fafb8802cc43f6a968170a122eddd43c65a517996e2256a165cc9b36",
+      "term": "咳嗽咳",
+      "tree_position": "0.22",
+      "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511113641-y1exmf5",
+      "candidate_id": "term_82dbe4e2edd8f6f196d19357",
+      "candidate_type": "SYMPTOM",
+      "character_end": 35,
+      "character_start": 31,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511113619-m31skvl.sy",
+      "evidence_start": "19",
+      "evidence_text": "现，一寒一热，寒症的症状是咳嗽咳出清白透明痰，带有泡沫状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7c703007fafb8802cc43f6a968170a122eddd43c65a517996e2256a165cc9b36",
+      "term": "是咳嗽咳",
+      "tree_position": "0.22",
+      "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511113641-y1exmf5",
+      "candidate_id": "term_0068782fa550dc9ad507ba6b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 36,
+      "character_start": 32,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511113619-m31skvl.sy",
+      "evidence_start": "20",
+      "evidence_text": "，一寒一热，寒症的症状是咳嗽咳出清白透明痰，带有泡沫状，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7c703007fafb8802cc43f6a968170a122eddd43c65a517996e2256a165cc9b36",
+      "term": "咳嗽咳出",
+      "tree_position": "0.22",
+      "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511132144-q8m1eat",
+      "candidate_id": "term_b9328167c6c0d0bb1ced6f6f",
+      "candidate_type": "SYMPTOM",
+      "character_end": 132,
+      "character_start": 129,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511105921-ssbnxpw/20240511110546-hd9orqs.sy",
+      "evidence_start": "117",
+      "evidence_text": "滥用止喷嚏药、止鼻水药、止咳嗽药等压制症状，结果当然不",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "59803eeb01b1a85f4994216965439819a8e83552461eda6feba57f6bc88a3db0",
+      "term": "止咳嗽",
+      "tree_position": "0.23",
+      "unit_id": "bef5798ff1db85d8cfe6938f3de87071eedfba98b69a43ed6ce9b8c081a9fdf1"
+    },
+    {
+      "block_id": "20240511112320-x6g7r4m",
+      "candidate_id": "term_eb2373fdf00a090d06d2a1dc",
+      "candidate_type": "SYMPTOM",
+      "character_end": 121,
+      "character_start": 117,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511105921-ssbnxpw/20240511110559-lxocggh.sy",
+      "evidence_start": "105",
+      "evidence_text": "双足无力，小腹胀满如球，双足麻木，下肢肌肉萎缩等，均可服",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "fa7b341d1954c026faacae5bbb56eee27dd8249bbea33e62af68288331e4a5af",
+      "term": "双足麻木",
+      "tree_position": "0.3",
+      "unit_id": "5c67de517eb435135fb6d9c4c07656745cc49f80427194ae89ee9ddc279256b8"
+    },
+    {
+      "block_id": "20240511131120-kzcme6k",
+      "candidate_id": "term_eb2373fdf00a090d06d2a1dc",
+      "candidate_type": "SYMPTOM",
+      "character_end": 27,
+      "character_start": 23,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511105921-ssbnxpw/20240511110559-lxocggh.sy",
+      "evidence_start": "11",
+      "evidence_text": "双足无力，小腹胀满如球，双足麻木，下肢肌肉萎缩等，均可服",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "fa7b341d1954c026faacae5bbb56eee27dd8249bbea33e62af68288331e4a5af",
+      "term": "双足麻木",
+      "tree_position": "0.46",
+      "unit_id": "a2f9041f3f708ec84f17db18201e64e2db1031c911d068039eb2cbb541f201fe"
+    },
+    {
+      "block_id": "20240910142227-2anw8df",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 83,
+      "character_start": 81,
+      "document": "20230928080422-67pnka7/20240828170357-1boni2f.sy",
+      "evidence_start": "69",
+      "evidence_text": "没有胃口，你得到了感冒，咳嗽出黄痰，嘴巴燥渴想喝冰的",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "63caab2e55e277110bbe54c3275ad9588a7780e96f34220218a80a11753e52ac",
+      "term": "咳嗽",
+      "tree_position": "0.104",
+      "unit_id": "3967d84363e97daadb91c1d11000dc10ce451410ad0288870f98d9836be4594e"
+    },
+    {
+      "block_id": "20240910142227-2anw8df",
+      "candidate_id": "term_1e9e75ff72bc8ac51f30fd03",
+      "candidate_type": "SYMPTOM",
+      "character_end": 84,
+      "character_start": 81,
+      "document": "20230928080422-67pnka7/20240828170357-1boni2f.sy",
+      "evidence_start": "69",
+      "evidence_text": "没有胃口，你得到了感冒，咳嗽出黄痰，嘴巴燥渴想喝冰的，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "63caab2e55e277110bbe54c3275ad9588a7780e96f34220218a80a11753e52ac",
+      "term": "咳嗽出",
+      "tree_position": "0.104",
+      "unit_id": "3967d84363e97daadb91c1d11000dc10ce451410ad0288870f98d9836be4594e"
+    },
+    {
+      "block_id": "20240205093428-d4k6yf7",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 117,
+      "character_start": 115,
+      "document": "20231102152423-qzpbhto/20231102152444-d1fxilv.sy",
+      "evidence_start": "103",
+      "evidence_text": "减轻不明显，鼻涕没减少，咳嗽依旧，喝多人感觉虚，感觉",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b1be47d80974cea99e0086de938b389df958d0e6afc4a39e43d118c079fe1083",
+      "term": "咳嗽",
+      "tree_position": "0.11",
+      "unit_id": "5a469961c75e3d131e7e5db2b399c68f6a53b2f514656b4aaa3f1b578c4f911f"
+    },
+    {
+      "block_id": "20231122160609-4tpy8vx",
+      "candidate_id": "term_7aa4db1e778375940901e25f",
+      "candidate_type": "SYMPTOM",
+      "character_end": 470,
+      "character_start": 466,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153043-wbu9jc8.sy",
+      "evidence_start": "454",
+      "evidence_text": "的病变，表现为筋脉挛急，关节疼痛，不能行走，名叫筋痹",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6f867d08a4c5159512734d412c74d98014485c7ef931e01a050961ec21f1495f",
+      "term": "关节疼痛",
+      "tree_position": "0.14",
+      "unit_id": "bd4dbed1961e290b65626cfd9f75ccf9bdee58642c429955813f8acc4ba48f87"
+    },
+    {
+      "block_id": "20231122160609-hzg3lwc",
+      "candidate_id": "term_85385f4a812bbf2a5a241774",
+      "candidate_type": "SYMPTOM",
+      "character_end": 175,
+      "character_start": 173,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153043-wbu9jc8.sy",
+      "evidence_start": "161",
+      "evidence_text": "邪致病，表现为时寒时热，发热时汗出，一日发作数次",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6f867d08a4c5159512734d412c74d98014485c7ef931e01a050961ec21f1495f",
+      "term": "发热",
+      "tree_position": "0.15",
+      "unit_id": "0a34cca76acb37719cf82845430bb7907fc3429a0792136766980b314bb09885"
+    },
+    {
+      "block_id": "20231122160609-hzg3lwc",
+      "candidate_id": "term_b6ffd0faa86506b586d86010",
+      "candidate_type": "SYMPTOM",
+      "character_end": 176,
+      "character_start": 173,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153043-wbu9jc8.sy",
+      "evidence_start": "161",
+      "evidence_text": "邪致病，表现为时寒时热，发热时汗出，一日发作数次",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6f867d08a4c5159512734d412c74d98014485c7ef931e01a050961ec21f1495f",
+      "term": "发热时",
+      "tree_position": "0.15",
+      "unit_id": "0a34cca76acb37719cf82845430bb7907fc3429a0792136766980b314bb09885"
+    },
+    {
+      "block_id": "20231122160323-snvck52",
+      "candidate_id": "term_5de4b9c5a044c263fdd3cff7",
+      "candidate_type": "SYMPTOM",
+      "character_end": 543,
+      "character_start": 539,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153048-72bybjd.sy",
+      "evidence_start": "527",
+      "evidence_text": "出如水渍一样，不耐劳动，周身疼痛发冷",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5eb894ebe49c2f3493a5093f1b22441d71a69c8d571253cc85e60b153cf9bc95",
+      "term": "周身疼痛",
+      "tree_position": "0.37",
+      "unit_id": "47ba9f570b42ee4d921c840ef983676bfd9e3d4df411c3e536babdf1748dadd4"
+    },
+    {
+      "block_id": "20231122160336-etgaw81",
+      "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 99,
+      "character_start": 97,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153105-3frwwst.sy",
+      "evidence_start": "85",
+      "evidence_text": "多惊，饮水多而小便频数，疼痛循肝经由上而下牵引少腹如",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4fd332a871848106368f5c8b609af6e94b610783b98e5d701d74bf9d0d062720",
+      "term": "疼痛",
+      "tree_position": "0.60",
+      "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
+    },
+    {
+      "block_id": "20231122160336-etgaw81",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 171,
+      "character_start": 169,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153105-3frwwst.sy",
+      "evidence_start": "157",
+      "evidence_text": "痹的症状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4fd332a871848106368f5c8b609af6e94b610783b98e5d701d74bf9d0d062720",
+      "term": "咳嗽",
+      "tree_position": "0.60",
+      "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
+    },
+    {
+      "block_id": "20231122160336-etgaw81",
+      "candidate_id": "term_85618f8e38029dfe96ff7013",
+      "candidate_type": "SYMPTOM",
+      "character_end": 174,
+      "character_start": 172,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153105-3frwwst.sy",
+      "evidence_start": "160",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4fd332a871848106368f5c8b609af6e94b610783b98e5d701d74bf9d0d062720",
+      "term": "呕吐",
+      "tree_position": "0.60",
+      "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
+    },
+    {
+      "block_id": "20231122160336-etgaw81",
+      "candidate_id": "term_a78c38bdda09191b9e378ad2",
+      "candidate_type": "SYMPTOM",
+      "character_end": 175,
+      "character_start": 172,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153105-3frwwst.sy",
+      "evidence_start": "160",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4fd332a871848106368f5c8b609af6e94b610783b98e5d701d74bf9d0d062720",
+      "term": "呕吐清",
+      "tree_position": "0.60",
+      "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
+    },
+    {
+      "block_id": "20231122160336-etgaw81",
+      "candidate_id": "term_9437b9792179c3198f6edd71",
+      "candidate_type": "SYMPTOM",
+      "character_end": 176,
+      "character_start": 172,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153105-3frwwst.sy",
+      "evidence_start": "160",
+      "evidence_text": "状是四肢倦怠无力，咳嗽，呕吐清水，上腹部阻塞不通",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4fd332a871848106368f5c8b609af6e94b610783b98e5d701d74bf9d0d062720",
+      "term": "呕吐清水",
+      "tree_position": "0.60",
+      "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
+    },
+    {
+      "block_id": "20231122160228-fothe81",
+      "candidate_id": "term_2625e9076bc0f297e56f5617",
+      "candidate_type": "SYMPTOM",
+      "character_end": 23,
+      "character_start": 19,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153108-bl2gale.sy",
+      "evidence_start": "13",
+      "evidence_text": "胃咳的症状，咳而呕吐，甚至呕出蛔虫",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e2d63d8b01eeba6fe7a5d0687d48af3071becc2c582c89c69262eff620a886a7",
+      "term": "咳而呕吐",
+      "tree_position": "0.37",
+      "unit_id": "7d6794f64034e63d7c10a19ebf59582f64aa612cc55db7687faf5d4f8e17e6c4"
+    },
+    {
+      "block_id": "20231122160228-8mmo1vy",
+      "candidate_id": "term_2625e9076bc0f297e56f5617",
+      "candidate_type": "SYMPTOM",
+      "character_end": 21,
+      "character_start": 17,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153108-bl2gale.sy",
+      "evidence_start": "5",
+      "evidence_text": "则胆就受病，胆咳的症状是咳而呕吐胆汁",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e2d63d8b01eeba6fe7a5d0687d48af3071becc2c582c89c69262eff620a886a7",
+      "term": "咳而呕吐",
+      "tree_position": "0.39",
+      "unit_id": "0b82ea5702cda31d0334147478f7adac49e4173bc25c2d0bb35d203b36d38a7d"
+    },
+    {
+      "block_id": "20231122161108-njm3fj2",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 80,
+      "character_start": 78,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153454-slmlnlb.sy",
+      "evidence_start": "66",
+      "evidence_text": "就要死亡，其变动的症状为咳嗽",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6fa52a2bfd27ba438b21e6fdacfb0dc9aa7c592a65be7757989293e71e8d3b91",
+      "term": "咳嗽",
+      "tree_position": "0.15",
+      "unit_id": "7ba11c9a1764a45ef29fd9925901c6b018ffaf357ac325c543f2a503f5c36984"
+    },
+    {
+      "block_id": "20231122161108-njm3fj2",
+      "candidate_id": "term_18805e132ecaa9043dc29471",
+      "candidate_type": "SYMPTOM",
+      "character_end": 80,
+      "character_start": 77,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153454-slmlnlb.sy",
+      "evidence_start": "65",
+      "evidence_text": "天就要死亡，其变动的症状为咳嗽",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6fa52a2bfd27ba438b21e6fdacfb0dc9aa7c592a65be7757989293e71e8d3b91",
+      "term": "为咳嗽",
+      "tree_position": "0.15",
+      "unit_id": "7ba11c9a1764a45ef29fd9925901c6b018ffaf357ac325c543f2a503f5c36984"
+    },
+    {
+      "block_id": "20231122164453-z3txuum",
+      "candidate_id": "term_192fc22f750f1bfacb1af994",
+      "candidate_type": "SYMPTOM",
+      "character_end": 36,
+      "character_start": 32,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154236-idc4g2k.sy",
+      "evidence_start": "20",
+      "evidence_text": "，皮肤颜色没有变化，伴有发冷发热，患处坚硬，这是尚未成脓",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4a23c8b883037ca54e2f84cafab89827a172dd293a8badcea76e99f4e12aa749",
+      "term": "发冷发热",
+      "tree_position": "0.32",
+      "unit_id": "59e3d82b8384084aeb1ae56134337a4650f472a5d4cdd93c008b2e0f2393dcf5"
+    },
+    {
+      "block_id": "20231122164333-kxjx5cp",
+      "candidate_id": "term_a65e2f92bc8757e8ea9a5f2b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 32,
+      "character_start": 30,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
+      "evidence_start": "18",
+      "evidence_text": "几十种病证的，有的表现为疼痛，或形成痈肿，有的发热，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
+      "term": "疼痛",
+      "tree_position": "0.61",
+      "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
+    },
+    {
+      "block_id": "20231122164333-kxjx5cp",
+      "candidate_id": "term_52ceb042f136fe2ae16e56f5",
+      "candidate_type": "SYMPTOM",
+      "character_end": 67,
+      "character_start": 65,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
+      "evidence_start": "53",
+      "evidence_text": "有的形成痹证，有的表现为麻木不仁，证候表现千变万化，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
+      "term": "麻木",
+      "tree_position": "0.61",
+      "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
+    },
+    {
+      "block_id": "20231122164333-kxjx5cp",
+      "candidate_id": "term_30ca9bd396ea3611b2d8d76c",
+      "candidate_type": "SYMPTOM",
+      "character_end": 68,
+      "character_start": 65,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
+      "evidence_start": "53",
+      "evidence_text": "有的形成痹证，有的表现为麻木不仁，证候表现千变万化，这",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
+      "term": "麻木不",
+      "tree_position": "0.61",
+      "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
+    },
+    {
+      "block_id": "20231122164333-kxjx5cp",
+      "candidate_id": "term_ca5b75f0b21a3de6123cee87",
+      "candidate_type": "SYMPTOM",
+      "character_end": 69,
+      "character_start": 65,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
+      "evidence_start": "53",
+      "evidence_text": "有的形成痹证，有的表现为麻木不仁，证候表现千变万化，这是",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
+      "term": "麻木不仁",
+      "tree_position": "0.61",
+      "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
+    },
+    {
+      "block_id": "20231122162425-vp3n5q1",
+      "candidate_id": "term_57078426370b2ce0c7f3c54d",
+      "candidate_type": "SYMPTOM",
+      "character_end": 63,
+      "character_start": 59,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154326-sqodl5z.sy",
+      "evidence_start": "47",
+      "evidence_text": "患胀病表现为：胸中虚满，喘息咳嗽",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b22cf949124cf618901daece92e0806dec6a6c927e90f2bd1dc8574e7f40abbb",
+      "term": "喘息咳嗽",
+      "tree_position": "0.23",
+      "unit_id": "5989d3542a67b33ed81615a492a992c2d75333699cb70c46ea6475b63866deb6"
+    },
+    {
+      "block_id": "20231122162425-vp3n5q1",
+      "candidate_id": "term_7cdbcf50770ffece32a921f9",
+      "candidate_type": "SYMPTOM",
+      "character_end": 94,
+      "character_start": 90,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154326-sqodl5z.sy",
+      "evidence_start": "82",
+      "evidence_text": "脾患胀病表现为：呃逆呕吐，四肢闷胀不舒，肢体沉重",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b22cf949124cf618901daece92e0806dec6a6c927e90f2bd1dc8574e7f40abbb",
+      "term": "呃逆呕吐",
+      "tree_position": "0.23",
+      "unit_id": "5989d3542a67b33ed81615a492a992c2d75333699cb70c46ea6475b63866deb6"
+    },
+    {
+      "block_id": "20231122162425-vp3n5q1",
+      "candidate_id": "term_8679cfc95febc622721654eb",
+      "candidate_type": "SYMPTOM",
+      "character_end": 166,
+      "character_start": 162,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154326-sqodl5z.sy",
+      "evidence_start": "150",
+      "evidence_text": "患胀病表现为：腹部胀满，胃脘疼痛，鼻中常常闻到焦臭的气味",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b22cf949124cf618901daece92e0806dec6a6c927e90f2bd1dc8574e7f40abbb",
+      "term": "胃脘疼痛",
+      "tree_position": "0.23",
+      "unit_id": "5989d3542a67b33ed81615a492a992c2d75333699cb70c46ea6475b63866deb6"
+    },
+    {
+      "block_id": "20231122162425-vp3n5q1",
+      "candidate_id": "term_df24140f3e53171fd0954815",
+      "candidate_type": "SYMPTOM",
+      "character_end": 306,
+      "character_start": 302,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154326-sqodl5z.sy",
+      "evidence_start": "293",
+      "evidence_text": "胆患胀病，表现为：胁下疼痛胀满，口中发苦，经常叹息",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b22cf949124cf618901daece92e0806dec6a6c927e90f2bd1dc8574e7f40abbb",
+      "term": "胁下疼痛",
+      "tree_position": "0.23",
+      "unit_id": "5989d3542a67b33ed81615a492a992c2d75333699cb70c46ea6475b63866deb6"
+    },
+    {
+      "block_id": "20231122162209-4yzl9ub",
+      "candidate_id": "term_7ec3c70bb28cb8c14a20a1a0",
+      "candidate_type": "SYMPTOM",
+      "character_end": 15,
+      "character_start": 11,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154333-d9qbc6w.sy",
+      "evidence_start": "0",
+      "evidence_text": "【白话解】热病，表现为不知疼痛，耳聋，四肢不能灵活收放",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e48379ff558f7f0d952c1fd4d6fccc6365e310e3734640edd187b66274a0ab6b",
+      "term": "不知疼痛",
+      "tree_position": "0.38",
+      "unit_id": "61272df747e0d12d8fb008b344d9915ae91b302cc004b5de056041e0b0a2ddcd"
+    },
+    {
+      "block_id": "20231122161945-6sqi58t",
+      "candidate_id": "term_dd05a455a629d14c87a9980b",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 24,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "12",
+      "evidence_text": "脏所发生的疾病，其症状是咳嗽气逆，喘促，口渴，心中烦",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "咳嗽",
+      "tree_position": "0.10",
+      "unit_id": "6a0655a3bbc787418ef4e62cdcd69a5b3d7e333fe18e33bbbb99cb0fee75c8f4"
+    },
+    {
+      "block_id": "20231122161945-6sqi58t",
+      "candidate_id": "term_7b3d28513e7c858f6ca18bcb",
+      "candidate_type": "SYMPTOM",
+      "character_end": 26,
+      "character_start": 23,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "11",
+      "evidence_text": "肺脏所发生的疾病，其症状是咳嗽气逆，喘促，口渴，心中烦",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "是咳嗽",
+      "tree_position": "0.10",
+      "unit_id": "6a0655a3bbc787418ef4e62cdcd69a5b3d7e333fe18e33bbbb99cb0fee75c8f4"
+    },
+    {
+      "block_id": "20231122161945-6sqi58t",
+      "candidate_id": "term_a863a44156eee940051eea2a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 27,
+      "character_start": 24,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "12",
+      "evidence_text": "脏所发生的疾病，其症状是咳嗽气逆，喘促，口渴，心中烦乱",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "咳嗽气",
+      "tree_position": "0.10",
+      "unit_id": "6a0655a3bbc787418ef4e62cdcd69a5b3d7e333fe18e33bbbb99cb0fee75c8f4"
+    },
+    {
+      "block_id": "20231122161945-6sqi58t",
+      "candidate_id": "term_818a009a9b177841ea7b49c1",
+      "candidate_type": "SYMPTOM",
+      "character_end": 27,
+      "character_start": 23,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "11",
+      "evidence_text": "肺脏所发生的疾病，其症状是咳嗽气逆，喘促，口渴，心中烦乱",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "是咳嗽气",
+      "tree_position": "0.10",
+      "unit_id": "6a0655a3bbc787418ef4e62cdcd69a5b3d7e333fe18e33bbbb99cb0fee75c8f4"
+    }
+  ],
+  "multi_rule_occurrence_groups": 166,
+  "multi_rule_occurrence_groups_by_type": {
+    "SYMPTOM": 166
+  },
+  "occurrence_counts_by_type": {
+    "FORMULA": 12610,
+    "HERB": 23592,
+    "PULSE": 13216,
+    "SYMPTOM": 66587,
+    "SYNDROME": 4095,
+    "TONGUE": 3034,
+    "TREATMENT": 717
+  },
+  "policy": {
+    "candidate_mutation": "none",
+    "occurrence_identity": "unit_id + candidate_type + candidate_id + source offsets",
+    "rule_assignments": "multiple matching rules are reported, not treated as multiple source occurrences"
+  },
+  "rule_combinations_by_type": {
+    "SYMPTOM:SYMPTOM_CONTEXT_01|SYMPTOM_CONTEXT_02": 166
+  },
+  "schema_version": 1
+}

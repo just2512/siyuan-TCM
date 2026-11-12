@@ -1,0 +1,13 @@
+{
+  "checked_relation_rows": 0,
+  "endpoint_candidate_validation": "PASS",
+  "evidence_source_validation": "PASS",
+  "identity_validation": "PASS",
+  "relation_counts_by_predicate": {
+    "SYMPTOM_TO_SYNDROME": 0,
+    "SYNDROME_TO_TREATMENT": 0,
+    "TREATMENT_TO_FORMULA": 0
+  },
+  "schema_version": 1,
+  "sentence_and_attribution_boundary_validation": "PASS"
+}

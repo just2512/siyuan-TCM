@@ -1,0 +1,1 @@
+relation_id,predicate,subject_candidate_id,subject_text,subject_type,subject_start,subject_end,object_candidate_id,object_text,object_type,object_start,object_end,unit_id,document,source_sha256,tree_position,block_id,sentence_start,sentence_end,evidence_text,predicate_text,extraction_rule,resolution_status

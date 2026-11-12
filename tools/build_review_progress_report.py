@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""Build a conservative, machine-counted human-review progress report."""
+from __future__ import annotations
+
+import argparse
+import csv
+from collections import Counter
+from pathlib import Path
+
+DECISION_COLUMNS = (
+    "title_review_status", "source_status", "source_version_status",
+    "collation_status", "topic_review_status", "empty_body_status",
+)
+PENDING_VALUES = {"", "NOT_REVIEWED", "UNVERIFIED", "NEEDS_INSPECTION",
+                  "NEEDS_SOURCE_INSPECTION", "PENDING"}
+UNRESOLVED_VALUES = {"UNRESOLVED"}
+CONFLICT_VALUES = {"CONFLICT"}
+ACTIVE_VALUES = {
+    "title_review_status": {"CONFIRMED", "RENAME_REQUIRED", "UNRESOLVED"},
+    "source_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "source_version_status": {"PARTIAL", "VERIFIED", "CONFLICT", "UNRESOLVED"},
+    "collation_status": {"COLLATION_CONFIRMED", "CORRECTION_REQUIRED", "UNRESOLVED"},
+    "topic_review_status": {"CONFIRMED", "REMOVE_TOPIC", "ADD_TOPIC", "SPLIT_REQUIRED", "UNRESOLVED"},
+    "empty_body_status": {"SOURCE_EMPTY_CONFIRMED", "LOCAL_SOURCE_HAS_CONTENT", "RESTORE_REQUIRED", "UNRESOLVED"},
+}
+
+
+def read_rows(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as stream:
+        return [{k: (v or "").strip() for k, v in row.items() if k}
+                for row in csv.DictReader(stream)]
+
+
+def count_column(rows: list[dict[str, str]], column: str) -> Counter:
+    return Counter((row.get(column) or "").strip() or "NOT_REVIEWED" for row in rows)
+
+
+def render_report(decisions: Path, sources: Path, assets: Path,
+                  evidence: Path, topics: Path | None = None,
+                  titles: Path | None = None, empty_body: Path | None = None,
+                  content_anomalies: Path | None = None,
+                  paragraph_anomalies: Path | None = None,
+                  dosage_candidates: Path | None = None,
+                  sections: Path | None = None,
+                  block_types: Path | None = None,
+                  topic_review: Path | None = None,
+                  title_review: Path | None = None) -> str:
+    decision_rows = read_rows(decisions)
+    source_rows = read_rows(sources)
+    asset_rows = read_rows(assets)
+    evidence_rows = read_rows(evidence)
+    topic_rows = read_rows(topics) if topics else []
+    title_rows = read_rows(titles) if titles else []
+    topic_decision_rows = read_rows(topic_review) if topic_review else []
+    title_decision_rows = read_rows(title_review) if title_review else []
+    empty_rows = read_rows(empty_body) if empty_body else []
+    anomaly_rows = read_rows(content_anomalies) if content_anomalies else []
+    paragraph_anomaly_rows = read_rows(paragraph_anomalies) if paragraph_anomalies else []
+    dosage_rows = read_rows(dosage_candidates) if dosage_candidates else []
+    section_rows = read_rows(sections) if sections else []
+    block_type_rows = read_rows(block_types) if block_types else []
+
+    lines = [
+        "# 人工核验进度报告", "",
+        "> 本报告只汇总持久化表格中的状态，不读取原始 .sy 或附件内容，不判定内容真实性。CI 通过不代表人工核验完成。", "",
+        "## 人工决策表", "",
+        "| 核验域 | 记录数 | 状态分布 |", "|---|---:|---|",
+    ]
+    for column in DECISION_COLUMNS:
+        counts = count_column(decision_rows, column)
+        rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
+        lines.append(f"| {column} | {len(decision_rows)} | {rendered} |")
+
+    lines += ["", "## 静态风险审计信号（不承载人工决策状态）", ""]
+    if topics:
+        lines.append(f"- 逐文档—主题审计：{len(topic_rows)} 条（机器规则命中线索，不代表已人工复核）")
+    else:
+        lines.append("- 逐文档—主题审计：未提供静态审计输入")
+    if titles:
+        lines.append(f"- 标题风险审计：{len(title_rows)} 条（标题抽取风险线索，不代表已人工复核）")
+    else:
+        lines.append("- 标题风险审计：未提供静态审计输入")
+
+    lines += ["", "## 人工决策投影队列", ""]
+    for label, rows, column, supplied in (
+        ("逐文档—主题复核", topic_decision_rows, "review_status", topic_review),
+        ("标题候选复核", title_decision_rows, "review_status", title_review),
+        ("空正文候选", empty_rows, "review_status", empty_body),
+    ):
+        if supplied:
+            counts = count_column(rows, column)
+            rendered = "；".join(f"{status}: {counts[status]}" for status in sorted(counts))
+            lines.append(f"- {label}：{len(rows)} 条；{rendered}")
+        else:
+            lines.append(f"- {label}：未提供决策投影输入")
+    lines.append("- 主题/标题结论以 review-decisions.csv 为唯一持久化来源；topic_review.csv 与 title_review_candidates.csv 是其生成投影，完整字段一致性由 validate_siyuan_catalog.py 校验。")
+
+    lines += ["", "## 真实笔记内容审计", ""]
+    if content_anomalies:
+        flagged = sum(row.get("anomaly_flags", "") != "NO_STATIC_SIGNAL" for row in anomaly_rows)
+        lines.append(f"- 内容异常扫描文档：{len(anomaly_rows)}；有静态信号：{flagged}")
+    if paragraph_anomalies:
+        lines.append(f"- 段落级异常候选：{len(paragraph_anomaly_rows)}")
+    if dosage_candidates:
+        lines.append(f"- 剂量样式表达候选：{len(dosage_rows)}（全部初始 NOT_REVIEWED）")
+    if sections:
+        lines.append(f"- 章节级索引记录：{len(section_rows)}")
+    if block_types:
+        lines.append(f"- 块类型覆盖记录：{len(block_type_rows)}")
+    if not any((content_anomalies, paragraph_anomalies, dosage_candidates, sections, block_types)):
+        lines.append("- 尚未提供内容审计输入。")
+
+    lines += ["", "## 来源候选", "", f"- 候选记录：{len(source_rows)}"]
+    for status_field in ("source_identity_status", "source_version_status", "collation_status"):
+        counts = count_column(source_rows, status_field)
+        lines.append(f"- {status_field}: " + "；".join(
+            f"{status}: {counts[status]}" for status in sorted(counts)
+        ))
+
+    lines += ["", "## 附件引用", "", f"- 唯一引用记录：{len(asset_rows)}"]
+    asset_counts = count_column(asset_rows, "manual_status")
+    lines += [f"- {status}: {count}" for status, count in sorted(asset_counts.items())]
+
+    lines += ["", "## 证据台账", "", f"- 证据记录：{len(evidence_rows)}"]
+    evidence_counts = count_column(evidence_rows, "evidence_kind") if evidence_rows else Counter()
+    method_counts = count_column(evidence_rows, "inspection_method") if evidence_rows else Counter()
+    if evidence_counts:
+        lines += [f"- 证据类型 {kind}: {count}" for kind, count in sorted(evidence_counts.items())]
+        lines += [f"- 检查方式 {method}: {count}" for method, count in sorted(method_counts.items())]
+    else:
+        lines.append("- 当前没有证据记录。")
+
+    lines += [
+        "", "## 状态解释", "",
+        "- 空白状态按 NOT_REVIEWED 统计；不得把空白当作通过。",
+        "- UNVERIFIED / NOT_REVIEWED / NEEDS_INSPECTION / NEEDS_SOURCE_INSPECTION / PENDING 均属于未完成。",
+        "- UNRESOLVED 和 CONFLICT 单独保留，不并入已核验。",
+        "- 本报告不把 PARTIAL 等同 VERIFIED，也不将机器扫描状态转换为人工结论。",
+        "- 每个有效人工结论仍须通过证据台账结构校验和跨表引用校验，并由复核者确认原始材料确已检查。",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--decisions", type=Path, required=True)
+    parser.add_argument("--sources", type=Path, required=True)
+    parser.add_argument("--assets", type=Path, required=True)
+    parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--topics", type=Path)
+    parser.add_argument("--titles", type=Path)
+    parser.add_argument("--topic-review", type=Path)
+    parser.add_argument("--title-review", type=Path)
+    parser.add_argument("--empty-body", type=Path)
+    parser.add_argument("--content-anomalies", type=Path)
+    parser.add_argument("--paragraph-anomalies", type=Path)
+    parser.add_argument("--dosage-candidates", type=Path)
+    parser.add_argument("--sections", type=Path)
+    parser.add_argument("--block-types", type=Path)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    report = render_report(args.decisions, args.sources, args.assets, args.evidence,
+                           args.topics, args.titles, args.empty_body,
+                           args.content_anomalies, args.paragraph_anomalies,
+                           args.dosage_candidates, args.sections, args.block_types,
+                           topic_review=args.topic_review, title_review=args.title_review)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(report, encoding="utf-8")
+    print(f"Review progress report written: {args.output}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

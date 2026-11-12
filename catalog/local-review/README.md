@@ -1,0 +1,71 @@
+# 本地核验记录
+
+本目录保存用户在本地思源资料库中完成的观察结果。它不是自动生成目录，不应由 CI 重建覆盖。
+
+## 空正文核验（2026-11-04）
+
+文件：`empty-body-review-2026-11-04.csv`
+
+- 共 33 篇，用户本地逐篇查看后均标记为 `CONFIRMED_EMPTY`。
+- 其中 26 篇为容器/父级文档：当前文档本身没有直接正文，内容位于其子文档中。
+- 另 7 篇为仅含一个空段落、无可见文本、无附件引用且无子文档的空白占位笔记。
+- `CONFIRMED_EMPTY` 描述的是该 .sy 文档自身没有直接正文，不表示整个父级目录或子树没有内容，也不表示资料损坏。
+- `catalog_machine_review_status` 保留当时机器生成的待核验状态；`local_review_status` 和 `local_review_note` 才是用户本地核验结果。
+
+## 附件全量扫描（2026-11-04）
+
+文件：
+- `asset-audit-2026-11-04.md`：本地映射审计汇总。
+- `asset-missing-review-2026-11-04.csv`：742 条未匹配原始引用记录。
+- `asset-missing-unique-2026-11-04.csv`：634 条去重后的唯一未匹配引用。
+- `asset-prefix-candidates-2026-11-05.csv`：使用完整本地 assets 目录扫描生成的候选清单。
+
+本次扫描覆盖本地 assets 目录中的 9,138 个文件；5,309 条引用中，4,567 条精确相对路径匹配，742 条未匹配，未发现非法引用路径或同名冲突。742 条未匹配去重为 634 个唯一引用，包含 614 个无扩展名引用和 20 个图片引用。
+
+全量候选扫描结果：
+- 309 条唯一引用只有一个文件名候选；
+- 235 条唯一引用有多个文件名候选；
+- 90 条唯一引用没有候选；
+- 候选总数为 836 条路径记录，单个候选文件可能对应不同引用。
+
+`asset-prefix-candidates-2026-11-04.csv` 是早期仅基于已命中引用文件名的初步比对，保留作历史基线；后续应以 `asset-prefix-candidates-2026-11-05.csv` 的全量 assets 扫描结果为准。
+
+**候选仅代表文件名线索，不代表内容匹配。** 单候选也必须打开文件核对图像/内容和文档上下文；多候选必须逐一辨认；无候选需要结合文档上下文搜索。不能仅凭药材名称相同、文件名相似或候选数量为 1 就将引用标记为 FOUND。
+
+原始 assets 文件仍保存在用户本地，不进入 Git 仓库。仓库 CI 不具备本地 assets，因此 CI 重新生成的 `catalog/generated/asset_audit.md` 会显示 `NOT_RUN`；这不否定本地扫描记录。持久化的本地扫描证据保存在本目录。
+
+## 维护规则
+
+- 本目录下的人工记录必须作为持久化输入保留，CI 不得覆盖。
+- 新一轮核验请使用新日期文件，保留历史记录。
+- 若将单篇文档核验结果写入 `catalog/review-decisions.csv`，必须遵循 `catalog/REVIEW_GUIDE.md` 的状态与证据字段约束；不能仅凭汇总数字批量生成书目或校勘结论。
+- 附件候选清单中的 544 条文件名/路径候选目前均为 `NEEDS_INSPECTION`，90 条无候选为 `UNRESOLVED`；路径命中和 SHA-256 不等于内容核验。
+- 只有核实文件内容与引用关系后，才允许将 `manual_status` 更新为 `CONFIRMED_MATCH` 或 `NOT_MATCH`。此时必须在 `catalog/review-evidence.csv` 新增 `asset_content` / `HUMAN_DIRECT` 证据行，填写原始 `.sy` 的 `context_reference` 和 `content_basis`；`content_evidence_reference` 只能填写该行的 `evidence_id`，不能填写文件名、哈希或本地 CSV 行号。不要直接修改自动生成的 `catalog/generated/asset_references.csv`。
+
+## 附件候选复核队列
+
+CI 根据持久化的全量候选清单自动生成：
+- `catalog/generated/asset_review_queue.csv`：按引用路径排序、每 25 条一批的工作队列。
+- `catalog/generated/asset_review_queue.md`：候选类别、处理规则和批次摘要。
+
+队列将单候选、多候选、无候选分别指向不同核验动作，但不自动选择候选或修改附件映射状态。该队列只是工作组织工具，不表示优先级或错误程度。
+
+## 来源资料候选
+
+文件：`catalog/source-review-candidates.csv`
+
+当前 231 条来源候选均为 `UNVERIFIED`。此前 187 条 `PARTIAL` 只有文件名、文档标题或关键词线索，没有定位到原始来源证据，已全部退回 `UNVERIFIED`。只有实际检查原始来源材料并记录可定位的页码、段落、期次或时间戳后，才允许更新为 `PARTIAL`；来源身份、版本与校勘分别核验，不能互相替代。
+
+## 来源资料核验队列
+
+CI 根据 `catalog/source-review-candidates.csv` 自动生成：
+- `catalog/generated/source_review_queue.csv`：231 条候选，按类别和路径排序、每 20 条一批。
+- `catalog/generated/source_review_queue.md`：类别数量、当前核验状态及证据要求。
+
+队列将本地附件文件、《黄帝内经》篇章候选、课程/讲座来源候选分开组织。只有能定位到具体原始材料及页码/期次的直接证据，才允许更新为 `PARTIAL` 或 `VERIFIED`；`PARTIAL` 只表示有限范围已核验，不计入 `VERIFIED`。来源身份、版本确认和文本校勘必须分别判断。
+
+## 下一步处理边界
+
+- 附件核验必须依赖实际文件内容和引用上下文；当前仓库保存的是候选路径及审计元数据，不包含附件本体。
+- 来源核验必须依赖可定位的书目证据；不能从讲者名、标题或文件名推断作者、出处和版本。
+- 无法证明的项目继续保持待核验状态，不得为追求“全部完成”而批量填入确认结论。

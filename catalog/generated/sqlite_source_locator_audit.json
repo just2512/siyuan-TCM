@@ -1,0 +1,10 @@
+{
+  "content_block_rows": 236987,
+  "duplicate_locator_excess_rows": 0,
+  "duplicate_locator_groups": 0,
+  "malformed_source_rows": 0,
+  "schema_version": 1,
+  "source_length_validation": "PASS",
+  "source_locator_validation": "PASS",
+  "unique_source_locators": 236987
+}
