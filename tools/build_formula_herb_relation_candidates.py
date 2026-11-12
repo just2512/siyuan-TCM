@@ -182,7 +182,7 @@ def crosses_author_attribution_boundary(
         segments.append(herb_text[:herb_start])
     else:
         segments = [herb_text[herb_end:]]
-        segments.extend(item["content"]["source_text"] for _, item in sibling_units)
+        segments.extend(item["content"]["source_text"] for item in sibling_units)
         segments.append(formula_text[:formula_start])
     return any(AUTHOR_ATTRIBUTION_BOUNDARY.search(segment) for segment in segments)
 
