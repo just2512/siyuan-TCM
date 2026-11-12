@@ -93,7 +93,7 @@ jobs:
       - name: Cross-reference nested formula-herb mentions against relation endpoints
         run: python tools/audit_entity_mention_overlaps.py --mentions catalog/generated/entity_mention_candidates.csv.gz --relations catalog/generated/formula_herb_relation_candidates.csv --content-index catalog/generated/content_block_index.csv.gz --output catalog/generated/entity_mention_overlap_audit.json
       - name: Build source-grounded cross-type entity mention overlap review queue
-        run: python tools/build_entity_mention_overlap_review_queue.py --mentions catalog/generated/entity_mention_candidates.csv.gz --content-index catalog/generated/content_block_index.csv.gz --relations catalog/generated/formula_herb_relation_candidates.csv --output catalog/generated/entity_mention_cross_type_overlap_review.csv --report catalog/generated/entity_mention_cross_type_overlap_review.json
+        run: python tools/build_entity_mention_overlap_review_queue.py --mentions catalog/generated/entity_mention_candidates.csv.gz --content-index catalog/generated/content_block_index.csv.gz --relations catalog/generated/formula_herb_relation_candidates.csv --overlap-audit catalog/generated/entity_mention_overlap_audit.json --output catalog/generated/entity_mention_cross_type_overlap_review.csv --report catalog/generated/entity_mention_cross_type_overlap_review.json
       - name: Extract explicit symptom-syndrome-treatment-formula relation candidates
         run: python tools/build_contextual_relation_candidates.py
       - name: Validate contextual relation candidate provenance
