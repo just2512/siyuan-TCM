@@ -103,7 +103,7 @@ def build_review_queue(
                 raise ValueError(f"invalid mention span at row {line}")
             locator = (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])
             expected_unit = hashlib.sha256(
-                "\\0".join(locator).encode("utf-8")
+                "\0".join(locator).encode("utf-8")
             ).hexdigest()
             if row["unit_id"] != expected_unit:
                 raise ValueError(f"mention unit_id/source locator mismatch: {mention_id}")
