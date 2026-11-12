@@ -61,7 +61,8 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
 
     def add_example(predicate: str, diagnosis: str, unit: dict,
                     sentence_start: int, sentence_end: int, sentence: str,
-                    spans: list[tuple[int, int, dict]]) -> None:
+                    spans: list[tuple[int, int, dict]],
+                    marker_matches: list) -> None:
         bucket = examples[predicate][diagnosis]
         if len(bucket) >= MAX_EXAMPLES_PER_DIAGNOSIS:
             return
@@ -88,6 +89,14 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             "sentence_truncated": len(sentence) > 600,
             "typed_candidate_spans": candidate_spans,
             "candidate_spans_truncated": len(spans) > MAX_CANDIDATE_SPANS_PER_EXAMPLE,
+            "predicate_marker_spans": [
+                {
+                    "text": match.group(0),
+                    "start": sentence_start + match.start(),
+                    "end": sentence_start + match.end(),
+                }
+                for match in marker_matches
+            ],
         })
 
     with gzip.open(units_path, "rt", encoding="utf-8", newline="") as stream:
@@ -144,7 +153,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                             type_counts[candidate_type] = type_counts.get(candidate_type, 0) + 1
                         if not subject_rows and not object_rows:
                             add_example(predicate, "missing_both_endpoint_types", unit,
-                                        sentence_start, sentence_end, sentence, spans)
+                                        sentence_start, sentence_end, sentence, spans, marker_matches)
                         elif not subject_rows:
                             add_example(predicate, "missing_subject_type", unit,
                                         sentence_start, sentence_end, sentence, spans)
@@ -241,7 +250,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
             )
 
     report = {
-        "schema_version": 2,
+        "schema_version": 3,
         "source_units_scanned": sum(
             1 for _ in gzip.open(units_path, "rt", encoding="utf-8", newline="")
         ),
