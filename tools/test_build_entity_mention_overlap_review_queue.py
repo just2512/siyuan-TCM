@@ -81,10 +81,10 @@ class EntityMentionOverlapReviewQueueTests(unittest.TestCase):
         self.assertEqual(rows[0]["review_status"], "UNREVIEWED")
 
     def test_same_type_overlaps_are_not_placed_in_cross_type_queue(self):
-        source = "肺肺"
+        source = "肺"
         mentions = [
             self.mention("organ-1", "ORGAN", "肺", 0),
-            self.mention("organ-2", "ORGAN", "肺", 1),
+            self.mention("organ-2", "ORGAN", "肺", 0),
         ]
         self.prepare(source, mentions)
         result = build_review_queue(self.mentions, self.content, self.output, self.report)
