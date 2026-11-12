@@ -434,7 +434,7 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
 def write_validation_report(path: Path, result: dict) -> None:
     report = {"schema_version": 1, **result}
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
+    path.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
                     encoding="utf-8")
 
 
