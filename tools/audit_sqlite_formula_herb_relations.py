@@ -10,6 +10,8 @@ import sqlite3
 from collections import Counter
 from pathlib import Path
 
+from audit_report import write_audit_report
+
 SENTENCE_END = re.compile(r"[^。！？；．\n]+[。！？；．]?|；+|\n+")
 
 
@@ -194,8 +196,13 @@ def audit(database_path: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, default=Path("catalog/generated/siyuan_search.sqlite3"))
+    parser.add_argument("--output", type=Path,
+                        help="Optional JSON path for the source-audit result.")
     args = parser.parse_args()
-    print(json.dumps(audit(args.db), ensure_ascii=False, sort_keys=True))
+    result = audit(args.db)
+    if args.output:
+        write_audit_report(args.output, result)
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 
 
