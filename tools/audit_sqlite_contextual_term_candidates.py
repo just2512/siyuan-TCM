@@ -5,19 +5,47 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sqlite3
 from collections import Counter
 from pathlib import Path
 
 from audit_report import write_audit_report
 
-from build_contextual_term_candidates import RULE_IDS_BY_TYPE, evidence_window
+from build_contextual_term_candidates import RULE_IDS_BY_TYPE
 from build_unclassified_term_candidates import candidate_id
 
 
 def source_unit_id(document: str, source_sha256: str, tree_position: str, block_id: str) -> str:
     raw = "\0".join((document, source_sha256, tree_position, block_id))
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+
+SENTENCE_BOUNDARIES = "。！？；\\n"
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
+    r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
+)
+
+
+def validate_evidence_boundary(
+    source_text: str, start: int, end: int, evidence_start: int, evidence_text: str,
+    context: int = 12,
+) -> None:
+    """Independently validate source slices and evidence scope without builder helpers."""
+    evidence_end = evidence_start + len(evidence_text)
+    if (evidence_start < 0 or evidence_end > len(source_text)
+        or evidence_start > start or evidence_end < end
+        or source_text[evidence_start:evidence_end] != evidence_text):
+        raise ValueError("contextual term evidence offset/text mismatch")
+    if start - evidence_start > context or evidence_end - end > context:
+        raise ValueError("contextual term evidence exceeds configured context window")
+    prefix = source_text[evidence_start:start]
+    suffix = source_text[end:evidence_end]
+    if any(mark in prefix or mark in suffix for mark in SENTENCE_BOUNDARIES):
+        raise ValueError("contextual term evidence crosses sentence boundary")
+    if AUTHOR_ATTRIBUTION_BOUNDARY.search(prefix) or AUTHOR_ATTRIBUTION_BOUNDARY.search(suffix):
+        raise ValueError("contextual term evidence crosses author attribution boundary")
 
 
 def audit(database_path: Path) -> dict:
@@ -83,12 +111,12 @@ def audit(database_path: Path) -> dict:
             if (start < 0 or end <= start or end > len(source_text)
                 or source_text[start:end] != row["term"]):
                 raise ValueError(f"contextual term source span mismatch: {key}")
-            expected_evidence_start, expected_evidence_end = evidence_window(source_text, start, end)
-            if (evidence_start != expected_evidence_start
-                or evidence_end != expected_evidence_end
-                or source_text[evidence_start:evidence_end] != row["evidence_text"]
-                or not (evidence_start <= start < end <= evidence_end)):
-                raise ValueError(f"contextual term evidence offset/text mismatch: {key}")
+            try:
+                validate_evidence_boundary(
+                    source_text, start, end, evidence_start, row["evidence_text"]
+                )
+            except ValueError as error:
+                raise ValueError(f"{error}: {key}") from error
             counts[row["candidate_type"]] += 1
             checked += 1
         if checked != expected_count:
