@@ -11,9 +11,9 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-SENTENCE_BOUNDARIES = "。！？；\\n"
+SENTENCE_BOUNDARIES = "。！？；\n"
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
-    r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
+    r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
 )
 MENTION_FIELDS = {
     "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
