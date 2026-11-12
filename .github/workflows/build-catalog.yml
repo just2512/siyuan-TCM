@@ -102,6 +102,10 @@ jobs:
         run: python tools/audit_sqlite_entity_mentions.py --db catalog/generated/siyuan_search.sqlite3
       - name: Audit every SQLite contextual term candidate against source
         run: python tools/audit_sqlite_contextual_term_candidates.py --db catalog/generated/siyuan_search.sqlite3
+      - name: Audit every SQLite formula-herb relation identity and evidence
+        run: python tools/audit_sqlite_formula_herb_relations.py --db catalog/generated/siyuan_search.sqlite3
+      - name: Audit every SQLite contextual relation identity and evidence
+        run: python tools/audit_sqlite_contextual_relations.py --db catalog/generated/siyuan_search.sqlite3
       - name: Export machine-readable semantic graph
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence

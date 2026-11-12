@@ -15,6 +15,11 @@ assert SPEC and SPEC.loader
 SPEC.loader.exec_module(module)
 
 
+def expected_mention_id(unit_id, entity_type, start, end, matched_text):
+    raw = "\0".join((unit_id, entity_type, str(start), str(end), matched_text))
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
 class SQLiteEntityMentionAuditTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -43,9 +48,9 @@ class SQLiteEntityMentionAuditTests(unittest.TestCase):
         )
         self.connection.execute("INSERT INTO entity_catalog VALUES ('e1', 'FORMULA')")
         rows = [
-            ("m1", "e1", unit_id, "FORMULA", "桂枝汤", 0, 3, *locator,
+            (expected_mention_id(unit_id, "FORMULA", 0, 3, "桂枝汤"), "e1", unit_id, "FORMULA", "桂枝汤", 0, 3, *locator,
              "PARAGRAPH", "经方", "v1", "LEXICON", "UNRESOLVED_CANDIDATE"),
-            ("m2", "e1", unit_id, "FORMULA", "桂枝汤", 4, 7, *locator,
+            (expected_mention_id(unit_id, "FORMULA", 4, 7, "桂枝汤"), "e1", unit_id, "FORMULA", "桂枝汤", 4, 7, *locator,
              "PARAGRAPH", "经方", "v1", "LEXICON", "UNRESOLVED_CANDIDATE"),
         ]
         self.connection.executemany("INSERT INTO entity_mentions VALUES (" + ",".join("?" for _ in rows[0]) + ")", rows)
@@ -62,21 +67,37 @@ class SQLiteEntityMentionAuditTests(unittest.TestCase):
         self.assertEqual(result["mention_counts_by_entity_type"], {"FORMULA": 2})
 
     def test_rejects_source_offset_substitution(self):
-        self.connection.execute("UPDATE entity_mentions SET character_start=1 WHERE mention_id='m1'")
+        self.connection.execute(
+            "UPDATE content_blocks SET content_text='X桂枝汤，桂枝汤'"
+        )
         self.connection.commit()
         with self.assertRaisesRegex(ValueError, "source span mismatch"):
             module.audit(self.db)
 
     def test_rejects_unit_id_not_derived_from_source_locator(self):
-        self.connection.execute("UPDATE entity_mentions SET unit_id='wrong' WHERE mention_id='m1'")
+        self.connection.execute("UPDATE entity_mentions SET unit_id='wrong' WHERE character_start=0")
         self.connection.commit()
         with self.assertRaisesRegex(ValueError, "unit_id/source locator mismatch"):
             module.audit(self.db)
 
     def test_rejects_unresolvable_source_locator(self):
-        self.connection.execute("UPDATE entity_mentions SET block_id='missing' WHERE mention_id='m1'")
+        wrong_unit = module.source_unit_id("book/a.sy", "sha-a", "0.0", "missing")
+        wrong_mention_id = expected_mention_id(wrong_unit, "FORMULA", 0, 3, "桂枝汤")
+        self.connection.execute(
+            "UPDATE entity_mentions SET block_id='missing', unit_id=?, mention_id=? "
+            "WHERE character_start=0",
+            (wrong_unit, wrong_mention_id),
+        )
         self.connection.commit()
-        with self.assertRaisesRegex(ValueError, "unit_id/source locator mismatch"):
+        with self.assertRaisesRegex(ValueError, "source locator cannot be resolved"):
+            module.audit(self.db)
+
+    def test_rejects_mention_id_not_derived_from_occurrence(self):
+        self.connection.execute(
+            "UPDATE entity_mentions SET mention_id='fabricated-id' WHERE character_start=0"
+        )
+        self.connection.commit()
+        with self.assertRaisesRegex(ValueError, "ID/occurrence identity mismatch"):
             module.audit(self.db)
 
     def test_rejects_entity_catalog_type_drift(self):
