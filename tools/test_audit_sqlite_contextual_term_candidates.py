@@ -7,6 +7,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from build_unclassified_term_candidates import candidate_id
+
 
 MODULE_PATH = Path(__file__).with_name("audit_sqlite_contextual_term_candidates.py")
 SPEC = importlib.util.spec_from_file_location("audit_sqlite_contextual_term_candidates", MODULE_PATH)
@@ -44,7 +46,7 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
         )
         self.connection.execute(
             "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            ("cid", "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01", *locator[:3], locator[3],
+            (candidate_id("头痛"), "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01", *locator[:3], locator[3],
              self.unit_id, start, start + 2, evidence_start, evidence_text, "CONTEXT_RULE_CANDIDATE"),
         )
         self.connection.execute(
@@ -85,6 +87,14 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "rule/type mismatch"):
             module.audit(self.db)
 
+    def test_rejects_candidate_id_not_derived_from_term(self):
+        self.connection.execute(
+            "UPDATE contextual_term_type_candidates SET candidate_id='fabricated-id'"
+        )
+        self.connection.commit()
+        with self.assertRaisesRegex(ValueError, "candidate ID/term identity mismatch"):
+            module.audit(self.db)
+
     def test_rejects_unit_id_not_derived_from_locator(self):
         self.connection.execute(
             "UPDATE contextual_term_type_candidates SET unit_id='wrong'"
@@ -111,7 +121,7 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
             else:
                 self.connection.execute(
                     "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    ("cid", "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01",
+                    (candidate_id("头痛"), "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01",
                      "book/a.sy", "sha-a", "0.0", "p1", self.unit_id,
                      start, start + 2, evidence_start, evidence_text, "CONTEXT_RULE_CANDIDATE"),
                 )
