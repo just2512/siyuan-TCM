@@ -5,7 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_contextual_term_candidates import (\n    FormulaSpanIndex, build, validate, classify_sample, classify_span,\n)
+from build_contextual_term_candidates import (
+    FormulaSpanIndex, build, validate, classify_sample, classify_span,
+)
 from build_unclassified_term_candidates import candidate_id
 
 
