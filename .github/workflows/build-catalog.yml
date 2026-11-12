@@ -61,6 +61,8 @@ jobs:
         run: python tools/build_unclassified_term_candidates.py | tee "$RUNNER_TEMP/unclassified-terms.log"
       - name: Classify corpus terms from exact source context
         run: python tools/build_contextual_term_candidates.py --entity-mentions catalog/generated/entity_mention_candidates.csv.gz | tee "$RUNNER_TEMP/contextual-terms.log"
+      - name: Audit contextual term occurrence and overlap identity
+        run: python tools/audit_contextual_term_overlaps.py --input catalog/generated/contextual_term_type_candidates.csv.gz --output catalog/generated/contextual_term_overlap_audit.json
       - name: Validate knowledge units, entity mentions, and term candidates in parallel
         shell: bash
         run: |
@@ -128,6 +130,7 @@ jobs:
             catalog/generated/entity_mention_overlap_audit.json
             catalog/generated/sqlite_entity_mention_audit.json
             catalog/generated/sqlite_source_locator_audit.json
+            catalog/generated/contextual_term_overlap_audit.json
             catalog/generated/sqlite_contextual_term_audit.json
             catalog/generated/sqlite_contextual_relation_audit.json
             catalog/generated/sqlite_formula_herb_relation_audit.json
