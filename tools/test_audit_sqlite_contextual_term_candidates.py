@@ -94,5 +94,28 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
             module.audit(self.db)
 
 
+    def test_keeps_repeated_term_occurrences_at_distinct_offsets(self):
+        source = "前文，症见头痛，复见头痛，后文"
+        self.connection.execute("UPDATE content_blocks SET content_text=?", (source,))
+        first = source.index("头痛")
+        second = source.index("头痛", first + 2)
+        for start in (first, second):
+            evidence_start = max(0, start - 12)
+            evidence_text = source[evidence_start:min(len(source), start + 2 + 12)]
+            self.connection.execute(
+                "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ("cid", "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01",
+                 "book/a.sy", "sha-a", "0.0", "p1", self.unit_id,
+                 start, start + 2, evidence_start, evidence_text, "CONTEXT_RULE_CANDIDATE"),
+            )
+        self.connection.execute(
+            "UPDATE index_metadata SET value='3' WHERE key='contextual_term_type_candidates'"
+        )
+        self.connection.commit()
+        result = module.audit(self.db)
+        self.assertEqual(result["checked_contextual_term_candidates"], 3)
+        self.assertEqual(result["candidate_counts_by_type"], {"SYMPTOM": 3})
+
+
 if __name__ == "__main__":
     unittest.main()
