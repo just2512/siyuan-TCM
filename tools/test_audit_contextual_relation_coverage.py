@@ -102,7 +102,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             result = audit(context, mentions, units, relations, report)
             self.assertTrue(report.is_file())
             parsed = json.loads(report.read_text(encoding="utf-8"))
-            self.assertEqual(parsed["schema_version"], 2)
+            self.assertEqual(parsed["schema_version"], 3)
             diagnostic = parsed["predicates"]["SYMPTOM_TO_SYNDROME"]
             self.assertEqual(diagnostic["marker_sentences_with_both_endpoint_types"], 2)
             self.assertEqual(diagnostic["marker_sentences_without_subject_type"], 0)
@@ -115,6 +115,13 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             self.assertEqual(sample["source_sha256"], "sha")
             self.assertIn("治宜解肌发表", sample["sentence_text"])
             self.assertEqual(sample["typed_candidate_spans"][0]["candidate_type"], "TREATMENT")
+            marker_spans = sample["predicate_marker_spans"]
+            self.assertTrue(marker_spans)
+            for marker_span in marker_spans:
+                self.assertEqual(
+                    source_text[marker_span["start"]:marker_span["end"]],
+                    marker_span["text"],
+                )
             self.assertGreaterEqual(
                 treatment_diagnostic["typed_candidate_mentions_by_type_in_marker_sentences"]["TREATMENT"],
                 1,
