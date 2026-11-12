@@ -136,6 +136,12 @@ def crosses_author_attribution_boundary(
     if formula_unit is None or herb_unit is None:
         return True
 
+    formula_source = formula_unit["source"]
+    herb_source = herb_unit["source"]
+    if (formula_source["document"] != herb_source["document"]
+        or formula_source["sha256"] != herb_source["sha256"]):
+        return True
+
     formula_text = formula_unit["content"]["source_text"]
     herb_text = herb_unit["content"]["source_text"]
     formula_start = int(formula["character_start"])
@@ -215,11 +221,17 @@ def has_explicit_formula_context(mention: dict[str, str]) -> bool:
 def nearby_formula(formula_mentions: list[dict[str, str]],
                    evidence_unit: dict[str, Any]) -> dict[str, str] | None:
     """Choose a unique nearby formula only when its own block names it explicitly."""
-    evidence_pos = position_parts(evidence_unit["source"]["tree_position"])
+    evidence_source = evidence_unit["source"]
+    evidence_pos = position_parts(evidence_source["tree_position"])
     if len(evidence_pos) < 2:
         return None
     candidates = []
     for mention in formula_mentions:
+        if (mention.get("document") and mention["document"] != evidence_source.get("document")):
+            continue
+        if (mention.get("source_sha256") and evidence_source.get("sha256")
+            and mention["source_sha256"] != evidence_source["sha256"]):
+            continue
         if not has_explicit_formula_context(mention):
             continue
         if mention["unit_id"] == evidence_unit["unit_id"]:
