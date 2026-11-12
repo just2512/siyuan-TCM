@@ -156,10 +156,10 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                                         sentence_start, sentence_end, sentence, spans, marker_matches)
                         elif not subject_rows:
                             add_example(predicate, "missing_subject_type", unit,
-                                        sentence_start, sentence_end, sentence, spans)
+                                        sentence_start, sentence_end, sentence, spans, marker_matches)
                         elif not object_rows:
                             add_example(predicate, "missing_object_type", unit,
-                                        sentence_start, sentence_end, sentence, spans)
+                                        sentence_start, sentence_end, sentence, spans, marker_matches)
 
                     pairs = []
                     for subject_start, subject_end, subject in spans:
@@ -175,7 +175,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         if subject_rows and object_rows:
                             counts[predicate]["marker_sentences_with_both_types_but_no_ordered_pair"] += 1
                             add_example(predicate, "both_endpoint_types_but_no_ordered_pair",
-                                        unit, sentence_start, sentence_end, sentence, spans)
+                                        unit, sentence_start, sentence_end, sentence, spans, marker_matches)
                     if pairs and marker_matches:
                         between_any = any(
                             marker.search(sentence[subject_end - sentence_start:object_start - sentence_start])
@@ -184,7 +184,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         if not between_any:
                             counts[predicate]["marker_sentences_with_ordered_pair_but_no_predicate_between"] += 1
                             add_example(predicate, "ordered_pair_but_no_predicate_between",
-                                        unit, sentence_start, sentence_end, sentence, spans)
+                                        unit, sentence_start, sentence_end, sentence, spans, marker_matches)
                     if pairs and not marker_matches:
                         counts[predicate]["typed_pair_sentences_without_marker"] += 1
 
