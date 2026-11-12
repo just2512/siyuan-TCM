@@ -81,8 +81,20 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "endpoint type/text mismatch"):
             module.audit(self.db)
 
-    def test_rejects_evidence_offset_drift(self):
-        self.connection.execute("UPDATE semantic_relation_candidates SET sentence_start=1")
+    def test_rejects_evidence_offset_drift_even_when_identity_is_recomputed(self):
+        row = self.connection.execute(
+            "SELECT subject_mention_id, object_mention_id, unit_id, sentence_end, extraction_rule "
+            "FROM semantic_relation_candidates"
+        ).fetchone()
+        identity = "\\0".join((
+            row[0], "FORMULA_CONTAINS_HERB", row[1], row[2], "1",
+            str(row[3]), row[4],
+        ))
+        replacement_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+        self.connection.execute(
+            "UPDATE semantic_relation_candidates SET sentence_start=1, relation_id=?",
+            (replacement_id,),
+        )
         self.connection.commit()
         with self.assertRaisesRegex(ValueError, "evidence offset mismatch"):
             module.audit(self.db)
