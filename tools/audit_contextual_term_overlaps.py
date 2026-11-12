@@ -109,7 +109,7 @@ def main() -> int:
     args = parser.parse_args()
     result = audit(args.input)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({k:v for k,v in result.items() if k not in {"repeated_occurrence_examples","overlap_examples"}}, ensure_ascii=False, sort_keys=True))
     return 0
 
