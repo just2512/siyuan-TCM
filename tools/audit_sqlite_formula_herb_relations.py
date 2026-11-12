@@ -27,6 +27,71 @@ def expected_relation_id(row: sqlite3.Row) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
+
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
+    r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
+)
+
+
+def position_parts(value: str) -> tuple[int, ...]:
+    try:
+        return tuple(int(part) for part in value.split("."))
+    except (AttributeError, ValueError):
+        return ()
+
+
+def crosses_author_attribution_boundary(connection: sqlite3.Connection, row: sqlite3.Row) -> bool:
+    """Independently reject formula/herb endpoints separated by an author/book attribution."""
+    formula_text = row["subject_source_text"]
+    herb_text = row["object_source_text"]
+    formula_start, formula_end = row["subject_start"], row["subject_end"]
+    herb_start, herb_end = row["object_start"], row["object_end"]
+    formula_position = position_parts(row["subject_tree_position"])
+    herb_position = position_parts(row["object_tree_position"])
+
+    if row["subject_unit_id"] == row["object_unit_id"]:
+        if formula_start < herb_end and herb_start < formula_end:
+            return True
+        left, right = (
+            (formula_end, herb_start)
+            if formula_end <= herb_start
+            else (herb_end, formula_start)
+        )
+        return bool(AUTHOR_ATTRIBUTION_BOUNDARY.search(formula_text[left:right]))
+
+    if (len(formula_position) < 2 or len(herb_position) < 2
+        or formula_position[:-1] != herb_position[:-1]
+        or formula_position == herb_position):
+        return True
+
+    siblings = connection.execute(
+        """
+        SELECT tree_position, content_text
+        FROM content_blocks
+        WHERE document=? AND source_sha256=?
+        """,
+        (row["document"], row["source_sha256"]),
+    ).fetchall()
+    lower, upper = sorted((formula_position[-1], herb_position[-1]))
+    middle = []
+    for sibling in siblings:
+        position = position_parts(sibling["tree_position"])
+        if (len(position) >= 2 and position[:-1] == formula_position[:-1]
+            and lower < position[-1] < upper):
+            middle.append((position[-1], sibling["content_text"]))
+    middle.sort(key=lambda item: item[0])
+
+    if formula_position[-1] < herb_position[-1]:
+        segments = [formula_text[formula_end:]]
+        segments.extend(content for _, content in middle)
+        segments.append(herb_text[:herb_start])
+    else:
+        segments = [herb_text[herb_end:]]
+        segments.extend(content for _, content in middle)
+        segments.append(formula_text[:formula_start])
+    return any(AUTHOR_ATTRIBUTION_BOUNDARY.search(segment) for segment in segments)
+
+
 def audit(database_path: Path) -> dict:
     if not database_path.is_file():
         raise FileNotFoundError(database_path)
@@ -109,6 +174,8 @@ def audit(database_path: Path) -> dict:
                 raise ValueError(f"formula-herb relation evidence offset mismatch: {rid}")
             if (start, end) not in sentence_ranges(source_text):
                 raise ValueError(f"formula-herb relation evidence crosses sentence boundary: {rid}")
+            if crosses_author_attribution_boundary(connection, row):
+                raise ValueError(f"formula-herb relation crosses author attribution boundary: {rid}")
             predicates[row["predicate"]] += 1
             checked += 1
         if checked != actual:

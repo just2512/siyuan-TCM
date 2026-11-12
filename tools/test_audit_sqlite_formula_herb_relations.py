@@ -41,6 +41,7 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
         text = "桂枝汤由桂枝组成。"
         self.connection.execute("INSERT INTO content_blocks VALUES (?,?,?,?,?)", (*locator, text))
         unit_id = hashlib.sha256("\0".join(locator).encode()).hexdigest()
+        self.unit_id = unit_id
         self.connection.executemany(
             "INSERT INTO entity_mentions VALUES (?,?,?,?,?,?,?,?,?,?)",
             [
@@ -97,6 +98,31 @@ class SQLiteFormulaHerbRelationAuditTests(unittest.TestCase):
         )
         self.connection.commit()
         with self.assertRaisesRegex(ValueError, "evidence offset mismatch"):
+            module.audit(self.db)
+
+
+    def test_rejects_formula_herb_relation_crossing_author_attribution(self):
+        text = "桂枝汤，张三曰：桂枝组成。"
+        end = len(text)
+        identity = "\0".join((
+            "m-formula", "FORMULA_CONTAINS_HERB", "m-herb",
+            self.unit_id, "0", str(end), "FORMULA_COMPOSITION_EXPLICIT_V1",
+        ))
+        relation_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+        self.connection.execute(
+            "UPDATE content_blocks SET content_text=?",
+            (text,),
+        )
+        self.connection.execute(
+            "UPDATE entity_mentions SET character_start=8, character_end=10 "
+            "WHERE mention_id='m-herb'"
+        )
+        self.connection.execute(
+            "UPDATE semantic_relation_candidates SET relation_id=?, sentence_end=?, evidence_text=?",
+            (relation_id, end, text),
+        )
+        self.connection.commit()
+        with self.assertRaisesRegex(ValueError, "author attribution boundary"):
             module.audit(self.db)
 
     def test_rejects_metadata_count_drift(self):
