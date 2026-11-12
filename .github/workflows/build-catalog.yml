@@ -98,6 +98,10 @@ jobs:
           python tools/audit_contextual_relation_coverage.py | tee "$RUNNER_TEMP/contextual-relation-coverage.log"
       - name: Build SQLite full-text, entity and relation index
         run: python tools/build_siyuan_search_db.py --build --entity-mentions catalog/generated/entity_mention_candidates.csv.gz --relation-candidates catalog/generated/formula_herb_relation_candidates.csv --entity-registry catalog/generated/entity_registry.csv --term-candidates catalog/generated/unclassified_term_candidates.csv.gz --contextual-term-candidates catalog/generated/contextual_term_type_candidates.csv.gz --contextual-relations catalog/generated/contextual_relation_candidates.csv
+      - name: Audit every SQLite entity mention against source
+        run: python tools/audit_sqlite_entity_mentions.py --db catalog/generated/siyuan_search.sqlite3
+      - name: Audit every SQLite contextual term candidate against source
+        run: python tools/audit_sqlite_contextual_term_candidates.py --db catalog/generated/siyuan_search.sqlite3
       - name: Export machine-readable semantic graph
         run: python tools/export_semantic_graph.py
       - name: Validate semantic graph nodes and source evidence
