@@ -58,6 +58,8 @@ def audit(path: Path, example_limit: int = 50) -> dict:
         )
 
     overlap_counts = Counter()
+    overlap_type_relation_counts = Counter()
+    overlap_type_pair_counts = Counter()
     overlap_examples = []
     repeated = [
         {"candidate_type": kind, "term": term, "distinct_occurrences": len(spans)}
@@ -78,22 +80,29 @@ def audit(path: Path, example_limit: int = 50) -> dict:
                 else:
                     kind = "partial_overlap"
                 overlap_counts[kind] += 1
+                type_relation = "same_type" if prior["candidate_type"] == current["candidate_type"] else "cross_type"
+                type_pair = "|".join(sorted((prior["candidate_type"], current["candidate_type"])))
+                overlap_type_relation_counts[type_relation] += 1
+                overlap_type_pair_counts[type_pair] += 1
                 if len(overlap_examples) < example_limit:
                     overlap_examples.append({
                         "unit_id": unit_id, "overlap_kind": kind,
+                        "type_relation": type_relation, "candidate_type_pair": type_pair,
                         "left": {k: prior[k] for k in ("candidate_id","term","candidate_type","start","end")},
                         "right": {k: current[k] for k in ("candidate_id","term","candidate_type","start","end")},
                     })
             active.append(current)
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "distinct_occurrence_rows": len(occurrences),
         "repeated_lexical_forms_with_multiple_occurrences": len(repeated),
         "repeated_occurrence_examples": sorted(
             repeated, key=lambda x: (-x["distinct_occurrences"], x["candidate_type"], x["term"])
         )[:example_limit],
         "overlap_pair_counts": dict(sorted(overlap_counts.items())),
+        "overlap_pair_type_relation_counts": dict(sorted(overlap_type_relation_counts.items())),
+        "overlap_pair_candidate_type_counts": dict(sorted(overlap_type_pair_counts.items())),
         "overlap_examples": overlap_examples,
         "policy": {
             "repeated_term": "same lexical form at different source offsets remains separate",

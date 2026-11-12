@@ -47,6 +47,20 @@ class ContextualTermOverlapAuditTests(unittest.TestCase):
             self.assertGreater(result["overlap_pair_counts"]["current_nested"], 0)
             self.assertGreater(result["overlap_pair_counts"]["partial_overlap"], 0)
 
+    def test_overlap_report_separates_same_type_and_cross_type_pairs(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "terms.csv.gz"
+            self.write_rows(path, [
+                self.row("脾气虚", "SYNDROME", 0, 3),
+                self.row("气虚", "SYNDROME", 1, 3),
+                self.row("脾气", "SYMPTOM", 0, 2),
+            ])
+            result = module.audit(path)
+            self.assertEqual(result["overlap_pair_type_relation_counts"]["same_type"], 1)
+            self.assertEqual(result["overlap_pair_type_relation_counts"]["cross_type"], 2)
+            self.assertEqual(result["overlap_pair_candidate_type_counts"]["SYMPTOM|SYNDROME"], 2)
+            self.assertTrue(all("type_relation" in row for row in result["overlap_examples"]))
+
     def test_duplicate_same_rule_occurrence_fails(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "terms.csv.gz"
