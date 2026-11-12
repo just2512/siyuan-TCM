@@ -178,7 +178,7 @@ def crosses_author_attribution_boundary(
 
     if formula_pos[-1] < herb_pos[-1]:
         segments = [formula_text[formula_end:]]
-        segments.extend(item["content"]["source_text"] for _, item in sibling_units)
+        segments.extend(item["content"]["source_text"] for item in sibling_units)
         segments.append(herb_text[:herb_start])
     else:
         segments = [herb_text[herb_end:]]
@@ -361,7 +361,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                 )
                 if formula is not None:
                     for herb in sentence_herbs:
-                        if crosses_author_attribution_boundary(formula, herb, units_by_id):
+                        if crosses_author_attribution_boundary(formula, herb, units_by_id, sibling_index):
                             continue
                         if make_relation(writer, seen, formula, herb, unit, start, end,
                                          sentence, "FORMULA_COMPOSITION_NEARBY_BLOCK_V1"):
