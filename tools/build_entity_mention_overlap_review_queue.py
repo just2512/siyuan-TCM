@@ -6,11 +6,13 @@ import argparse
 import csv
 import gzip
 import json
+import hashlib
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
 SENTENCE_BOUNDARIES = "。！？；\\n"
-AUTHOR_ATTRIBUTION_BOUNDARY = __import__("re").compile(
+AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
     r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
 )
 MENTION_FIELDS = {
@@ -100,7 +102,7 @@ def build_review_queue(
             if start < 0 or end <= start or end - start != len(row["matched_text"]):
                 raise ValueError(f"invalid mention span at row {line}")
             locator = (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])
-            expected_unit = __import__("hashlib").sha256(
+            expected_unit = hashlib.sha256(
                 "\\0".join(locator).encode("utf-8")
             ).hexdigest()
             if row["unit_id"] != expected_unit:
