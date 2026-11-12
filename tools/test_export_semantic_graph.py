@@ -418,5 +418,21 @@ class SemanticGraphExportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "graph/SQLite mismatch"):
                 module.validate(database, output)
 
+    def test_writes_machine_readable_validation_report(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "nested" / "semantic_graph_validation.json"
+            module.write_validation_report(path, {
+                "validated_entity_nodes": 12,
+                "validated_relation_edges": 3,
+                "validated_contextual_term_candidates": 4,
+                "validated_contextual_relation_edges": 0,
+            })
+            report = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(report["schema_version"], 1)
+            self.assertEqual(report["validated_entity_nodes"], 12)
+            self.assertEqual(report["validated_relation_edges"], 3)
+            self.assertEqual(report["validated_contextual_term_candidates"], 4)
+            self.assertEqual(report["validated_contextual_relation_edges"], 0)
+
 if __name__ == "__main__":
     unittest.main()

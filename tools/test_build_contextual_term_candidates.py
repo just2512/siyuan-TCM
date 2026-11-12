@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from build_contextual_term_candidates import (
-    FormulaSpanIndex, build, validate, classify_sample, classify_span,
+    FormulaSpanIndex, build, validate, classify_sample, classify_span, evidence_window,
 )
 from build_unclassified_term_candidates import candidate_id
 
@@ -432,6 +432,21 @@ class ContextualTermCandidateTests(unittest.TestCase):
             ("TREATMENT", "TREATMENT_CONTEXT_01"),
             classify_span(text, start, start + len("健脾")),
         )
+
+    def test_evidence_window_stops_at_sentence_and_author_attribution_boundaries(self):
+        text = "前文。张仲景曰：症见头痛，后文。"
+        start = text.index("头痛")
+        end = start + len("头痛")
+        left, right = evidence_window(text, start, end)
+        evidence = text[left:right]
+        self.assertEqual(evidence, "症见头痛，后文")
+        self.assertNotIn("张仲景曰：", evidence)
+        self.assertNotIn("。", evidence)
+
+        next_author = "症见头痛。李时珍云：另有记载"
+        start = next_author.index("头痛")
+        left, right = evidence_window(next_author, start, start + 2)
+        self.assertNotIn("李时珍云：", next_author[left:right])
 
     def test_rejects_invalid_candidate_identity(self):
         with tempfile.TemporaryDirectory() as directory:
