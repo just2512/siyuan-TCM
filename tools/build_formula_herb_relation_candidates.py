@@ -7,6 +7,7 @@ composition-list pattern. All relations remain unresolved candidates.
 from __future__ import annotations
 
 import argparse
+from bisect import bisect_left, bisect_right
 import csv
 import gzip
 import hashlib
@@ -98,10 +99,36 @@ def position_parts(value: str) -> tuple[int, ...]:
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])")
 
 
+def build_sibling_unit_index(
+    units_by_id: dict[str, dict[str, Any]],
+) -> dict[tuple[str, str, tuple[int, ...]], tuple[tuple[int, ...], tuple[dict[str, Any], ...]]]:
+    """Index source sibling units once by document, revision, and parent position."""
+    grouped: dict[tuple[str, str, tuple[int, ...]], list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+    for unit in units_by_id.values():
+        source = unit["source"]
+        position = position_parts(source.get("tree_position", ""))
+        if len(position) < 2:
+            continue
+        key = (source.get("document", ""), source.get("sha256", ""), position[:-1])
+        grouped[key].append((position[-1], unit))
+    indexed = {}
+    for key, rows in grouped.items():
+        rows.sort(key=lambda item: item[0])
+        indexed[key] = (
+            tuple(position for position, _ in rows),
+            tuple(unit for _, unit in rows),
+        )
+    return indexed
+
+
 def crosses_author_attribution_boundary(
     formula: dict[str, str],
     herb: dict[str, str],
     units_by_id: dict[str, dict[str, Any]],
+    sibling_index: dict[
+        tuple[str, str, tuple[int, ...]],
+        tuple[tuple[int, ...], tuple[dict[str, Any], ...]],
+    ] | None = None,
 ) -> bool:
     """Reject overlapping endpoints or endpoint pairs separated by an author boundary."""
     formula_unit = units_by_id.get(formula.get("unit_id", ""))
@@ -133,15 +160,15 @@ def crosses_author_attribution_boundary(
         or formula_pos == herb_pos):
         return True
 
-    sibling_units = []
-    for candidate in units_by_id.values():
-        source = candidate["source"]
-        position = position_parts(source["tree_position"])
-        if (source["document"] == formula_unit["source"]["document"]
-            and len(position) >= 2 and position[:-1] == formula_pos[:-1]
-            and min(formula_pos[-1], herb_pos[-1]) < position[-1] < max(formula_pos[-1], herb_pos[-1])):
-            sibling_units.append((position[-1], candidate))
-    sibling_units.sort(key=lambda item: item[0])
+    if sibling_index is None:
+        sibling_index = build_sibling_unit_index(units_by_id)
+    source = formula_unit["source"]
+    key = (source["document"], source["sha256"], formula_pos[:-1])
+    positions, indexed_units = sibling_index.get(key, ((), ()))
+    lower, upper = sorted((formula_pos[-1], herb_pos[-1]))
+    first = bisect_right(positions, lower)
+    last = bisect_left(positions, upper)
+    sibling_units = indexed_units[first:last]
 
     if formula_pos[-1] < herb_pos[-1]:
         segments = [formula_text[formula_end:]]
@@ -269,6 +296,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                     formulas_by_document[mention["document"]].append(formula_record)
 
     units_by_id = {unit["unit_id"]: unit for unit in units}
+    sibling_index = build_sibling_unit_index(units_by_id)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     seen: set[str] = set()
@@ -292,7 +320,7 @@ def extract(mentions_path: Path, units_path: Path, output_path: Path) -> dict[st
                     if start <= int(m["character_start"]) and int(m["character_end"]) <= end]
                 for formula in sentence_formulas:
                     for herb in explicit_composition(formula, sentence_herbs, sentence, start):
-                        if crosses_author_attribution_boundary(formula, herb, units_by_id):
+                        if crosses_author_attribution_boundary(formula, herb, units_by_id, sibling_index):
                             continue
                         if make_relation(writer, seen, formula, herb, unit, start, end,
                                          sentence, "FORMULA_COMPOSITION_EXPLICIT_V1"):
@@ -347,6 +375,7 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
             unit = json.loads(raw)
             units[unit["unit_id"]] = unit
 
+    sibling_index = build_sibling_unit_index(units)
     count = 0
     seen_relations: set[str] = set()
     with path.open("r", encoding="utf-8", newline="") as stream:
@@ -443,7 +472,7 @@ def validate(path: Path, units_path: Path, mentions_path: Path | None = None) ->
                             raise ValueError(f"row {line}: nearby formula candidate is outside sibling proximity")
                 if not (start <= int(obj["character_start"]) < int(obj["character_end"]) <= end):
                     raise ValueError(f"row {line}: herb endpoint is outside composition evidence")
-                if crosses_author_attribution_boundary(subject, obj, units):
+                if crosses_author_attribution_boundary(subject, obj, units, sibling_index):
                     raise ValueError(f"row {line}: relation crosses an author-attribution boundary or has overlapping endpoints")
 
                 expected_relation_id = hashlib.sha256("\0".join((
