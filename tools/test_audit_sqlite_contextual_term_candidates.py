@@ -99,22 +99,29 @@ class SQLiteContextualTermAuditTests(unittest.TestCase):
         self.connection.execute("UPDATE content_blocks SET content_text=?", (source,))
         first = source.index("头痛")
         second = source.index("头痛", first + 2)
-        for start in (first, second):
+        for index, start in enumerate((first, second)):
             evidence_start = max(0, start - 12)
             evidence_text = source[evidence_start:min(len(source), start + 2 + 12)]
-            self.connection.execute(
-                "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                ("cid", "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01",
-                 "book/a.sy", "sha-a", "0.0", "p1", self.unit_id,
-                 start, start + 2, evidence_start, evidence_text, "CONTEXT_RULE_CANDIDATE"),
-            )
+            if index == 0:
+                self.connection.execute(
+                    "UPDATE contextual_term_type_candidates "
+                    "SET character_start=?, character_end=?, evidence_start=?, evidence_text=?",
+                    (start, start + 2, evidence_start, evidence_text),
+                )
+            else:
+                self.connection.execute(
+                    "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    ("cid", "头痛", "SYMPTOM", "SYMPTOM_CONTEXT_01",
+                     "book/a.sy", "sha-a", "0.0", "p1", self.unit_id,
+                     start, start + 2, evidence_start, evidence_text, "CONTEXT_RULE_CANDIDATE"),
+                )
         self.connection.execute(
-            "UPDATE index_metadata SET value='3' WHERE key='contextual_term_type_candidates'"
+            "UPDATE index_metadata SET value='2' WHERE key='contextual_term_type_candidates'"
         )
         self.connection.commit()
         result = module.audit(self.db)
-        self.assertEqual(result["checked_contextual_term_candidates"], 3)
-        self.assertEqual(result["candidate_counts_by_type"], {"SYMPTOM": 3})
+        self.assertEqual(result["checked_contextual_term_candidates"], 2)
+        self.assertEqual(result["candidate_counts_by_type"], {"SYMPTOM": 2})
 
 
 if __name__ == "__main__":
