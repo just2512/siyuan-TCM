@@ -72,6 +72,7 @@ def load_relations(path: Path | None) -> dict[tuple[str, str], str]:
 def build_review_queue(
     mentions_path: Path, content_index_path: Path, output_path: Path,
     report_path: Path, relations_path: Path | None = None,
+    overlap_audit_path: Path | None = None,
 ) -> dict:
     source_blocks: dict[tuple[str, str, str, str], str] = {}
     with gzip.open(content_index_path, "rt", encoding="utf-8-sig", newline="") as stream:
@@ -173,6 +174,29 @@ def build_review_queue(
                 by_kind[kind] += 1
             active.append(current)
 
+    reconciliation = {"status": "NOT_RUN"}
+    if overlap_audit_path is not None:
+        overlap_audit = json.loads(overlap_audit_path.read_text(encoding="utf-8"))
+        expected_by_pair = {}
+        for pair, kinds in overlap_audit.get("overlap_pair_counts_by_entity_type", {}).items():
+            entity_types = pair.split("|")
+            if len(entity_types) == 2 and entity_types[0] != entity_types[1]:
+                count = sum(int(value) for value in kinds.values())
+                if count:
+                    expected_by_pair[pair] = count
+        actual_by_pair = dict(sorted(by_pair_type.items()))
+        if expected_by_pair != actual_by_pair:
+            raise ValueError(
+                "cross-type review queue does not reconcile with entity mention overlap audit: "
+                f"expected={expected_by_pair}, actual={actual_by_pair}"
+            )
+        reconciliation = {
+            "status": "PASS",
+            "expected_cross_type_overlap_pairs": sum(expected_by_pair.values()),
+            "queued_cross_type_overlap_pairs": len(rows),
+            "pairs_by_type_match": True,
+        }
+
     rows.sort(key=lambda row: (row["document"], row["tree_position"], row["block_id"],
         row["left_start"], row["right_start"], row["pair_id"]))
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -192,6 +216,7 @@ def build_review_queue(
         "source_mentions": len(mentions),
         "source_blocks": len(source_blocks),
         "cross_type_overlap_pairs": len(rows),
+        "reconciliation": reconciliation,
         "cross_type_pairs_by_type": dict(sorted(by_pair_type.items())),
         "cross_type_pairs_by_kind": dict(sorted(by_kind.items())),
         "formula_herb_pairs_linked_to_relation_candidates": relation_linked,
@@ -221,8 +246,11 @@ def main() -> int:
         default=Path("catalog/generated/entity_mention_cross_type_overlap_review.csv"))
     parser.add_argument("--report", type=Path,
         default=Path("catalog/generated/entity_mention_cross_type_overlap_review.json"))
+    parser.add_argument("--overlap-audit", type=Path,
+        default=Path("catalog/generated/entity_mention_overlap_audit.json"))
     args = parser.parse_args()
-    build_review_queue(args.mentions, args.content_index, args.output, args.report, args.relations)
+    build_review_queue(args.mentions, args.content_index, args.output, args.report, args.relations,
+        args.overlap_audit)
     return 0
 
 
