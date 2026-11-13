@@ -120,6 +120,29 @@ class ContextualOverlapReviewQueueTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "different source locators"):
                 build_review_queue(source, output, report)
 
+    def test_pair_ids_distinguish_same_lexical_span_classified_as_multiple_types(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output, report = root / "terms.csv.gz", root / "review.csv", root / "report.json"
+            # candidate_id is lexical-term identity. Three types can legitimately
+            # classify the same term at the same offset, yielding three distinct
+            # cross-type pairs that must have distinct pair IDs.
+            self.write_input(source, [
+                self.row(candidate_id="same-lexical-id", term="咳嗽", kind="HERB", start=2),
+                self.row(candidate_id="same-lexical-id", term="咳嗽", kind="PULSE", start=2),
+                self.row(candidate_id="same-lexical-id", term="咳嗽", kind="SYMPTOM", start=2),
+            ])
+            result = build_review_queue(source, output, report)
+            with output.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(result["cross_type_overlap_pairs"], 3)
+            self.assertEqual(len(rows), 3)
+            self.assertEqual(len({row["pair_id"] for row in rows}), 3)
+            self.assertEqual(
+                {row["candidate_type_pair"] for row in rows},
+                {"HERB|PULSE", "HERB|SYMPTOM", "PULSE|SYMPTOM"},
+            )
+
     def test_duplicate_rule_rows_for_same_occurrence_are_collapsed_not_double_counted(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
