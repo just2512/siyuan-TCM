@@ -85,9 +85,18 @@ def review_nested_formula_herb_overlaps(
         else:
             raise ValueError(f"row {line}: FORMULA|HERB pair has inconsistent endpoint types")
 
-        identity_fields = ("unit_id", "document", "source_sha256", "tree_position", "block_id")
-        if any(not row[field].strip() for field in identity_fields):
+        # block_id is optional in the catalogue source model. It is still
+        # part of the locator tuple (as an empty string when absent), and the
+        # unit_id hash binds the complete tuple without requiring each
+        # component to be non-empty.
+        if not row["unit_id"].strip() or not row["document"].strip() or not row["source_sha256"].strip():
             raise ValueError(f"row {line}: missing source identity")
+        locator = (
+            row["document"], row["source_sha256"], row["tree_position"], row["block_id"]
+        )
+        expected_unit_id = hashlib.sha256("\0".join(locator).encode("utf-8")).hexdigest()
+        if row["unit_id"] != expected_unit_id:
+            raise ValueError(f"row {line}: unit_id/source locator mismatch")
         context_start, context_end = int(row["context_start"]), int(row["context_end"])
         formula_start = int(row[f"{formula_prefix}_start"])
         formula_end = int(row[f"{formula_prefix}_end"])
