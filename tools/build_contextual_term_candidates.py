@@ -25,7 +25,7 @@ from build_unclassified_term_candidates import candidate_id
 RULES = {
     "SYMPTOM": [
         ("SYMPTOM_CONTEXT_01", r"(?:症见|症状|表现为|可见|见有|出现|伴有)"),
-        ("SYMPTOM_CONTEXT_02", r"(?:疼痛|胀痛|刺痛|麻木|瘙痒|咳嗽|恶心|呕吐|发热|畏寒)"),
+        ("SYMPTOM_CONTEXT_02", r"(?:疼痛|胀痛|刺痛|麻木不仁|麻木|瘙痒|头项强痛|印堂痛|月经痛|痛经|头痛|心痛|胃痛|腹痛|腰痛|背痛|胸痛|咽痛|气喘|喘息|口歪眼斜|咳嗽|恶心|呕吐|发热|畏寒)"),
     ],
     "PULSE": [
         ("PULSE_CONTEXT_01", r"(?:脉象|脉诊|脉见|脉沉|脉浮|脉数|脉迟|脉弦|脉滑|脉细)"),
@@ -44,6 +44,15 @@ RULES = {
     ],
     "HERB": [
         ("HERB_CONTEXT_01", r"(?:药用|用药|药物组成|中药|本草|配伍)"),
+    ],
+    # Acupoint names ending in 穴 are discovery candidates, not approved POINT entities.
+    "ACUPOINT": [
+        ("ACUPOINT_CONTEXT_01", r"[\\u3400-\\u9fff]{1,4}穴"),
+    ],
+    # These are named needling/moxibustion techniques; they remain source candidates.
+    "ACUPUNCTURE_TECHNIQUE": [
+        ("ACUPUNCTURE_TECHNIQUE_CONTEXT_01",
+         r"(?:隔姜灸|隔盐灸|隔蒜灸|米粒灸|梅花灸|十宣放血法|针灸|针刺|艾灸|放血|火罐|拔罐|透穴|留针|捻针|单刺|运气法|导引法|补泻|补法|泻法|开四关)"),
     ],
 }
 FIELDS = [
@@ -296,6 +305,17 @@ def classify_span(
                     and term[symptom_match.end():] in allowed_suffixes
                     else None
                 )
+            elif candidate_type == "ACUPOINT":
+                # Keep only compact lexical forms with the acupoint-name suffix.
+                # Generic structural words are not point names.
+                matched = re.fullmatch(r"[\\u3400-\\u9fff]{1,4}穴", term)
+                if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
+                    matched = None
+            elif candidate_type == "ACUPUNCTURE_TECHNIQUE":
+                matched = re.fullmatch(pattern, term)
+                # A negated instruction is not a positive needling-method mention.
+                if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\\s*$", before):
+                    matched = None
             elif candidate_type in {"PULSE", "TONGUE"}:
                 # Intrinsic pulse/tongue cues must occur inside the candidate.
                 # Pulse windows also have to begin at 脉; otherwise phrases like
