@@ -134,6 +134,43 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         self.assertEqual(result["relation_counts_by_predicate"]["SOURCE_NOTE_ASSOCIATES"], 3)
         self.assertEqual(result["sentence_and_attribution_boundary_validation"], "PASS")
 
+    def test_resolves_canonical_point_endpoint_through_entity_mentions(self):
+        source = "中脘穴：胃痛。"
+        self.connection.execute(
+            "UPDATE content_blocks SET content_text=? WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?",
+            (source, *self.locator),
+        )
+        self.connection.execute("DELETE FROM contextual_relation_candidates")
+        self.connection.execute("DELETE FROM contextual_term_type_candidates")
+        self.connection.execute(
+            "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ("symptom-id", "胃痛", "SYMPTOM", "SYMPTOM_CONTEXT_02",
+             *self.locator[:1], self.locator[1], self.locator[2], self.locator[3],
+             self.unit_id, 4, 6, 0, source, "CONTEXT_RULE_CANDIDATE"),
+        )
+        self.connection.execute(
+            "INSERT INTO entity_mentions VALUES (?,?,?,?,?,?,?,?,?,?)",
+            ("point-mention", "中脘穴", "POINT", self.unit_id, *self.locator, 0, 3),
+        )
+        subject = {"candidate_id": "point-mention", "character_start": "0", "character_end": "3"}
+        obj = {"candidate_id": "symptom-id", "character_start": "4", "character_end": "6"}
+        relation_id = relation_identity(
+            "SOURCE_NOTE_ASSOCIATES", subject, obj, self.unit_id, 0, len(source)
+        )
+        self.connection.execute(
+            "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (relation_id, "SOURCE_NOTE_ASSOCIATES", "point-mention", "中脘穴", "POINT", 0, 3,
+             "symptom-id", "胃痛", "SYMPTOM", 4, 6, self.unit_id, *self.locator,
+             0, len(source), source, "：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
+        )
+        self.connection.execute(
+            "UPDATE index_metadata SET value='1' WHERE key='contextual_relation_candidates'"
+        )
+        self.connection.commit()
+        result = module.audit(self.db)
+        self.assertEqual(result["checked_relation_rows"], 1)
+        self.assertEqual(result["relation_counts_by_predicate"]["SOURCE_NOTE_ASSOCIATES"], 1)
+
     def test_rejects_fabricated_relation_identity(self):
         self.connection.execute("UPDATE contextual_relation_candidates SET relation_id='fabricated'")
         self.connection.commit()
