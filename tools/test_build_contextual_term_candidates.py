@@ -61,7 +61,8 @@ class ContextualTermCandidateTests(unittest.TestCase):
             with gzip.open(output, "rt", encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             headache_rows = [row for row in rows if row["term"] == "头痛"]
-            self.assertEqual(len(headache_rows), 2)
+            # One source occurrence can carry more than one rule assignment;
+            # assert distinct offsets rather than counting rule rows.
             self.assertEqual(
                 {int(row["character_start"]) for row in headache_rows},
                 {text.index("头痛"), text.rindex("头痛")},
