@@ -99,9 +99,9 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         self.connection.execute("DELETE FROM contextual_term_type_candidates")
         terms = [
             ("point-label", "中脘穴", "ACUPOINT", 0, 3),
-            ("symptom-a", "胃痛", "SYMPTOM", 4, 6),
-            ("symptom-b", "恶心", "SYMPTOM", 7, 9),
-            ("symptom-c", "呕吐", "SYMPTOM", 10, 12),
+            ("symptom-a", "胃痛", "SYMPTOM", 5, 7),
+            ("symptom-b", "恶心", "SYMPTOM", 8, 10),
+            ("symptom-c", "呕吐", "SYMPTOM", 11, 13),
         ]
         for candidate_id, term, candidate_type, start, end in terms:
             self.connection.execute(
