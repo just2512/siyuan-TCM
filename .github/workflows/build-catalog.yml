@@ -96,6 +96,10 @@ jobs:
         run: python tools/audit_entity_mention_overlaps.py --mentions catalog/generated/entity_mention_candidates.csv.gz --relations catalog/generated/formula_herb_relation_candidates.csv --content-index catalog/generated/content_block_index.csv.gz --output catalog/generated/entity_mention_overlap_audit.json
       - name: Build source-grounded cross-type entity mention overlap review queue
         run: python tools/build_entity_mention_overlap_review_queue.py --mentions catalog/generated/entity_mention_candidates.csv.gz --content-index catalog/generated/content_block_index.csv.gz --relations catalog/generated/formula_herb_relation_candidates.csv --overlap-audit catalog/generated/entity_mention_overlap_audit.json --output catalog/generated/entity_mention_cross_type_overlap_review.csv --report catalog/generated/entity_mention_cross_type_overlap_review.json
+      - name: Split contextual overlap review queue into deterministic batches
+        run: python tools/split_overlap_review_batches.py --input catalog/generated/contextual_term_cross_type_overlap_review.csv --output-dir catalog/generated/contextual_overlap_review_batches --batch-size 100
+      - name: Split entity mention overlap review queue into deterministic batches
+        run: python tools/split_overlap_review_batches.py --input catalog/generated/entity_mention_cross_type_overlap_review.csv --output-dir catalog/generated/entity_mention_overlap_review_batches --batch-size 100
       - name: Extract explicit symptom-syndrome-treatment-formula relation candidates
         run: python tools/build_contextual_relation_candidates.py
       - name: Validate contextual relation candidate provenance
@@ -136,6 +140,8 @@ jobs:
             catalog/generated/entity_mention_overlap_audit.json
             catalog/generated/entity_mention_cross_type_overlap_review.csv
             catalog/generated/entity_mention_cross_type_overlap_review.json
+            catalog/generated/contextual_overlap_review_batches/
+            catalog/generated/entity_mention_overlap_review_batches/
             catalog/generated/sqlite_entity_mention_audit.json
             catalog/generated/sqlite_source_locator_audit.json
             catalog/generated/contextual_term_overlap_audit.json
