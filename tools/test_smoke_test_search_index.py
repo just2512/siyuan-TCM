@@ -156,15 +156,15 @@ class SearchIndexSmokeTests(unittest.TestCase):
                     predicate_text TEXT, extraction_rule TEXT, resolution_status TEXT
                 );
             """)
-            source = "月经痛：针灸关元穴。"
+            source = "月经痛）：针灸关元穴。"
             connection.execute(
                 "INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
                 ("note/a.sy", "sha-a", "0.1", "b1", "PARAGRAPH", "", source),
             )
             candidates = [
                 ("s1", "月经痛", "SYMPTOM", "RULE_S", 0, 3),
-                ("t1", "针灸", "ACUPUNCTURE_TECHNIQUE", "RULE_T", 4, 6),
-                ("p1", "关元穴", "ACUPOINT", "RULE_P", 6, 9),
+                ("t1", "针灸", "ACUPUNCTURE_TECHNIQUE", "RULE_T", 5, 7),
+                ("p1", "关元穴", "ACUPOINT", "RULE_P", 7, 10),
             ]
             connection.executemany(
                 "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -177,8 +177,8 @@ class SearchIndexSmokeTests(unittest.TestCase):
             connection.execute(
                 "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 ("r1", "SOURCE_NOTE_ASSOCIATES", "s1", "月经痛", "SYMPTOM", 0, 3,
-                 "p1", "关元穴", "ACUPOINT", 6, 9, "u1", "note/a.sy", "sha-a",
-                 "0.1", "b1", 0, len(source), source, "：",
+                 "p1", "关元穴", "ACUPOINT", 7, 10, "u1", "note/a.sy", "sha-a",
+                 "0.1", "b1", 0, len(source), source, "）：",
                  "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
             )
             counts = {
