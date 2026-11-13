@@ -124,6 +124,48 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 term,
             )
 
+    def test_classical_source_candidates_require_explicit_citation_context(self):
+        text = "内经说人身上有四个气街。故黄帝内经有言：水精四布。"
+        for term in ("内经", "黄帝内经"):
+            start = text.index(term)
+            self.assertIn(
+                ("CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+        text = "见《内经》所载之气街"
+        start = text.index("内经")
+        self.assertIn(
+            ("CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01"),
+            classify_span(text, start, start + len("内经")),
+            text,
+        )
+        text = "这本书讲述内经的历史"
+        start = text.index("内经")
+        self.assertNotIn(
+            ("CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01"),
+            classify_span(text, start, start + len("内经")),
+            text,
+        )
+
+    def test_classical_theory_candidates_are_exact_source_observed_terms(self):
+        for term in (
+            "气街", "水精四布", "三焦", "中正之官", "决渎之官",
+            "营卫", "营气", "卫气", "宗气", "十二经脉", "奇经八脉",
+            "五运六气", "司天", "在泉", "清阳", "浊阴", "腠理", "上焦",
+        ):
+            self.assertIn(
+                ("CLASSICAL_THEORY", "CLASSICAL_THEORY_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("历史", "书本", "理论", "水道"):
+            self.assertNotIn(
+                ("CLASSICAL_THEORY", "CLASSICAL_THEORY_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
     def test_acupoint_candidates_do_not_accept_partial_suffixes_inside_point_names(self):
         text = "月经痛：关元穴、血海穴；针灸中脘穴。"
         for term in ("元穴", "海穴", "脘穴"):
