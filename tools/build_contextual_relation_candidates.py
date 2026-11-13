@@ -113,9 +113,7 @@ def sentence_ranges(text: str):
 
 
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
-SOURCE_NOTE_ATTRIBUTION_BOUNDARY = re.compile(
-    r"(?:[\\u3400-\\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\\n]{1,40}》(?:曰|云)[：:∶])"
-)
+SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 SOURCE_NOTE_ENDPOINT_TYPES = {
     "SYMPTOM", "SYNDROME", "FORMULA", "POINT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE"
 }
@@ -347,10 +345,17 @@ def extract_source_note_associations(
                         raise ValueError(f"source-note endpoint provenance/span mismatch: {unit_id}:{start}-{end}")
 
                 for scope_start, scope_end in source_note_ranges(text):
+                    unique_endpoints = {}
+                    for row in endpoints:
+                        start = int(row["character_start"])
+                        end = int(row["character_end"])
+                        if scope_start <= start < end <= scope_end:
+                            key = (
+                                row["candidate_id"], row["candidate_type"], row["term"], start, end
+                            )
+                            unique_endpoints[key] = row
                     scope_spans = [
-                        (int(row["character_start"]), int(row["character_end"]), row)
-                        for row in endpoints
-                        if scope_start <= int(row["character_start"]) < int(row["character_end"]) <= scope_end
+                        (key[3], key[4], row) for key, row in unique_endpoints.items()
                     ]
                     scope_spans.sort(key=lambda item: (item[0], item[1], item[2]["candidate_id"]))
                     # A note label is the last endpoint immediately before a colon.
