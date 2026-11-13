@@ -308,7 +308,7 @@ def classify_span(
             elif candidate_type == "ACUPOINT":
                 # Keep compact lexical forms, but never accept a suffix cut from
                 # a longer acupoint name (e.g. 元穴 inside 关元穴, 海穴 inside 血海穴).
-                matched = re.fullmatch(r"[\\u3400-\\u9fff]{1,4}穴", term)
+                matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
                 if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
                     matched = None
                 if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
