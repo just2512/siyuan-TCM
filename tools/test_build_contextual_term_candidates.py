@@ -468,5 +468,55 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 build(source, output, units)
 
 
+    def test_rejects_lexical_compound_tails_as_formula_herb_or_syndrome(self):
+        cases = [
+            (
+                "跟地黄有一点点用药的方向上的差别",
+                "的方向上",
+                "向上",
+                None,
+            ),
+            (
+                "养这个血，其实在用药的方式上是比较高明一点",
+                "的方式上",
+                "式上是",
+                None,
+            ),
+            (
+                "桂枝汤也是属于可以用的方剂之一哦",
+                None,
+                "剂之一",
+                "可以用的方剂",
+            ),
+            (
+                "底那一块，有一块地方用药是一样的",
+                "是一样的",
+                "药是一样",
+                None,
+            ),
+        ]
+        for text, herb_term, formula_term, syndrome_term in cases:
+            if herb_term:
+                start = text.index(herb_term)
+                self.assertNotIn(
+                    ("HERB", "HERB_CONTEXT_01"),
+                    classify_span(text, start, start + len(herb_term)),
+                    (text, herb_term),
+                )
+            if formula_term:
+                start = text.index(formula_term)
+                self.assertNotIn(
+                    ("FORMULA", "FORMULA_CONTEXT_01"),
+                    classify_span(text, start, start + len(formula_term)),
+                    (text, formula_term),
+                )
+            if syndrome_term:
+                start = text.index(syndrome_term)
+                self.assertNotIn(
+                    ("SYNDROME", "SYNDROME_CONTEXT_01"),
+                    classify_span(text, start, start + len(syndrome_term)),
+                    (text, syndrome_term),
+                )
+
 if __name__ == "__main__":
     unittest.main()
