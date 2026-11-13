@@ -25,6 +25,7 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
     )
 }
 CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)")
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\\s、，,）)】』」]?[：:]")
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
@@ -309,10 +310,10 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
                 and row["object_type"] == "CLASSICAL_THEORY"
             )
             predicate_match = (
-                CLASSICAL_ATTRIBUTION_MARKER.search(between)
-                if classical_attribution else re.search(r"[:：]", between)
+                CLASSICAL_ATTRIBUTION_MARKER.match(between)
+                if classical_attribution else SOURCE_NOTE_LABEL_MARKER.match(between)
             )
-            if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
+            if (predicate_match is None or predicate_match.group(0).strip() != row["predicate_text"]
                 or (not classical_attribution and
                     re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():]))):
                 raise AssertionError(f"source-note association marker is outside endpoint scope: {row['relation_id']}")
