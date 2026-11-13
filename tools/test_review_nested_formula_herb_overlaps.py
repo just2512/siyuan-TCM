@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from review_nested_formula_herb_overlaps import review_nested_formula_herb_overlaps
+from review_nested_formula_herb_overlaps import (\n    review_nested_formula_herb_overlaps,\n    review_nested_formula_herb_overlap_batches,\n)
 
 
 FIELDS = [
@@ -128,6 +128,98 @@ class NestedFormulaHerbOverlapReviewTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "must not overwrite"):
             review_nested_formula_herb_overlaps(self.source, self.source)
 
+
+
+    def test_batch_review_preserves_manifest_and_leaves_other_rows_unreviewed(self):
+        import hashlib
+
+        batch_dir = self.root / "batches"
+        batch_dir.mkdir()
+        batch_path = batch_dir / "overlap-review-batch-001.csv"
+        rows = [
+            self.row(pair_id="pair-nested"),
+            self.row(
+                pair_id="pair-partial",
+                overlap_kind="partial_overlap",
+                left_text="枝汤",
+                right_text="桂枝",
+                left_start=1,
+                left_end=3,
+                right_start=0,
+                right_end=2,
+            ),
+        ]
+        with batch_path.open("w", encoding="utf-8-sig", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=FIELDS)
+            writer.writeheader()
+            writer.writerows(rows)
+        pair_hash = hashlib.sha256(
+            "\n".join(row["pair_id"] for row in rows).encode("utf-8")
+        ).hexdigest()
+        manifest = {
+            "schema_version": 1,
+            "input_file": "review.source.csv",
+            "input_sha256": hashlib.sha256(b"raw source").hexdigest(),
+            "input_rows": 2,
+            "batch_size_limit": 100,
+            "batch_count": 1,
+            "batches": [{
+                "file": batch_path.name,
+                "rows": 2,
+                "pair_ids_sha256": pair_hash,
+            }],
+        }
+        (batch_dir / "overlap-review-batches.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        self.report.write_text(json.dumps({"cross_type_overlap_pairs": 2}), encoding="utf-8")
+
+        result = review_nested_formula_herb_overlap_batches(batch_dir, self.report)
+
+        with batch_path.open("r", encoding="utf-8-sig", newline="") as stream:
+            reviewed_rows = list(csv.DictReader(stream))
+        self.assertEqual(reviewed_rows[0]["review_decision"], "KEEP_BOTH")
+        self.assertEqual(reviewed_rows[0]["review_status"], "REVIEWED")
+        self.assertEqual(reviewed_rows[1]["review_status"], "UNREVIEWED")
+        self.assertEqual(reviewed_rows[1]["review_decision"], "")
+        self.assertEqual(result["reviewed_by_rule"], 1)
+        self.assertEqual(result["remaining_unreviewed_rows"], 1)
+        self.assertEqual(result["source_queue"], "review.source.csv")
+        updated_manifest = json.loads(
+            (batch_dir / "overlap-review-batches.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(updated_manifest, manifest)
+        report = json.loads(self.report.read_text(encoding="utf-8"))
+        self.assertEqual(report["review_status"], "PARTIALLY_REVIEWED")
+        self.assertTrue(report["automated_semantic_review"]["source_manifest_preserved"])
+
+    def test_batch_review_rejects_pair_id_manifest_drift(self):
+        batch_dir = self.root / "batches"
+        batch_dir.mkdir()
+        batch_path = batch_dir / "overlap-review-batch-001.csv"
+        rows = [self.row()]
+        with batch_path.open("w", encoding="utf-8-sig", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=FIELDS)
+            writer.writeheader()
+            writer.writerows(rows)
+        manifest = {
+            "schema_version": 1,
+            "input_file": "review.source.csv",
+            "input_sha256": "raw-hash",
+            "input_rows": 1,
+            "batch_size_limit": 100,
+            "batch_count": 1,
+            "batches": [{
+                "file": batch_path.name,
+                "rows": 1,
+                "pair_ids_sha256": "stale-pair-id-hash",
+            }],
+        }
+        (batch_dir / "overlap-review-batches.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        with self.assertRaisesRegex(ValueError, "pair-ID hash differs"):
+            review_nested_formula_herb_overlap_batches(batch_dir, self.report)
 
 if __name__ == "__main__":
     unittest.main()
