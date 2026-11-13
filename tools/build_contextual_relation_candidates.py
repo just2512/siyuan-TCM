@@ -67,7 +67,8 @@ def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
             if row["classification_status"] != "CONTEXT_RULE_CANDIDATE":
                 raise ValueError("context candidate input contains unsafe status")
             if row["candidate_type"] in {
-                "SYMPTOM", "SYNDROME", "TREATMENT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE"
+                "SYMPTOM", "SYNDROME", "TREATMENT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE",
+                "CLASSICAL_SOURCE", "CLASSICAL_THEORY",
             }:
                 grouped[row["unit_id"]].append({
                     "candidate_id": row["candidate_id"], "term": row["term"],
@@ -115,7 +116,8 @@ def sentence_ranges(text: str):
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 SOURCE_NOTE_ENDPOINT_TYPES = {
-    "SYMPTOM", "SYNDROME", "FORMULA", "POINT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE"
+    "SYMPTOM", "SYNDROME", "FORMULA", "POINT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE",
+    "CLASSICAL_SOURCE", "CLASSICAL_THEORY",
 }
 SOURCE_NOTE_ASSOCIATION_PAIRS = {
     frozenset(pair) for pair in (
@@ -128,8 +130,10 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
         ("POINT", "ACUPUNCTURE_TECHNIQUE"),
         ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
         ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("CLASSICAL_SOURCE", "CLASSICAL_THEORY"),
     )
 }
+CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)")
 
 
 def source_note_ranges(text: str):
@@ -407,6 +411,58 @@ def extract_source_note_associations(
                                 "resolution_status": "UNRESOLVED_CANDIDATE",
                             })
                             count += 1
+
+                # Explicit source attribution: “内经说……气街” / “黄帝内经有言……水精四布”.
+                for subject in endpoints:
+                    if subject["candidate_type"] != "CLASSICAL_SOURCE":
+                        continue
+                    subject_start = int(subject["character_start"])
+                    subject_end = int(subject["character_end"])
+                    if not (scope_start <= subject_start < subject_end <= scope_end):
+                        continue
+                    marker = CLASSICAL_ATTRIBUTION_MARKER.match(text[subject_end:scope_end])
+                    if marker is None:
+                        continue
+                    marker_end = subject_end + marker.end()
+                    for obj in endpoints:
+                        if obj["candidate_type"] != "CLASSICAL_THEORY":
+                            continue
+                        object_start = int(obj["character_start"])
+                        object_end = int(obj["character_end"])
+                        if object_start < marker_end or object_end > scope_end or object_end <= object_start:
+                            continue
+                        between = text[subject_end:object_start]
+                        if SOURCE_NOTE_ATTRIBUTION_BOUNDARY.search(between):
+                            continue
+                        relation_id = relation_identity(
+                            "SOURCE_NOTE_ASSOCIATES", subject, obj, unit_id, scope_start, scope_end
+                        )
+                        writer.writerow({
+                            "relation_id": relation_id,
+                            "predicate": "SOURCE_NOTE_ASSOCIATES",
+                            "subject_candidate_id": subject["candidate_id"],
+                            "subject_text": subject["term"],
+                            "subject_type": subject["candidate_type"],
+                            "subject_start": subject_start,
+                            "subject_end": subject_end,
+                            "object_candidate_id": obj["candidate_id"],
+                            "object_text": obj["term"],
+                            "object_type": obj["candidate_type"],
+                            "object_start": object_start,
+                            "object_end": object_end,
+                            "unit_id": unit_id,
+                            "document": src["document"],
+                            "source_sha256": src["sha256"],
+                            "tree_position": src["tree_position"],
+                            "block_id": src.get("block_id", ""),
+                            "sentence_start": scope_start,
+                            "sentence_end": scope_end,
+                            "evidence_text": text[scope_start:scope_end],
+                            "predicate_text": marker.group(0),
+                            "extraction_rule": "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1",
+                            "resolution_status": "UNRESOLVED_CANDIDATE",
+                        })
+                        count += 1
     return count
 
 
@@ -459,8 +515,15 @@ def validate(
                 raise ValueError(f"row {line}: unsafe relation status")
             predicate = row["predicate"]
             source_note_association = predicate == "SOURCE_NOTE_ASSOCIATES"
+            classical_attribution = (
+                source_note_association
+                and row["subject_type"] == "CLASSICAL_SOURCE"
+                and row["object_type"] == "CLASSICAL_THEORY"
+            )
             expected_rule = (
-                "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1"
+                if classical_attribution
+                else "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
                 if source_note_association else predicate + "_EXPLICIT_V1"
             )
             if (predicate not in PREDICATES and not source_note_association) or row["extraction_rule"] != expected_rule:
@@ -503,9 +566,12 @@ def validate(
                 raise ValueError(f"row {line}: object span does not match source")
             between = text[subject_end:object_start]
             if source_note_association:
-                predicate_match = re.search(r"[:：]", between)
+                predicate_match = (
+                    CLASSICAL_ATTRIBUTION_MARKER.search(between)
+                    if classical_attribution else re.search(r"[:：]", between)
+                )
                 if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
-                    raise ValueError(f"row {line}: source-note label marker is missing or outside endpoint scope")
+                    raise ValueError(f"row {line}: source-note marker is missing or outside endpoint scope")
                 if re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[:predicate_match.start()]):
                     raise ValueError(f"row {line}: source-note association label is negated")
                 scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
