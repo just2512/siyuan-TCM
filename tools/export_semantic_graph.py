@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,28 @@ from build_contextual_relation_candidates import (
     relation_identity,
     sentence_ranges,
 )
+
+SOURCE_NOTE_ASSOCIATION_PAIRS = {
+    frozenset(pair) for pair in (
+        ("SYMPTOM", "FORMULA"), ("SYMPTOM", "POINT"),
+        ("SYMPTOM", "ACUPOINT"), ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
+        ("SYNDROME", "FORMULA"), ("SYNDROME", "POINT"),
+        ("SYNDROME", "ACUPOINT"), ("SYNDROME", "ACUPUNCTURE_TECHNIQUE"),
+        ("FORMULA", "SYMPTOM"), ("FORMULA", "SYNDROME"),
+        ("POINT", "SYMPTOM"), ("POINT", "SYNDROME"),
+        ("POINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
+        ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+    )
+}
+SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\\n]+[。！？．]?|\\n+")
+SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
+
+
+def source_note_ranges(text: str):
+    for match in SOURCE_NOTE_RANGE.finditer(text):
+        if match.group(0).strip():
+            yield match.start(), match.end()
 
 
 def records(database_path: Path):
@@ -339,8 +362,12 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 )
                 if expected is None or tuple(expected) != exported:
                     raise ValueError(f"contextual relation graph/SQLite mismatch at line {line}")
+                source_note_association = row["predicate"] == "SOURCE_NOTE_ASSOCIATES"
                 endpoint_types = contextual_endpoint_types.get(row["predicate"])
-                if endpoint_types != (row["subject_type"], row["object_type"]):
+                if source_note_association:
+                    if frozenset((row["subject_type"], row["object_type"])) not in SOURCE_NOTE_ASSOCIATION_PAIRS:
+                        raise ValueError(f"source-note association endpoint types invalid at line {line}")
+                elif endpoint_types != (row["subject_type"], row["object_type"]):
                     raise ValueError(f"contextual relation endpoint types invalid at line {line}")
                 for candidate_id, term, candidate_type, left, right, role in (
                     (row["subject_candidate_id"], row["subject_text"], row["subject_type"],
@@ -348,10 +375,10 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     (row["object_candidate_id"], row["object_text"], row["object_type"],
                      row["object_start"], row["object_end"], "object"),
                 ):
-                    if candidate_type == "FORMULA":
-                        # Formula endpoints originate from the lexical entity-mention
-                        # index, not contextual_term_type_candidates (which only
-                        # classifies SYMPTOM/SYNDROME/TREATMENT candidates).
+                    if candidate_type in {"FORMULA", "POINT"}:
+                        # Formula and lexicon-backed POINT endpoints originate from
+                        # entity_mentions; discovered ACUPOINT/technique terms remain
+                        # contextual candidates until the lexicon is reviewed.
                         endpoint = connection.execute("""
                             SELECT 1 FROM entity_mentions
                             WHERE mention_id = ? AND matched_text = ? AND entity_type = ?
@@ -389,19 +416,34 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"contextual relation endpoint spans invalid at line {line}")
                 if source[0][ss:se] != row["subject_text"] or source[0][os:oe] != row["object_text"]:
                     raise ValueError(f"contextual relation endpoint text mismatch at line {line}")
-                if (start, end) not in set(sentence_ranges(source[0])):
+                valid_ranges = (
+                    set(source_note_ranges(source[0]))
+                    if source_note_association else set(sentence_ranges(source[0]))
+                )
+                if (start, end) not in valid_ranges:
                     raise ValueError(f"contextual relation evidence crosses a source sentence boundary at line {line}")
                 predicate = row["predicate"]
-                if (predicate not in PREDICATES
-                    or row["extraction_rule"] != predicate + "_EXPLICIT_V1"):
+                expected_rule = (
+                    "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                    if source_note_association else predicate + "_EXPLICIT_V1"
+                )
+                if ((predicate not in PREDICATES and not source_note_association)
+                    or row["extraction_rule"] != expected_rule):
                     raise ValueError(f"contextual relation predicate/rule mismatch at line {line}")
                 between = source[0][se:os]
-                predicate_match = PREDICATES[predicate].search(between)
-                if (predicate_match is None
-                    or predicate_match.group(0) != row["predicate_text"]
-                    or NEGATION_PREFIX.search(between[:predicate_match.start()])):
-                    raise ValueError(f"contextual relation predicate evidence mismatch at line {line}")
-                scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+                if source_note_association:
+                    predicate_match = re.search(r"[:：]", between)
+                    if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
+                        or re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():])):
+                        raise ValueError(f"source-note association label evidence mismatch at line {line}")
+                    scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
+                else:
+                    predicate_match = PREDICATES[predicate].search(between)
+                    if (predicate_match is None
+                        or predicate_match.group(0) != row["predicate_text"]
+                        or NEGATION_PREFIX.search(between[:predicate_match.start()])):
+                        raise ValueError(f"contextual relation predicate evidence mismatch at line {line}")
+                    scope_break = RELATION_SCOPE_BREAKS.get(predicate)
                 if scope_break and scope_break.search(between):
                     raise ValueError(f"contextual relation crosses a source-attribution boundary at line {line}")
                 expected_id = relation_identity(
