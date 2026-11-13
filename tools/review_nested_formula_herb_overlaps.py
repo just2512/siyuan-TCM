@@ -158,16 +158,117 @@ def review_nested_formula_herb_overlaps(
     return result
 
 
+
+
+def review_nested_formula_herb_overlap_batches(
+    batch_dir: Path, report_path: Path,
+) -> dict:
+    """Apply the narrow rule to deterministic batch rows without breaking the source manifest."""
+    batch_dir, report_path = Path(batch_dir), Path(report_path)
+    manifest_path = batch_dir / "overlap-review-batches.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    specs = manifest.get("batches")
+    if manifest.get("schema_version") != 1 or not isinstance(specs, list):
+        raise ValueError("unsupported or malformed overlap batch manifest")
+    if int(manifest.get("batch_count", -1)) != len(specs):
+        raise ValueError("batch manifest count does not match its batch entries")
+    if int(manifest.get("batch_size_limit", 0)) < 1:
+        raise ValueError("batch manifest has an invalid batch size limit")
+
+    seen: set[str] = set()
+    total_rows = 0
+    total_reviewed = 0
+    total_preserved_reviewed = 0
+    status_counts: Counter[str] = Counter()
+    decision_counts: Counter[str] = Counter()
+
+    for index, spec in enumerate(specs, 1):
+        filename = spec.get("file", "")
+        if not filename or Path(filename).name != filename:
+            raise ValueError(f"manifest batch {index}: unsafe batch filename")
+        path = batch_dir / filename
+        if not path.is_file():
+            raise FileNotFoundError(path)
+
+        with path.open("r", encoding="utf-8-sig", newline="") as stream:
+            reader = csv.DictReader(stream)
+            fields = list(reader.fieldnames or [])
+            rows = list(reader)
+        if len(rows) != int(spec.get("rows", -1)):
+            raise ValueError(f"{filename}: row count differs from manifest")
+        pair_ids = []
+        for line, row in enumerate(rows, 2):
+            pair_id = (row.get("pair_id") or "").strip()
+            if not pair_id:
+                raise ValueError(f"{filename} row {line}: empty pair_id")
+            if pair_id in seen:
+                raise ValueError(f"{filename} row {line}: duplicate pair_id across batches: {pair_id}")
+            seen.add(pair_id)
+            pair_ids.append(pair_id)
+        observed_hash = hashlib.sha256("\\n".join(pair_ids).encode("utf-8")).hexdigest()
+        if observed_hash != spec.get("pair_ids_sha256"):
+            raise ValueError(f"{filename}: pair-ID hash differs from manifest")
+
+        temporary = path.with_name(path.name + ".reviewed.tmp")
+        result = review_nested_formula_herb_overlaps(path, temporary, None)
+        os.replace(temporary, path)
+        total_rows += result["input_rows"]
+        total_reviewed += result["reviewed_by_rule"]
+        total_preserved_reviewed += result["preserved_existing_reviewed_rows"]
+        status_counts.update(result["review_status_counts"])
+        decision_counts.update(result["review_decision_counts"])
+
+    if total_rows != int(manifest.get("input_rows", -1)):
+        raise ValueError("manifest batch row totals do not match input_rows")
+
+    result = {
+        "schema_version": 1,
+        "source_queue": manifest.get("input_file", ""),
+        "source_sha256": manifest.get("input_sha256", ""),
+        "input_rows": total_rows,
+        "batch_count": len(specs),
+        "reviewed_by_rule": total_reviewed,
+        "preserved_existing_reviewed_rows": total_preserved_reviewed,
+        "review_status_counts": dict(sorted(status_counts.items())),
+        "review_decision_counts": dict(sorted(decision_counts.items())),
+        "remaining_unreviewed_rows": status_counts.get("UNREVIEWED", 0),
+        "rule_id": RULE_ID,
+        "decision": DECISION,
+        "candidate_mutations": 0,
+        "relationship_inferences": 0,
+        "batches_updated_in_place": True,
+    }
+    report = json.loads(report_path.read_text(encoding="utf-8")) if report_path.exists() else {}
+    report["review_status"] = (
+        "PARTIALLY_REVIEWED" if status_counts.get("REVIEWED", 0) and status_counts.get("UNREVIEWED", 0)
+        else "REVIEWED" if status_counts.get("REVIEWED", 0) else "UNREVIEWED"
+    )
+    report["review_status_counts"] = result["review_status_counts"]
+    report["review_decision_counts"] = result["review_decision_counts"]
+    report["automated_semantic_review"] = {
+        "rule_id": RULE_ID,
+        "decision": DECISION,
+        "reviewed_rows": total_reviewed,
+        "remaining_unreviewed_rows": result["remaining_unreviewed_rows"],
+        "scope": "only nested FORMULA/HERB mention spans with exact evidence-window text parity",
+        "non_inference": "does not create or infer a formula-herb relation",
+        "source_manifest_preserved": True,
+    }
+    report_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    return result
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path,
-        default=Path("catalog/generated/entity_mention_cross_type_overlap_review.csv"))
-    parser.add_argument("--output", type=Path,
-        default=Path("catalog/generated/entity_mention_cross_type_overlap_review.reviewed.csv"))
+    parser.add_argument("--batch-dir", type=Path,
+        default=Path("catalog/generated/entity_mention_overlap_review_batches"))
     parser.add_argument("--report", type=Path,
         default=Path("catalog/generated/entity_mention_cross_type_overlap_review.json"))
     args = parser.parse_args()
-    review_nested_formula_herb_overlaps(args.input, args.output, args.report)
+    review_nested_formula_herb_overlap_batches(args.batch_dir, args.report)
     return 0
 
 
