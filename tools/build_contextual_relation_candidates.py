@@ -412,57 +412,58 @@ def extract_source_note_associations(
                             })
                             count += 1
 
-                # Explicit source attribution: “内经说……气街” / “黄帝内经有言……水精四布”.
-                for subject in endpoints:
-                    if subject["candidate_type"] != "CLASSICAL_SOURCE":
-                        continue
-                    subject_start = int(subject["character_start"])
-                    subject_end = int(subject["character_end"])
-                    if not (scope_start <= subject_start < subject_end <= scope_end):
-                        continue
-                    marker = CLASSICAL_ATTRIBUTION_MARKER.match(text[subject_end:scope_end])
-                    if marker is None:
-                        continue
-                    marker_end = subject_end + marker.end()
-                    for obj in endpoints:
-                        if obj["candidate_type"] != "CLASSICAL_THEORY":
+                    # Explicit source attribution: “内经说……气街” / “黄帝内经有言……水精四布”.
+                    for subject in endpoints:
+                        if subject["candidate_type"] != "CLASSICAL_SOURCE":
                             continue
-                        object_start = int(obj["character_start"])
-                        object_end = int(obj["character_end"])
-                        if object_start < marker_end or object_end > scope_end or object_end <= object_start:
+                        subject_start = int(subject["character_start"])
+                        subject_end = int(subject["character_end"])
+                        if not (scope_start <= subject_start < subject_end <= scope_end):
                             continue
-                        between = text[subject_end:object_start]
-                        if SOURCE_NOTE_ATTRIBUTION_BOUNDARY.search(between):
+                        marker = CLASSICAL_ATTRIBUTION_MARKER.match(text[subject_end:scope_end])
+                        if marker is None:
                             continue
-                        relation_id = relation_identity(
-                            "SOURCE_NOTE_ASSOCIATES", subject, obj, unit_id, scope_start, scope_end
-                        )
-                        writer.writerow({
-                            "relation_id": relation_id,
-                            "predicate": "SOURCE_NOTE_ASSOCIATES",
-                            "subject_candidate_id": subject["candidate_id"],
-                            "subject_text": subject["term"],
-                            "subject_type": subject["candidate_type"],
-                            "subject_start": subject_start,
-                            "subject_end": subject_end,
-                            "object_candidate_id": obj["candidate_id"],
-                            "object_text": obj["term"],
-                            "object_type": obj["candidate_type"],
-                            "object_start": object_start,
-                            "object_end": object_end,
-                            "unit_id": unit_id,
-                            "document": src["document"],
-                            "source_sha256": src["sha256"],
-                            "tree_position": src["tree_position"],
-                            "block_id": src.get("block_id", ""),
-                            "sentence_start": scope_start,
-                            "sentence_end": scope_end,
-                            "evidence_text": text[scope_start:scope_end],
-                            "predicate_text": marker.group(0),
-                            "extraction_rule": "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1",
-                            "resolution_status": "UNRESOLVED_CANDIDATE",
-                        })
-                        count += 1
+                        marker_end = subject_end + marker.end()
+                        for obj in endpoints:
+                            if obj["candidate_type"] != "CLASSICAL_THEORY":
+                                continue
+                            object_start = int(obj["character_start"])
+                            object_end = int(obj["character_end"])
+                            if object_start < marker_end or object_end > scope_end or object_end <= object_start:
+                                continue
+                            between = text[subject_end:object_start]
+                            if SOURCE_NOTE_ATTRIBUTION_BOUNDARY.search(between):
+                                continue
+                            relation_id = relation_identity(
+                                "SOURCE_NOTE_ASSOCIATES", subject, obj, unit_id, scope_start, scope_end
+                            )
+                            writer.writerow({
+                                "relation_id": relation_id,
+                                "predicate": "SOURCE_NOTE_ASSOCIATES",
+                                "subject_candidate_id": subject["candidate_id"],
+                                "subject_text": subject["term"],
+                                "subject_type": subject["candidate_type"],
+                                "subject_start": subject_start,
+                                "subject_end": subject_end,
+                                "object_candidate_id": obj["candidate_id"],
+                                "object_text": obj["term"],
+                                "object_type": obj["candidate_type"],
+                                "object_start": object_start,
+                                "object_end": object_end,
+                                "unit_id": unit_id,
+                                "document": src["document"],
+                                "source_sha256": src["sha256"],
+                                "tree_position": src["tree_position"],
+                                "block_id": src.get("block_id", ""),
+                                "sentence_start": scope_start,
+                                "sentence_end": scope_end,
+                                "evidence_text": text[scope_start:scope_end],
+                                "predicate_text": marker.group(0),
+                                "extraction_rule": "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1",
+                                "resolution_status": "UNRESOLVED_CANDIDATE",
+                            })
+                            count += 1
+    
     return count
 
 
