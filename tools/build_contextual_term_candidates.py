@@ -334,6 +334,9 @@ def classify_span(
                     matched = None
             elif candidate_type == "CLASSICAL_SOURCE":
                 matched = re.fullmatch(pattern, term)
+                # Do not extract “内经” as a suffix fragment from “黄帝内经”.
+                if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
+                    matched = None
                 after = text[end:min(len(text), end + 6)]
                 quoted = (
                     start > 0 and text[start - 1:start] == "《"
