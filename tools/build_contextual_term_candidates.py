@@ -314,7 +314,7 @@ def classify_span(
             elif candidate_type == "ACUPUNCTURE_TECHNIQUE":
                 matched = re.fullmatch(pattern, term)
                 # A negated instruction is not a positive needling-method mention.
-                if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\\s*$", before):
+                if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\s*$", before):
                     matched = None
             elif candidate_type in {"PULSE", "TONGUE"}:
                 # Intrinsic pulse/tongue cues must occur inside the candidate.
