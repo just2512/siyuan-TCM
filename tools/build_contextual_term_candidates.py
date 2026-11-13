@@ -47,7 +47,7 @@ RULES = {
     ],
     # Acupoint names ending in 穴 are discovery candidates, not approved POINT entities.
     "ACUPOINT": [
-        ("ACUPOINT_CONTEXT_01", r"[\\u3400-\\u9fff]{1,4}穴"),
+        ("ACUPOINT_CONTEXT_01", r"[\u3400-\u9fff]{1,4}穴"),
     ],
     # These are named needling/moxibustion techniques; they remain source candidates.
     "ACUPUNCTURE_TECHNIQUE": [
@@ -308,7 +308,7 @@ def classify_span(
             elif candidate_type == "ACUPOINT":
                 # Keep only compact lexical forms with the acupoint-name suffix.
                 # Generic structural words are not point names.
-                matched = re.fullmatch(r"[\\u3400-\\u9fff]{1,4}穴", term)
+                matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
                 if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
                     matched = None
             elif candidate_type == "ACUPUNCTURE_TECHNIQUE":
