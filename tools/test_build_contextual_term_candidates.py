@@ -124,6 +124,30 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 term,
             )
 
+    def test_acupoint_candidates_do_not_accept_partial_suffixes_inside_point_names(self):
+        text = "月经痛：关元穴、血海穴；针灸中脘穴。"
+        for term in ("元穴", "海穴", "脘穴"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+        for term in ("关元穴", "血海穴", "中脘穴"):
+            start = text.index(term)
+            self.assertIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+        laterality_text = "灸左右天枢穴"
+        start = laterality_text.index("天枢穴")
+        self.assertIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span(laterality_text, start, start + len("天枢穴")),
+            laterality_text,
+        )
+
     def test_discovers_explicit_acupuncture_technique_terms_and_rejects_negated_ones(self):
         positive = [
             "针灸", "针刺", "艾灸", "隔姜灸", "隔盐灸", "隔蒜灸",

@@ -306,11 +306,18 @@ def classify_span(
                     else None
                 )
             elif candidate_type == "ACUPOINT":
-                # Keep only compact lexical forms with the acupoint-name suffix.
-                # Generic structural words are not point names.
+                # Keep compact lexical forms, but never accept a suffix cut from
+                # a longer acupoint name (e.g. 元穴 inside 关元穴, 海穴 inside 血海穴).
                 matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
                 if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
                     matched = None
+                if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
+                    action_prefix = re.search(
+                        r"(?:针|灸|刺|扎|按|点|取|下|用|加|进|入|到|以|左右|两侧|双侧|左|右)$",
+                        text[max(0, start - 4):start],
+                    )
+                    if action_prefix is None:
+                        matched = None
             elif candidate_type == "ACUPUNCTURE_TECHNIQUE":
                 matched = re.fullmatch(pattern, term)
                 # A negated instruction is not a positive needling-method mention.
