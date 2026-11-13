@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 72208,
+  "distinct_occurrence_rows": 69397,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -1003,38 +1003,31 @@
     }
   ],
   "overlap_pair_candidate_type_counts": {
-    "FORMULA|FORMULA": 7615,
-    "FORMULA|HERB": 102,
-    "FORMULA|SYMPTOM": 6,
-    "HERB|HERB": 10647,
-    "HERB|SYMPTOM": 17,
+    "FORMULA|FORMULA": 6069,
+    "FORMULA|HERB": 11,
+    "HERB|HERB": 10195,
     "PULSE|PULSE": 840,
-    "PULSE|SYMPTOM": 11,
-    "PULSE|TREATMENT": 2,
-    "SYMPTOM|SYMPTOM": 19273,
-    "SYMPTOM|SYNDROME": 21,
-    "SYMPTOM|TONGUE": 10,
-    "SYMPTOM|TREATMENT": 2,
-    "SYNDROME|SYNDROME": 3561,
+    "PULSE|SYMPTOM": 3,
+    "SYMPTOM|SYMPTOM": 18689,
+    "SYMPTOM|SYNDROME": 14,
+    "SYNDROME|SYNDROME": 3384,
     "TONGUE|TONGUE": 5977,
-    "TONGUE|TREATMENT": 12,
-    "TREATMENT|TREATMENT": 413
+    "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
-    "current_nested": 3987,
-    "exact_span": 11,
-    "partial_overlap": 3600,
-    "prior_nested": 40911
+    "current_nested": 3907,
+    "partial_overlap": 3407,
+    "prior_nested": 38278
   },
   "overlap_pair_type_relation_counts": {
-    "cross_type": 183,
-    "same_type": 48326
+    "cross_type": 28,
+    "same_type": 45564
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 7708,
+  "repeated_lexical_forms_with_multiple_occurrences": 7212,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",
@@ -1217,11 +1210,6 @@
       "term": "述钩元"
     },
     {
-      "candidate_type": "PULSE",
-      "distinct_occurrences": 187,
-      "term": "脉为"
-    },
-    {
       "candidate_type": "HERB",
       "distinct_occurrences": 180,
       "term": "经赞"
@@ -1285,6 +1273,11 @@
       "candidate_type": "HERB",
       "distinct_occurrences": 112,
       "term": "经读"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 112,
+      "term": "心呕吐"
     }
   ],
   "schema_version": 2

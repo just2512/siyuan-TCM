@@ -1,35 +1,27 @@
 {
-  "cross_type_overlap_pairs": 183,
+  "cross_type_overlap_pairs": 28,
   "cross_type_pairs_by_overlap_kind": {
-    "current_nested": 14,
-    "exact_span": 11,
-    "partial_overlap": 125,
-    "prior_nested": 33
+    "partial_overlap": 26,
+    "prior_nested": 2
   },
   "cross_type_pairs_by_type": {
-    "FORMULA|HERB": 102,
-    "FORMULA|SYMPTOM": 6,
-    "HERB|SYMPTOM": 17,
-    "PULSE|SYMPTOM": 11,
-    "PULSE|TREATMENT": 2,
-    "SYMPTOM|SYNDROME": 21,
-    "SYMPTOM|TONGUE": 10,
-    "SYMPTOM|TREATMENT": 2,
-    "TONGUE|TREATMENT": 12
+    "FORMULA|HERB": 11,
+    "PULSE|SYMPTOM": 3,
+    "SYMPTOM|SYNDROME": 14
   },
-  "distinct_occurrences": 72208,
+  "distinct_occurrences": 69397,
   "policy": {
     "candidate_mutation": "none",
     "evidence": "each row includes an exact source excerpt and source locator",
     "semantic_decisions": "manual review required; geometric overlap is not a semantic verdict"
   },
   "reconciliation": {
-    "expected_cross_type_overlap_pairs": 183,
+    "expected_cross_type_overlap_pairs": 28,
     "pairs_by_type_match": true,
-    "queued_cross_type_overlap_pairs": 183,
+    "queued_cross_type_overlap_pairs": 28,
     "status": "PASS"
   },
   "review_status": "UNREVIEWED",
-  "same_type_overlap_pairs_not_queued": 48326,
+  "same_type_overlap_pairs_not_queued": 45564,
   "schema_version": 1
 }

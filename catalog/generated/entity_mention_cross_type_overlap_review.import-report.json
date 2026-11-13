@@ -1,0 +1,17 @@
+{
+  "batch_count": 301,
+  "candidate_mutations": 0,
+  "input_rows": 30098,
+  "output_file": "entity_mention_cross_type_overlap_review.reviewed.csv",
+  "review_decision_counts": {
+    "KEEP_BOTH": 27419
+  },
+  "review_decisions_assigned_by_tool": 0,
+  "review_status_counts": {
+    "REVIEWED": 27419,
+    "UNREVIEWED": 2679
+  },
+  "schema_version": 1,
+  "source_queue": "entity_mention_cross_type_overlap_review.source.csv",
+  "source_sha256": "5d375322c841b571377eefb79e964414917534f826c0bac16f9bea4307b752c9"
+}

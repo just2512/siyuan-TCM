@@ -1,4 +1,13 @@
 {
+  "automated_semantic_review": {
+    "decision": "KEEP_BOTH",
+    "non_inference": "does not create or infer a formula-herb relation",
+    "remaining_unreviewed_rows": 2679,
+    "reviewed_rows": 27419,
+    "rule_id": "NESTED_FORMULA_HERB_NAME_KEEP_BOTH_V1",
+    "scope": "only nested FORMULA/HERB mention spans with exact evidence-window text parity",
+    "source_manifest_preserved": true
+  },
   "cross_type_overlap_pairs": 30098,
   "cross_type_pairs_by_kind": {
     "nested_cross_type_entity": 2677,
@@ -23,7 +32,14 @@
     "queued_cross_type_overlap_pairs": 30098,
     "status": "PASS"
   },
-  "review_status": "UNREVIEWED",
+  "review_decision_counts": {
+    "KEEP_BOTH": 27419
+  },
+  "review_status": "PARTIALLY_REVIEWED",
+  "review_status_counts": {
+    "REVIEWED": 27419,
+    "UNREVIEWED": 2679
+  },
   "schema_version": 1,
   "source_blocks": 236987,
   "source_mentions": 421850

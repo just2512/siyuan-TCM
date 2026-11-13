@@ -1,6 +1,6 @@
 {
-  "candidate_rows": 72294,
-  "distinct_occurrences": 72208,
+  "candidate_rows": 69483,
+  "distinct_occurrences": 69397,
   "extra_rule_assignments": 86,
   "multi_rule_examples": [
     {
@@ -1557,13 +1557,13 @@
     "SYMPTOM": 86
   },
   "occurrence_counts_by_type": {
-    "FORMULA": 7546,
-    "HERB": 20224,
-    "PULSE": 4743,
-    "SYMPTOM": 31877,
-    "SYNDROME": 4068,
+    "FORMULA": 6228,
+    "HERB": 19660,
+    "PULSE": 4556,
+    "SYMPTOM": 31341,
+    "SYNDROME": 3868,
     "TONGUE": 3034,
-    "TREATMENT": 716
+    "TREATMENT": 710
   },
   "policy": {
     "candidate_mutation": "none",
