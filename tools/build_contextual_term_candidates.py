@@ -54,6 +54,15 @@ RULES = {
         ("ACUPUNCTURE_TECHNIQUE_CONTEXT_01",
          r"(?:隔姜灸|隔盐灸|隔蒜灸|米粒灸|梅花灸|十宣放血法|针灸|针刺|艾灸|放血|火罐|拔罐|透穴|留针|捻针|单刺|运气法|导引法|补泻|补法|泻法|开四关)"),
     ],
+    # Classical-source names require an explicit citation/attribution context.
+    "CLASSICAL_SOURCE": [
+        ("CLASSICAL_SOURCE_CONTEXT_01", r"(?:黄帝内经|内经)"),
+    ],
+    # This compact vocabulary is drawn from terms observed in the note corpus.
+    "CLASSICAL_THEORY": [
+        ("CLASSICAL_THEORY_CONTEXT_01",
+         r"(?:气街|水精四布|三焦|中正之官|决渎之官|营卫|营气|卫气|宗气|十二经脉|奇经八脉|五运六气|六气|司天|在泉|清阳|浊阴|浊气归心|淫气于脉|腠理|上焦|中焦|下焦)"),
+    ],
 }
 FIELDS = [
     "candidate_id", "term", "candidate_type", "rule_id",
@@ -323,6 +332,21 @@ def classify_span(
                 # A negated instruction is not a positive needling-method mention.
                 if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\s*$", before):
                     matched = None
+            elif candidate_type == "CLASSICAL_SOURCE":
+                matched = re.fullmatch(pattern, term)
+                # Do not extract “内经” as a suffix fragment from “黄帝内经”.
+                if matched and term == "内经" and start > 0 and text[start - 1:start] == "帝":
+                    matched = None
+                after = text[end:min(len(text), end + 6)]
+                quoted = (
+                    start > 0 and text[start - 1:start] == "《"
+                    and text[end:end + 1] == "》"
+                )
+                explicitly_attributed = re.match(r"(?:说|曰|云|有言|记载|指出)", after) is not None
+                if not (quoted or explicitly_attributed):
+                    matched = None
+            elif candidate_type == "CLASSICAL_THEORY":
+                matched = re.fullmatch(pattern, term)
             elif candidate_type in {"PULSE", "TONGUE"}:
                 # Intrinsic pulse/tongue cues must occur inside the candidate.
                 # Pulse windows also have to begin at 脉; otherwise phrases like
