@@ -205,7 +205,7 @@ def review_nested_formula_herb_overlap_batches(
                 raise ValueError(f"{filename} row {line}: duplicate pair_id across batches: {pair_id}")
             seen.add(pair_id)
             pair_ids.append(pair_id)
-        observed_hash = hashlib.sha256("\\n".join(pair_ids).encode("utf-8")).hexdigest()
+        observed_hash = hashlib.sha256("\n".join(pair_ids).encode("utf-8")).hexdigest()
         if observed_hash != spec.get("pair_ids_sha256"):
             raise ValueError(f"{filename}: pair-ID hash differs from manifest")
 
@@ -255,7 +255,7 @@ def review_nested_formula_herb_overlap_batches(
         "source_manifest_preserved": True,
     }
     report_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n",
+        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
