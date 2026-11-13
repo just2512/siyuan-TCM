@@ -133,6 +133,13 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 classify_span(text, start, start + len(term)),
                 (text, term),
             )
+        text = "灸左右天枢穴"
+        start = text.index("天枢穴")
+        self.assertIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span(text, start, start + len("天枢穴")),
+            text,
+        )
         for term in ("关元穴", "血海穴", "中脘穴"):
             start = text.index(term)
             self.assertIn(
