@@ -89,7 +89,7 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         })
 
     def test_audits_source_note_point_to_symptom_association_candidates(self):
-        source = "中脘穴：胃痛、恶心、呕吐。"
+        source = "中脘穴）：胃痛、恶心、呕吐。"
         locator = self.locator
         self.connection.execute(
             "UPDATE content_blocks SET content_text=? WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?",
@@ -99,9 +99,9 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         self.connection.execute("DELETE FROM contextual_term_type_candidates")
         terms = [
             ("point-label", "中脘穴", "ACUPOINT", 0, 3),
-            ("symptom-a", "胃痛", "SYMPTOM", 4, 6),
-            ("symptom-b", "恶心", "SYMPTOM", 7, 9),
-            ("symptom-c", "呕吐", "SYMPTOM", 10, 12),
+            ("symptom-a", "胃痛", "SYMPTOM", 5, 7),
+            ("symptom-b", "恶心", "SYMPTOM", 8, 10),
+            ("symptom-c", "呕吐", "SYMPTOM", 11, 13),
         ]
         for candidate_id, term, candidate_type, start, end in terms:
             self.connection.execute(
@@ -112,9 +112,9 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
             )
         subject = {"candidate_id": "point-label", "character_start": "0", "character_end": "3"}
         for candidate_id, term, start, end in (
-            ("symptom-a", "胃痛", 4, 6),
-            ("symptom-b", "恶心", 7, 9),
-            ("symptom-c", "呕吐", 10, 12),
+            ("symptom-a", "胃痛", 5, 7),
+            ("symptom-b", "恶心", 8, 10),
+            ("symptom-c", "呕吐", 11, 13),
         ):
             obj = {"candidate_id": candidate_id, "character_start": str(start), "character_end": str(end)}
             relation_id = relation_identity(
@@ -124,7 +124,7 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
                 "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (relation_id, "SOURCE_NOTE_ASSOCIATES", "point-label", "中脘穴", "ACUPOINT", 0, 3,
                  candidate_id, term, "SYMPTOM", start, end, self.unit_id, *locator,
-                 0, len(source), source, "：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
+                 0, len(source), source, "）：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
             )
         self.connection.execute(
             "UPDATE index_metadata SET value='3' WHERE key='contextual_relation_candidates'"
@@ -163,6 +163,46 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
             (relation_id, "SOURCE_NOTE_ASSOCIATES", "point-mention", "中脘穴", "POINT", 0, 3,
              "symptom-id", "胃痛", "SYMPTOM", 4, 6, self.unit_id, *self.locator,
              0, len(source), source, "：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
+        )
+        self.connection.execute(
+            "UPDATE index_metadata SET value='1' WHERE key='contextual_relation_candidates'"
+        )
+        self.connection.commit()
+        result = module.audit(self.db)
+        self.assertEqual(result["checked_relation_rows"], 1)
+        self.assertEqual(result["relation_counts_by_predicate"]["SOURCE_NOTE_ASSOCIATES"], 1)
+
+    def test_audits_explicit_inner_canon_theory_attribution(self):
+        source = "内经说气街。"
+        locator = self.locator
+        self.connection.execute(
+            "UPDATE content_blocks SET content_text=? WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?",
+            (source, *locator),
+        )
+        self.connection.execute("DELETE FROM contextual_relation_candidates")
+        self.connection.execute("DELETE FROM contextual_term_type_candidates")
+        terms = [
+            ("classical-source", "内经", "CLASSICAL_SOURCE", 0, 2),
+            ("theory", "气街", "CLASSICAL_THEORY", 3, 5),
+        ]
+        for candidate_id, term, candidate_type, start, end in terms:
+            self.connection.execute(
+                "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (candidate_id, term, candidate_type, candidate_type + "_RULE",
+                 locator[0], locator[1], locator[2], locator[3], self.unit_id,
+                 start, end, 0, source, "CONTEXT_RULE_CANDIDATE"),
+            )
+        subject = {"candidate_id": "classical-source", "character_start": "0", "character_end": "2"}
+        obj = {"candidate_id": "theory", "character_start": "3", "character_end": "5"}
+        relation_id = relation_identity(
+            "SOURCE_NOTE_ASSOCIATES", subject, obj, self.unit_id, 0, len(source)
+        )
+        self.connection.execute(
+            "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (relation_id, "SOURCE_NOTE_ASSOCIATES", "classical-source", "内经", "CLASSICAL_SOURCE", 0, 2,
+             "theory", "气街", "CLASSICAL_THEORY", 3, 5, self.unit_id, *locator,
+             0, len(source), source, "说",
+             "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1", "UNRESOLVED_CANDIDATE"),
         )
         self.connection.execute(
             "UPDATE index_metadata SET value='1' WHERE key='contextual_relation_candidates'"

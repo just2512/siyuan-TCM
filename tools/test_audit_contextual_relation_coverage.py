@@ -18,7 +18,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             units = root / "units.jsonl.gz"
             relations = root / "relations.csv"
             report = root / "coverage.json"
-            source_text = "月经痛：针灸关元穴。"
+            source_text = "月经痛）：针灸关元穴。"
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
                     "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
@@ -47,7 +47,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 writer.writerow({
                     "relation_id": "source-note-1",
                     "predicate": "SOURCE_NOTE_ASSOCIATES",
-                    "predicate_text": "：",
+                    "predicate_text": "）：",
                     "extraction_rule": "SOURCE_NOTE_ASSOCIATES_LABEL_V1",
                     "resolution_status": "UNRESOLVED_CANDIDATE",
                 })
@@ -69,6 +69,53 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 })
             with self.assertRaisesRegex(ValueError, "invalid source-note association row contract"):
                 audit(context, mentions, units, relations, report)
+
+    def test_classical_attribution_rows_are_counted_separately_from_classic_predicates(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            context = root / "context.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            units = root / "units.jsonl.gz"
+            relations = root / "relations.csv"
+            report = root / "coverage.json"
+            source_text = "内经说气街。"
+            with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
+                    "source_sha256", "tree_position", "block_id", "unit_id", "character_start",
+                    "character_end", "evidence_start", "evidence_text", "classification_status",
+                ])
+                writer.writeheader()
+            with gzip.open(mentions, "wt", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "mention_id", "unit_id", "entity_type", "matched_text", "character_start",
+                    "character_end", "document", "source_sha256", "tree_position", "block_id",
+                ])
+                writer.writeheader()
+            unit = {
+                "unit_id": "u1",
+                "source": {"document": "a.sy", "sha256": "sha", "tree_position": "0", "block_id": "b"},
+                "content": {"source_text": source_text},
+            }
+            with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
+            with relations.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=[
+                    "relation_id", "predicate", "subject_type", "object_type",
+                    "predicate_text", "extraction_rule", "resolution_status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "relation_id": "classical-attribution-1", "predicate": "SOURCE_NOTE_ASSOCIATES",
+                    "subject_type": "CLASSICAL_SOURCE", "object_type": "CLASSICAL_THEORY",
+                    "predicate_text": "说",
+                    "extraction_rule": "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1",
+                    "resolution_status": "UNRESOLVED_CANDIDATE",
+                })
+            result = audit(context, mentions, units, relations, report)
+            self.assertEqual(result["source_note_association_rows"], 1)
+            parsed = json.loads(report.read_text(encoding="utf-8"))
+            self.assertEqual(parsed["source_note_association_rows"], 1)
 
     def test_reports_predicate_coverage_and_matches_extractor_output(self):
         with tempfile.TemporaryDirectory() as temp:

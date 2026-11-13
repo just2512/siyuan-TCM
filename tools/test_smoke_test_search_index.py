@@ -156,15 +156,15 @@ class SearchIndexSmokeTests(unittest.TestCase):
                     predicate_text TEXT, extraction_rule TEXT, resolution_status TEXT
                 );
             """)
-            source = "月经痛：针灸关元穴。"
+            source = "月经痛）：针灸关元穴。"
             connection.execute(
                 "INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
                 ("note/a.sy", "sha-a", "0.1", "b1", "PARAGRAPH", "", source),
             )
             candidates = [
                 ("s1", "月经痛", "SYMPTOM", "RULE_S", 0, 3),
-                ("t1", "针灸", "ACUPUNCTURE_TECHNIQUE", "RULE_T", 4, 6),
-                ("p1", "关元穴", "ACUPOINT", "RULE_P", 6, 9),
+                ("t1", "针灸", "ACUPUNCTURE_TECHNIQUE", "RULE_T", 5, 7),
+                ("p1", "关元穴", "ACUPOINT", "RULE_P", 7, 10),
             ]
             connection.executemany(
                 "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -177,14 +177,87 @@ class SearchIndexSmokeTests(unittest.TestCase):
             connection.execute(
                 "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 ("r1", "SOURCE_NOTE_ASSOCIATES", "s1", "月经痛", "SYMPTOM", 0, 3,
-                 "p1", "关元穴", "ACUPOINT", 6, 9, "u1", "note/a.sy", "sha-a",
-                 "0.1", "b1", 0, len(source), source, "：",
+                 "p1", "关元穴", "ACUPOINT", 7, 10, "u1", "note/a.sy", "sha-a",
+                 "0.1", "b1", 0, len(source), source, "）：",
                  "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
             )
             counts = {
                 "content_blocks": 1, "relationships": 0, "entity_mentions": 0,
                 "lexical_entities": 0, "relation_candidates": 0,
                 "unclassified_term_candidates": 0, "contextual_term_type_candidates": 3,
+                "contextual_relation_candidates": 1,
+            }
+            connection.executemany(
+                "INSERT INTO index_metadata(key, value) VALUES (?, ?)",
+                [("search_backend", "sqlite-instr-fallback")] +
+                [(key, str(value)) for key, value in counts.items()],
+            )
+            connection.commit()
+            connection.close()
+
+            result = smoke(db)
+            self.assertEqual(result["checks"]["contextual_relation_all_rows_provenance"], "PASS")
+            self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
+            self.assertEqual(result["relation_predicate_counts"]["SOURCE_NOTE_ASSOCIATES"], 1)
+
+    def test_smoke_checks_classical_source_to_theory_attribution(self):
+        with tempfile.TemporaryDirectory() as temp:
+            db = Path(temp) / "search.sqlite3"
+            connection = sqlite3.connect(db)
+            connection.executescript("""
+                CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+                CREATE TABLE content_blocks (
+                    document TEXT, source_sha256 TEXT, tree_position TEXT, block_id TEXT,
+                    content_type TEXT, section_path TEXT, content_text TEXT
+                );
+                CREATE TABLE node_relationships (id INTEGER);
+                CREATE TABLE entity_mentions (id INTEGER);
+                CREATE TABLE entity_catalog (id INTEGER);
+                CREATE TABLE semantic_relation_candidates (id INTEGER, predicate TEXT);
+                CREATE TABLE unclassified_term_candidates (id INTEGER);
+                CREATE TABLE contextual_term_type_candidates (
+                    id INTEGER PRIMARY KEY, candidate_id TEXT, term TEXT, candidate_type TEXT,
+                    rule_id TEXT, evidence_document TEXT, source_sha256 TEXT, tree_position TEXT,
+                    block_id TEXT, unit_id TEXT, character_start INTEGER, character_end INTEGER,
+                    evidence_start INTEGER, evidence_text TEXT, classification_status TEXT
+                );
+                CREATE TABLE contextual_relation_candidates (
+                    relation_id TEXT, predicate TEXT, subject_candidate_id TEXT,
+                    subject_text TEXT, subject_type TEXT, subject_start INTEGER, subject_end INTEGER,
+                    object_candidate_id TEXT, object_text TEXT, object_type TEXT,
+                    object_start INTEGER, object_end INTEGER, unit_id TEXT, document TEXT,
+                    source_sha256 TEXT, tree_position TEXT, block_id TEXT,
+                    sentence_start INTEGER, sentence_end INTEGER, evidence_text TEXT,
+                    predicate_text TEXT, extraction_rule TEXT, resolution_status TEXT
+                );
+            """)
+            source = "内经说气街。"
+            connection.execute(
+                "INSERT INTO content_blocks VALUES (?, ?, ?, ?, ?, ?, ?)",
+                ("classical/a.sy", "sha-classical", "0.1", "b1", "PARAGRAPH", "", source),
+            )
+            connection.executemany(
+                "INSERT INTO contextual_term_type_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                    (1, "source-1", "内经", "CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01",
+                     "classical/a.sy", "sha-classical", "0.1", "b1", "u1",
+                     0, 2, 0, source, "CONTEXT_RULE_CANDIDATE"),
+                    (2, "theory-1", "气街", "CLASSICAL_THEORY", "CLASSICAL_THEORY_CONTEXT_01",
+                     "classical/a.sy", "sha-classical", "0.1", "b1", "u1",
+                     3, 5, 0, source, "CONTEXT_RULE_CANDIDATE"),
+                ],
+            )
+            connection.execute(
+                "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ("r-classical", "SOURCE_NOTE_ASSOCIATES", "source-1", "内经", "CLASSICAL_SOURCE", 0, 2,
+                 "theory-1", "气街", "CLASSICAL_THEORY", 3, 5, "u1", "classical/a.sy",
+                 "sha-classical", "0.1", "b1", 0, len(source), source, "说",
+                 "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1", "UNRESOLVED_CANDIDATE"),
+            )
+            counts = {
+                "content_blocks": 1, "relationships": 0, "entity_mentions": 0,
+                "lexical_entities": 0, "relation_candidates": 0,
+                "unclassified_term_candidates": 0, "contextual_term_type_candidates": 2,
                 "contextual_relation_candidates": 1,
             }
             connection.executemany(

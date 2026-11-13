@@ -29,8 +29,11 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
         ("POINT", "ACUPUNCTURE_TECHNIQUE"),
         ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
         ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("CLASSICAL_SOURCE", "CLASSICAL_THEORY"),
     )
 }
+CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)")
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\s、，,）)】』」]?[：:]")
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
@@ -553,8 +556,15 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                 if (start, end) not in valid_ranges:
                     raise ValueError(f"contextual relation evidence crosses a source sentence boundary at line {line}")
                 predicate = row["predicate"]
+                classical_attribution = (
+                    source_note_association
+                    and row["subject_type"] == "CLASSICAL_SOURCE"
+                    and row["object_type"] == "CLASSICAL_THEORY"
+                )
                 expected_rule = (
-                    "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                    "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1"
+                    if classical_attribution
+                    else "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
                     if source_note_association else predicate + "_EXPLICIT_V1"
                 )
                 if ((predicate not in PREDICATES and not source_note_association)
@@ -562,10 +572,14 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"contextual relation predicate/rule mismatch at line {line}")
                 between = source[0][se:os]
                 if source_note_association:
-                    predicate_match = re.search(r"[:：]", between)
-                    if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
-                        or re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():])):
-                        raise ValueError(f"source-note association label evidence mismatch at line {line}")
+                    predicate_match = (
+                        CLASSICAL_ATTRIBUTION_MARKER.match(between)
+                        if classical_attribution else SOURCE_NOTE_LABEL_MARKER.match(between)
+                    )
+                    if (predicate_match is None or predicate_match.group(0).strip() != row["predicate_text"]
+                        or (not classical_attribution and
+                            re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():]))):
+                        raise ValueError(f"source-note association marker evidence mismatch at line {line}")
                     scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
                 else:
                     predicate_match = PREDICATES[predicate].search(between)
