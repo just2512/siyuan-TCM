@@ -35,6 +35,12 @@ SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
 
+def _table_exists(connection: sqlite3.Connection, table: str) -> bool:
+    return connection.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone() is not None
+
+
 def source_note_ranges(text: str):
     for match in SOURCE_NOTE_RANGE.finditer(text):
         if match.group(0).strip():
@@ -89,6 +95,32 @@ def records(database_path: Path):
         FROM contextual_relation_candidates
         ORDER BY document, tree_position, sentence_start, relation_id
     """).fetchall()
+    classical_documents = connection.execute("""
+        SELECT source_document_id, document, source_work, source_work_label,
+               root_document, parent_document, notebook, title, document_depth,
+               document_role, chapter_path_json
+        FROM classical_source_documents ORDER BY source_work, document
+    """).fetchall() if _table_exists(connection, "classical_source_documents") else []
+    classical_passages = connection.execute("""
+        SELECT passage_id, source_document_id, document, source_work, source_sha256,
+               tree_position, block_id, parent_block_id, content_type, section_path,
+               character_start, character_end, passage_text, passage_kind
+        FROM classical_source_passages ORDER BY document, tree_position, character_start
+    """).fetchall() if _table_exists(connection, "classical_source_passages") else []
+    classical_mentions = connection.execute("""
+        SELECT occurrence_id, passage_id, source_document_id, reference_kind,
+               reference_id, entity_id, term_type, term_text, character_start,
+               character_end, rule_ids_json, resolution_status
+        FROM classical_source_passage_mentions
+        ORDER BY passage_id, character_start, character_end, occurrence_id
+    """).fetchall() if _table_exists(connection, "classical_source_passage_mentions") else []
+    classical_references = connection.execute("""
+        SELECT reference_id, source_document_id, target_document_id,
+               source_document, target_document, source_sha256, source_tree_position,
+               source_block_id, target_block_id, target_subtype, relation_type, resolution
+        FROM classical_source_document_references
+        ORDER BY source_document, source_block_id, target_document, target_block_id
+    """).fetchall() if _table_exists(connection, "classical_source_document_references") else []
     connection.close()
     for row in entities:
         yield {"record_type": "ENTITY", "entity_id": row["entity_id"],
@@ -144,12 +176,53 @@ def records(database_path: Path):
                    "block_id": row["block_id"], "character_start": row["sentence_start"],
                    "character_end": row["sentence_end"], "text": row["evidence_text"]},
                "extraction_rule": row["extraction_rule"], "resolution_status": row["resolution_status"]}
+    for row in classical_documents:
+        yield {"record_type": "CLASSICAL_SOURCE_DOCUMENT",
+               "source_document_id": row["source_document_id"],
+               "document": row["document"], "source_work": row["source_work"],
+               "source_work_label": row["source_work_label"],
+               "root_document": row["root_document"], "parent_document": row["parent_document"],
+               "notebook": row["notebook"], "title": row["title"],
+               "document_depth": row["document_depth"], "document_role": row["document_role"],
+               "chapter_path_json": row["chapter_path_json"]}
+    for row in classical_passages:
+        yield {"record_type": "CLASSICAL_SOURCE_PASSAGE",
+               "passage_id": row["passage_id"], "source_document_id": row["source_document_id"],
+               "document": row["document"], "source_work": row["source_work"],
+               "evidence": {"source_sha256": row["source_sha256"],
+                   "tree_position": row["tree_position"], "block_id": row["block_id"],
+                   "parent_block_id": row["parent_block_id"], "content_type": row["content_type"],
+                   "section_path": row["section_path"], "character_start": row["character_start"],
+                   "character_end": row["character_end"], "text": row["passage_text"]},
+               "passage_kind": row["passage_kind"]}
+    for row in classical_mentions:
+        yield {"record_type": "CLASSICAL_SOURCE_PASSAGE_MENTION",
+               "occurrence_id": row["occurrence_id"], "passage_id": row["passage_id"],
+               "source_document_id": row["source_document_id"],
+               "reference_kind": row["reference_kind"], "reference_id": row["reference_id"],
+               "entity_id": row["entity_id"], "term_type": row["term_type"],
+               "term_text": row["term_text"], "character_start": row["character_start"],
+               "character_end": row["character_end"], "rule_ids_json": row["rule_ids_json"],
+               "resolution_status": row["resolution_status"]}
+    for row in classical_references:
+        yield {"record_type": "CLASSICAL_SOURCE_DOCUMENT_REFERENCE",
+               "reference_id": row["reference_id"],
+               "source_document_id": row["source_document_id"],
+               "target_document_id": row["target_document_id"],
+               "source_document": row["source_document"], "target_document": row["target_document"],
+               "source_sha256": row["source_sha256"],
+               "source_tree_position": row["source_tree_position"],
+               "source_block_id": row["source_block_id"], "target_block_id": row["target_block_id"],
+               "target_subtype": row["target_subtype"], "relation_type": row["relation_type"],
+               "resolution": row["resolution"]}
 
 def export(database_path: Path, output_path: Path) -> dict[str, int]:
     if not database_path.is_file():
         raise FileNotFoundError(database_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     entity_count = relation_count = contextual_term_count = contextual_relation_count = 0
+    classical_document_count = classical_passage_count = 0
+    classical_mention_count = classical_reference_count = 0
     with output_path.open("wb") as raw:
         with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:
             import io
@@ -164,9 +237,21 @@ def export(database_path: Path, output_path: Path) -> dict[str, int]:
                         contextual_term_count += 1
                     elif record["record_type"] == "CONTEXTUAL_RELATION_CANDIDATE":
                         contextual_relation_count += 1
+                    elif record["record_type"] == "CLASSICAL_SOURCE_DOCUMENT":
+                        classical_document_count += 1
+                    elif record["record_type"] == "CLASSICAL_SOURCE_PASSAGE":
+                        classical_passage_count += 1
+                    elif record["record_type"] == "CLASSICAL_SOURCE_PASSAGE_MENTION":
+                        classical_mention_count += 1
+                    elif record["record_type"] == "CLASSICAL_SOURCE_DOCUMENT_REFERENCE":
+                        classical_reference_count += 1
     return {"entity_nodes": entity_count, "relation_edges": relation_count,
             "contextual_term_candidates": contextual_term_count,
-            "contextual_relation_edges": contextual_relation_count}
+            "contextual_relation_edges": contextual_relation_count,
+            "classical_source_documents": classical_document_count,
+            "classical_source_passages": classical_passage_count,
+            "classical_source_passage_mentions": classical_mention_count,
+            "classical_source_document_references": classical_reference_count}
 
 
 def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
@@ -227,13 +312,58 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             FROM contextual_term_type_candidates
         """)
     }
+    expected_classical_documents = {}
+    expected_classical_passages = {}
+    expected_classical_mentions = {}
+    expected_classical_references = {}
+    if _table_exists(connection, "classical_source_documents"):
+        expected_classical_documents = {
+            row["source_document_id"]: tuple(row[key] for key in (
+                "document", "source_work", "source_work_label", "root_document",
+                "parent_document", "notebook", "title", "document_depth",
+                "document_role", "chapter_path_json",
+            ))
+            for row in connection.execute("SELECT * FROM classical_source_documents")
+        }
+    if _table_exists(connection, "classical_source_passages"):
+        expected_classical_passages = {
+            row["passage_id"]: tuple(row[key] for key in (
+                "source_document_id", "document", "source_work", "source_sha256",
+                "tree_position", "block_id", "parent_block_id", "content_type",
+                "section_path", "character_start", "character_end", "passage_text",
+                "passage_kind",
+            ))
+            for row in connection.execute("SELECT * FROM classical_source_passages")
+        }
+    if _table_exists(connection, "classical_source_passage_mentions"):
+        expected_classical_mentions = {
+            row["occurrence_id"]: tuple(row[key] for key in (
+                "passage_id", "source_document_id", "reference_kind", "reference_id",
+                "entity_id", "term_type", "term_text", "character_start",
+                "character_end", "rule_ids_json", "resolution_status",
+            ))
+            for row in connection.execute("SELECT * FROM classical_source_passage_mentions")
+        }
+    if _table_exists(connection, "classical_source_document_references"):
+        expected_classical_references = {
+            row["reference_id"]: tuple(row[key] for key in (
+                "source_document_id", "target_document_id", "source_document",
+                "target_document", "source_sha256", "source_tree_position",
+                "source_block_id", "target_block_id", "target_subtype",
+                "relation_type", "resolution",
+            ))
+            for row in connection.execute("SELECT * FROM classical_source_document_references")
+        }
     contextual_endpoint_types = {
         "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
         "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
         "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
     }
     seen_entities, seen_relations, seen_contextual_relations, seen_contextual_terms = set(), set(), set(), set()
+    seen_classical_documents, seen_classical_passages = set(), set()
+    seen_classical_mentions, seen_classical_references = set(), set()
     edge_count = contextual_edge_count = contextual_term_count = 0
+    classical_passage_count = classical_mention_count = classical_reference_count = 0
     with gzip.open(graph_path, "rt", encoding="utf-8") as stream:
         for line, raw in enumerate(stream, 1):
             row: dict[str, Any] = json.loads(raw)
@@ -458,6 +588,138 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"contextual relation identity mismatch at line {line}")
                 seen_contextual_relations.add(relation_id)
                 contextual_edge_count += 1
+            elif kind == "CLASSICAL_SOURCE_DOCUMENT":
+                source_document_id = row["source_document_id"]
+                expected = expected_classical_documents.get(source_document_id)
+                exported = tuple(row[key] for key in (
+                    "document", "source_work", "source_work_label", "root_document",
+                    "parent_document", "notebook", "title", "document_depth",
+                    "document_role", "chapter_path_json",
+                ))
+                if (source_document_id in seen_classical_documents
+                    or expected is None or expected != exported):
+                    raise ValueError(f"classical source document graph/SQLite mismatch at line {line}")
+                seen_classical_documents.add(source_document_id)
+            elif kind == "CLASSICAL_SOURCE_PASSAGE":
+                passage_id = row["passage_id"]
+                evidence = row["evidence"]
+                expected = expected_classical_passages.get(passage_id)
+                exported = (
+                    row["source_document_id"], row["document"], row["source_work"],
+                    evidence["source_sha256"], evidence["tree_position"], evidence["block_id"],
+                    evidence["parent_block_id"], evidence["content_type"], evidence["section_path"],
+                    evidence["character_start"], evidence["character_end"], evidence["text"],
+                    row["passage_kind"],
+                )
+                if (passage_id in seen_classical_passages
+                    or expected is None or expected != exported
+                    or row["source_document_id"] not in expected_classical_documents):
+                    raise ValueError(f"classical source passage graph/SQLite mismatch at line {line}")
+                source = connection.execute("""
+                    SELECT content_text FROM content_blocks
+                    WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?
+                    LIMIT 1
+                """, (row["document"], evidence["source_sha256"],
+                      evidence["tree_position"], evidence["block_id"])).fetchone()
+                start, end = evidence["character_start"], evidence["character_end"]
+                if (source is None or start < 0 or end <= start
+                    or end > len(source[0]) or source[0][start:end] != evidence["text"]):
+                    raise ValueError(f"classical passage evidence mismatch at line {line}")
+                if (start, end) not in set(sentence_ranges(source[0])):
+                    raise ValueError(f"classical passage crosses a sentence boundary at line {line}")
+                seen_classical_passages.add(passage_id)
+                classical_passage_count += 1
+            elif kind == "CLASSICAL_SOURCE_PASSAGE_MENTION":
+                occurrence_id = row["occurrence_id"]
+                expected = expected_classical_mentions.get(occurrence_id)
+                exported = tuple(row[key] for key in (
+                    "passage_id", "source_document_id", "reference_kind", "reference_id",
+                    "entity_id", "term_type", "term_text", "character_start",
+                    "character_end", "rule_ids_json", "resolution_status",
+                ))
+                if (occurrence_id in seen_classical_mentions
+                    or expected is None or expected != exported
+                    or row["passage_id"] not in expected_classical_passages
+                    or row["source_document_id"] not in expected_classical_documents):
+                    raise ValueError(f"classical passage mention graph/SQLite mismatch at line {line}")
+                passage = connection.execute("""
+                    SELECT p.document, p.source_sha256, p.tree_position, p.block_id,
+                           p.character_start, p.character_end, p.passage_text
+                    FROM classical_source_passages p WHERE p.passage_id=?
+                """, (row["passage_id"],)).fetchone()
+                left, right = row["character_start"], row["character_end"]
+                if (passage is None or left < passage["character_start"]
+                    or right <= left or right > passage["character_end"]):
+                    raise ValueError(f"classical passage mention offset outside passage at line {line}")
+                source = connection.execute("""
+                    SELECT content_text FROM content_blocks
+                    WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?
+                    LIMIT 1
+                """, (passage["document"], passage["source_sha256"],
+                      passage["tree_position"], passage["block_id"])).fetchone()
+                if (source is None or right > len(source[0])
+                    or source[0][left:right] != row["term_text"]):
+                    raise ValueError(f"classical passage mention source span mismatch at line {line}")
+                if row["reference_kind"] == "ENTITY_MENTION":
+                    endpoint = connection.execute("""
+                        SELECT entity_id, entity_type, matched_text, character_start,
+                               character_end, document, source_sha256, tree_position, block_id
+                        FROM entity_mentions WHERE mention_id=?
+                    """, (row["reference_id"],)).fetchone()
+                    endpoint_values = (
+                        row["entity_id"], row["term_type"], row["term_text"], left, right,
+                        passage["document"], passage["source_sha256"], passage["tree_position"],
+                        passage["block_id"],
+                    )
+                elif row["reference_kind"] == "CONTEXTUAL_TERM_CANDIDATE":
+                    endpoint = connection.execute("""
+                        SELECT candidate_id FROM contextual_term_type_candidates
+                        WHERE candidate_id=? AND term=? AND candidate_type=?
+                          AND evidence_document=? AND source_sha256=? AND tree_position=?
+                          AND block_id=? AND character_start=? AND character_end=?
+                        LIMIT 1
+                    """, (row["reference_id"], row["term_text"], row["term_type"],
+                          passage["document"], passage["source_sha256"],
+                          passage["tree_position"], passage["block_id"], left, right)).fetchone()
+                    endpoint_values = None
+                else:
+                    raise ValueError(f"unknown classical passage mention reference kind at line {line}")
+                if row["reference_kind"] == "ENTITY_MENTION":
+                    if endpoint is None or tuple(endpoint) != endpoint_values:
+                        raise ValueError(f"classical passage mention entity endpoint mismatch at line {line}")
+                elif endpoint is None or row["entity_id"]:
+                    raise ValueError(f"classical passage mention contextual endpoint mismatch at line {line}")
+                seen_classical_mentions.add(occurrence_id)
+                classical_mention_count += 1
+            elif kind == "CLASSICAL_SOURCE_DOCUMENT_REFERENCE":
+                reference_id = row["reference_id"]
+                expected = expected_classical_references.get(reference_id)
+                exported = tuple(row[key] for key in (
+                    "source_document_id", "target_document_id", "source_document",
+                    "target_document", "source_sha256", "source_tree_position",
+                    "source_block_id", "target_block_id", "target_subtype",
+                    "relation_type", "resolution",
+                ))
+                if (reference_id in seen_classical_references
+                    or expected is None or expected != exported
+                    or row["source_document_id"] not in expected_classical_documents
+                    or row["target_document_id"] not in expected_classical_documents
+                    or row["relation_type"] != "BLOCK_REFERENCE"
+                    or row["resolution"] != "RESOLVED_IN_CORPUS"):
+                    raise ValueError(f"classical document reference graph/SQLite mismatch at line {line}")
+                native = connection.execute("""
+                    SELECT 1 FROM node_relationships
+                    WHERE source_document=? AND source_sha256=? AND source_tree_position=?
+                      AND source_block_id=? AND relation_type='BLOCK_REFERENCE'
+                      AND target=? AND target_document=? AND resolution='RESOLVED_IN_CORPUS'
+                    LIMIT 1
+                """, (row["source_document"], row["source_sha256"],
+                      row["source_tree_position"], row["source_block_id"],
+                      row["target_block_id"], row["target_document"])).fetchone()
+                if native is None:
+                    raise ValueError(f"classical document reference has no native block link at line {line}")
+                seen_classical_references.add(reference_id)
+                classical_reference_count += 1
             else:
                 raise ValueError(f"unknown graph record type at line {line}")
     connection.close()
@@ -469,9 +731,21 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
         raise ValueError("contextual term coverage does not match SQLite candidates")
     if seen_contextual_relations != expected_contextual_relations:
         raise ValueError("contextual relation coverage does not match SQLite candidates")
+    if seen_classical_documents != set(expected_classical_documents):
+        raise ValueError("classical source document coverage does not match SQLite")
+    if seen_classical_passages != set(expected_classical_passages):
+        raise ValueError("classical source passage coverage does not match SQLite")
+    if seen_classical_mentions != set(expected_classical_mentions):
+        raise ValueError("classical source passage mention coverage does not match SQLite")
+    if seen_classical_references != set(expected_classical_references):
+        raise ValueError("classical source reference coverage does not match SQLite")
     return {"validated_entity_nodes": len(seen_entities), "validated_relation_edges": edge_count,
             "validated_contextual_term_candidates": contextual_term_count,
-            "validated_contextual_relation_edges": contextual_edge_count}
+            "validated_contextual_relation_edges": contextual_edge_count,
+            "validated_classical_source_documents": len(seen_classical_documents),
+            "validated_classical_source_passages": classical_passage_count,
+            "validated_classical_source_passage_mentions": classical_mention_count,
+            "validated_classical_source_document_references": classical_reference_count}
 
 def write_validation_report(path: Path, result: dict) -> None:
     report = {"schema_version": 1, **result}
