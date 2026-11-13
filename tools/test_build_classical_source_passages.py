@@ -116,7 +116,13 @@ def create_fixture_database(path: Path):
 
     def add_entity(mention_id, entity_id, entity_type, term, document):
         text, sha, tree, block = sources[document]
-        start = text.index(term) if mention_id != "herb-2" else text.index(term, text.index(term) + 1)
+        if mention_id in {"herb-1", "herb-2"}:
+            first_ingredient = text.index("：") + 1
+            start = text.index(term, first_ingredient)
+            if mention_id == "herb-2":
+                start = text.index(term, start + len(term))
+        else:
+            start = text.index(term)
         connection.execute("""
             INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
@@ -252,8 +258,8 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             root = Path(temp)
             hierarchy = root / "document_hierarchy.csv"
             rows = hierarchy_rows()
-            rows[0]["parent_document"] = rows[1]["document"]
-            rows[1]["parent_document"] = rows[0]["document"]
+            rows[1]["parent_document"] = rows[2]["document"]
+            rows[2]["parent_document"] = rows[1]["document"]
             import csv
             with hierarchy.open("w", encoding="utf-8-sig", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
