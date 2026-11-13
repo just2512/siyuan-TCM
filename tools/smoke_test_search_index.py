@@ -23,7 +23,7 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
         ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
     )
 }
-SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\\n]+[。！？．]?|\\n+")
+SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
 
