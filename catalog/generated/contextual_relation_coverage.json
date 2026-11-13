@@ -5,7 +5,7 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 125,
+      "ordered_typed_pairs": 121,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
@@ -66,21 +66,21 @@
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 2846,
       "typed_pair_sentences_without_marker": 23,
-      "marker_sentences_with_subject_type": 8,
+      "marker_sentences_with_subject_type": 7,
       "marker_sentences_with_object_type": 146,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 1,
-      "marker_sentences_without_subject_type": 2839,
+      "marker_sentences_without_subject_type": 2840,
       "marker_sentences_without_object_type": 2701,
       "units_with_marker": 2590,
       "units_with_eligible_pair": 0,
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
-        "SYMPTOM": 142,
+        "SYMPTOM": 143,
         "SYNDROME": 15,
-        "TREATMENT": 8
+        "TREATMENT": 7
       }
     }
   },
@@ -201,17 +201,17 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_26359a0534740ba19e78c339",
-              "term": "咳嗽仍有",
+              "candidate_id": "term_dd05a455a629d14c87a9980b",
+              "term": "咳嗽",
               "candidate_type": "SYMPTOM",
               "start": 74,
-              "end": 78
+              "end": 76
             },
             {
-              "candidate_id": "term_fcb48ac3edccb6ad70f6dc75",
-              "term": "出现咳嗽",
+              "candidate_id": "term_dd05a455a629d14c87a9980b",
+              "term": "咳嗽",
               "candidate_type": "SYMPTOM",
-              "start": 110,
+              "start": 112,
               "end": 114
             }
           ],
@@ -236,11 +236,11 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_77ea60dd77f308566fc5a829",
-              "term": "咳嗽出现",
+              "candidate_id": "term_dd05a455a629d14c87a9980b",
+              "term": "咳嗽",
               "candidate_type": "SYMPTOM",
               "start": 50,
-              "end": 54
+              "end": 52
             },
             {
               "candidate_id": "660250bbc068ea34dffa103900a23731e4769af775fc98be6041058f5d13262c",
@@ -1112,34 +1112,6 @@
           ]
         },
         {
-          "unit_id": "e4f270c412ceb7d1e8e43bafa43944372fe1d8c1c9bc12bc5b7b751c46f00d6e",
-          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153847-eepruzr.sy",
-          "source_sha256": "18325c145629e57c391e3bbccbe8aa80480c2f480b242b5fb2e37e106bdcd1f6",
-          "tree_position": "0.579",
-          "block_id": "20240607114914-o41yu9c",
-          "sentence_start": 23,
-          "sentence_end": 139,
-          "sentence_text": "治法： 喷粉法--洗净患者肠内容物，凡使用乙状结肠镜可窥视到的溃疡及其他炎症病变，均可用带有长金属管的喷粉器，将黄连粉直接喷到溃疡或病变部位，每次用药6-8分，隔日1次，9次为一个疗程，以后视病情需要可每隔1周进行第二或第三个疗程。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_3642ddd757d405d3d29f7b55",
-              "term": "喷粉",
-              "candidate_type": "TREATMENT",
-              "start": 27,
-              "end": 29
-            }
-          ],
-          "candidate_spans_truncated": false,
-          "predicate_marker_spans": [
-            {
-              "text": "可用",
-              "start": 65,
-              "end": 67
-            }
-          ]
-        },
-        {
           "unit_id": "f289c7a7dad8f0725d65f19c2a06e93aedebc43358d8f97604794a144f56ed0a",
           "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205165628-u3pxv3y.sy",
           "source_sha256": "ec042da417cadfb2bd557cf1aeaa9f0c55e85508f370105ee5e33e1e42a3df06",
@@ -1164,6 +1136,34 @@
               "text": "用方",
               "start": 875,
               "end": 877
+            }
+          ]
+        },
+        {
+          "unit_id": "e6d2b9c33cae30473f8b1686a36222a833570228929f9276ff9b2540f3e8bfd3",
+          "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240206115025-ol5f05z.sy",
+          "source_sha256": "534e6ea6d18e486d04a424b4881203d34af7b17e59c44f4949cf55871ea5c2ff",
+          "tree_position": "0.65",
+          "block_id": "20240902165849-sm0tmgn",
+          "sentence_start": 0,
+          "sentence_end": 28,
+          "sentence_text": "③《随息居饮食谱》：\"凡上焦邪盛，治宜清降者，切不可用。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_c5bab9ceac21afaaf540dfe1",
+              "term": "清降者",
+              "candidate_type": "TREATMENT",
+              "start": 19,
+              "end": 22
+            }
+          ],
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "可用",
+              "start": 25,
+              "end": 27
             }
           ]
         }
