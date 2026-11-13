@@ -211,6 +211,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                         expected_relation_ids[expected_id] = predicate
 
     observed_relation_ids: set[str] = set()
+    source_note_association_rows = 0
     with relations_path.open("r", encoding="utf-8", newline="") as stream:
         reader = csv.DictReader(stream)
         required_relation_fields = {"relation_id", "predicate"}
@@ -220,11 +221,18 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
         for row in reader:
             predicate = row["predicate"]
             relation_id = row["relation_id"]
-            if predicate not in counts:
-                raise ValueError(f"unsupported extracted predicate: {predicate}")
             if not relation_id or relation_id in observed_relation_ids:
                 raise ValueError("relation output has a missing or duplicate relation_id")
             observed_relation_ids.add(relation_id)
+            if predicate == "SOURCE_NOTE_ASSOCIATES":
+                if (row.get("predicate_text") not in {":", "："}
+                    or row.get("extraction_rule") != "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                    or row.get("resolution_status") != "UNRESOLVED_CANDIDATE"):
+                    raise ValueError(f"invalid source-note association row contract: {relation_id}")
+                source_note_association_rows += 1
+                continue
+            if predicate not in counts:
+                raise ValueError(f"unsupported extracted predicate: {predicate}")
             expected_predicate = expected_relation_ids.get(relation_id)
             if expected_predicate is None:
                 raise ValueError(f"extracted relation is not an independently eligible pair: {relation_id}")
@@ -251,6 +259,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
 
     report = {
         "schema_version": 3,
+        "source_note_association_rows": source_note_association_rows,
         "source_units_scanned": sum(
             1 for _ in gzip.open(units_path, "rt", encoding="utf-8", newline="")
         ),
@@ -273,6 +282,7 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
     output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return {
         "source_units_scanned": report["source_units_scanned"],
+        "source_note_association_rows": source_note_association_rows,
         "predicates": {
             key: dict(value)
             for key, value in counts.items()
