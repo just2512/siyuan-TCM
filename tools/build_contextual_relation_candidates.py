@@ -366,7 +366,7 @@ def extract_source_note_associations(
                     # A note label is the last endpoint immediately before a colon.
                     for subject_start, subject_end, subject in scope_spans:
                         tail = text[subject_end:scope_end]
-                        colon = SOURCE_NOTE_LABEL_MARKER.match(r"[\s、，,）)】』」]?[：:]", tail)
+                        colon = SOURCE_NOTE_LABEL_MARKER.match(tail)
                         if colon is None:
                             continue
                         between_colon = tail[colon.end():]
