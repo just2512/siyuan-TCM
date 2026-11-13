@@ -6,8 +6,11 @@ import argparse
 import csv
 import gzip
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
+
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\\s、，,）)】』」]?[：:]")
 
 MAX_EXAMPLES_PER_DIAGNOSIS = 5
 MAX_CANDIDATE_SPANS_PER_EXAMPLE = 12
@@ -229,15 +232,20 @@ def audit(context_path: Path, mentions_path: Path, units_path: Path,
                     row.get("subject_type") == "CLASSICAL_SOURCE"
                     and row.get("object_type") == "CLASSICAL_THEORY"
                 )
-                expected_marker = (
-                    {"有言", "说", "曰", "云", "记载", "指出"}
-                    if classical_attribution else {":", "："}
+                marker_text = row.get("predicate_text", "")
+                marker_valid = (
+                    marker_text in {"有言", "说", "曰", "云", "记载", "指出"}
+                    if classical_attribution
+                    else (
+                        (label_match := SOURCE_NOTE_LABEL_MARKER.fullmatch(marker_text)) is not None
+                        and label_match.group(0).strip() == marker_text
+                    )
                 )
                 expected_rule = (
                     "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1"
                     if classical_attribution else "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
                 )
-                if (row.get("predicate_text") not in expected_marker
+                if (not marker_valid
                     or row.get("extraction_rule") != expected_rule
                     or row.get("resolution_status") != "UNRESOLVED_CANDIDATE"):
                     raise ValueError(f"invalid source-note association row contract: {relation_id}")
