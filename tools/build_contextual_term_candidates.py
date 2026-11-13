@@ -313,7 +313,7 @@ def classify_span(
                     matched = None
                 if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
                     action_prefix = re.search(
-                        r"(?:针|灸|刺|扎|按|点|取|下|用|加|进|入|到|以)$",
+                        r"(?:针|灸|刺|扎|按|点|取|下|用|加|进|入|到|以|左右|两侧|双侧|左|右)$",
                         text[max(0, start - 4):start],
                     )
                     if action_prefix is None:
