@@ -106,7 +106,10 @@ class NestedFormulaHerbOverlapReviewTests(unittest.TestCase):
             review_nested_formula_herb_overlaps(self.source, self.output)
 
     def test_rejects_non_nested_formula_herb_spans(self):
-        self.write([self.row(right_start=2, right_end=4)])
+        self.write([self.row(
+            left_text="枝汤", right_text="桂枝",
+            left_start=1, left_end=3, right_start=0, right_end=2,
+        )])
         with self.assertRaisesRegex(ValueError, "not strictly nested"):
             review_nested_formula_herb_overlaps(self.source, self.output)
 
