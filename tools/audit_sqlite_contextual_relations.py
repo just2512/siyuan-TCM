@@ -74,7 +74,17 @@ def audit(database_path: Path) -> dict:
             seen.add(rid)
             predicate = row["predicate"]
             source_note = predicate == "SOURCE_NOTE_ASSOCIATES"
-            expected_rule = "SOURCE_NOTE_ASSOCIATES_LABEL_V1" if source_note else predicate + "_EXPLICIT_V1"
+            classical_attribution = (
+                source_note
+                and row["subject_type"] == "CLASSICAL_SOURCE"
+                and row["object_type"] == "CLASSICAL_THEORY"
+            )
+            expected_rule = (
+                "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1"
+                if classical_attribution
+                else "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                if source_note else predicate + "_EXPLICIT_V1"
+            )
             if (not source_note and (predicate not in PREDICATES or predicate not in expected_types)):
                 raise ValueError(f"unsupported contextual relation predicate: {predicate}")
             if source_note:
@@ -109,10 +119,14 @@ def audit(database_path: Path) -> dict:
 
             between = source[se:os]
             if source_note:
-                match = re.search(r"[:：]", between)
+                match = (
+                    CLASSICAL_ATTRIBUTION_MARKER.search(between)
+                    if classical_attribution else re.search(r"[:：]", between)
+                )
                 if (match is None or match.group(0) != row["predicate_text"]
-                    or re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[match.end():])):
-                    raise ValueError(f"contextual source-note label evidence mismatch: {rid}")
+                    or (not classical_attribution and
+                        re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[match.end():]))):
+                    raise ValueError(f"contextual source-note marker evidence mismatch: {rid}")
                 scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
             else:
                 match = PREDICATES[predicate].search(between)
