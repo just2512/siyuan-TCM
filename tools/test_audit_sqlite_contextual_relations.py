@@ -84,7 +84,8 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         result = module.audit(self.db)
         self.assertEqual(result["checked_relation_rows"], 1)
         self.assertEqual(result["relation_counts_by_predicate"], {
-            "SYMPTOM_TO_SYNDROME": 1, "SYNDROME_TO_TREATMENT": 0, "TREATMENT_TO_FORMULA": 0,
+            "SYMPTOM_TO_SYNDROME": 1, "SYNDROME_TO_TREATMENT": 0,
+            "TREATMENT_TO_FORMULA": 0, "SOURCE_NOTE_ASSOCIATES": 0,
         })
 
     def test_audits_source_note_point_to_symptom_association_candidates(self):
