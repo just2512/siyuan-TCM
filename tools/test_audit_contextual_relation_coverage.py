@@ -18,7 +18,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
             units = root / "units.jsonl.gz"
             relations = root / "relations.csv"
             report = root / "coverage.json"
-            source_text = "月经痛：针灸关元穴。"
+            source_text = "月经痛）：针灸关元穴。"
             with gzip.open(context, "wt", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
                     "candidate_id", "term", "candidate_type", "rule_id", "evidence_document",
@@ -47,7 +47,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 writer.writerow({
                     "relation_id": "source-note-1",
                     "predicate": "SOURCE_NOTE_ASSOCIATES",
-                    "predicate_text": "：",
+                    "predicate_text": "）：",
                     "extraction_rule": "SOURCE_NOTE_ASSOCIATES_LABEL_V1",
                     "resolution_status": "UNRESOLVED_CANDIDATE",
                 })
