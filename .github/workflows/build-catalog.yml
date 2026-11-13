@@ -109,7 +109,7 @@ jobs:
           path = Path("catalog/generated/entity_mention_overlap_review_batches/overlap-review-batches.json")
           manifest = json.loads(path.read_text(encoding="utf-8"))
           manifest["input_file"] = "entity_mention_cross_type_overlap_review.source.csv"
-          path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+          path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
           PY
       - name: Apply source-verified nested formula-herb KEEP_BOTH review to batches
         run: |
