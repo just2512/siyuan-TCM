@@ -176,6 +176,19 @@ def classify_span(
             # "属于可以用的方剂" is a formula-use phrase, not a syndrome name.
             if candidate_type == "SYNDROME" and ("方剂" in term or term.startswith("可以用")):
                 continue
+            # Generic labels and grammatical/prognostic phrases are not syndrome names.
+            if candidate_type == "SYNDROME" and term.startswith((
+                "症状", "症见", "表现", "证候", "证型",
+                "不能", "不可", "无法", "不属于", "属于",
+            )):
+                continue
+            # Do not retain an n-gram cut in the middle of the clinical term 风寒咳嗽.
+            if (
+                candidate_type == "SYNDROME"
+                and term.endswith("咳")
+                and text[end:end + 1] == "嗽"
+            ):
+                continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
             if candidate_type in PREFIX_ONLY_TYPES:
@@ -240,11 +253,16 @@ def classify_span(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
                     r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由|"
                     r"用药|药方|方剂|方子|方法|方式|条文|解释|讲法|观点|相对论|"
-                    r"那至于说|你看|当以|脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
+                    r"那至于说|你看|当以|属于|不属于|"
+                    r"脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
                     r"舌(?:象|苔|质))"
                 )
                 matched = (
-                    None if term.startswith(("症状", "症见", "表现"))
+                    None if term.startswith((
+                        "症状", "症见", "表现", "证候", "证型",
+                        "或者", "以及", "并且", "而且", "但是", "不过",
+                        "都", "就是", "属于", "不属于", "它的", "为",
+                    ))
                     or non_symptom_clause.search(symptom_before)
                     or non_symptom_clause.search(term)
                     else symptom_intro.search(symptom_before)
