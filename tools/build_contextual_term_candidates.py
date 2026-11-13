@@ -188,7 +188,7 @@ def classify_span(
                 if matched and candidate_type == "FORMULA":
                     # Generic grammar and outcome phrases are not formula names,
                     # even when a nearby "处方"/"用...方" cue is present.
-                    if term.startswith(("药", "方", "治", "处方")):
+                    if term.startswith(("药", "方", "治", "处方", "就", "是")):
                         matched = None
                     # "使用的地方非常..." can satisfy the broad use...方 regex,
                     # but 地方 is not a formula-introduction cue.
