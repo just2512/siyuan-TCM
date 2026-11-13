@@ -122,7 +122,7 @@ class SourceNoteSemanticGraphTests(unittest.TestCase):
             relations_path = root / "contextual-relations.csv"
             database = root / "search.sqlite3"
             graph = root / "graph.jsonl.gz"
-            source = "中脘穴：胃痛。"
+            source = "中脘穴）：胃痛。"
             document, sha, tree, block, unit = "note/a.sy", "sha-a", "0.1", "b1", "u1"
 
             with gzip.open(content_path, "wt", encoding="utf-8", newline="") as stream:
@@ -159,7 +159,7 @@ class SourceNoteSemanticGraphTests(unittest.TestCase):
                     "candidate_id": "symptom-candidate-1", "term": "胃痛",
                     "candidate_type": "SYMPTOM", "rule_id": "SYMPTOM_CONTEXT_02",
                     "evidence_document": document, "source_sha256": sha, "tree_position": tree,
-                    "block_id": block, "unit_id": unit, "character_start": 4, "character_end": 6,
+                    "block_id": block, "unit_id": unit, "character_start": 5, "character_end": 7,
                     "evidence_start": 0, "evidence_text": source,
                     "classification_status": "CONTEXT_RULE_CANDIDATE",
                 })
@@ -172,7 +172,7 @@ class SourceNoteSemanticGraphTests(unittest.TestCase):
                 "extraction_rule", "resolution_status",
             ]
             subject = {"candidate_id": "point-mention-1", "character_start": "0", "character_end": "3"}
-            obj = {"candidate_id": "symptom-candidate-1", "character_start": "4", "character_end": "6"}
+            obj = {"candidate_id": "symptom-candidate-1", "character_start": "5", "character_end": "7"}
             relation_id = relation_identity("SOURCE_NOTE_ASSOCIATES", subject, obj, unit, 0, len(source))
             with relations_path.open("w", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=relation_fields)
@@ -182,10 +182,10 @@ class SourceNoteSemanticGraphTests(unittest.TestCase):
                     "subject_candidate_id": "point-mention-1", "subject_text": "中脘穴",
                     "subject_type": "POINT", "subject_start": 0, "subject_end": 3,
                     "object_candidate_id": "symptom-candidate-1", "object_text": "胃痛",
-                    "object_type": "SYMPTOM", "object_start": 4, "object_end": 6,
+                    "object_type": "SYMPTOM", "object_start": 5, "object_end": 7,
                     "unit_id": unit, "document": document, "source_sha256": sha,
                     "tree_position": tree, "block_id": block, "sentence_start": 0,
-                    "sentence_end": len(source), "evidence_text": source, "predicate_text": "：",
+                    "sentence_end": len(source), "evidence_text": source, "predicate_text": "）：",
                     "extraction_rule": "SOURCE_NOTE_ASSOCIATES_LABEL_V1",
                     "resolution_status": "UNRESOLVED_CANDIDATE",
                 })
