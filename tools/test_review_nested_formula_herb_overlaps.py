@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import tempfile
 import unittest
@@ -37,9 +38,12 @@ class NestedFormulaHerbOverlapReviewTests(unittest.TestCase):
              overlap_kind="nested_formula_herb_entity", context="桂枝汤",
              left_text="桂枝汤", right_text="桂枝", left_start=0,
              left_end=3, right_start=0, right_end=2, pair_id="pair-1"):
+        locator = ("doc.sy", "source-sha", "0.1", "block-1")
         return {
-            "pair_id": pair_id, "unit_id": "unit-1", "document": "doc.sy",
-            "source_sha256": "source-sha", "tree_position": "0.1", "block_id": "block-1",
+            "pair_id": pair_id,
+            "unit_id": hashlib.sha256("\0".join(locator).encode("utf-8")).hexdigest(),
+            "document": locator[0],
+            "source_sha256": locator[1], "tree_position": locator[2], "block_id": locator[3],
             "overlap_kind": overlap_kind, "entity_type_pair": "FORMULA|HERB",
             "left_mention_id": "left-1", "left_type": left_type, "left_text": left_text,
             "left_start": str(left_start), "left_end": str(left_end),
@@ -223,6 +227,26 @@ class NestedFormulaHerbOverlapReviewTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "pair-ID hash differs"):
             review_nested_formula_herb_overlap_batches(batch_dir, self.report)
+
+
+    def test_allows_empty_block_id_when_unit_id_binds_the_complete_locator(self):
+        row = self.row()
+        row["block_id"] = ""
+        locator = (
+            row["document"], row["source_sha256"], row["tree_position"], row["block_id"]
+        )
+        row["unit_id"] = hashlib.sha256("\0".join(locator).encode("utf-8")).hexdigest()
+        self.write([row])
+        result = review_nested_formula_herb_overlaps(self.source, self.output)
+        self.assertEqual(result["reviewed_by_rule"], 1)
+        self.assertEqual(self.read()[0]["review_decision"], "KEEP_BOTH")
+
+    def test_rejects_unit_id_that_does_not_bind_source_locator(self):
+        row = self.row()
+        row["unit_id"] = "not-the-source-locator-hash"
+        self.write([row])
+        with self.assertRaisesRegex(ValueError, "unit_id/source locator mismatch"):
+            review_nested_formula_herb_overlaps(self.source, self.output)
 
 if __name__ == "__main__":
     unittest.main()
