@@ -468,5 +468,131 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 build(source, output, units)
 
 
+    def test_rejects_lexical_compound_tails_as_formula_herb_or_syndrome(self):
+        cases = [
+            (
+                "跟地黄有一点点用药的方向上的差别",
+                "的方向上",
+                "向上",
+                None,
+            ),
+            (
+                "养这个血，其实在用药的方式上是比较高明一点",
+                "的方式上",
+                "式上是",
+                None,
+            ),
+            (
+                "桂枝汤也是属于可以用的方剂之一哦",
+                None,
+                "剂之一",
+                "可以用的方剂",
+            ),
+            (
+                "底那一块，有一块地方用药是一样的",
+                "是一样的",
+                "药是一样",
+                None,
+            ),
+        ]
+        for text, herb_term, formula_term, syndrome_term in cases:
+            if herb_term:
+                start = text.index(herb_term)
+                self.assertNotIn(
+                    ("HERB", "HERB_CONTEXT_01"),
+                    classify_span(text, start, start + len(herb_term)),
+                    (text, herb_term),
+                )
+            if formula_term:
+                start = text.index(formula_term)
+                self.assertNotIn(
+                    ("FORMULA", "FORMULA_CONTEXT_01"),
+                    classify_span(text, start, start + len(formula_term)),
+                    (text, formula_term),
+                )
+            if syndrome_term:
+                start = text.index(syndrome_term)
+                self.assertNotIn(
+                    ("SYNDROME", "SYNDROME_CONTEXT_01"),
+                    classify_span(text, start, start + len(syndrome_term)),
+                    (text, syndrome_term),
+                )
+
+    def test_symptom_and_pulse_candidates_do_not_absorb_neighboring_clauses(self):
+        for text, term in [
+            ("如果这个人是发热而脉沉", "这个人是发热"),
+            ("如果这个人是发热而脉沉", "个人是发热"),
+            ("如果这个人是发热而脉沉", "发热而"),
+            ("如果这个人是发热而脉沉", "发热而脉沉"),
+        ]:
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        for term in ("发热而脉沉", "热而脉沉", "而脉沉"):
+            text = f"如果这个人是{term}"
+            start = text.index(term)
+            self.assertNotIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+    def test_symptom_and_pulse_lexical_spans_remain_classifiable(self):
+        for term in ("发热", "骨节疼痛", "反复咳嗽"):
+            self.assertIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("脉沉", "脉沉细", "脉浮数"):
+            self.assertIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
+    def test_rejects_pulse_prefixes_with_discourse_suffixes(self):
+        for term in ("脉象虽然", "脉象怎么", "脉浮的", "脉浮就", "脉浮紧而"):
+            self.assertNotIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("脉象", "脉沉细", "脉浮数", "脉弦紧"):
+            self.assertIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
+    def test_symptom_list_context_does_not_retype_pulse_or_tongue_terms(self):
+        text = "症状是怕冷，表证啊，怕冷是他有表证，脉象虽然不符的话"
+        for term in ("脉象", "脉象虽然"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+    def test_rejects_formula_or_herb_labels_on_ordinary_discourse_tails(self):
+        cases = [
+            ("汤这个药方，如果是用时方的本草的观点去解释它的话", "的本草的", "FORMULA"),
+            ("汤这个药方，如果是用时方的本草的观点去解释它的话", "的观点", "HERB"),
+            ("如果用药证相对论的话，就好像咳这个主证", "证相对", "HERB"),
+        ]
+        for text, term, candidate_type in cases:
+            start = text.index(term)
+            rule_id = "FORMULA_CONTEXT_01" if candidate_type == "FORMULA" else "HERB_CONTEXT_01"
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
 if __name__ == "__main__":
     unittest.main()

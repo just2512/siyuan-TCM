@@ -166,15 +166,38 @@ def classify_span(
                 and re.search(r"辨为[\s:：、]{0,2}$", before)
             ):
                 continue
+            # "属于可以用的方剂" is a formula-use phrase, not a syndrome name.
+            if candidate_type == "SYNDROME" and ("方剂" in term or term.startswith("可以用")):
+                continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
             if candidate_type in PREFIX_ONLY_TYPES:
                 # A prefix cue must terminate immediately before the candidate
                 # (allowing only a tiny punctuation/whitespace separator).
                 matched = re.search(
-                    rf"(?:{pattern})[\s:：、]{{0,2}}$",
+                    rf"(?:{pattern})[\\s:：、]{{0,2}}$",
                     before,
                 )
+                if matched and candidate_type == "FORMULA":
+                    # Do not type the tail of ordinary compounds (方向/方法/
+                    # 方式/方剂/方子) as a formula after a generic "用...方" cue.
+                    if term[:1] in "向法式面位子剂的是" or term.startswith("本草"):
+                        matched = None
+                    # "地方用药..." contains "方用" but does not introduce a formula.
+                    elif (
+                        matched.group(0).endswith("方用")
+                        and matched.start() > 0
+                        and before[matched.start() - 1] == "地"
+                    ):
+                        matched = None
+                if matched and candidate_type == "HERB":
+                    # A preceding "用药/中药" cue does not turn grammatical
+                    # continuations or generic formula nouns into herb mentions.
+                    if term.startswith((
+                        "的", "是", "证", "观", "方向", "方法", "方式",
+                        "方子", "方剂", "一样", "之", "就"
+                    )):
+                        matched = None
             elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_01":
                 # Symptom labels such as “症状” describe the following list;
                 # they are not symptoms themselves. Allow a short list-intro
@@ -192,18 +215,50 @@ def classify_span(
                 # narrative clause (diagnosis, attribution, treatment, etc.).
                 non_symptom_clause = re.compile(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
-                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由)"
+                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由|"
+                    r"用药|药方|方剂|方子|方法|方式|条文|解释|讲法|观点|相对论|"
+                    r"脉(?:象|诊)|舌(?:象|苔|质))"
                 )
                 matched = (
                     None if non_symptom_clause.search(symptom_before)
                     or non_symptom_clause.search(term)
                     else symptom_intro.search(symptom_before)
                 )
-            elif (candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_02") or candidate_type in {"PULSE", "TONGUE"}:
-                # Intrinsic clinical descriptors must occur inside the candidate
-                # span itself. A cue in the preceding ten characters belongs to
-                # the previous term and must not type this unrelated n-gram.
+            elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_02":
+                # Intrinsic symptom words can occur inside a short anatomical
+                # phrase (e.g. 骨节疼痛), but must not type a whole narrative
+                # fragment such as 这个人是发热 or 发热而脉沉.
+                symptom_match = re.search(pattern, term)
+                allowed_prefixes = {
+                    "", "头", "头部", "面", "面部", "眼", "耳", "鼻", "咽", "喉",
+                    "颈", "项", "肩", "背", "腰", "腹", "小腹", "少腹", "胃", "脘",
+                    "胸", "胁", "心", "四肢", "手", "足", "腿", "膝", "关节", "骨节",
+                    "周身", "全身", "肌肉", "午后", "夜间", "晨起", "反复", "阵发",
+                    "持续", "剧烈", "频繁", "偶发",
+                }
+                allowed_suffixes = {"", "不止", "不退", "加重"}
+                matched = (
+                    symptom_match
+                    if symptom_match
+                    and term[:symptom_match.start()] in allowed_prefixes
+                    and term[symptom_match.end():] in allowed_suffixes
+                    else None
+                )
+            elif candidate_type in {"PULSE", "TONGUE"}:
+                # Intrinsic pulse/tongue cues must occur inside the candidate.
+                # Pulse windows also have to begin at 脉; otherwise phrases like
+                # 发热而脉沉 would be misclassified as one oversized pulse term.
                 matched = re.search(pattern, term)
+                if candidate_type == "PULSE":
+                    # A pulse candidate must be a complete clinical pulse
+                    # phrase, not a valid prefix followed by discourse text
+                    # (脉象虽然/脉浮的/脉象怎么).
+                    pulse_phrase = re.fullmatch(
+                        r"脉(?:象|诊|见|为|沉|浮|数|迟|弦|滑|细)"
+                        r"(?:紧|数|细|迟|缓|滑|弦|沉|浮|弱|虚|实)?",
+                        term,
+                    )
+                    matched = matched if pulse_phrase else None
             else:
                 matched = re.search(pattern, before + term)
             if matched:
