@@ -555,5 +555,44 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 term,
             )
 
+    def test_rejects_pulse_prefixes_with_discourse_suffixes(self):
+        for term in ("脉象虽然", "脉象怎么", "脉浮的", "脉浮就", "脉浮紧而"):
+            self.assertNotIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("脉象", "脉沉细", "脉浮数", "脉弦紧"):
+            self.assertIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
+    def test_symptom_list_context_does_not_retype_pulse_or_tongue_terms(self):
+        text = "症状是怕冷，表证啊，怕冷是他有表证，脉象虽然不符的话"
+        for term in ("脉象", "脉象虽然"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+    def test_rejects_formula_or_herb_labels_on_ordinary_discourse_tails(self):
+        cases = [
+            ("汤这个药方，如果是用时方的本草的观点去解释它的话", "的本草的", "FORMULA"),
+            ("汤这个药方，如果是用时方的本草的观点去解释它的话", "的观点", "HERB"),
+            ("如果用药证相对论的话，就好像咳这个主证", "证相对", "HERB"),
+        ]
+        for text, term, candidate_type in cases:
+            start = text.index(term)
+            rule_id = "FORMULA_CONTEXT_01" if candidate_type == "FORMULA" else "HERB_CONTEXT_01"
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
 if __name__ == "__main__":
     unittest.main()
