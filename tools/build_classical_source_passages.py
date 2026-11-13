@@ -287,6 +287,21 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
                     ORDER BY character_start, character_end, candidate_type, candidate_id
                 """, (block["document"], block["source_sha256"], block["tree_position"], block["block_id"])).fetchall()
 
+                # Validate every input occurrence, including the ones that are
+                # intentionally not linked because they cross passage boundaries.
+                for mention in entity_rows:
+                    left, right = int(mention["character_start"]), int(mention["character_end"])
+                    if left < 0 or right <= left or right > len(text) or text[left:right] != mention["matched_text"]:
+                        raise ValueError(
+                            f"entity mention source mismatch: {block['document']}:{left}-{right}"
+                        )
+                for candidate in contextual_rows:
+                    left, right = int(candidate["character_start"]), int(candidate["character_end"])
+                    if left < 0 or right <= left or right > len(text) or text[left:right] != candidate["term"]:
+                        raise ValueError(
+                            f"contextual term source mismatch: {block['document']}:{left}-{right}"
+                        )
+
                 for start, end in spans:
                     passage_text = text[start:end]
                     if not passage_text.strip():
