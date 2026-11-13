@@ -518,6 +518,32 @@ class ContextualTermCandidateTests(unittest.TestCase):
                     (text, syndrome_term),
                 )
 
+    def test_formula_and_herb_overlap_queue_grammar_fragments_are_not_entities(self):
+        false_fragments = [
+            ("偏方草药、不用非处方用药及不憋尿", "用药及", "FORMULA", "FORMULA_CONTEXT_01"),
+            ("偏方草药、不用非处方用药及不憋尿", "及不憋尿", "HERB", "HERB_CONTEXT_01"),
+            ("使用中药复方来替人治病", "复方来", "HERB", "HERB_CONTEXT_01"),
+            ("使用中药复方来替人治病", "来替", "FORMULA", "FORMULA_CONTEXT_01"),
+            ("服用中药偏方而导致肾衰竭", "偏方而", "HERB", "HERB_CONTEXT_01"),
+            ("服用中药偏方而导致肾衰竭", "而导致", "FORMULA", "FORMULA_CONTEXT_01"),
+        ]
+        for text, term, candidate_type, rule_id in false_fragments:
+            start = text.index(term)
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        self.assertIn(
+            ("FORMULA", "FORMULA_CONTEXT_01"),
+            classify_span("方用桂枝汤", 2, 5),
+        )
+        self.assertIn(
+            ("HERB", "HERB_CONTEXT_01"),
+            classify_span("药用桂枝", 2, 4),
+        )
+
     def test_symptom_and_pulse_candidates_do_not_absorb_neighboring_clauses(self):
         for text, term in [
             ("如果这个人是发热而脉沉", "这个人是发热"),
@@ -628,6 +654,41 @@ class ContextualTermCandidateTests(unittest.TestCase):
             start = text.index(term)
             classified = {kind for kind, _ in classify_span(text, start, start + len(term))}
             self.assertTrue(rejected_types.isdisjoint(classified), (text, term, classified))
+
+    def test_contextual_overlap_queue_grammar_fragments_are_not_entities(self):
+        false_fragments = [
+            ("我们把张仲景讲的症状或者脉象做成一个问卷", "或者脉", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("声，张口抬肩的症状，它的脉象怎样", "它的脉", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("匮要略》中形容它的症状为脉沉、腹满而不喘", "为脉", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("是说，到了承气汤证型症状都到了另外一边去了", "症状都", "SYNDROME", "SYNDROME_CONTEXT_01"),
+            ("是说，到了承气汤证型症状都到了另外一边去了", "都到", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("肺，病的名字叫做厥，属于不能治的死症", "属于不", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("肺，病的名字叫做厥，属于不能治的死症", "不能治", "SYNDROME", "SYNDROME_CONTEXT_01"),
+            ("有的表现为麻木不仁，证候表现千变万化", "证候表", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("有的表现为麻木不仁，证候表现千变万化", "表现", "SYNDROME", "SYNDROME_CONTEXT_01"),
+            ("在表，也不单纯在里，属于表里同病", "属于表", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("痿肿痈，属于风寒咳嗽，短气鼻塞", "风寒咳", "SYNDROME", "SYNDROME_CONTEXT_01"),
+        ]
+        for text, term, candidate_type, rule_id in false_fragments:
+            start = text.index(term)
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        valid_terms = [
+            ("我们把张仲景讲的症状或者脉象做成一个问卷", "脉象", "PULSE", "PULSE_CONTEXT_01"),
+            ("在表，也不单纯在里，属于表里同病", "表里同", "SYNDROME", "SYNDROME_CONTEXT_01"),
+            ("痿肿痈，属于风寒咳嗽，短气鼻塞", "风寒咳嗽", "SYNDROME", "SYNDROME_CONTEXT_01"),
+        ]
+        for text, term, candidate_type, rule_id in valid_terms:
+            start = text.index(term)
+            self.assertIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
 
     def test_negative_syndrome_cue_and_diagnostic_observation_are_not_entities(self):
         text = "噢，第一条是排除掉不属于呕吐的状况的条文"
