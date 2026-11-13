@@ -1,0 +1,3187 @@
+{
+  "batch_count": 301,
+  "batch_size_limit": 100,
+  "batches": [
+    {
+      "file": "overlap-review-batch-001.csv",
+      "pair_ids_sha256": "6235aacab1adccd3258833d836be641fa43a4ad629ba967e019a0157a9b9d1d6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-002.csv",
+      "pair_ids_sha256": "78180e92c7a17604fb637372abe6399cfc9a98ec5217015932d2e869a4a64c5a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|HERB | partial_overlap": 1,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-003.csv",
+      "pair_ids_sha256": "8b018bacc281f1d3aaa2c3233857c7f187cef7cdea08e1fa4dec186ce7691f76",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-004.csv",
+      "pair_ids_sha256": "a4b0d60ba8df7a6a9f422a5f711fc2e67a024fc681b5a10116b7661f6303973a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 3,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-005.csv",
+      "pair_ids_sha256": "bb5a55dec6b11d73ed5590136d16646aeb8d0ea683446b9f2cc4913d9dc8a4cf",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-006.csv",
+      "pair_ids_sha256": "6be82a444ae404cf2ceb5058d2daccb56ee48ded376ac7b3f0c24275bab18439",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-007.csv",
+      "pair_ids_sha256": "94e3e3d99594dd4610f16f94ffd1364d5b0027a0eecf23f0c8155fd6f2e10730",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|HERB | partial_overlap": 1,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-008.csv",
+      "pair_ids_sha256": "348498c34506bcced67d9b17488b1c6ef9c8b97105790cd041169b05cbdeccf6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-009.csv",
+      "pair_ids_sha256": "8dd12e78c70edfd52c21f7a2eb103d80ec748ce06e2a87de9194eb3569a9e59c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-010.csv",
+      "pair_ids_sha256": "b05c4328a1c355936a1881486ae8e0fb6822f96ccac135045c181b175aec97c4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-011.csv",
+      "pair_ids_sha256": "5ba6f029a7f957a6070210289cb3758cc6238bbd681e04cd76216bcb44391db2",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-012.csv",
+      "pair_ids_sha256": "c45c3abd1bdfe1a6e8b7e42f3113fcafc229bbfc790a6e5e6ce99615b1b277de",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-013.csv",
+      "pair_ids_sha256": "599dfc5c3f53b9a9ee21bbc4cb87007ab760aa553214a8cd8e23a0f1add78fcf",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-014.csv",
+      "pair_ids_sha256": "73a000fedabb98cdf7813f28887c969a1da5094c60e8fc218cbb2d475890118e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-015.csv",
+      "pair_ids_sha256": "4521bc23e3d4c6b559f0338bfdf0280eaf5b27637afedfd1909b937f5463dd77",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-016.csv",
+      "pair_ids_sha256": "6e5b03e501d02714d531f9d46447db8e749b86349c20bb533d815fddd06ddcb1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-017.csv",
+      "pair_ids_sha256": "da2f9a454562553126f4da1ab5436cf11e1c41446425e6b1a3101364579f7727",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-018.csv",
+      "pair_ids_sha256": "66c3cb18cee0e5fb9ef9e6bb811145bb00e459a389c36bfd1495d197278e833e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-019.csv",
+      "pair_ids_sha256": "944d09b97a709d86b198338ccdbf206c721fe85e9537b9877f976643fd3676e2",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-020.csv",
+      "pair_ids_sha256": "65e9628cfe0c94fa1512240a5ba690b0b5681eca6a661edf59cb2af6adbf0d97",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-021.csv",
+      "pair_ids_sha256": "c00c02476043dfa19e0821588ab443c489b6b0ddc3c7b2ae677b0f8165325d53",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-022.csv",
+      "pair_ids_sha256": "dd4c4f256b8ea236c0cab15587e237d0d22ae074f944e3620663345ceaa2198e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-023.csv",
+      "pair_ids_sha256": "9370a79647fc768737de53781de907aad18e7242da4d00fee405b207af0ff480",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-024.csv",
+      "pair_ids_sha256": "07f7a63aa6d23d6e6cbc378d97607f0ca6286c7d233cef50a3145c9939b2eac4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-025.csv",
+      "pair_ids_sha256": "d5fb1cc11d105498b55902cf3cd59f87e5c4c103223a73380855951c5a3785a0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-026.csv",
+      "pair_ids_sha256": "c40f455fddc320d762253f71385e4b500f7d65edcbbbedaac0f5554998308498",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-027.csv",
+      "pair_ids_sha256": "8ab7179e73b499a660e92462ab231771106dc0a1cf99ddb8281f104c864a4eea",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-028.csv",
+      "pair_ids_sha256": "9bb98e2acd59a87c06ecac0341a4e28d439161bc9ed02c741950c998f454a9ca",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-029.csv",
+      "pair_ids_sha256": "90e7c9c482af72e1823de56f92e543476b5650614b21a51f3deec5a296b4bec1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-030.csv",
+      "pair_ids_sha256": "67ec0efd711474d4dbdc4a58ca6fc253e9f6cd8a9a0ad69d24736b2d6bcaad8e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-031.csv",
+      "pair_ids_sha256": "5fcc70795f2796175b698a4d86219271dd5784c82466d21df6a29ec2656eb947",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-032.csv",
+      "pair_ids_sha256": "c853f41c2769f25fc681cb6c57fa9c4c5d531c6e2778162ee3187526c29d14f0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-033.csv",
+      "pair_ids_sha256": "3e06ac7bb7356ef59128ed5fc6281ab9cb47b83d25c52f05f303a181248ff192",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-034.csv",
+      "pair_ids_sha256": "94abdf87136ddb9b39cae12205cd658cc7ae922e4c8ef0f1293c171d18bca38d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-035.csv",
+      "pair_ids_sha256": "40a78b5981883ffb16acbc1fdc4062604f8170278dc22b92f5812489dfe31a98",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-036.csv",
+      "pair_ids_sha256": "179c156cb0aca165cf34ece38d566061ad169d5e40e4db8819bf9ebba8bebf25",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-037.csv",
+      "pair_ids_sha256": "4f7aa1405805bde8fea302f03aecae88e9df6732f5b243ded4d6bb72d2118653",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-038.csv",
+      "pair_ids_sha256": "13cb38e0e2ec23db6baf9f682097ddd7883451312c05d9018121dcc49909596a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-039.csv",
+      "pair_ids_sha256": "1f70075663ddd7d800f10db3fa5cad748cad358d85c790f62f107a15acf54a2b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-040.csv",
+      "pair_ids_sha256": "4c2ac0a61d448004a0f54c4c75271034426e2a976f62a54ca3ebb9670703670b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-041.csv",
+      "pair_ids_sha256": "4b15185cde23296e1cabdba5608eef95a6cbb23412fa69cf9c66439a1290fdf0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-042.csv",
+      "pair_ids_sha256": "593112fcfd36c342d9438253587afb1e86a6bc6851f2fe44df7b3da53c873a2f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-043.csv",
+      "pair_ids_sha256": "faa68eeb2774839a4f5c5ad468fa64ba8525786b7b550e63257d925eef413794",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-044.csv",
+      "pair_ids_sha256": "d4f3fb66d9b6cbc627788a1c8c22ecd1b3db46a9395e335e4750b646665eb487",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-045.csv",
+      "pair_ids_sha256": "e8202c763685c3a86cce11f471e6e3a10e4467c38e6fa8458dc62f685b6ff89d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-046.csv",
+      "pair_ids_sha256": "c27e9a3c35f78a04fdd5f8cc937422d628c444ee040dfa62bf4070ecfbc5ee59",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-047.csv",
+      "pair_ids_sha256": "38e53e377a49722f9c27ed43911e53c12191930d0db518ff09fb683431d6a075",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-048.csv",
+      "pair_ids_sha256": "64fefe6d6a57657b1f777d3dbccccd85547c770db914d349fecb6b205f2b8406",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-049.csv",
+      "pair_ids_sha256": "7c86d83131e4518fd7f70aba5096e8926abbee19ee847d9330eb167ab84f3fac",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-050.csv",
+      "pair_ids_sha256": "ff68c8cf08828d79fe4329b705c8bf3665a1b27756cfbdc65ea7d197d85bd70a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-051.csv",
+      "pair_ids_sha256": "7409ff5bf2de967f41159ecf04083f155492966250046c98246f7e917c4ab171",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-052.csv",
+      "pair_ids_sha256": "73ddead2411847d3e5e7cc198c0d8661a4bf586ca3802cdf4140c1dd1088da90",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-053.csv",
+      "pair_ids_sha256": "a16c7b40c99634412163748acb99f176cdd257eb855ff6c39c7733aaca23148d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-054.csv",
+      "pair_ids_sha256": "63e550d2fc386778aa345483f6fa879f2751615bc1e23dfbef7d6622dd581534",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-055.csv",
+      "pair_ids_sha256": "dab5c912066ccc648b574667b00071cd48f7afe67aa9379e92a6e98e6ce7a636",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-056.csv",
+      "pair_ids_sha256": "ee3657ec8c6e28d362f033c5d0b61219dd2e38511723f4c6be92bcd45f2841e0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-057.csv",
+      "pair_ids_sha256": "6109f5f241d0b114646c716d47f4c94ad3f219748e11a62378532e320690d729",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-058.csv",
+      "pair_ids_sha256": "6cca9fe6f34b9ec9e610361a20bb27a86f7b39613838e2483d1942952b0a5e00",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-059.csv",
+      "pair_ids_sha256": "e863f2f56729f3d93cba7e41cb86141f59e3cd92b966dcde4e6f5292b9b7c799",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-060.csv",
+      "pair_ids_sha256": "56bcbb9e211eb1645baf52453b6dc6421da9c9529d899007b07305a82f76e906",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-061.csv",
+      "pair_ids_sha256": "a21d1e6fd4f7aabcce1e32d26cdbd624d331e00cd7cdb1cc9095402f3f884d92",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-062.csv",
+      "pair_ids_sha256": "cd881d82e2b3c0b39827ad5cd48914c0d95b8b2fa5d951fe01306fc58e84640b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-063.csv",
+      "pair_ids_sha256": "1c503289bf2a88cc78d164673b9d137d4809f2f698e185c388b4568421f1beb2",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-064.csv",
+      "pair_ids_sha256": "6836b9b6fbede3ae79fd8552e69431daec2c59c1122aaaf23b54f0e01e71c2b5",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-065.csv",
+      "pair_ids_sha256": "0cd2708b085a313c697e467a8c436be304201dc7f6b176babfaa4fd20289655e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-066.csv",
+      "pair_ids_sha256": "fe574f58761643bcd5d7888c5d860c5ee43c5f79eb64a40206afeb5e395cacfd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-067.csv",
+      "pair_ids_sha256": "82e9324635966dd43af2ee37e5b50de8418bdf63c66e00258dc50e887986c49b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-068.csv",
+      "pair_ids_sha256": "fa9836de6c1bc16f6580be1b0fc14d27598808fe8c86d480a653b7c518595d7e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-069.csv",
+      "pair_ids_sha256": "15c12c07eb14d19ac4778d68a6951d10cf703b359eac3806749fcbcaedb651a2",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-070.csv",
+      "pair_ids_sha256": "4a8a98b626e8e8e94ddb44be7e90382527f2edc1795aa86f170265e94e11f755",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-071.csv",
+      "pair_ids_sha256": "4543811a4f4bedf75f0eba40bf15c05df0cac827f1534903d4b360a026f5a6d3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-072.csv",
+      "pair_ids_sha256": "e7cbd65ed5be2306c87dc89c34c805c334e34293149c282195c01350045ab5d6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-073.csv",
+      "pair_ids_sha256": "a05def36f651d6f8f0d255811053d082cc94ed13ac468a6dc68db34f3de8473c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-074.csv",
+      "pair_ids_sha256": "545bee6717e9363eb457b1f6f7457c8962a7d9411c1a40f371389895335f6143",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-075.csv",
+      "pair_ids_sha256": "7610486ff7463098d8f8b8646a94d7669e22f566ff4c50650a125cb44cea9e21",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-076.csv",
+      "pair_ids_sha256": "b6e9c965b2bb5627ecf27a059f61a0d2d491638fea9fab239dfce77545a99043",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-077.csv",
+      "pair_ids_sha256": "3f74d90bb074b45c3488affc63528344823160ba6e8d3f6299ac5421810c4c06",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-078.csv",
+      "pair_ids_sha256": "1d1faf53e6f65b2820d14a360bdf2af7a48a253761e68a15186fa3ec64d323ff",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-079.csv",
+      "pair_ids_sha256": "0d0ce999fb298c1d18e21aaf86f2ab0dab42d40a2ec95d1a4d9d9d7f2d61a975",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-080.csv",
+      "pair_ids_sha256": "1c09d24ef02ef39ab527d53196a71323099e84d330b48a5414c7208f7e7aa95d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-081.csv",
+      "pair_ids_sha256": "9f094e1c8330225e722308f6d617ce4d371911483999534d10a523150d1cd3c6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-082.csv",
+      "pair_ids_sha256": "0d5e88a27e2432287fd79796b2b8af63bcfbe4939c33ae9d70e2b7bb4036f347",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-083.csv",
+      "pair_ids_sha256": "f385ffe39b438ea7e34d65a7cea1cb19408868f2d2055ec50c578e467e3fb1ee",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-084.csv",
+      "pair_ids_sha256": "94d6f8eda2fe639cf9ce3980dbfff114ae2c0571446145e9889e471ad0a33985",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-085.csv",
+      "pair_ids_sha256": "dc561c1ebb513bd4e52b8d9b131eefb115a22f3060b947579e4a71d879ac09f6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-086.csv",
+      "pair_ids_sha256": "b04bb3aec0e6d0bb7f3fd37b9d5631b7d8bea7bb80d9b3b5d81ff33b3e3c9acb",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-087.csv",
+      "pair_ids_sha256": "a9c05696a8c8c1d5a8e6bfefef7c05324a6c58a514d18cb4f9ddae3b48466704",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-088.csv",
+      "pair_ids_sha256": "aa8cd8655cd8b26b7e4c4fd15eda7a5b2bbf40f7eef5dd89752438241882adc8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-089.csv",
+      "pair_ids_sha256": "26ca1bbba91df950983c09444c2b79c9293fc5a7d8a84ab0481c0f2c6d6492f0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-090.csv",
+      "pair_ids_sha256": "78ea41bd77ebafd5e904fccb5683f0ed5a9adff758ab1569f189c4480c97aac0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-091.csv",
+      "pair_ids_sha256": "e3872842a43c6f111e31c854db4edbb1e4690cdfa4180023ee3373c98783fa9d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-092.csv",
+      "pair_ids_sha256": "3db1eecd7d2f56629715cdd8ad80018e86fe9f435e876b08203b7aa4dd1ca0c8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-093.csv",
+      "pair_ids_sha256": "0a89a397ff5f3ea68063a465e52a063cc112db5a7a6d69e810ae8817216927c9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-094.csv",
+      "pair_ids_sha256": "aa1e20ebf93a6fe0239e77b00587fb77e27f9d2a609015954bfb8377fd15c5b1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-095.csv",
+      "pair_ids_sha256": "ea9918dc8a88d6c220fe80bfe4e66f97520c77f9212e19891aa7f869b5ac8dbd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-096.csv",
+      "pair_ids_sha256": "00b48722fa0e8b805f7dcf41707f754042233123b42fbc8937603103e2b3a046",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-097.csv",
+      "pair_ids_sha256": "1496b646e5727053b7cc70e8fa5ccdc48d0bbd8dcc27d69eaa0c74a85c5cfcd6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-098.csv",
+      "pair_ids_sha256": "924ed5cb69852a4f6c3f6bd1b4c4fd4fc8660285ac8dcb330aebdba52aa66643",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-099.csv",
+      "pair_ids_sha256": "c84d45aa1eabf75e33c539c15bb4a5265852d7a098282df4586583710f1dd8a4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-100.csv",
+      "pair_ids_sha256": "a35444c8629b781c2a333dafe0c698ee54fff1e70026421385f606e4969375e8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 89,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-101.csv",
+      "pair_ids_sha256": "76bae01f1673ef4c2af9f717f7ab9eb97b96159d069f6f8c321be6ddf907b3ee",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-102.csv",
+      "pair_ids_sha256": "d55c20ffd4d4d045592d0c35ceaa3c8b0a2fa2da316e12aed0f917ff4e17456e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-103.csv",
+      "pair_ids_sha256": "9f06c280a046addc7dd23acef3d83cf7e27fabe704912a2ac56d90bbe12f218b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-104.csv",
+      "pair_ids_sha256": "230ebc8cf6092aeb8dbb1c98823d393d644bc8d35558dd79eb1bb813621fd111",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-105.csv",
+      "pair_ids_sha256": "6f121fcd4d55ea6ff55bafe7fcd3a37e2045b2de10808c9e5dd9df0595bf652c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-106.csv",
+      "pair_ids_sha256": "725a184d8df05c3696554466ae2f396671cd5d65d69268e503d214f1ac5ea952",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-107.csv",
+      "pair_ids_sha256": "8f0a620f485f8b5aec395bc6ac9bbe714381d1cbf7b5a34cde175ac484f65ad5",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-108.csv",
+      "pair_ids_sha256": "d731d11610d1e4538f820f34dfc524210fe870eb40788378f931ffa9723c8310",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-109.csv",
+      "pair_ids_sha256": "23483204d46c052a418a4d81113ae2ec3cd77ecf3d6c706d0907998363c14d4c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-110.csv",
+      "pair_ids_sha256": "8c8a23c247b4a7d210e83ac2010c30913ad6cbf959e797d6061d3444b6f1ffa8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-111.csv",
+      "pair_ids_sha256": "a14994cd876271cf853460e86f78b9c720e5c295812a135c400fbeb5cee757ac",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-112.csv",
+      "pair_ids_sha256": "a50d0a12b16d81d16000682e7149d28499e3495a054665a16c528e90f2cb7b4a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-113.csv",
+      "pair_ids_sha256": "300d6aa1d3b25eeb6435a9d6932ac0ac256bf808364e1af30c76b18bf2a49447",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-114.csv",
+      "pair_ids_sha256": "e68f8b7ba363abbe39bc5f796079dff2f03739564099d3390053db023474c20f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-115.csv",
+      "pair_ids_sha256": "752c5148f2cd18e567dccd97f636a5a442881695dcf7b69dfd63a3683632fcf3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-116.csv",
+      "pair_ids_sha256": "41c5a005a26503ec6b0a4c3901b09732248f2a57a398650e1f5c3b2c2a017450",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-117.csv",
+      "pair_ids_sha256": "88732eab7f200cd4bb7f8486edc54615f94a412407f5b1bea228147a3bfe185c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-118.csv",
+      "pair_ids_sha256": "6ab5d8666a115738ad764418733d2958180524620794af3760b2cf43eb6af3e1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-119.csv",
+      "pair_ids_sha256": "eb5b2ce6f096ff9bc2202b3145fa97760fee29d9e6bba78596b6b0235606fb12",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-120.csv",
+      "pair_ids_sha256": "323c307176b25a0c817f492aadc0d179e35f9b6c5b981f801a6af47da0465e26",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-121.csv",
+      "pair_ids_sha256": "4694a6d8521470ce88335bef70ac608176929b349e4133db7223968627bdf3d3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-122.csv",
+      "pair_ids_sha256": "28011a151b4ca4915ba5bfdf5afe95d957480c620f4b0278625e0b81251be0ab",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-123.csv",
+      "pair_ids_sha256": "6659e315b9b56f9956ee8f6c63e1f5867b93ef52636aef681fa34f3096d83052",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-124.csv",
+      "pair_ids_sha256": "a0f05db0261527a04b86a57702e41faad36fca8f1b29181f092f234049e7e816",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-125.csv",
+      "pair_ids_sha256": "b120a3b3566f21e61e2e765e06ac55d1ece45d41356800c55dd2516ae828acc3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-126.csv",
+      "pair_ids_sha256": "c12ed12b1f437311c32e22bcfe6f0a64612db7bf993aca077647a35a80cc0433",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-127.csv",
+      "pair_ids_sha256": "6293961add0b15efc99bbe4bca2717fcf91e2aab120a34a3a72930b272b84b41",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-128.csv",
+      "pair_ids_sha256": "b9c85ddcae39293980988fe1470b11855e40fc3a4101f60793b712370d9c9aa1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-129.csv",
+      "pair_ids_sha256": "5023cfcfde19f67a36b0e47ddf2be57eb18603043cb5dd94291744dd110e34b6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-130.csv",
+      "pair_ids_sha256": "db62abc33c06c1229bd8d0b7e4e66de474a4644bc0e55a7959085ac8821145d9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-131.csv",
+      "pair_ids_sha256": "22d2ef36ca8fe4c976f6210b002d778394e47ecdf35a0b5a09efd02a66a0191c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-132.csv",
+      "pair_ids_sha256": "d8f25cec03c061ec71c4ba65b96ea11c0db4e7eeb905230d6930cc1917bb2311",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-133.csv",
+      "pair_ids_sha256": "fe210851b8e8e46bc434cbd3db37b6245083ddeb7856b0b4958197434ebb8522",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-134.csv",
+      "pair_ids_sha256": "c7f301c77857ac13c125f5ee8e17bf0a106d19b636e31e74f9836be1a2380e57",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-135.csv",
+      "pair_ids_sha256": "b4c34b469e092ea075b3387ab8648becb35c0985082dc6c91e7784611a40bb7e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-136.csv",
+      "pair_ids_sha256": "8486077da4844b2ced266fae8d55670557a20e7838e9413e357c294c93636077",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-137.csv",
+      "pair_ids_sha256": "88b18c91971bd141b3c417ee222c5abba4f45bd936bb4722e0e311a608e5b86b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-138.csv",
+      "pair_ids_sha256": "8cdf4504fc2bff2511e66ac4e3a1cc179fa2284e0b00f6f4f8bdb57047c9bdb1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-139.csv",
+      "pair_ids_sha256": "28734f4ea67c2005389bdff28b164abf0ad4532e6971a02158dc19e91fd2ecf1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-140.csv",
+      "pair_ids_sha256": "8302bb777cce71b2e3e78384c3bb7ed64f38e6e9d4d0e420fe1dbdc890a22edc",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-141.csv",
+      "pair_ids_sha256": "a72b2e88a044c316f88fad8d65faf2c1c9d06993bd63d596333a9fd6650d1002",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-142.csv",
+      "pair_ids_sha256": "2ad59a624247bd7a91973a63ee31955488845a8f83ad3f7937e6e4e4381f004a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-143.csv",
+      "pair_ids_sha256": "8bae80965ac123c0a16c8328b3bdd8aa42f0e2b3b04fff5a30a47809663cb3f2",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-144.csv",
+      "pair_ids_sha256": "555478e79203a391df5de8c001b2dd276eec0d0ab4b06aa5ddf532039c81bafe",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-145.csv",
+      "pair_ids_sha256": "896bf9b6e85c29c40a20c1d03658cf7940f933b7473cfb74aee71f41a1b271d8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-146.csv",
+      "pair_ids_sha256": "2def263577c9faeca47b75a1728154ee3ea975fea7b6d86279b07e65718b68c9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-147.csv",
+      "pair_ids_sha256": "306181a8be693bb7b17d36065c184efb9cba2dfec8670f422e3aa969fc894fa6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-148.csv",
+      "pair_ids_sha256": "21e671d5d504bd2abd79a42c71ba2de9b0807220a3bdd44d3779566c859b9eb0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-149.csv",
+      "pair_ids_sha256": "d9cedfe208349fafd1ab6001575588470a178b83b5352abd4eba6b73dfca86a8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-150.csv",
+      "pair_ids_sha256": "48a11d376950574a9545be4cc9869b7f4ee4a8427ccfaab41d0e5e1f310bdf9d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-151.csv",
+      "pair_ids_sha256": "cc09608a6192d174de8f85a4df32ed81db3803bbd03af6884f171cb44d92e5e3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-152.csv",
+      "pair_ids_sha256": "f93dea79fc66914df359dccbaaaafa4da4b9316b4068e096a2840357aa1e9e17",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-153.csv",
+      "pair_ids_sha256": "8938e776c8a3242ef0c57ef8df57bc84d007440d82b37311c04e1deb8157e587",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-154.csv",
+      "pair_ids_sha256": "ae7186a4ede1b341f65404f874fab992fd6cc96226e72904d599c0a78ee06a90",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-155.csv",
+      "pair_ids_sha256": "db2e23b4e2f4a8735a0c1f52307f311e7727a1cd6b274e2b5f089202a18cd660",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-156.csv",
+      "pair_ids_sha256": "d79fdaa8fb9b986de1f93b353bc7d45164dc96394b8b31d538b8851bc9bb98c7",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-157.csv",
+      "pair_ids_sha256": "e35250c7a6d3e67d47a20a54b06a00b30f9b5fd6c4f27b560c221b145b9662a8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-158.csv",
+      "pair_ids_sha256": "a69224e8a8ba5166a1471fc0d0478a9f531ec94516fd704717d17ba2f8d3dfe1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-159.csv",
+      "pair_ids_sha256": "94789f568bf82e12f14d5440b2d5889bc807a09852c4043a68894451e9bc248f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-160.csv",
+      "pair_ids_sha256": "808bc01d9b38504a4a0a96b6ab64da9cbe2289a9a43e6d42dd6853ba718005a8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-161.csv",
+      "pair_ids_sha256": "5598bcac77da03579f1a5fe00cd86a8ffd4972f2ffca035d2bd6517aa6a7eb25",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-162.csv",
+      "pair_ids_sha256": "3fdb3de44fbfe027fe2f9d01998b6b05653de469c6ef21ad3f27080dbbd6005c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-163.csv",
+      "pair_ids_sha256": "64d1a01a973498569b70f1853f2cd36a4168ea66d10cafb47637e5c2289c3bd8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-164.csv",
+      "pair_ids_sha256": "01da0f95162627ed0629518cc25fa742779fefccaf56585781d743dcf383b157",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-165.csv",
+      "pair_ids_sha256": "90c4417ace1972b4a92ef83e97589f0ddf93599e871837a2cd286084b1689f3e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-166.csv",
+      "pair_ids_sha256": "6b1c52b85492e616c8c06fbbd88a6a2a15c4a884bbb3ef3c4ed74b12f557ec15",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-167.csv",
+      "pair_ids_sha256": "c2d8dbe44aa132723e41d0483c29f537e229525d5483993c4c053445a56bce35",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-168.csv",
+      "pair_ids_sha256": "bbd07f0d84f9e5d5eeac393c92a21a00362a32b815d78ed70f54fa86a87b29c6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-169.csv",
+      "pair_ids_sha256": "4fd8cad059895d901a32140a0b7b4143d6a71bd3649ffefbbedb02da172094a9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-170.csv",
+      "pair_ids_sha256": "4176f8c0bd6b526f992380a5388df124a4db83d98f020a4052efb2c8ba7ac50f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-171.csv",
+      "pair_ids_sha256": "35582bf238e1f49c82a788082347347313424ed7b3066d166e0f785af5e440d6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-172.csv",
+      "pair_ids_sha256": "5ba5da4f79a6f7e9f0df48d3fec015d30322b083c31bbab01cfb5aa37c185e46",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-173.csv",
+      "pair_ids_sha256": "2cdc6e689e20221059bdb04f2873fd5a7f8c4c96ec075e319ed063e688ed6a67",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-174.csv",
+      "pair_ids_sha256": "7265674612bd79562961dfa199211e9bd53163b0677021db0bb5a021f17de5dd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-175.csv",
+      "pair_ids_sha256": "8f995058d6721a35c317afe990d955170c3e36f8a4631373ee019c17cecbf43b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-176.csv",
+      "pair_ids_sha256": "8f5ae2e1487cb8a2dd827d76f9976d6b400c00a5a938a326e51d44e5a093724f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-177.csv",
+      "pair_ids_sha256": "e50dcfc570180f016ab09684ba59e815bffe7d73b09e6e923bbe3c8bb3e5ebeb",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-178.csv",
+      "pair_ids_sha256": "d6c9d40ae217e9dc5277a399c5b17147da21896278640134a0a947d447fc7157",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-179.csv",
+      "pair_ids_sha256": "5b1e486e95050e8605509f7d6ff02c4f39a7226fc35613c869fa2ba183cf69b3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-180.csv",
+      "pair_ids_sha256": "f5285c263bbab985181136700847f7766dc9e8e050d011913c44f709e08868f3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-181.csv",
+      "pair_ids_sha256": "93ff5cdbe187557f2e3f51f9b1cf5365337da00c098859445581b3577f156374",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-182.csv",
+      "pair_ids_sha256": "ec100dce16e7b2a9285ec32777f7cbbc741dc66a39f043fbfc3e99132f1d80e5",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-183.csv",
+      "pair_ids_sha256": "b62aef954a77804f95f74ae96ff6291bcef15c6c95033b8b63579935dc371602",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-184.csv",
+      "pair_ids_sha256": "eec5c2f1513b4c89ba2e0b14206b5c45a905b0db99374bb3d0bf778befa95fb0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-185.csv",
+      "pair_ids_sha256": "3bb6da4f01d340d067a1fb361b45cad0eb66403eb7268d9b43eb326cad3a3d80",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-186.csv",
+      "pair_ids_sha256": "7ef6b9abf3afb069ff6529bcaf9bc1f939e661848987734ddd620d1ed4b007d8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-187.csv",
+      "pair_ids_sha256": "98faaec5cc532b617edf747a522f1ed416dd657eb97df59e88bf5835ba974cad",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-188.csv",
+      "pair_ids_sha256": "e20ae41940f4ac3ce81cd0af44214d882ce28e1690379f3d95eadd94a94aa2a0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-189.csv",
+      "pair_ids_sha256": "d75de177f394c8980cd465656608e83dd2c938db2f9cfb2140dd3d3b7a6c6b82",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-190.csv",
+      "pair_ids_sha256": "cd8095b5013822e8083266f41087129a6322928eb5208533845bbd7bfa1614ae",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-191.csv",
+      "pair_ids_sha256": "68077c28b6d5cf6a3e89faf00f11297a8a1356dbeec5cfe6fce2287dc5e52146",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-192.csv",
+      "pair_ids_sha256": "16ada7ece6de5c2dba0d7c22fa2906ed3f174dba63de0cf96ef829f33011c63e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-193.csv",
+      "pair_ids_sha256": "ee0597854e26b60c4b0890511500d19c45413bf55e015200df9b62fccf1da291",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-194.csv",
+      "pair_ids_sha256": "7df0f0f1a66ea8810dc2c5387ada5a04c232a20aa3950fe6af728156788bc638",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-195.csv",
+      "pair_ids_sha256": "f756a64a06de2aec10f60bbd0be32fdf631a05404d8b4b4712ed4b2408b1e088",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-196.csv",
+      "pair_ids_sha256": "05f796f6bbb96a4a8da7db4c8b939958a103adc1393b1d57182f68001a2fb9ac",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-197.csv",
+      "pair_ids_sha256": "15a53a3bfd0908e928d016daf208f3491f8315742f81f164ac98b31c71631e4c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-198.csv",
+      "pair_ids_sha256": "70c10f8f6b2c07a4adbffcbdd6a5d8d74c0540eeff98b35f73264530103b3a8f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-199.csv",
+      "pair_ids_sha256": "6138297e57e6ac954a106bd10998749b5c3caa4ca03053685d233ef14b9304b6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-200.csv",
+      "pair_ids_sha256": "e233a4cb21dee37849d277a8297051ffefa28c1a2de069583a30407f7b3968ab",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-201.csv",
+      "pair_ids_sha256": "23a7522db0296ddfd331b781700fb91c5ed4733724432cabcc783caa9bdaa906",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-202.csv",
+      "pair_ids_sha256": "82be78b2a5f161a937ef5f448f56de6ed06a1316ed3e53bb2dc68d351ecab7d8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-203.csv",
+      "pair_ids_sha256": "286ce5971a2ebf184ba5600c7f957ed58ff9441fb97718087c91314abdedc133",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-204.csv",
+      "pair_ids_sha256": "9241d565ffe74fa1d2000cb69e4c4b2359499d88e424bb560831cebf7251d9b4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-205.csv",
+      "pair_ids_sha256": "717675630fb3541793afe812320e45a603aee7877be5e198fa30b4f326dc34b9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-206.csv",
+      "pair_ids_sha256": "b58a9bfd39051041fb7e89526561c7b3cd854a780383b5cae9b262fcb0f3ca9b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-207.csv",
+      "pair_ids_sha256": "123a922e6d6f489c582527e8922062716023459393bebb3e125d490cc745e218",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-208.csv",
+      "pair_ids_sha256": "42efea1d533c4b3df4dbd2bd428c2e895699f37ebc02ba0a24ce981259bd6e33",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-209.csv",
+      "pair_ids_sha256": "228548bcc33bcb25ea108a4bcc314e5c0a0a743d7d0b33158aa4f8d0e234d0a3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-210.csv",
+      "pair_ids_sha256": "d96dc86cab283ae69db20069d40c76aa2b0c44fa16e94a6bee0d133059bd0cdb",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-211.csv",
+      "pair_ids_sha256": "ff60eeb942940f65f178ab7cfaa062e627e280791a0ea7ebb171cac6cbdcecf8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-212.csv",
+      "pair_ids_sha256": "9b4ba52969a2584dd8e588f0289c92a8be32a32a925d34a26e6f5fa8ab1af092",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-213.csv",
+      "pair_ids_sha256": "af117c615df13e8fa41b6e771db7b9b4c4b2495d88f0958f00144708e49cff00",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-214.csv",
+      "pair_ids_sha256": "0834c72ec770a1e8e80892919f9e8d8ce86a384f544231d6dfa3226afb4948cc",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-215.csv",
+      "pair_ids_sha256": "a40443d002f4cb97325e81f44121bd180b1b80b84177c27cc0f922b68aa5b257",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-216.csv",
+      "pair_ids_sha256": "c6c9d0916a7dd640011a2759fa78beb72a92fe258425e26baab104d8d9daa64b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-217.csv",
+      "pair_ids_sha256": "618009ce895dc8ddd16f924f03fd9c91d8c57f8a53cebf173f9a4e71aba8ac40",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-218.csv",
+      "pair_ids_sha256": "39ce61d962dd7c348c084b6ee189d7f653805ecf669373c0680e2815fce7fcd0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-219.csv",
+      "pair_ids_sha256": "a681fd21a11add82c4489fa5c75a9f550123f05552b1aadd3981a5cb61ed82e4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-220.csv",
+      "pair_ids_sha256": "e075427c779e69b3552de10b78937a1a35d1dda03bb50a10bb68d9fb567a582c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-221.csv",
+      "pair_ids_sha256": "df68255c97cc15e15e1b2d2aa35411f172f9780defa1f7c540b4a9f6044286f3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-222.csv",
+      "pair_ids_sha256": "3e6d1ac6e130a2c67818162c3f94f085c155c7b3d9e5ea851de5335151b67b08",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-223.csv",
+      "pair_ids_sha256": "036011ffa8a58c8e15f68b4a18db3806e98b7622227400aac9942738cd5819a6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-224.csv",
+      "pair_ids_sha256": "44470a9716e1a4d2f1b3b1fdc3c707fe31239ad79056fe7c444f4eb7d7f8139a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-225.csv",
+      "pair_ids_sha256": "ec4dede5e0a13d3d93b063fb855b43ffef2a8fe365fa6df5e96d4f1ad0c54d6c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-226.csv",
+      "pair_ids_sha256": "05032be02d8664263bdd47f1c82766a7a7fbdbae92e2d27e26e76875967c3f73",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-227.csv",
+      "pair_ids_sha256": "5667f3579a61015efe5bfc780c45b276116552484277ea8f90230b8144563fdc",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-228.csv",
+      "pair_ids_sha256": "ba1b4366788ee3cb9e285898e051a51bd34ade4fb5edbc29572d3c4a87b4802b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-229.csv",
+      "pair_ids_sha256": "98945decac3359bace247c49019d95cbf95ceaefb73ab439650e19b8a3cc0501",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-230.csv",
+      "pair_ids_sha256": "d458bb2fcc3631ad4c7beff9fbd4b42f39729345cd194c147875da354f6b1c0e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-231.csv",
+      "pair_ids_sha256": "4883dd7f456864b21c0a3a0c9680395d606a393fd32f3c79f3f8f2811998f2f5",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-232.csv",
+      "pair_ids_sha256": "d4ab8a5e20ecc6d61289034314a6838db08e653ec35ecf36d8890d31bf22846e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-233.csv",
+      "pair_ids_sha256": "aba67681a39dd042a347a7ce31867c9f7fd615b7460621aebe51ec3fa6b9321c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-234.csv",
+      "pair_ids_sha256": "53ef5f5c96f712b6e3d1a90120b00b72cd5c89554bc1144a522d0107ce61452c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-235.csv",
+      "pair_ids_sha256": "85d4672a2d5829d2d541ba6f02b60b378bfbb79372553642d8042a0157bea5aa",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-236.csv",
+      "pair_ids_sha256": "e9da6b42f5ab021634687b143fee43ae40e1e95bfcffe2d6f2ae7720c1717ffd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-237.csv",
+      "pair_ids_sha256": "c6e53cb6c23e9276f9c465fb2b5cc5dfa861fac9deffa816b33cfe510f8f0fee",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-238.csv",
+      "pair_ids_sha256": "9a4e423a40f6affbd95f872d6cb7d9b4b31940091fe4f87038e319f1db5becd7",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-239.csv",
+      "pair_ids_sha256": "8669c7f1f71cc81196f01a2c5601b01f864e846c81ac5eb146a2b78428661b9e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-240.csv",
+      "pair_ids_sha256": "de8ea14df3c7c6a58280c0b2a1cd0caf7870041cc4cfb233e9d443e5645ce552",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-241.csv",
+      "pair_ids_sha256": "805a33ed357feb528768496983aec0b4820bc7b6c16a7d6014cf5e37185b86cd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-242.csv",
+      "pair_ids_sha256": "9f70fe4de7eda7894aa5d95ef69cdaff4888f6b5a330ae7d8c53a631f5b7a7d9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-243.csv",
+      "pair_ids_sha256": "cc381c9331c39c18a21c89c5074998f1cd3cb3644883b0884413d0e4b131a710",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-244.csv",
+      "pair_ids_sha256": "ba61037ab80d031225403b1f872c229317d60c745014090da92d369e4bff94f8",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-245.csv",
+      "pair_ids_sha256": "0b201d9b7c17a3029d36739a1c9de6879b543735720174b52a8f9c66ff35e5ab",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-246.csv",
+      "pair_ids_sha256": "4659dd2a6ddc8c92212df34ed39808930aafa78b8d7da930089d15d0240cb31f",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-247.csv",
+      "pair_ids_sha256": "7868227901ff69d92eb49fe4ebaa856ea3f8753869244cc1036fda41f292da36",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-248.csv",
+      "pair_ids_sha256": "35e82173356a6434dc2dc54aeb2a11e996c4bca1f0ab21b900d6c0c5db7cedfc",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-249.csv",
+      "pair_ids_sha256": "fa0f08326707a55efbec98c4d44b778099dde9cd3af961f261025fead76d8e0e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-250.csv",
+      "pair_ids_sha256": "12cd6d55175088631e94b86144422e3c50e041d862fb51bcc9297257f4d1a774",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-251.csv",
+      "pair_ids_sha256": "da5fc9f2b67106cc21c7f2625a3751b92d3d99c103af218fc8339e899f392e39",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-252.csv",
+      "pair_ids_sha256": "2ca6647c178acab035c57ac72b31a8112577d25cd5a5c0f84e907e49e148ee92",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-253.csv",
+      "pair_ids_sha256": "8facea2f2df2c8b7d2797e0aad752fbf142771980cb20e4d698e60f3bd690157",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-254.csv",
+      "pair_ids_sha256": "78813ab9a90b1c29b77b4fa56ae7aed74acb9e44b2fa4d0232bdf694b57219cd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-255.csv",
+      "pair_ids_sha256": "1cd34948f5e446fd01f76b1a48c8f10b6ece2afe1ce4e82c000a2bfd4a36034e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-256.csv",
+      "pair_ids_sha256": "43537562a99527d349c628eae2c4b7e4e9518a0bee2040bdd919bd43fd59b7e0",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-257.csv",
+      "pair_ids_sha256": "3acef8f5610ecf883b7953f0e90a4938f64bfadb17e85435cc99181f52a3f278",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-258.csv",
+      "pair_ids_sha256": "a7d3e4bf243b9241dfa810098ab330f729ee200b1118bf1a1f3f4f0d4b06fe84",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-259.csv",
+      "pair_ids_sha256": "3fa7319a21ba4d039bfacb39874c0926508400229d13751859703cb1fc8d3b42",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-260.csv",
+      "pair_ids_sha256": "06b2ac6e2055b8f2f9e188cecba024704911a906438da2b31bbeba5f6332cd2e",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-261.csv",
+      "pair_ids_sha256": "3109bad7db8fd064f90c8992b0d0122ab885aaac6cec2063fffed9cc60f37318",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-262.csv",
+      "pair_ids_sha256": "285985aa4c41858a9385ddd95ad1af926b28614d6ba43858cce292829252ea72",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-263.csv",
+      "pair_ids_sha256": "3a12eba1d8640c7a1e13c1a4e82306bba60ee21c9defe82a11ab5e72a8c3f434",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-264.csv",
+      "pair_ids_sha256": "7380b12171891fbd8bb54e2eb991e34011935862de91861fcd1ddd419f217c01",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-265.csv",
+      "pair_ids_sha256": "ea968cddcc630b160904088844f9ebcce89dd970c986ebf2c2c0e688b0228d45",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-266.csv",
+      "pair_ids_sha256": "b0c242a314294703e660a816c79f7ef6777897c1a6008449922e18e600b0fcef",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-267.csv",
+      "pair_ids_sha256": "4b7994783713bc56732e19f031dafafb876968d9b0c848770b21474ce2b921ca",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-268.csv",
+      "pair_ids_sha256": "ae5e21954065870ff120032c11cae7432032873f95a1d0526f4133fdb10e803a",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-269.csv",
+      "pair_ids_sha256": "3b0da80da373fc956454e3d3720137c5ed35f9b3523e32ca6d2df5adfe31bdd6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-270.csv",
+      "pair_ids_sha256": "1da92e335661711891ad0bf8e826a893f36cfc03b16c8c3a5e0b2817c037ec9d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-271.csv",
+      "pair_ids_sha256": "35a25e9fe633d7ab758caa92eeaf42e53072136c5dd0e81f43a27ed0909f5af3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-272.csv",
+      "pair_ids_sha256": "bc017b16f1c6aae660aafba00da435ef47e870e5ab2861fec7d604cd4d4daf71",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-273.csv",
+      "pair_ids_sha256": "003af31460cbfa28047ebf4e788c5c36c6f4affd612a768ca3333aca26e1b59c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-274.csv",
+      "pair_ids_sha256": "21ae02c208d662785a17b1cdd45b3cde7c07bf0f547ced4fdd1ad1972764cab6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 93,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-275.csv",
+      "pair_ids_sha256": "109e357f0d1ddecd956834b62073c3034acafccde7018507abdbe5fd4f341b7b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-276.csv",
+      "pair_ids_sha256": "c4bcf1d339323fdbd0e7bd25db9d19703ad6d8ce05232309fa36611dc3938fdc",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-277.csv",
+      "pair_ids_sha256": "0355926db88a4898f797920939e1fb7f80fb7839f0f1dd348982b0b131a9f269",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-278.csv",
+      "pair_ids_sha256": "cfb849d7b7832a455a1523baf59822599e76f2b23d41a9eedd0718849f512ee3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-279.csv",
+      "pair_ids_sha256": "dba2ff35d128e3cb03714458339bb228bc08ac049ab492124c223165f81f8b28",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-280.csv",
+      "pair_ids_sha256": "b3125ca73f23771d04d51ec439dc79a5dc1e24693fad19b98910a67c0df569de",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-281.csv",
+      "pair_ids_sha256": "3189cec0b7d20a76f0f7e06619e951e015d75aea531440288e42958faf622e7c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-282.csv",
+      "pair_ids_sha256": "9a5a2cbd5a28c0868b8f2cc9873f52951c7b37381ede5c06218d1d048e6c4ad6",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 93,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-283.csv",
+      "pair_ids_sha256": "69059269a2ced352187f8978ee5576443d568d5e88077ba30e02c08bd92e7f92",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-284.csv",
+      "pair_ids_sha256": "24d90e1d3bbef8539cd946e1252223904f23c6f86d0fc82183ba80c355e945fd",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-285.csv",
+      "pair_ids_sha256": "249839525bc840311ecf301179ac2cffd074d1426b60e6c83b534a608ba95238",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-286.csv",
+      "pair_ids_sha256": "3894252cc4e9d8f1685260fa975b5b5e87b73880d2f25ec9624592faff58074d",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 93,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-287.csv",
+      "pair_ids_sha256": "876a5b59daad186af20681e8477444dffdfad4557419d139ca013704e0f585a5",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-288.csv",
+      "pair_ids_sha256": "9c2eb5d4395ce632b52623d8f724337828ea3a9d9c6e637641f17db66d982e17",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-289.csv",
+      "pair_ids_sha256": "b0d77fd49b905e343f840455a9c17c7046304e7fbb0864e2ca3370b8be65d102",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-290.csv",
+      "pair_ids_sha256": "44875be8f84c51912271fe5ab4e4437a3337cfdd95f183e1f8d1328a286f01f9",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-291.csv",
+      "pair_ids_sha256": "c3ac9dab331b3bb874ea6feccb17b9a0e12a5842ca71af0c3bbaeb3b927548b1",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-292.csv",
+      "pair_ids_sha256": "529fffb43a66f339bfea6e58738536606f5360e4db28caa484506d0489ed6105",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-293.csv",
+      "pair_ids_sha256": "f2625165b1872727edcc5abc88e0596efec223da2db4c42fb92dee9fc4e54b3c",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-294.csv",
+      "pair_ids_sha256": "00ec745b3571a05912c5f59d71098440d8cf809d761fa6f3b059c9ee251a55ce",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 93,
+        "FORMULA|ORGAN | nested_cross_type_entity": 5,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-295.csv",
+      "pair_ids_sha256": "434486607d188b12256a65f218e86e49f015057bbec6f1d6b86f10d7c818cfe4",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 92,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8
+      }
+    },
+    {
+      "file": "overlap-review-batch-296.csv",
+      "pair_ids_sha256": "ee06dcd6a86c349e7fa0762850768581c778a446226fbab24827342dd11e8e70",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-297.csv",
+      "pair_ids_sha256": "26f5029736c6b6241373c8924d0d9ccf70bfeb0c8d26b315f477bf7474585bca",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-298.csv",
+      "pair_ids_sha256": "6bc112477d51a30e96b62f547a0329bcf1682aef741512017ed20bcfa992f2a3",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 93,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-299.csv",
+      "pair_ids_sha256": "9316aad4c5c1901ce0d7400dae6a2106890535b7797afade0b692c04b002c19b",
+      "rows": 100,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 8,
+        "HERB|ORGAN | nested_cross_type_entity": 1
+      }
+    },
+    {
+      "file": "overlap-review-batch-300.csv",
+      "pair_ids_sha256": "360588311017c6df02667d06cb8a2c39cd111bbeb03151cbcc3339790e950aac",
+      "rows": 99,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 91,
+        "FORMULA|ORGAN | nested_cross_type_entity": 6,
+        "HERB|ORGAN | nested_cross_type_entity": 2
+      }
+    },
+    {
+      "file": "overlap-review-batch-301.csv",
+      "pair_ids_sha256": "a19a52bf81b73be268b24bd983a076a39fb228f0f195b126c7b8254ee3437a2d",
+      "rows": 99,
+      "strata": {
+        "FORMULA|HERB | nested_formula_herb_entity": 90,
+        "FORMULA|ORGAN | nested_cross_type_entity": 7,
+        "HERB|ORGAN | nested_cross_type_entity": 1,
+        "ORGAN|SYNDROME | nested_cross_type_entity": 1
+      }
+    }
+  ],
+  "candidate_mutations": 0,
+  "input_file": "entity_mention_cross_type_overlap_review.csv",
+  "input_rows": 30098,
+  "input_sha256": "5d375322c841b571377eefb79e964414917534f826c0bac16f9bea4307b752c9",
+  "review_decisions_assigned": 0,
+  "schema_version": 1,
+  "stratum_fields": [
+    "entity_type_pair",
+    "overlap_kind"
+  ]
+}
