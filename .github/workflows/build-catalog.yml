@@ -100,6 +100,22 @@ jobs:
         run: python tools/split_overlap_review_batches.py --input catalog/generated/contextual_term_cross_type_overlap_review.csv --output-dir catalog/generated/contextual_overlap_review_batches --batch-size 100
       - name: Split entity mention overlap review queue into deterministic batches
         run: python tools/split_overlap_review_batches.py --input catalog/generated/entity_mention_cross_type_overlap_review.csv --output-dir catalog/generated/entity_mention_overlap_review_batches --batch-size 100
+      - name: Preserve immutable entity overlap source and bind review manifest
+        run: |
+          cp catalog/generated/entity_mention_cross_type_overlap_review.csv catalog/generated/entity_mention_cross_type_overlap_review.source.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("catalog/generated/entity_mention_overlap_review_batches/overlap-review-batches.json")
+          manifest = json.loads(path.read_text(encoding="utf-8"))
+          manifest["input_file"] = "entity_mention_cross_type_overlap_review.source.csv"
+          path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+      - name: Apply source-verified nested formula-herb KEEP_BOTH review to batches
+        run: |
+          python tools/review_nested_formula_herb_overlaps.py --batch-dir catalog/generated/entity_mention_overlap_review_batches --report catalog/generated/entity_mention_cross_type_overlap_review.json
+          python tools/merge_overlap_review_batches.py --source-queue catalog/generated/entity_mention_cross_type_overlap_review.source.csv --batch-dir catalog/generated/entity_mention_overlap_review_batches --output catalog/generated/entity_mention_cross_type_overlap_review.reviewed.csv --report catalog/generated/entity_mention_cross_type_overlap_review.import-report.json
+          mv catalog/generated/entity_mention_cross_type_overlap_review.reviewed.csv catalog/generated/entity_mention_cross_type_overlap_review.csv
       - name: Extract explicit symptom-syndrome-treatment-formula relation candidates
         run: python tools/build_contextual_relation_candidates.py
       - name: Validate contextual relation candidate provenance
