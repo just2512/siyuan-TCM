@@ -113,8 +113,28 @@ def build_review_queue(input_path: Path, output_path: Path, report_path: Path, o
                 evidence_end = evidence["evidence_start"] + len(evidence["evidence_text"])
                 pair_type = "|".join(sorted((left["candidate_type"], right["candidate_type"])))
                 kind = overlap_kind(left, right)
-                identity = "\0".join((unit_id, left["candidate_id"], str(left["start"]),
-                    str(left["end"]), right["candidate_id"], str(right["start"]), str(right["end"])))
+                # candidate_id identifies a lexical term, not a typed occurrence.
+                # The same term/span may legitimately be classified under multiple
+                # candidate types; those distinct semantic pairs must not collide.
+                identity = json.dumps(
+                    [
+                        unit_id,
+                        left["source"]["evidence_document"],
+                        left["source"]["source_sha256"],
+                        left["source"]["tree_position"],
+                        left["source"]["block_id"],
+                        [
+                            left["candidate_type"], left["candidate_id"],
+                            left["start"], left["end"],
+                        ],
+                        [
+                            right["candidate_type"], right["candidate_id"],
+                            right["start"], right["end"],
+                        ],
+                    ],
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
                 pair_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()
                 rows.append({
                     "pair_id": pair_id,
