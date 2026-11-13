@@ -89,7 +89,7 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
         })
 
     def test_audits_source_note_point_to_symptom_association_candidates(self):
-        source = "中脘穴：胃痛、恶心、呕吐。"
+        source = "中脘穴）：胃痛、恶心、呕吐。"
         locator = self.locator
         self.connection.execute(
             "UPDATE content_blocks SET content_text=? WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?",
@@ -112,9 +112,9 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
             )
         subject = {"candidate_id": "point-label", "character_start": "0", "character_end": "3"}
         for candidate_id, term, start, end in (
-            ("symptom-a", "胃痛", 4, 6),
-            ("symptom-b", "恶心", 7, 9),
-            ("symptom-c", "呕吐", 10, 12),
+            ("symptom-a", "胃痛", 5, 7),
+            ("symptom-b", "恶心", 8, 10),
+            ("symptom-c", "呕吐", 11, 13),
         ):
             obj = {"candidate_id": candidate_id, "character_start": str(start), "character_end": str(end)}
             relation_id = relation_identity(
@@ -124,7 +124,7 @@ class SQLiteContextualRelationAuditTests(unittest.TestCase):
                 "INSERT INTO contextual_relation_candidates VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (relation_id, "SOURCE_NOTE_ASSOCIATES", "point-label", "中脘穴", "ACUPOINT", 0, 3,
                  candidate_id, term, "SYMPTOM", start, end, self.unit_id, *locator,
-                 0, len(source), source, "：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
+                 0, len(source), source, "）：", "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
             )
         self.connection.execute(
             "UPDATE index_metadata SET value='3' WHERE key='contextual_relation_candidates'"
