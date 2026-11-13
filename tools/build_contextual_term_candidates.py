@@ -330,12 +330,12 @@ def classify_span(
             elif candidate_type == "ACUPUNCTURE_TECHNIQUE":
                 matched = re.fullmatch(pattern, term)
                 # A negated instruction is not a positive needling-method mention.
-                if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\\s*$", before):
+                if matched and re.search(r"(?:不宜|不可|不能|不|勿|禁用|禁)\s*$", before):
                     matched = None
             elif candidate_type == "CLASSICAL_SOURCE":
                 matched = re.fullmatch(pattern, term)
                 # Do not extract “内经” as a suffix fragment from “黄帝内经”.
-                if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
+                if matched and term == "内经" and start > 0 and text[start - 1:start] == "帝":
                     matched = None
                 after = text[end:min(len(text), end + 6)]
                 quoted = (
