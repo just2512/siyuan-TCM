@@ -31,7 +31,7 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
     )
 }
 CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)")
-SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\\s、，,）)】』」]?[：:]")
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\s、，,）)】』」]?[：:]")
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
