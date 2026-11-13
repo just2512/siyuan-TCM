@@ -79,8 +79,7 @@ def write_fixture(root: Path, source_text: str, unit_id: str, document: str,
         "content": {"source_text": source_text},
     }
     with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
-        stream.write(json.dumps(unit, ensure_ascii=False))
-                stream.write(chr(10))
+        stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
     return context, mentions, units, output
 
 
