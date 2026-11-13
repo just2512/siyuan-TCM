@@ -98,7 +98,7 @@ class ContextualRelationCoverageAuditTests(unittest.TestCase):
                 "content": {"source_text": source_text},
             }
             with gzip.open(units, "wt", encoding="utf-8", newline="") as stream:
-                stream.write(json.dumps(unit, ensure_ascii=False) + "\\n")
+                stream.write(json.dumps(unit, ensure_ascii=False) + "\n")
             with relations.open("w", encoding="utf-8", newline="") as stream:
                 writer = csv.DictWriter(stream, fieldnames=[
                     "relation_id", "predicate", "subject_type", "object_type",
