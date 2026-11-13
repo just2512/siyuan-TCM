@@ -616,6 +616,7 @@ class ContextualTermCandidateTests(unittest.TestCase):
             ("大概就是以经方用药来讲", "药来讲", {"FORMULA", "HERB"}),
             ("中药处方就是这样来的", "处方就", {"FORMULA", "HERB"}),
             ("中药处方就是这样来的", "就是这样", {"FORMULA", "HERB"}),
+            ("中药处方就是这样来的", "就是这样", {"FORMULA", "HERB"}),
             ("可以用药方让阴阳和", "方让", {"FORMULA", "HERB"}),
             ("药，这一味本草使用的地方非常的多", "使用的地方非", {"FORMULA", "HERB"}),
             ("用药后疼痛减轻，炎症很快吸收或局限", "后疼痛减轻", {"HERB"}),
