@@ -8,7 +8,7 @@ import re
 import sqlite3
 from pathlib import Path
 
-from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS
+from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS, sentence_ranges
 
 SOURCE_NOTE_ASSOCIATION_PAIRS = {
     frozenset(pair) for pair in (
