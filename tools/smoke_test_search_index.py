@@ -304,10 +304,18 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
             raise AssertionError(f"contextual relation endpoint text/offset mismatch: {row['relation_id']}")
         between = text[subject_end:object_start]
         if source_note:
-            predicate_match = re.search(r"[:：]", between)
+            classical_attribution = (
+                row["subject_type"] == "CLASSICAL_SOURCE"
+                and row["object_type"] == "CLASSICAL_THEORY"
+            )
+            predicate_match = (
+                CLASSICAL_ATTRIBUTION_MARKER.search(between)
+                if classical_attribution else re.search(r"[:：]", between)
+            )
             if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
-                or re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():])):
-                raise AssertionError(f"source-note association label is outside endpoint scope: {row['relation_id']}")
+                or (not classical_attribution and
+                    re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():]))):
+                raise AssertionError(f"source-note association marker is outside endpoint scope: {row['relation_id']}")
             scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
         else:
             predicate_match = PREDICATES[row["predicate"]].search(between)
