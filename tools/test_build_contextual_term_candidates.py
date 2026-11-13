@@ -594,5 +594,71 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 (text, term),
             )
 
+
+    def test_rejects_remaining_source_grounded_contextual_overlap_false_positives(self):
+        symptom_cases = [
+            ("症状，那人容易累，那至于说舌苔或者脉象到是没有什么明显", "那至于说"),
+            ("然后咳嗽，然后呢，你看他舌苔，你如果平常有时候", "你看他"),
+            ("的症状的时候，就是潮热、脉滑、吃不下饭", "脉滑"),
+            ("到了承气汤证型症状都到了另外一边去了", "症状都"),
+            ("虚满的症状当以温药，温的药，像胀满的时候", "当以温药"),
+        ]
+        for text, term in symptom_cases:
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        ordinary_phrases = [
+            ("因为经方用药有些药用的轻的没有像傅青主那", "药有些", {"FORMULA", "HERB"}),
+            ("大概就是以经方用药来讲", "药来讲", {"FORMULA", "HERB"}),
+            ("中药处方就是这样来的", "处方就", {"FORMULA", "HERB"}),
+            ("中药处方就是这样来的", "就是这样", {"FORMULA", "HERB"}),
+            ("中药处方就是这样来的", "就是这样", {"FORMULA", "HERB"}),
+            ("可以用药方让阴阳和", "方让", {"FORMULA", "HERB"}),
+            ("药，这一味本草使用的地方非常的多", "使用的地方非", {"FORMULA", "HERB"}),
+            ("用药后疼痛减轻，炎症很快吸收或局限", "后疼痛减轻", {"HERB"}),
+            ("生病或误用药导致呕吐不止，可用半夏止吐", "导致呕吐", {"HERB"}),
+            ("药用治胀痛，破血而补", "治胀痛", {"HERB"}),
+            ("经过我用经方治疗咳嗽时，是喝第一剂药就好转了", "治疗咳嗽", {"FORMULA"}),
+        ]
+        for text, term, rejected_types in ordinary_phrases:
+            start = text.index(term)
+            classified = {kind for kind, _ in classify_span(text, start, start + len(term))}
+            self.assertTrue(rejected_types.isdisjoint(classified), (text, term, classified))
+
+    def test_negative_syndrome_cue_and_diagnostic_observation_are_not_entities(self):
+        text = "噢，第一条是排除掉不属于呕吐的状况的条文"
+        start = text.index("呕吐的状")
+        self.assertNotIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span(text, start, start + len("呕吐的状")),
+        )
+        text = "光的脸颊一样，就它是属于发热充血的状态的"
+        start = text.index("发热充血")
+        self.assertNotIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span(text, start, start + len("发热充血")),
+        )
+
+        text = "应当以经脉为纲领，所有的经脉都是这样"
+        start = text.index("经脉为")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("经脉为")),
+        )
+        self.assertNotIn(
+            ("PULSE", "PULSE_CONTEXT_01"),
+            classify_span(text, start + 1, start + len("经脉为")),
+        )
+        text = "此当以舌苔之既自与黄腻辨之，而所泻"
+        start = text.index("当以舌苔")
+        self.assertNotIn(
+            ("TREATMENT", "TREATMENT_CONTEXT_01"),
+            classify_span(text, start, start + len("当以舌苔之")),
+        )
+
 if __name__ == "__main__":
     unittest.main()
