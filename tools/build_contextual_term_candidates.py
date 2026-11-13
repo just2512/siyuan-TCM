@@ -181,7 +181,7 @@ def classify_span(
                 if matched and candidate_type == "FORMULA":
                     # Do not type the tail of ordinary compounds (方向/方法/
                     # 方式/方剂/方子) as a formula after a generic "用...方" cue.
-                    if term[:1] in "向法式面位子剂":
+                    if term[:1] in "向法式面位子剂的是" or term.startswith("本草"):
                         matched = None
                     # "地方用药..." contains "方用" but does not introduce a formula.
                     elif (
@@ -194,7 +194,8 @@ def classify_span(
                     # A preceding "用药/中药" cue does not turn grammatical
                     # continuations or generic formula nouns into herb mentions.
                     if term.startswith((
-                        "的", "是", "方向", "方法", "方式", "方子", "方剂", "一样", "之", "就"
+                        "的", "是", "证", "观", "方向", "方法", "方式",
+                        "方子", "方剂", "一样", "之", "就"
                     )):
                         matched = None
             elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_01":
@@ -214,7 +215,9 @@ def classify_span(
                 # narrative clause (diagnosis, attribution, treatment, etc.).
                 non_symptom_clause = re.compile(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
-                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由)"
+                    r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由|"
+                    r"用药|药方|方剂|方子|方法|方式|条文|解释|讲法|观点|相对论|"
+                    r"脉(?:象|诊)|舌(?:象|苔|质))"
                 )
                 matched = (
                     None if non_symptom_clause.search(symptom_before)
@@ -246,12 +249,16 @@ def classify_span(
                 # Pulse windows also have to begin at 脉; otherwise phrases like
                 # 发热而脉沉 would be misclassified as one oversized pulse term.
                 matched = re.search(pattern, term)
-                if (
-                    matched
-                    and candidate_type == "PULSE"
-                    and matched.start() != 0
-                ):
-                    matched = None
+                if candidate_type == "PULSE":
+                    # A pulse candidate must be a complete clinical pulse
+                    # phrase, not a valid prefix followed by discourse text
+                    # (脉象虽然/脉浮的/脉象怎么).
+                    pulse_phrase = re.fullmatch(
+                        r"脉(?:象|诊|见|为|沉|浮|数|迟|弦|滑|细)"
+                        r"(?:紧|数|细|迟|缓|滑|弦|沉|浮|弱|虚|实)?",
+                        term,
+                    )
+                    matched = matched if pulse_phrase else None
             else:
                 matched = re.search(pattern, before + term)
             if matched:
