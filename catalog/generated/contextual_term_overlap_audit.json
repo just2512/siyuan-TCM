@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 69397,
+  "distinct_occurrence_rows": 67566,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -1003,31 +1003,29 @@
     }
   ],
   "overlap_pair_candidate_type_counts": {
-    "FORMULA|FORMULA": 6069,
-    "FORMULA|HERB": 11,
-    "HERB|HERB": 10195,
+    "FORMULA|FORMULA": 5826,
+    "HERB|HERB": 10012,
     "PULSE|PULSE": 840,
-    "PULSE|SYMPTOM": 3,
-    "SYMPTOM|SYMPTOM": 18689,
-    "SYMPTOM|SYNDROME": 14,
-    "SYNDROME|SYNDROME": 3384,
+    "SYMPTOM|SYMPTOM": 17315,
+    "SYMPTOM|SYNDROME": 1,
+    "SYNDROME|SYNDROME": 3346,
     "TONGUE|TONGUE": 5977,
     "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
-    "current_nested": 3907,
-    "partial_overlap": 3407,
-    "prior_nested": 38278
+    "current_nested": 3835,
+    "partial_overlap": 3256,
+    "prior_nested": 36636
   },
   "overlap_pair_type_relation_counts": {
-    "cross_type": 28,
-    "same_type": 45564
+    "cross_type": 1,
+    "same_type": 43726
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 7212,
+  "repeated_lexical_forms_with_multiple_occurrences": 6843,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",

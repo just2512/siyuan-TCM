@@ -1,13 +1,13 @@
 {
   "candidate_counts_by_type": {
-    "FORMULA": 6228,
-    "HERB": 19660,
+    "FORMULA": 5900,
+    "HERB": 19380,
     "PULSE": 4556,
-    "SYMPTOM": 31427,
-    "SYNDROME": 3868,
+    "SYMPTOM": 30231,
+    "SYNDROME": 3841,
     "TONGUE": 3034,
     "TREATMENT": 710
   },
-  "checked_contextual_term_candidates": 69483,
+  "checked_contextual_term_candidates": 67652,
   "schema_version": 1
 }

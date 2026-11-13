@@ -5,13 +5,13 @@
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 115,
+      "ordered_typed_pairs": 93,
       "pairs_with_predicate_between": 0,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
       "eligible_pairs": 0,
       "marker_sentences_without_typed_pair": 63,
-      "typed_pair_sentences_without_marker": 65,
+      "typed_pair_sentences_without_marker": 59,
       "marker_sentences_with_subject_type": 4,
       "marker_sentences_with_object_type": 12,
       "marker_sentences_with_both_endpoint_types": 0,
@@ -78,7 +78,7 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
-        "SYMPTOM": 143,
+        "SYMPTOM": 141,
         "SYNDROME": 15,
         "TREATMENT": 7
       }

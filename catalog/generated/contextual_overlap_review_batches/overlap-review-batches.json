@@ -4,20 +4,17 @@
   "batches": [
     {
       "file": "overlap-review-batch-001.csv",
-      "pair_ids_sha256": "38c83dd4265ef6be064024208b9e35c58ff576a925f9b85ca9356c58b9c2bbb2",
-      "rows": 28,
+      "pair_ids_sha256": "6ecbd91781d716434a40bccaa54da1d408d703de30f85cd8c990dffc18dfd861",
+      "rows": 1,
       "strata": {
-        "FORMULA|HERB | partial_overlap": 11,
-        "PULSE|SYMPTOM | partial_overlap": 3,
-        "SYMPTOM|SYNDROME | partial_overlap": 12,
-        "SYMPTOM|SYNDROME | prior_nested": 2
+        "SYMPTOM|SYNDROME | prior_nested": 1
       }
     }
   ],
   "candidate_mutations": 0,
   "input_file": "contextual_term_cross_type_overlap_review.csv",
-  "input_rows": 28,
-  "input_sha256": "7f64d1676d2b3b36c4923e8f0c9057f15c21807a15b2280857f8671f69efb5f3",
+  "input_rows": 1,
+  "input_sha256": "904e9150054785925bcfea0d2fe75147854d07602d9717cf0b1614b9547d5588",
   "review_decisions_assigned": 0,
   "schema_version": 1,
   "stratum_fields": [
