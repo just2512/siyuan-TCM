@@ -186,9 +186,17 @@ def classify_span(
                     before,
                 )
                 if matched and candidate_type == "FORMULA":
+                    # A generic medicine label is not a formula introduction.
+                    # In particular, “非处方用药”, “中药复方来替” and
+                    # “偏方而导致” must not lend their trailing words a formula type.
+                    if (
+                        term.startswith(("用药", "来", "而", "及"))
+                        or matched.group(0).endswith(("偏方", "复方", "非处方"))
+                    ):
+                        matched = None
                     # Generic grammar and outcome phrases are not formula names,
                     # even when a nearby "处方"/"用...方" cue is present.
-                    if (
+                    elif (
                         term[:1] in "向法式面位子剂的是"
                         or term.startswith(("本草", "药", "方", "治", "处方", "就", "是"))
                     ):
@@ -218,7 +226,8 @@ def classify_span(
                     if term.startswith((
                         "的", "是", "证", "观", "方向", "方法", "方式",
                         "方子", "方剂", "一样", "之", "就", "处方",
-                        "药", "方", "后", "治", "导致", "使用"
+                        "药", "方", "后", "治", "导致", "使用",
+                        "偏方", "复方", "及", "而", "来"
                     )):
                         matched = None
             elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_01":
