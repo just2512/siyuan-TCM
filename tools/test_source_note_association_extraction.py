@@ -116,6 +116,45 @@ class SourceNoteAssociationTests(unittest.TestCase):
             self.assertTrue(all(row["resolution_status"] == "UNRESOLVED_CANDIDATE" for row in rows))
             self.assertTrue(all(row["evidence_text"] == source_text for row in rows))
 
+    def test_explicit_inner_canon_attribution_links_to_classical_theory(self):
+        fixtures = [
+            (
+                "内经说人身上有四个气街。",
+                [("classical-source", "内经", "CLASSICAL_SOURCE"),
+                 ("theory", "气街", "CLASSICAL_THEORY")],
+                "说",
+            ),
+            (
+                "故黄帝内经有言：水精四布，下输膀胱。",
+                [("classical-source", "黄帝内经", "CLASSICAL_SOURCE"),
+                 ("theory", "水精四布", "CLASSICAL_THEORY")],
+                "有言",
+            ),
+        ]
+        for index, (source_text, terms, marker) in enumerate(fixtures):
+            with self.subTest(source_text=source_text), tempfile.TemporaryDirectory() as temp:
+                context, mentions, units, output = write_fixture(
+                    Path(temp), source_text, f"classical-{index}", "classical/a.sy",
+                    f"classical-sha-{index}", "0.1", "block-1", terms,
+                )
+                self.assertEqual(
+                    extract(context, mentions, units, output)["contextual_relation_candidates"], 0
+                )
+                self.assertEqual(extract_source_note_associations(context, mentions, units, output), 1)
+                self.assertEqual(validate(output, units, context, mentions), 1)
+                with output.open(encoding="utf-8", newline="") as stream:
+                    rows = list(csv.DictReader(stream))
+                row = rows[0]
+                self.assertEqual(row["predicate"], "SOURCE_NOTE_ASSOCIATES")
+                self.assertEqual(row["subject_type"], "CLASSICAL_SOURCE")
+                self.assertEqual(row["object_type"], "CLASSICAL_THEORY")
+                self.assertEqual(row["predicate_text"], marker)
+                self.assertEqual(
+                    row["extraction_rule"], "SOURCE_NOTE_ASSOCIATES_CLASSICAL_ATTRIBUTION_V1"
+                )
+                self.assertEqual(row["evidence_text"], source_text)
+                self.assertEqual(row["resolution_status"], "UNRESOLVED_CANDIDATE")
+
     def test_point_label_links_to_multiple_symptom_mentions_in_source_order(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
