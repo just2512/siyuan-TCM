@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 67566,
+  "distinct_occurrence_rows": 97799,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -42,6 +42,26 @@
       "unit_id": "8af64d99dfef2aff01ba21d96671a9d164452698c9cd25f0c2df971deb6709c0"
     },
     {
+      "candidate_type_pair": "CLASSICAL_THEORY|CLASSICAL_THEORY",
+      "left": {
+        "candidate_id": "term_196e145e30cc7a948b025d90",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 7,
+        "start": 3,
+        "term": "五运六气"
+      },
+      "overlap_kind": "current_nested",
+      "right": {
+        "candidate_id": "term_a3e92fbcfd8cc8536c6fd337",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 7,
+        "start": 5,
+        "term": "六气"
+      },
+      "type_relation": "same_type",
+      "unit_id": "132b57cbe14a5c18e8bb3a24857d536454f03e6967fb97c7112aea3668d1e65e"
+    },
+    {
       "candidate_type_pair": "HERB|HERB",
       "left": {
         "candidate_id": "term_3944603e04fc4e026dbf2c9c",
@@ -60,6 +80,26 @@
       },
       "type_relation": "same_type",
       "unit_id": "8a799f7db636ffafeec6bf324b43b597a662ccdf1d2db03a2c971876e1f0bce5"
+    },
+    {
+      "candidate_type_pair": "CLASSICAL_THEORY|CLASSICAL_THEORY",
+      "left": {
+        "candidate_id": "term_7fce2fdf16cab5ccb64c0e49",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 30,
+        "start": 28,
+        "term": "营卫"
+      },
+      "overlap_kind": "partial_overlap",
+      "right": {
+        "candidate_id": "term_16c749e4ef1ced587146cd2b",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 31,
+        "start": 29,
+        "term": "卫气"
+      },
+      "type_relation": "same_type",
+      "unit_id": "2ea0950b05771e5f2438affe765f58aa38dc1ad9e49defe0dc56ad96fc1c6dff"
     },
     {
       "candidate_type_pair": "TREATMENT|TREATMENT",
@@ -960,72 +1000,50 @@
       },
       "type_relation": "same_type",
       "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_64c4b20a61d9d017f18e4104",
-        "candidate_type": "SYMPTOM",
-        "end": 215,
-        "start": 212,
-        "term": "当归四"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_13e9f7a5892261fde22dd26a",
-        "candidate_type": "SYMPTOM",
-        "end": 218,
-        "start": 212,
-        "term": "当归四逆汤也"
-      },
-      "type_relation": "same_type",
-      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_64f2574006857856cdf4ccc8",
-        "candidate_type": "SYMPTOM",
-        "end": 216,
-        "start": 212,
-        "term": "当归四逆"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_13e9f7a5892261fde22dd26a",
-        "candidate_type": "SYMPTOM",
-        "end": 218,
-        "start": 212,
-        "term": "当归四逆汤也"
-      },
-      "type_relation": "same_type",
-      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
     }
   ],
   "overlap_pair_candidate_type_counts": {
+    "ACUPOINT|ACUPOINT": 235,
+    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 51,
+    "ACUPOINT|CLASSICAL_THEORY": 3,
+    "ACUPOINT|SYMPTOM": 3,
+    "ACUPOINT|TREATMENT": 3,
+    "ACUPUNCTURE_TECHNIQUE|ACUPUNCTURE_TECHNIQUE": 9,
+    "ACUPUNCTURE_TECHNIQUE|HERB": 9,
+    "ACUPUNCTURE_TECHNIQUE|SYMPTOM": 16,
+    "ACUPUNCTURE_TECHNIQUE|SYNDROME": 8,
+    "ACUPUNCTURE_TECHNIQUE|TREATMENT": 2,
+    "CLASSICAL_THEORY|CLASSICAL_THEORY": 84,
+    "CLASSICAL_THEORY|PULSE": 1,
+    "CLASSICAL_THEORY|SYMPTOM": 21,
+    "CLASSICAL_THEORY|SYNDROME": 31,
+    "CLASSICAL_THEORY|TREATMENT": 2,
     "FORMULA|FORMULA": 5826,
+    "FORMULA|SYMPTOM": 2,
     "HERB|HERB": 10012,
+    "HERB|SYMPTOM": 6,
     "PULSE|PULSE": 840,
-    "SYMPTOM|SYMPTOM": 17315,
-    "SYMPTOM|SYNDROME": 1,
+    "SYMPTOM|SYMPTOM": 17923,
+    "SYMPTOM|SYNDROME": 8,
     "SYNDROME|SYNDROME": 3346,
     "TONGUE|TONGUE": 5977,
     "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
-    "current_nested": 3835,
-    "partial_overlap": 3256,
-    "prior_nested": 36636
+    "current_nested": 4601,
+    "exact_span": 32,
+    "partial_overlap": 3419,
+    "prior_nested": 36776
   },
   "overlap_pair_type_relation_counts": {
-    "cross_type": 1,
-    "same_type": 43726
+    "cross_type": 166,
+    "same_type": 44662
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 6843,
+  "repeated_lexical_forms_with_multiple_occurrences": 7525,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",
@@ -1039,8 +1057,18 @@
     },
     {
       "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 3264,
+      "term": "头痛"
+    },
+    {
+      "candidate_type": "SYMPTOM",
       "distinct_occurrences": 2843,
       "term": "发热"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 2408,
+      "term": "腹痛"
     },
     {
       "candidate_type": "SYMPTOM",
@@ -1048,14 +1076,64 @@
       "term": "呕吐"
     },
     {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 1766,
+      "term": "下焦"
+    },
+    {
+      "candidate_type": "ACUPUNCTURE_TECHNIQUE",
+      "distinct_occurrences": 1576,
+      "term": "针灸"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 1368,
+      "term": "上焦"
+    },
+    {
       "candidate_type": "PULSE",
       "distinct_occurrences": 1341,
       "term": "脉浮"
     },
     {
+      "candidate_type": "ACUPUNCTURE_TECHNIQUE",
+      "distinct_occurrences": 1218,
+      "term": "针刺"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 1154,
+      "term": "中焦"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 1138,
+      "term": "腰痛"
+    },
+    {
       "candidate_type": "SYMPTOM",
       "distinct_occurrences": 998,
       "term": "恶心"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 978,
+      "term": "心痛"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 923,
+      "term": "卫气"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 904,
+      "term": "气喘"
+    },
+    {
+      "candidate_type": "CLASSICAL_SOURCE",
+      "distinct_occurrences": 895,
+      "term": "黄帝内经"
     },
     {
       "candidate_type": "HERB",
@@ -1083,9 +1161,24 @@
       "term": "经疏"
     },
     {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 715,
+      "term": "营卫"
+    },
+    {
       "candidate_type": "PULSE",
       "distinct_occurrences": 681,
       "term": "脉沉"
+    },
+    {
+      "candidate_type": "ACUPUNCTURE_TECHNIQUE",
+      "distinct_occurrences": 628,
+      "term": "放血"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 595,
+      "term": "腠理"
     },
     {
       "candidate_type": "HERB",
@@ -1114,13 +1207,28 @@
     },
     {
       "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 518,
+      "term": "背痛"
+    },
+    {
+      "candidate_type": "SYMPTOM",
       "distinct_occurrences": 451,
       "term": "麻木"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 432,
+      "term": "司天"
     },
     {
       "candidate_type": "HERB",
       "distinct_occurrences": 432,
       "term": "汇言"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 406,
+      "term": "胃痛"
     },
     {
       "candidate_type": "HERB",
@@ -1133,14 +1241,44 @@
       "term": "刺痛"
     },
     {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 381,
+      "term": "胸痛"
+    },
+    {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 347,
+      "term": "喘息"
+    },
+    {
       "candidate_type": "HERB",
       "distinct_occurrences": 344,
       "term": "从新"
     },
     {
+      "candidate_type": "SYMPTOM",
+      "distinct_occurrences": 338,
+      "term": "咽痛"
+    },
+    {
+      "candidate_type": "ACUPUNCTURE_TECHNIQUE",
+      "distinct_occurrences": 320,
+      "term": "补泻"
+    },
+    {
       "candidate_type": "HERB",
       "distinct_occurrences": 315,
       "term": "备要"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 311,
+      "term": "营气"
+    },
+    {
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 280,
+      "term": "六气"
     },
     {
       "candidate_type": "HERB",
@@ -1153,129 +1291,9 @@
       "term": "脉弦"
     },
     {
-      "candidate_type": "SYMPTOM",
-      "distinct_occurrences": 249,
-      "term": "胀痛"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 245,
-      "term": "蒙筌"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 239,
-      "term": "拾遗"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 234,
-      "term": "新编"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 207,
-      "term": "崇原"
-    },
-    {
-      "candidate_type": "PULSE",
-      "distinct_occurrences": 206,
-      "term": "脉数"
-    },
-    {
-      "candidate_type": "SYMPTOM",
-      "distinct_occurrences": 206,
-      "term": "瘙痒"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 201,
-      "term": "便读"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 197,
-      "term": "正义"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 190,
-      "term": "述钩"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 190,
-      "term": "述钩元"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 180,
-      "term": "经赞"
-    },
-    {
-      "candidate_type": "PULSE",
-      "distinct_occurrences": 169,
-      "term": "脉浮紧"
-    },
-    {
-      "candidate_type": "PULSE",
-      "distinct_occurrences": 157,
-      "term": "脉细"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 152,
-      "term": "经解"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 141,
-      "term": "撮要"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 141,
-      "term": "里面"
-    },
-    {
-      "candidate_type": "PULSE",
-      "distinct_occurrences": 135,
-      "term": "脉迟"
-    },
-    {
-      "candidate_type": "SYMPTOM",
-      "distinct_occurrences": 133,
-      "term": "腹疼痛"
-    },
-    {
-      "candidate_type": "FORMULA",
-      "distinct_occurrences": 128,
-      "term": "用名"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 123,
-      "term": "求原"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 116,
-      "term": "通玄"
-    },
-    {
-      "candidate_type": "TONGUE",
-      "distinct_occurrences": 113,
-      "term": "舌苔是"
-    },
-    {
-      "candidate_type": "HERB",
-      "distinct_occurrences": 112,
-      "term": "经读"
-    },
-    {
-      "candidate_type": "SYMPTOM",
-      "distinct_occurrences": 112,
-      "term": "心呕吐"
+      "candidate_type": "CLASSICAL_THEORY",
+      "distinct_occurrences": 254,
+      "term": "在泉"
     }
   ],
   "schema_version": 2

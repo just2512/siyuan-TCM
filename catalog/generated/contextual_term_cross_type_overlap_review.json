@@ -1,24 +1,41 @@
 {
-  "cross_type_overlap_pairs": 1,
+  "cross_type_overlap_pairs": 166,
   "cross_type_pairs_by_overlap_kind": {
-    "prior_nested": 1
+    "current_nested": 36,
+    "exact_span": 32,
+    "partial_overlap": 68,
+    "prior_nested": 30
   },
   "cross_type_pairs_by_type": {
-    "SYMPTOM|SYNDROME": 1
+    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 51,
+    "ACUPOINT|CLASSICAL_THEORY": 3,
+    "ACUPOINT|SYMPTOM": 3,
+    "ACUPOINT|TREATMENT": 3,
+    "ACUPUNCTURE_TECHNIQUE|HERB": 9,
+    "ACUPUNCTURE_TECHNIQUE|SYMPTOM": 16,
+    "ACUPUNCTURE_TECHNIQUE|SYNDROME": 8,
+    "ACUPUNCTURE_TECHNIQUE|TREATMENT": 2,
+    "CLASSICAL_THEORY|PULSE": 1,
+    "CLASSICAL_THEORY|SYMPTOM": 21,
+    "CLASSICAL_THEORY|SYNDROME": 31,
+    "CLASSICAL_THEORY|TREATMENT": 2,
+    "FORMULA|SYMPTOM": 2,
+    "HERB|SYMPTOM": 6,
+    "SYMPTOM|SYNDROME": 8
   },
-  "distinct_occurrences": 67566,
+  "distinct_occurrences": 97799,
   "policy": {
     "candidate_mutation": "none",
     "evidence": "each row includes an exact source excerpt and source locator",
     "semantic_decisions": "manual review required; geometric overlap is not a semantic verdict"
   },
   "reconciliation": {
-    "expected_cross_type_overlap_pairs": 1,
+    "expected_cross_type_overlap_pairs": 166,
     "pairs_by_type_match": true,
-    "queued_cross_type_overlap_pairs": 1,
+    "queued_cross_type_overlap_pairs": 166,
     "status": "PASS"
   },
   "review_status": "UNREVIEWED",
-  "same_type_overlap_pairs_not_queued": 43726,
+  "same_type_overlap_pairs_not_queued": 44662,
   "schema_version": 1
 }

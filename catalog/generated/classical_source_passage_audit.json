@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "source_documents": 452,
+  "source_documents_by_work": {
+    "HUANG_DI_NEI_JING": 179,
+    "JIN_GUI_YAO_LUE": 126,
+    "SHANG_HAN_LUN": 103,
+    "ZHEN_JIU_DA_CHENG": 44
+  },
+  "source_documents_by_role": {
+    "AUXILIARY_NOTE": 11,
+    "CLASSICAL_CHAPTER": 158,
+    "COMMENTARY": 8,
+    "FORMULA_COLLECTION": 2,
+    "FORMULA_REFERENCE": 210,
+    "SECTION_CONTAINER": 6,
+    "SOURCE_NOTE": 52,
+    "WORK_ROOT": 5
+  },
+  "source_passages": 95058,
+  "passage_mentions": 116512,
+  "entity_mention_occurrences": 88884,
+  "contextual_term_occurrences": 27628,
+  "passage_mentions_by_type": {
+    "ACUPOINT": 3515,
+    "ACUPUNCTURE_TECHNIQUE": 3055,
+    "CLASSICAL_SOURCE": 344,
+    "CLASSICAL_THEORY": 3264,
+    "FORMULA": 12790,
+    "HERB": 32410,
+    "ORGAN": 42786,
+    "POINT": 1241,
+    "PULSE": 1811,
+    "SYMPTOM": 9963,
+    "SYNDROME": 3959,
+    "TONGUE": 1153,
+    "TREATMENT": 221
+  },
+  "native_classical_document_references": 0,
+  "unassigned_entity_mentions_outside_single_passage": 0,
+  "unassigned_contextual_terms_outside_single_passage": 0,
+  "policy": {
+    "passage_mentions": "source occurrence only; not a treatment, efficacy, diagnosis or theory assertion",
+    "native_references": "only existing, resolved SiYuan BLOCK_REFERENCE edges whose two documents are in supported source works",
+    "sentence_boundary": "an occurrence crossing passage boundaries is retained in its source table and is not linked to a passage"
+  }
+}

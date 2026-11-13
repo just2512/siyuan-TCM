@@ -1,29 +1,32 @@
 {
   "schema_version": 3,
+  "source_note_association_rows": 155,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 93,
-      "pairs_with_predicate_between": 0,
+      "ordered_typed_pairs": 135,
+      "pairs_with_predicate_between": 1,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
-      "eligible_pairs": 0,
-      "marker_sentences_without_typed_pair": 63,
-      "typed_pair_sentences_without_marker": 59,
-      "marker_sentences_with_subject_type": 4,
+      "eligible_pairs": 1,
+      "marker_sentences_without_typed_pair": 62,
+      "typed_pair_sentences_without_marker": 77,
+      "marker_sentences_with_subject_type": 7,
       "marker_sentences_with_object_type": 12,
-      "marker_sentences_with_both_endpoint_types": 0,
+      "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
-      "marker_sentences_without_subject_type": 59,
+      "marker_sentences_without_subject_type": 56,
       "marker_sentences_without_object_type": 51,
       "units_with_marker": 61,
-      "units_with_eligible_pair": 0,
-      "extracted_rows": 0,
+      "units_with_eligible_pair": 1,
+      "extracted_rows": 1,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
-        "SYMPTOM": 5,
+        "ACUPUNCTURE_TECHNIQUE": 6,
+        "ACUPOINT": 2,
+        "SYMPTOM": 8,
         "FORMULA": 2,
         "SYNDROME": 14,
         "TREATMENT": 1
@@ -51,8 +54,10 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "TREATMENT": 342,
-        "SYMPTOM": 10,
+        "SYMPTOM": 16,
         "FORMULA": 39,
+        "ACUPUNCTURE_TECHNIQUE": 4,
+        "CLASSICAL_THEORY": 10,
         "SYNDROME": 2
       }
     },
@@ -78,7 +83,11 @@
       "extracted_rows": 0,
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "FORMULA": 238,
-        "SYMPTOM": 141,
+        "CLASSICAL_THEORY": 74,
+        "SYMPTOM": 222,
+        "ACUPUNCTURE_TECHNIQUE": 80,
+        "ACUPOINT": 48,
+        "CLASSICAL_SOURCE": 1,
         "SYNDROME": 15,
         "TREATMENT": 7
       }
@@ -260,39 +269,67 @@
           ]
         },
         {
-          "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
-          "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
-          "tree_position": "0.820",
-          "block_id": "20240511124241-c93256s",
+          "unit_id": "ac1e5d5c88eb76351fb4662cd1ee9e8e9c3ceb7fa1818735f1875185b14f9dfe",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1315",
+          "block_id": "20240511101226-0jgidwd",
           "sentence_start": 0,
-          "sentence_end": 65,
-          "sentence_text": "1，同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重，因此，西医从原来诊断“癫痫”该作诊断为“Rasmussen”综合症。",
+          "sentence_end": 146,
+          "sentence_text": "03/12/2007，双胞胎兄弟，白人，17岁，二人都被西医诊断为Lyme Disease，哥哥去年因为头痛、鼻塞、身体痛、恶寒、倦怠、无法集中注意力等不适症状，于是去找西医检查，经过验血后被告知得到Lyme Disease，于是开始吃多种维他命跟一些止痛药抗生素等，病情至今都一直没有改善。",
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
-              "candidate_id": "term_3fb2673f8e43a434131a92b9",
-              "term": "只是",
+              "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+              "term": "头痛",
               "candidate_type": "SYMPTOM",
-              "start": 11,
-              "end": 13
+              "start": 52,
+              "end": 54
             }
           ],
           "candidate_spans_truncated": false,
           "predicate_marker_spans": [
             {
               "text": "诊断为",
-              "start": 47,
-              "end": 50
+              "start": 30,
+              "end": 33
             }
           ]
         },
         {
-          "unit_id": "df27bd3624e78baae7b8097d914d11b8c590f537d83a830e536c34197b2018b3",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240522082141-eq7k2wu/20240522082253-87maqb6.sy",
-          "source_sha256": "7736b6d5faf65788c4a7ff28c297ad16e3619a1683b8824b8871553f1ee1e559",
-          "tree_position": "0.5",
-          "block_id": "20240522091345-74ie0ve",
+          "unit_id": "332bb6bfce54f09c25a1690a8912159b4fecb3e04fec036b8b2e99ed6e4fc944",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
+          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
+          "tree_position": "0.1470",
+          "block_id": "20240511101226-9gb3aa6",
+          "sentence_start": 0,
+          "sentence_end": 190,
+          "sentence_text": "10/23/2007，四诊，此人因为无力负担药钱，所以迟至今日才来复诊，体力好转很多，睡眠正常了，双脚仍冷，胸闷减少，有左侧头痛，左眼痛，心悸仍有，但是全身的红斑几乎退尽，同时第五椎压痛已经消失，诊断为此人之红斑性狼疮此时如果给西医诊断红斑性狼疮必然已经好了，但是依照中医的正常标准，还有一段路要走，因为她双脚还是冷的，我们必须要让病人吃药吃到双脚变热后，方可停药，如此才能断根。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+              "term": "头痛",
+              "candidate_type": "SYMPTOM",
+              "start": 62,
+              "end": 64
+            }
+          ],
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "诊断为",
+              "start": 98,
+              "end": 101
+            }
+          ]
+        },
+        {
+          "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
+          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
+          "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
+          "tree_position": "0.820",
+          "block_id": "20240511124241-c93256s",
           "sentence_start": 0,
           "sentence_end": 65,
           "sentence_text": "1，同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重，因此，西医从原来诊断“癫痫”该作诊断为“Rasmussen”综合症。",
@@ -347,34 +384,6 @@
               "text": "诊断为",
               "start": 263,
               "end": 266
-            }
-          ]
-        },
-        {
-          "unit_id": "469343804dd7d84f14e170b6e28d09efd9d11e4c8983bc003b4ba7ca6f6fe98a",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511100325-gz7txlm/20240511100431-5ahi9wn.sy",
-          "source_sha256": "6ec7d1a2f83a5e33d8ded61ee972b77b56511b4483f3f015f08dfc83c302f556",
-          "tree_position": "0.1466",
-          "block_id": "20240511101226-mci07sp",
-          "sentence_start": 0,
-          "sentence_end": 270,
-          "sentence_text": "08/31/2007初诊，白人，女，67岁，被本地西医诊断得到红斑性狼疮， 她一被告知得到此病后的第一反应，就是来看我，因此完全没有被西医碰过，所以也从未吃过西药，自述近来体重少了10磅，全身呈现红斑到处，体无完肤，连续 三个月不断的落发，环唇一圈是又干又红，且很热痛，耳中自觉非常干热，问诊结果是，失眠严重，口中干燥，大便正常，喜喝冷饮，双脚冰冷，胃口很好，奇怪的 是一觉得饿，就必须立刻吃些食物，否则必头痛，脉诊得到数且大脉，舌苔中黄湿，四周红色且色深，督脉压诊在第五椎有压痛点，诊断为此人属于寒热并结，眼诊 可知其肝中有毒素造成损伤。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_963eb41f2c7b349ac0e39afe",
-              "term": "寒热并结",
-              "candidate_type": "SYNDROME",
-              "start": 249,
-              "end": 253
-            }
-          ],
-          "candidate_spans_truncated": false,
-          "predicate_marker_spans": [
-            {
-              "text": "诊断为",
-              "start": 242,
-              "end": 245
             }
           ]
         },
@@ -471,6 +480,34 @@
               "text": "证属",
               "start": 84,
               "end": 86
+            }
+          ]
+        },
+        {
+          "unit_id": "f216a55701e70a772a9eac987ba83691c89bf3eb44d630a50e556822f04c5741",
+          "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153655-4hwby6u.sy",
+          "source_sha256": "2216584e92f6d2c132158b35b2b06662341d6c9e4e980d2dccc13f854c4811b5",
+          "tree_position": "0.108",
+          "block_id": "20240614123655-7i0t9er",
+          "sentence_start": 89,
+          "sentence_end": 104,
+          "sentence_text": "狂多忿怒，人莫能制，证属有余。",
+          "sentence_truncated": false,
+          "typed_candidate_spans": [
+            {
+              "candidate_id": "term_bd1a606d3c16c28d465dc826",
+              "term": "有余",
+              "candidate_type": "SYNDROME",
+              "start": 101,
+              "end": 103
+            }
+          ],
+          "candidate_spans_truncated": false,
+          "predicate_marker_spans": [
+            {
+              "text": "证属",
+              "start": 99,
+              "end": 101
             }
           ]
         }
@@ -574,6 +611,13 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
+              "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+              "term": "腹痛",
+              "candidate_type": "SYMPTOM",
+              "start": 314,
+              "end": 316
+            },
+            {
               "candidate_id": "term_64545d406a13cb38024797eb",
               "term": "意消",
               "candidate_type": "TREATMENT",
@@ -639,6 +683,13 @@
               "end": 19
             },
             {
+              "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+              "term": "腹痛",
+              "candidate_type": "SYMPTOM",
+              "start": 25,
+              "end": 27
+            },
+            {
               "candidate_id": "519c19d856f9890b274e59564db7bb0d5e6f22ad65619f52e34d6559ece26942",
               "term": "附子汤",
               "candidate_type": "FORMULA",
@@ -700,6 +751,13 @@
               "candidate_type": "SYMPTOM",
               "start": 19,
               "end": 21
+            },
+            {
+              "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+              "term": "腹痛",
+              "candidate_type": "SYMPTOM",
+              "start": 27,
+              "end": 29
             },
             {
               "candidate_id": "6bc6c7e7b6356adb5570fbdafc6f161dbce5404a0c3ca81c0ff5681073b3bb7b",
@@ -1151,6 +1209,13 @@
           "sentence_truncated": false,
           "typed_candidate_spans": [
             {
+              "candidate_id": "term_a72794563119abce63864901",
+              "term": "上焦",
+              "candidate_type": "CLASSICAL_THEORY",
+              "start": 12,
+              "end": 14
+            },
+            {
               "candidate_id": "term_c5bab9ceac21afaaf540dfe1",
               "term": "清降者",
               "candidate_type": "TREATMENT",
@@ -1180,6 +1245,13 @@
           "sentence_text": "（经疏云∶硝者消也、五金八石、皆能消之、况脏腑之积聚乎、其直往无前之性、所谓无坚不破、无热不荡者也、病非邪实深固、闭结不通、不可轻投、恐误伐下焦真阴故也、无己曰∶热淫于内、治以咸寒、气坚者以咸软之、热盛者以寒消之、故仲景大陷胸汤、大承气汤、调胃承气汤、皆用芒硝以软坚去实热、结不至坚者、不可用也、佐之以苦、故用大黄相须为使、按芒硝消散、破结软坚、大黄推荡、走而不守、故二药相须、同为峻下之剂、好古曰∶本草言芒硝堕胎、然妊娠伤寒可下者、兼用大黄以润燥、软坚、泻热、而母子相安、经曰∶有故无殒、亦无殒也、此之谓欤、谓药自病当之、故胎无患也．",
           "sentence_truncated": false,
           "typed_candidate_spans": [
+            {
+              "candidate_id": "term_e32a095e39137789184ff524",
+              "term": "下焦",
+              "candidate_type": "CLASSICAL_THEORY",
+              "start": 130,
+              "end": 132
+            },
             {
               "candidate_id": "term_e41aae4b9902641cb100b82d",
               "term": "咸寒",

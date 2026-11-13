@@ -1,8 +1,26 @@
 {
-  "candidate_rows": 67652,
-  "distinct_occurrences": 67566,
-  "extra_rule_assignments": 86,
+  "candidate_rows": 97943,
+  "distinct_occurrences": 97799,
+  "extra_rule_assignments": 144,
   "multi_rule_examples": [
+    {
+      "block_id": "20230927173057-2zit5l2",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 66,
+      "character_start": 64,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20230925153918-gplc3rz/20230927173054-j5a4zfg.sy",
+      "evidence_start": "52",
+      "evidence_text": "明是哪一经，症状是感冒、头痛、脉洪大",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "23f157b6ac133f512512e3023fa73a4cd01e1894c64347f917b870489faeef0d",
+      "term": "头痛",
+      "tree_position": "0.5",
+      "unit_id": "73ac185da175770acbba6a22fc4e4389d5735a2e009188d0d9b2cf7eb41e4001"
+    },
     {
       "block_id": "20230926162426-i159b0e",
       "candidate_id": "term_85385f4a812bbf2a5a241774",
@@ -38,6 +56,78 @@
       "term": "呕吐",
       "tree_position": "0.61",
       "unit_id": "aff0e397cc888c07b80da134d7b343803ee9ae47505712554bf71df5bdafed6f"
+    },
+    {
+      "block_id": "20240508184456-r566gub",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 161,
+      "character_start": 159,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240508180416-c665q99.sy",
+      "evidence_start": "147",
+      "evidence_text": "很渴又烦躁，然后或者是，头痛在两个眉毛这个地方，就是",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e627fc80eda413f7f06e27b7d5682fcb75e131c67f5ba5d0d00dceee8ac7e8f9",
+      "term": "头痛",
+      "tree_position": "0.335",
+      "unit_id": "8b8ff85e697e04a511ab6d0c939b500e7c68b0b66eec92861d93184ea6dc430a"
+    },
+    {
+      "block_id": "20240508190210-xbdkpal",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 24,
+      "character_start": 22,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240508180416-c665q99.sy",
+      "evidence_start": "19",
+      "evidence_text": "症状：头痛项强，身痛， 胸满 足软",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e627fc80eda413f7f06e27b7d5682fcb75e131c67f5ba5d0d00dceee8ac7e8f9",
+      "term": "头痛",
+      "tree_position": "0.516",
+      "unit_id": "73f096267aad766d32a51bfbcf6b556665d0de41207af80af4afdcd65e427375"
+    },
+    {
+      "block_id": "20240509093228-da4sgw0",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 1357,
+      "character_start": 1355,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509093133-ogrbnqq.sy",
+      "evidence_start": "1343",
+      "evidence_text": "样的症状，六七天不大便，头痛，发烧，但是如果他的小便",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7a94cb68c0a17aa714e81246ccbed322203131b07daa7478122a7695c2e0cab2",
+      "term": "头痛",
+      "tree_position": "0.20",
+      "unit_id": "a7a3130c60bf332b4ab2825a033d6aad0d7d90528fcdd624eb44f4eeb0259890"
+    },
+    {
+      "block_id": "20240509122725-2n47n6m",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 330,
+      "character_start": 328,
+      "document": "20230925135338-m9a0k5o/20230925135414-0lbaja5/20240508160844-amtdfxq/20240509115835-12jdvt9.sy",
+      "evidence_start": "316",
+      "evidence_text": "他的症状是比如说感冒啊、头痛啊、发烧啊，然后脉就已经",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "2be335efce1f05414224be0236ba4e0a8b5c8e5cc882dbae06bd2a56296e5cf2",
+      "term": "头痛",
+      "tree_position": "0.71",
+      "unit_id": "b6222cc6241a1dd1511712bc3ae5f124b30d05484f9d5352542e80abb92dda20"
     },
     {
       "block_id": "20240509171350-251c2fd",
@@ -167,6 +257,24 @@
     },
     {
       "block_id": "20230928081816-y5bpy1n",
+      "candidate_id": "term_e233dc2af34a1eb8c9665ce7",
+      "candidate_type": "SYMPTOM",
+      "character_end": 33,
+      "character_start": 31,
+      "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+      "evidence_start": "19",
+      "evidence_text": "方面的症状，如呼吸短气、气喘、咳嗽、心脏痛、胃痛等",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+      "term": "气喘",
+      "tree_position": "0.214",
+      "unit_id": "cf0acff9d7069ef4b622db96b47204b54427df37c037b88c266260cc931bcd53"
+    },
+    {
+      "block_id": "20230928081816-y5bpy1n",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
       "character_end": 36,
@@ -180,6 +288,24 @@
       ],
       "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
       "term": "咳嗽",
+      "tree_position": "0.214",
+      "unit_id": "cf0acff9d7069ef4b622db96b47204b54427df37c037b88c266260cc931bcd53"
+    },
+    {
+      "block_id": "20230928081816-y5bpy1n",
+      "candidate_id": "term_dd17fc51087b9551b7e6c54c",
+      "candidate_type": "SYMPTOM",
+      "character_end": 43,
+      "character_start": 41,
+      "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+      "evidence_start": "29",
+      "evidence_text": "气、气喘、咳嗽、心脏痛、胃痛等",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+      "term": "胃痛",
       "tree_position": "0.214",
       "unit_id": "cf0acff9d7069ef4b622db96b47204b54427df37c037b88c266260cc931bcd53"
     },
@@ -200,6 +326,24 @@
       "term": "咳嗽",
       "tree_position": "0.33",
       "unit_id": "3a6d11416acc0d80ed86a73128b69fdfdbc8b4ff75c750f9eb06394c9c6f1587"
+    },
+    {
+      "block_id": "20231206102851-o8w34vr",
+      "candidate_id": "term_e5ac64f3cdb880b41757df11",
+      "candidate_type": "SYMPTOM",
+      "character_end": 32,
+      "character_start": 30,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+      "evidence_start": "18",
+      "evidence_text": "食即汗出，甚至是自汗出，喘息恶风，衣服常被汗浸湿，口",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+      "term": "喘息",
+      "tree_position": "0.751",
+      "unit_id": "5276bf45f9d17011a783468a7c3cc69699ae90a7d5a33667937ee4d45c40ee96"
     },
     {
       "block_id": "20231206102858-w9uqnkz",
@@ -274,6 +418,24 @@
       "unit_id": "fe0e6d4a3ed4e46cda96d286394e97e3f8ad0f5c68296eb8ad69f6087701d853"
     },
     {
+      "block_id": "20240524095738-oshi05q",
+      "candidate_id": "term_b3b2e26f3052ae56aa3ac59c",
+      "candidate_type": "SYMPTOM",
+      "character_end": 150,
+      "character_start": 147,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+      "evidence_start": "135",
+      "evidence_text": "出来，出不来的一种症状，肩背痛，如果寸口脉，讲到寸口脉",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+      "term": "肩背痛",
+      "tree_position": "0.647",
+      "unit_id": "88a48019f9abe0f867d384ad1fcfcc6463e4af3f1fdb1850f00ecff884b843d9"
+    },
+    {
       "block_id": "20240524163035-fbs5bks",
       "candidate_id": "term_85618f8e38029dfe96ff7013",
       "candidate_type": "SYMPTOM",
@@ -290,6 +452,42 @@
       "term": "呕吐",
       "tree_position": "0.1278",
       "unit_id": "547dfb52b909a5d0daab4973707cbf8c6769ff94867e82e825b6e6353e9e8ab7"
+    },
+    {
+      "block_id": "20240527093954-8p2pbs0",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 832,
+      "character_start": 830,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+      "evidence_start": "818",
+      "evidence_text": "，那他这样陈述这个症状，头痛经常骨重怯然少气，哕、噫",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+      "term": "头痛",
+      "tree_position": "0.1665",
+      "unit_id": "e4efbbd97736c0f2c55c4121bab01aa178cbc4be10f5d84be24bbba37abcf46d"
+    },
+    {
+      "block_id": "20240606095243-hn5wq9s",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 38,
+      "character_start": 36,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "24",
+      "evidence_text": "与少阴同时生病，其症状是头痛口干，烦躁腹满状",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "头痛",
+      "tree_position": "0.989",
+      "unit_id": "07c7521e023b65d9bf44905f63ba4d45625badd45842a045fcd1cc0d90cded32"
     },
     {
       "block_id": "20240606100030-63mgrmr",
@@ -310,6 +508,24 @@
       "unit_id": "8655fba5a85add65e786781154609a00c0aabbb5e4b88c31ba43c7ce69fa28f3"
     },
     {
+      "block_id": "20240606102045-64vq3zz",
+      "candidate_id": "term_0d06dc26204765eaf82efd7a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 58,
+      "character_start": 56,
+      "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
+      "evidence_start": "44",
+      "evidence_text": "少阴之厥逆，其主要症状是心痛牵引到喉部",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
+      "term": "心痛",
+      "tree_position": "0.1569",
+      "unit_id": "fdaaa1a6b1502d92efbf7b6a05bc00450c734ddabb237427f1b9847f0bec6267"
+    },
+    {
       "block_id": "20240606104401-c3xvejm",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
@@ -326,6 +542,42 @@
       "term": "咳嗽",
       "tree_position": "0.2158",
       "unit_id": "bc397e031d767959ccb2fd3084f8d8a9cd3cbb53411121326bc3ed83fcf1a0f4"
+    },
+    {
+      "block_id": "20240219160955-olvv1fy",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 13,
+      "character_start": 11,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+      "evidence_start": "0",
+      "evidence_text": "桂枝汤证就是这四个症状头痛,发热,有汗,恶风,风吹",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+      "term": "头痛",
+      "tree_position": "0.86",
+      "unit_id": "0e21876a1cc6459de788e4bc4e06c10e6da2e7fee2a4ecfb3150d65c4db81a11"
+    },
+    {
+      "block_id": "20240220131918-2gk5n4j",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 7,
+      "character_start": 5,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "0",
+      "evidence_text": "主要症状，头痛，发热，身疼腰痛，骨节疼",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "头痛",
+      "tree_position": "0.326",
+      "unit_id": "180b7fa0ceb0a69c174ffe47c0255aa4d43f90f637e89ede6a0a4dd94983bbff"
     },
     {
       "block_id": "20240220131918-2gk5n4j",
@@ -364,6 +616,24 @@
       "unit_id": "180b7fa0ceb0a69c174ffe47c0255aa4d43f90f637e89ede6a0a4dd94983bbff"
     },
     {
+      "block_id": "20240220131918-2yjdse8",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 360,
+      "character_start": 358,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+      "evidence_start": "346",
+      "evidence_text": "，伤寒的症状没了，恶寒、头痛、身痛、发烧的症状没了",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+      "term": "头痛",
+      "tree_position": "0.568",
+      "unit_id": "6d0380615bf813b9e154a6bfa6c9a04a4bcb24201f2f779dc707430ebcb91c67"
+    },
+    {
       "block_id": "20240220131918-2w4q46v",
       "candidate_id": "term_85618f8e38029dfe96ff7013",
       "candidate_type": "SYMPTOM",
@@ -380,6 +650,42 @@
       "term": "呕吐",
       "tree_position": "0.2350",
       "unit_id": "2e7ff4e4c4687eae0e38daec02d347b230040795575576476c3a097b4efd2158"
+    },
+    {
+      "block_id": "20240312161259-ou6qqpu",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 360,
+      "character_start": 358,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132636-iyt7sxr.sy",
+      "evidence_start": "346",
+      "evidence_text": "，伤寒的症状没了，恶寒、头痛、身痛、发烧的症状没了",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "7848c3d3466b42b20aa62daae6944a523958b50f696a3f10f567830b08434499",
+      "term": "头痛",
+      "tree_position": "0.2",
+      "unit_id": "57f823a0e69f081c5379b6b446d5936dd9c6129a851d5d102c000563d134a03b"
+    },
+    {
+      "block_id": "20240312150958-6dk9h4o",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 7,
+      "character_start": 5,
+      "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132644-tddzcth.sy",
+      "evidence_start": "0",
+      "evidence_text": "主要症状，头痛，发热，身疼腰痛，骨节疼",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "f624aa2c4616d16467af8504f21f0f5011ead3ddb7577e550deb8e9101a78057",
+      "term": "头痛",
+      "tree_position": "0.7",
+      "unit_id": "8283284d8644c8072d88856647183a5e964bf3cd976de9d43c16aa11cfde0235"
     },
     {
       "block_id": "20240312150958-6dk9h4o",
@@ -472,6 +778,78 @@
       "unit_id": "b91b8561c9434cb61c041f0f93c70ddc8d2f159a9d5abdb7a6dc716b32e6abfa"
     },
     {
+      "block_id": "20240511095102-8vnwx0r",
+      "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+      "candidate_type": "SYMPTOM",
+      "character_end": 88,
+      "character_start": 86,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-dttef46.sy",
+      "evidence_start": "74",
+      "evidence_text": "是体重减轻、疲倦、贫血、腹痛和肝肿大",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "9a1dace9d52dfa46b6123e65a2db5765ddd9ccff96b5b765ca9784d56f1f28b3",
+      "term": "腹痛",
+      "tree_position": "0.181",
+      "unit_id": "841f51c44da16f15b3fc7144d27d86d8cd7ed24bea42f3dad3a632cc55e512dd"
+    },
+    {
+      "block_id": "20240511095102-s2h3glv",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 43,
+      "character_start": 41,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-dttef46.sy",
+      "evidence_start": "29",
+      "evidence_text": "病初期常见症状包括发烧、头痛、肌肉痛、疲倦、流鼻涕、",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "9a1dace9d52dfa46b6123e65a2db5765ddd9ccff96b5b765ca9784d56f1f28b3",
+      "term": "头痛",
+      "tree_position": "0.1946",
+      "unit_id": "4801c5585c0888ae92772500991833e0f05e15ca939c94ab9abb5454a5340ded"
+    },
+    {
+      "block_id": "20240511095547-de5olnk",
+      "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+      "candidate_type": "SYMPTOM",
+      "character_end": 88,
+      "character_start": 86,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-zg0c6hu.sy",
+      "evidence_start": "74",
+      "evidence_text": "是体重减轻、疲倦、贫血、腹痛和肝肿大",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5f5b1cd7b66c064b95c208f9cbf7e6821935461dbe39332e18ff5f245d63674b",
+      "term": "腹痛",
+      "tree_position": "0.181",
+      "unit_id": "07cd7d0f2a29e1f85e31a0ba6417bf501707846ef0bcdb2694444762790dce8d"
+    },
+    {
+      "block_id": "20240511095547-fzjqfxj",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 43,
+      "character_start": 41,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091932-zg0c6hu.sy",
+      "evidence_start": "29",
+      "evidence_text": "病初期常见症状包括发烧、头痛、肌肉痛、疲倦、流鼻涕、",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5f5b1cd7b66c064b95c208f9cbf7e6821935461dbe39332e18ff5f245d63674b",
+      "term": "头痛",
+      "tree_position": "0.1946",
+      "unit_id": "03d19c702d32bd24e978a1f9376affdf32ce06c7178606b15008cd55ef4cff76"
+    },
+    {
       "block_id": "20240511092028-5hms7yw",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
@@ -488,6 +866,42 @@
       "term": "咳嗽",
       "tree_position": "0.423",
       "unit_id": "e11a64bbda4de7ccb740ccbf80bfa4e68776d259fb8211c92d3e8a2cf4bb4424"
+    },
+    {
+      "block_id": "20240511092028-5hms7yw",
+      "candidate_id": "term_e233dc2af34a1eb8c9665ce7",
+      "candidate_type": "SYMPTOM",
+      "character_end": 76,
+      "character_start": 74,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "62",
+      "evidence_text": "见症状为呼吸困难、咳嗽、气喘、痰多等，由于呼吸变得费",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "气喘",
+      "tree_position": "0.423",
+      "unit_id": "e11a64bbda4de7ccb740ccbf80bfa4e68776d259fb8211c92d3e8a2cf4bb4424"
+    },
+    {
+      "block_id": "20240511092028-9egg79t",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 19,
+      "character_start": 17,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "5",
+      "evidence_text": "状为全身疲劳、猛打呵欠、头痛头晕、提不起劲来，所幸，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "头痛",
+      "tree_position": "0.791",
+      "unit_id": "d140e58f0de2127e1a9711befc02687eb3fac11c666cc399f53a83b9d56ca995"
     },
     {
       "block_id": "20240511092028-hczoifb",
@@ -562,6 +976,24 @@
       "unit_id": "947c716ec55c37b0afd2f2a0729b0cf188f69d9a4f5ef12d5b1ee724594059f4"
     },
     {
+      "block_id": "20240511092028-wuwfgn6",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 182,
+      "character_start": 180,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511091836-m3y1840/20240511091933-3mm3yij.sy",
+      "evidence_start": "168",
+      "evidence_text": "，发烧、肌肉酸痛、呕吐、头痛、喉咙痛、虚弱、淋巴结肿",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "874adcd843f4b3f2d27fd050c86543c211c688be33b2e0f50e632137609b6c06",
+      "term": "头痛",
+      "tree_position": "0.3022",
+      "unit_id": "947c716ec55c37b0afd2f2a0729b0cf188f69d9a4f5ef12d5b1ee724594059f4"
+    },
+    {
       "block_id": "20240511113641-y1exmf5",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
@@ -578,6 +1010,42 @@
       "term": "咳嗽",
       "tree_position": "0.22",
       "unit_id": "101f20d68001513058580aff2bcff0fcee382ca9739a3d586c821458998a652f"
+    },
+    {
+      "block_id": "20240511124241-ahjgn29",
+      "candidate_id": "term_f92f529fa994c71a76777173",
+      "candidate_type": "SYMPTOM",
+      "character_end": 13,
+      "character_start": 11,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
+      "evidence_start": "0",
+      "evidence_text": "症状：肝区和胃脘刺痛，腰痛,膝痛，胃口很差,欲呕吐",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
+      "term": "腰痛",
+      "tree_position": "0.548",
+      "unit_id": "a3aa0960f9ca478309e1bb20be769f15457bdf2b696dff80f82a2afc2b22f661"
+    },
+    {
+      "block_id": "20240522095637-h58xj4f",
+      "candidate_id": "term_f92f529fa994c71a76777173",
+      "candidate_type": "SYMPTOM",
+      "character_end": 14,
+      "character_start": 12,
+      "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240522082141-eq7k2wu/20240522082242-igbjmfy.sy",
+      "evidence_start": "0",
+      "evidence_text": "症状： 肝区和胃脘刺痛，腰痛, 膝痛，胃口很差,欲呕",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "eeb3fce0958f3e4707e7ac90203624e8e673324129ee5c3ac7112b3f2d04b4c2",
+      "term": "腰痛",
+      "tree_position": "0.4",
+      "unit_id": "22af347e336983246ebc372084c0d3e157f8f0cac8c7092c6cde15413f547cbd"
     },
     {
       "block_id": "20240910142227-2anw8df",
@@ -617,6 +1085,24 @@
     },
     {
       "block_id": "20231122160609-4tpy8vx",
+      "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+      "candidate_type": "SYMPTOM",
+      "character_end": 384,
+      "character_start": 382,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153043-wbu9jc8.sy",
+      "evidence_start": "373",
+      "evidence_text": "病在小腹部，表现为腹痛，大小便不通利，病名叫疝",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "6f867d08a4c5159512734d412c74d98014485c7ef931e01a050961ec21f1495f",
+      "term": "腹痛",
+      "tree_position": "0.14",
+      "unit_id": "bd4dbed1961e290b65626cfd9f75ccf9bdee58642c429955813f8acc4ba48f87"
+    },
+    {
+      "block_id": "20231122160609-4tpy8vx",
       "candidate_id": "term_7aa4db1e778375940901e25f",
       "candidate_type": "SYMPTOM",
       "character_end": 470,
@@ -650,6 +1136,24 @@
       "term": "发热",
       "tree_position": "0.15",
       "unit_id": "0a34cca76acb37719cf82845430bb7907fc3429a0792136766980b314bb09885"
+    },
+    {
+      "block_id": "20231122160323-snvck52",
+      "candidate_id": "term_e5ac64f3cdb880b41757df11",
+      "candidate_type": "SYMPTOM",
+      "character_end": 482,
+      "character_start": 480,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153048-72bybjd.sy",
+      "evidence_start": "468",
+      "evidence_text": "食即汗出，甚至是自汗出，喘息恶风，衣服常被汗浸湿，口",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "5eb894ebe49c2f3493a5093f1b22441d71a69c8d571253cc85e60b153cf9bc95",
+      "term": "喘息",
+      "tree_position": "0.37",
+      "unit_id": "47ba9f570b42ee4d921c840ef983676bfd9e3d4df411c3e536babdf1748dadd4"
     },
     {
       "block_id": "20231122160323-snvck52",
@@ -724,6 +1228,42 @@
       "unit_id": "74ab692153559d6eb563bd212605857ccf033905f8990f45aee259616a729444"
     },
     {
+      "block_id": "20231122160443-5ivtv37",
+      "candidate_id": "term_e5ac64f3cdb880b41757df11",
+      "candidate_type": "SYMPTOM",
+      "character_end": 25,
+      "character_start": 23,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153123-fdg93vj.sy",
+      "evidence_start": "18",
+      "evidence_text": "肺痈表现为喘息，两胁下胀满;肝痈表现为",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e8c08f996557f3be5dfa27e49500a7482cf7ed11abc751887cd586813298bdf2",
+      "term": "喘息",
+      "tree_position": "0.16",
+      "unit_id": "f1476f68a3072b6d109af51b4379c52c65cf284cc269f3d93a6c97a31fb630b5"
+    },
+    {
+      "block_id": "20231122161615-0epc3yp",
+      "candidate_id": "term_0d06dc26204765eaf82efd7a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 28,
+      "character_start": 26,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154005-n70mh8g/20231122153429-abp2ioz.sy",
+      "evidence_start": "14",
+      "evidence_text": "是出现许多症状，如心烦，心痛，目赤，欲呕，呕酸，常感",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "84fc73b04b0e2fadba0a3ee7e01983d6c19c44f16649944046fd85a1a18e662b",
+      "term": "心痛",
+      "tree_position": "0.159",
+      "unit_id": "e510c908d62d9b601eb4d1f4756e1f68f9cb42982ddb101061fedb63567b79ac"
+    },
+    {
       "block_id": "20231122161108-njm3fj2",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
@@ -778,6 +1318,114 @@
       "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
     },
     {
+      "block_id": "20231122164333-kxjx5cp",
+      "candidate_id": "term_ca5b75f0b21a3de6123cee87",
+      "candidate_type": "SYMPTOM",
+      "character_end": 69,
+      "character_start": 65,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154239-578b4kf.sy",
+      "evidence_start": "53",
+      "evidence_text": "有的形成痹证，有的表现为麻木不仁，证候表现千变万化，这是",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "78a586c54e36e3e77e3bb395aa829e13f73cc7c8b40e18dd2e3f1402f6c04d5c",
+      "term": "麻木不仁",
+      "tree_position": "0.61",
+      "unit_id": "d5b0c0b71b31fd9f1a254acd495d361e5e6005650e2d3f5d3ad9a3e49c6ceacc"
+    },
+    {
+      "block_id": "20231122162425-vp3n5q1",
+      "candidate_id": "term_e5ac64f3cdb880b41757df11",
+      "candidate_type": "SYMPTOM",
+      "character_end": 61,
+      "character_start": 59,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154326-sqodl5z.sy",
+      "evidence_start": "47",
+      "evidence_text": "患胀病表现为：胸中虚满，喘息咳嗽",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "b22cf949124cf618901daece92e0806dec6a6c927e90f2bd1dc8574e7f40abbb",
+      "term": "喘息",
+      "tree_position": "0.23",
+      "unit_id": "5989d3542a67b33ed81615a492a992c2d75333699cb70c46ea6475b63866deb6"
+    },
+    {
+      "block_id": "20231122162219-w9p64sb",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 19,
+      "character_start": 17,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154332-rhp1dkw.sy",
+      "evidence_start": "5",
+      "evidence_text": "头痛，表现为记忆力减退，头痛时用手按头，却找不到疼痛",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4ed992eb9fbbe169c29ddf30dc9eb752d5b00c110a11446ad19438b37cbf91ff",
+      "term": "头痛",
+      "tree_position": "0.6",
+      "unit_id": "dcd74bf50fb30ace1f0d9c126ad4b006e2de8a733c8272ee991a6bae156c97d1"
+    },
+    {
+      "block_id": "20231122162219-skytzme",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 13,
+      "character_start": 11,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154332-rhp1dkw.sy",
+      "evidence_start": "0",
+      "evidence_text": "经气上逆而头痛，表现为头痛严重，耳前后的脉络发热，",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "4ed992eb9fbbe169c29ddf30dc9eb752d5b00c110a11446ad19438b37cbf91ff",
+      "term": "头痛",
+      "tree_position": "0.8",
+      "unit_id": "7ea6fec81e7ad5790951957a487b51d5bc6823b380e4f5065e0944e7e8272f4a"
+    },
+    {
+      "block_id": "20231122162209-9wsvkjb",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 8,
+      "character_start": 6,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154333-d9qbc6w.sy",
+      "evidence_start": "0",
+      "evidence_text": "热病，表现为头痛，鬓骨的部位和眼睛周围的",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "e48379ff558f7f0d952c1fd4d6fccc6365e310e3734640edd187b66274a0ab6b",
+      "term": "头痛",
+      "tree_position": "0.39",
+      "unit_id": "751f910d6d820d5e3bad83ec75cf32a34b0806117fe38973d293ef9bb44a9e53"
+    },
+    {
+      "block_id": "20231122162143-hzg0uq2",
+      "candidate_id": "term_f92f529fa994c71a76777173",
+      "candidate_type": "SYMPTOM",
+      "character_end": 42,
+      "character_start": 40,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154335-ywliryg.sy",
+      "evidence_start": "28",
+      "evidence_text": "表面按摸不到，症见腹胀，腰痛，大便难，肩、背、颈、项",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "63d0219a78d3997c5886705141d9c40a31dfebcc46c5c914647fa67add239c77",
+      "term": "腰痛",
+      "tree_position": "0.15",
+      "unit_id": "70ec62e55ace65781199292f8357b4ced5d11b1b2db6f19c8727dff22602f7bc"
+    },
+    {
       "block_id": "20231122161945-6sqi58t",
       "candidate_id": "term_dd05a455a629d14c87a9980b",
       "candidate_type": "SYMPTOM",
@@ -794,6 +1442,60 @@
       "term": "咳嗽",
       "tree_position": "0.10",
       "unit_id": "6a0655a3bbc787418ef4e62cdcd69a5b3d7e333fe18e33bbbb99cb0fee75c8f4"
+    },
+    {
+      "block_id": "20231122161945-k704da2",
+      "candidate_id": "term_0d06dc26204765eaf82efd7a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 60,
+      "character_start": 58,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "46",
+      "evidence_text": "咙干燥而疼痛，心中烦乱，心痛，黄疸，痢疾，脊柱及大腿",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "心痛",
+      "tree_position": "0.98",
+      "unit_id": "9fc89fc9b4952282985f4119d1e0a66d93bffd4e5bfdc106c8de247a1f699601"
+    },
+    {
+      "block_id": "20231122161945-itr8na5",
+      "candidate_id": "term_0d06dc26204765eaf82efd7a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 32,
+      "character_start": 30,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "18",
+      "evidence_text": "疾病，其症状是心中烦躁，心痛，掌心发热",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "心痛",
+      "tree_position": "0.107",
+      "unit_id": "ee580b11e0ec7da046c2c366a83e72fde8f9152900526fb4e82a14690fc4db49"
+    },
+    {
+      "block_id": "20231122161945-9w69i1e",
+      "candidate_id": "term_b2ac3c986db16b77e4a1096a",
+      "candidate_type": "SYMPTOM",
+      "character_end": 25,
+      "character_start": 23,
+      "document": "20231122152203-jcgtpfz/20231122152211-pq2lyll/20231122154153-gygfnzy/20231122154341-54vd132.sy",
+      "evidence_start": "11",
+      "evidence_text": "骨所发生的疾病，其症状是头痛，颔部疼痛，外眼角痛，缺",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "28af7e38c1ef85a47d8703d903575ffef90f391979c5c02e4d9fa51b3b2d7b58",
+      "term": "头痛",
+      "tree_position": "0.140",
+      "unit_id": "2c075be4b2c9e36e84d4e507e3f62c0bfe15a64a2f3f372bf457d73dc3145ae2"
     },
     {
       "block_id": "20240614091345-290nvcs",
@@ -848,6 +1550,42 @@
       "term": "恶心",
       "tree_position": "0.371",
       "unit_id": "44776ed798df375281c6fe214651656c96470f3322e7c25e6349c29834548ad2"
+    },
+    {
+      "block_id": "20240612165524-m05s5p5",
+      "candidate_id": "term_2a5b1e8cfdfb1bb85e9cd432",
+      "candidate_type": "SYMPTOM",
+      "character_end": 76,
+      "character_start": 74,
+      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153652-w5ir60f.sy",
+      "evidence_start": "62",
+      "evidence_text": "觉消失，恶心呕吐，胸闷，腹痛腹泻严重者可出现喉头痉挛",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "3f13606c091a7a596638d132d4b89ef7f97400b5a1f92f9ba513cb6ceaa161e3",
+      "term": "腹痛",
+      "tree_position": "0.371",
+      "unit_id": "44776ed798df375281c6fe214651656c96470f3322e7c25e6349c29834548ad2"
+    },
+    {
+      "block_id": "20240616085515-az7m7us",
+      "candidate_id": "term_e233dc2af34a1eb8c9665ce7",
+      "candidate_type": "SYMPTOM",
+      "character_end": 566,
+      "character_start": 564,
+      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240205153707-yhy1wy8.sy",
+      "evidence_start": "558",
+      "evidence_text": "（如溺闭症见气喘面赤有斑",
+      "rule_ids": [
+        "SYMPTOM_CONTEXT_01",
+        "SYMPTOM_CONTEXT_02"
+      ],
+      "source_sha256": "a04f2ebedc54676a304912ff62e755af057af16f5088c1a529c3c573c4dca393",
+      "term": "气喘",
+      "tree_position": "0.154",
+      "unit_id": "4f0dafadf1158fca4c010cb010797456fe90637d9b618f2e7549f11405e033db"
     },
     {
       "block_id": "20240614103122-q0lzvez",
@@ -1064,503 +1802,21 @@
       "term": "发热",
       "tree_position": "0.68",
       "unit_id": "01861aaff8e0ab286fda2014cc16119bc51200d77e0de6f874425142c35a0e69"
-    },
-    {
-      "block_id": "20240612104246-ub5l9f8",
-      "candidate_id": "term_85385f4a812bbf2a5a241774",
-      "candidate_type": "SYMPTOM",
-      "character_end": 480,
-      "character_start": 478,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506082108-d7q9vbk.sy",
-      "evidence_start": "466",
-      "evidence_text": "些症状如咳嗽、食欲减退、发热或肠结核性腹泻等，获得好",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "1118b56976048d342861c60a753abe123f93db0dc575c55c7c03e98ee522f095",
-      "term": "发热",
-      "tree_position": "0.134",
-      "unit_id": "9d3f7670cc8c5fc3e108d7a165984236f62e3ebf729a450587b3d1f19f086320"
-    },
-    {
-      "block_id": "20240612085942-fwejd19",
-      "candidate_id": "term_85385f4a812bbf2a5a241774",
-      "candidate_type": "SYMPTOM",
-      "character_end": 267,
-      "character_start": 265,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506082109-v3odayy.sy",
-      "evidence_start": "253",
-      "evidence_text": "液伤邪陷，心包受邪，症见发热，神昏谵语等",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "96910b3ea0d5f02146a3e56034b0fa1e468ab8db964cd320f3d95adc6975bfd9",
-      "term": "发热",
-      "tree_position": "0.198",
-      "unit_id": "a0dc7a5aa85c51972b7760182ac5423790dd43286569543dafc26a265ce473ee"
-    },
-    {
-      "block_id": "20240612125038-lt4vib4",
-      "candidate_id": "term_85385f4a812bbf2a5a241774",
-      "candidate_type": "SYMPTOM",
-      "character_end": 175,
-      "character_start": 173,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506082111-rf5q9nn.sy",
-      "evidence_start": "169",
-      "evidence_text": "但对伴有发热及全身中毒症状者，则应酌",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "42503d6cf515c55cbd31612b87823d9ccd3281fee85869948a0bcd5a26c57fad",
-      "term": "发热",
-      "tree_position": "0.218",
-      "unit_id": "86fcbff6ca281597fc2ea1dadf5f526dc849b6837fbf79fbc66df15e7d086f4c"
-    },
-    {
-      "block_id": "20240612125038-0jmc1lg",
-      "candidate_id": "term_85385f4a812bbf2a5a241774",
-      "candidate_type": "SYMPTOM",
-      "character_end": 185,
-      "character_start": 183,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506082111-rf5q9nn.sy",
-      "evidence_start": "171",
-      "evidence_text": "进创口早期愈合，但对伴有发热及全身中毒症状者，则应酌",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "42503d6cf515c55cbd31612b87823d9ccd3281fee85869948a0bcd5a26c57fad",
-      "term": "发热",
-      "tree_position": "0.272",
-      "unit_id": "b99d89b96570c4d62ca28648f0dd2692a264e4553bac529a080b5afb5d793baf"
-    },
-    {
-      "block_id": "20240612161133-l7d0eoa",
-      "candidate_id": "term_dd05a455a629d14c87a9980b",
-      "candidate_type": "SYMPTOM",
-      "character_end": 89,
-      "character_start": 87,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506100113-gravi17.sy",
-      "evidence_start": "75",
-      "evidence_text": "左右即可收效，首先表现为咳嗽、咯痰的减少，其后为呼吸",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "f77100dba8b22477c2f4b82f525e6096cb19c4be0ff9507ac8a469032a3e744f",
-      "term": "咳嗽",
-      "tree_position": "0.112",
-      "unit_id": "ecc398a0669cf576700c6c6f75cecf5112b48c79b3660dfd91c60ff67b8b342d"
-    },
-    {
-      "block_id": "20240612193615-eu7fv3y",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 131,
-      "character_start": 129,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506102358-3l0i7cd.sy",
-      "evidence_start": "117",
-      "evidence_text": "系症状：口腔、咽喉灼痛，恶心，呕吐，腹痛，腹泻，便秘",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "edb6b2d08278e3d9521dd66f4da25d9ee452e24c9348ef892b91c418e208ae97",
-      "term": "恶心",
-      "tree_position": "0.81",
-      "unit_id": "46f5b397e06f3fe5f994079c1e5e87d29970eea800db37032e6d02428de51217"
-    },
-    {
-      "block_id": "20240612193615-eu7fv3y",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 134,
-      "character_start": 132,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506102358-3l0i7cd.sy",
-      "evidence_start": "120",
-      "evidence_text": "：口腔、咽喉灼痛，恶心，呕吐，腹痛，腹泻，便秘，腹胀",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "edb6b2d08278e3d9521dd66f4da25d9ee452e24c9348ef892b91c418e208ae97",
-      "term": "呕吐",
-      "tree_position": "0.81",
-      "unit_id": "46f5b397e06f3fe5f994079c1e5e87d29970eea800db37032e6d02428de51217"
-    },
-    {
-      "block_id": "20240613112944-whak64d",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 40,
-      "character_start": 38,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506102409-iiciolm.sy",
-      "evidence_start": "33",
-      "evidence_text": "中毒症状：恶心、呕吐、头痛，严重者引起",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "84cab90aed6b48dcc20fb95429417e1e31f272f325fd30e86a99d69f876e1884",
-      "term": "恶心",
-      "tree_position": "0.124",
-      "unit_id": "608273a34c54b5979ce4a0f395febd149fa73328a07bf30f422f7b169e9367a1"
-    },
-    {
-      "block_id": "20240613112944-whak64d",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 43,
-      "character_start": 41,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506102409-iiciolm.sy",
-      "evidence_start": "33",
-      "evidence_text": "中毒症状：恶心、呕吐、头痛，严重者引起痉挛",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "84cab90aed6b48dcc20fb95429417e1e31f272f325fd30e86a99d69f876e1884",
-      "term": "呕吐",
-      "tree_position": "0.124",
-      "unit_id": "608273a34c54b5979ce4a0f395febd149fa73328a07bf30f422f7b169e9367a1"
-    },
-    {
-      "block_id": "20240613132718-nyjjph0",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 148,
-      "character_start": 146,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506105055-dlsmi2x.sy",
-      "evidence_start": "134",
-      "evidence_text": "作用，临床表现为有恶心、呕吐、口渴、腹泻、头痛、眩晕",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "2b9a09e327a104fe9c6f009bb2bf6aabf2d465fb3e3fd9eea34451b178faa73c",
-      "term": "呕吐",
-      "tree_position": "0.148",
-      "unit_id": "c72adb7c313db65c2143fd61301c331165ea63297bb84eb403f2f6aa889105d1"
-    },
-    {
-      "block_id": "20240613132718-nyjjph0",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 638,
-      "character_start": 636,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506105055-dlsmi2x.sy",
-      "evidence_start": "624",
-      "evidence_text": "症状是痉挛，其次有恶心、呕吐、大小便失禁等一系列自主",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "2b9a09e327a104fe9c6f009bb2bf6aabf2d465fb3e3fd9eea34451b178faa73c",
-      "term": "呕吐",
-      "tree_position": "0.148",
-      "unit_id": "c72adb7c313db65c2143fd61301c331165ea63297bb84eb403f2f6aa889105d1"
-    },
-    {
-      "block_id": "20240613160145-4exfpcf",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 48,
-      "character_start": 46,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506105108-yxenhkc.sy",
-      "evidence_start": "34",
-      "evidence_text": "毒症状，主要表现有恶心、呕吐、腹痛、腹泻、头昏、头痛",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "c87c8c5eb76aa9cd955e115665c9af6416a95680838b5d8eca85dba8657632a4",
-      "term": "呕吐",
-      "tree_position": "0.105",
-      "unit_id": "8313cba8507d8936165454986491434687ad3ad308d7b079a2eae1fa6de13d86"
-    },
-    {
-      "block_id": "20240613160145-ls8hpos",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 54,
-      "character_start": 52,
-      "document": "20240205144800-g67i349/20240221195922-z9xrfyp/20240506105108-yxenhkc.sy",
-      "evidence_start": "40",
-      "evidence_text": "毒症状，主要表现有恶心、呕吐、腹痛、腹泻、头昏、头痛",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "c87c8c5eb76aa9cd955e115665c9af6416a95680838b5d8eca85dba8657632a4",
-      "term": "呕吐",
-      "tree_position": "0.234",
-      "unit_id": "60b7160a01fef18f4d03201394af04bac31b7b88bbd0456f09623afd70c7ece9"
-    },
-    {
-      "block_id": "20240902111611-0rt8atw",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 135,
-      "character_start": 133,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153644-1nc0eoh.sy",
-      "evidence_start": "121",
-      "evidence_text": "中枢神经系统为主，表现为呕吐，昏迷，嗜睡，恐惧，惊厥",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "d98f516c29d1c8da654d8361a569ae305c49ba2eafe056556d630007bf96a86d",
-      "term": "呕吐",
-      "tree_position": "0.45",
-      "unit_id": "a9a56e93a12b2b2ab60413e35d944f4f45dec1bdbb1632c8b7a50ea149a7d5fa"
-    },
-    {
-      "block_id": "20240903085853-4pa9u9t",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 147,
-      "character_start": 145,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153805-u9dlo5w.sy",
-      "evidence_start": "133",
-      "evidence_text": "症状有头晕、心悸、无力、恶心、呕吐、腹痛、腹泻",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "f00a71e9cadc69302f8a9bcf48c7fc5a55f8d46b74478f455779181b22961866",
-      "term": "恶心",
-      "tree_position": "0.51",
-      "unit_id": "e864696fc801ae2b2c7abd7cc071e3efc44cfd0bfd7af95d2b0a675f9a25f2ce"
-    },
-    {
-      "block_id": "20240903085853-4pa9u9t",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 150,
-      "character_start": 148,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153805-u9dlo5w.sy",
-      "evidence_start": "136",
-      "evidence_text": "头晕、心悸、无力、恶心、呕吐、腹痛、腹泻",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "f00a71e9cadc69302f8a9bcf48c7fc5a55f8d46b74478f455779181b22961866",
-      "term": "呕吐",
-      "tree_position": "0.51",
-      "unit_id": "e864696fc801ae2b2c7abd7cc071e3efc44cfd0bfd7af95d2b0a675f9a25f2ce"
-    },
-    {
-      "block_id": "20240903093442-3cftcqa",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 50,
-      "character_start": 48,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153823-0un29ve.sy",
-      "evidence_start": "45",
-      "evidence_text": "症状是恶心，呕吐，腹痛，腹泻，头昏",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "34f209947f9e8e3871e41cf2bdac8457a7813b880e350635555dd3d985df3c21",
-      "term": "恶心",
-      "tree_position": "0.54",
-      "unit_id": "0ed4a9ba8d97e1fb42b042ff28274f7ad653bd936aefe60ddebced066e6949a1"
-    },
-    {
-      "block_id": "20240903093442-3cftcqa",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 53,
-      "character_start": 51,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153823-0un29ve.sy",
-      "evidence_start": "45",
-      "evidence_text": "症状是恶心，呕吐，腹痛，腹泻，头昏，全身",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "34f209947f9e8e3871e41cf2bdac8457a7813b880e350635555dd3d985df3c21",
-      "term": "呕吐",
-      "tree_position": "0.54",
-      "unit_id": "0ed4a9ba8d97e1fb42b042ff28274f7ad653bd936aefe60ddebced066e6949a1"
-    },
-    {
-      "block_id": "20240903093442-pc2a2bq",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 51,
-      "character_start": 49,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153823-0un29ve.sy",
-      "evidence_start": "46",
-      "evidence_text": "症状是恶心，呕吐，腹痛，腹泻，头昏",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "34f209947f9e8e3871e41cf2bdac8457a7813b880e350635555dd3d985df3c21",
-      "term": "恶心",
-      "tree_position": "0.98",
-      "unit_id": "565a9413335c8af7987340eb83062bcd8acac6c5afc4825451313d819470af2e"
-    },
-    {
-      "block_id": "20240903093442-pc2a2bq",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 54,
-      "character_start": 52,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153823-0un29ve.sy",
-      "evidence_start": "46",
-      "evidence_text": "症状是恶心，呕吐，腹痛，腹泻，头昏，全身",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "34f209947f9e8e3871e41cf2bdac8457a7813b880e350635555dd3d985df3c21",
-      "term": "呕吐",
-      "tree_position": "0.98",
-      "unit_id": "565a9413335c8af7987340eb83062bcd8acac6c5afc4825451313d819470af2e"
-    },
-    {
-      "block_id": "20240902144615-7bmo6ph",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 35,
-      "character_start": 33,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153852-j5j7ry5.sy",
-      "evidence_start": "21",
-      "evidence_text": "降逆，主治胃热呕吐，症见呕吐酸腐，食入即吐，脘腹胀满",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "4899ca16ff56142512521e354c2ba855170a0aaae63b07f7682d9a59fd5517c9",
-      "term": "呕吐",
-      "tree_position": "0.125",
-      "unit_id": "9d4ce073f8362e8ffdb89bbce51d772f99372889a84a6e46570c51f8a878a3a9"
-    },
-    {
-      "block_id": "20240902143743-69ohy8r",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 90,
-      "character_start": 88,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153858-56v8a9r.sy",
-      "evidence_start": "76",
-      "evidence_text": "反应轻的一般表现为腹痛、呕吐、哮喘、荨麻疹、丘疹、头",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "7319d3a75a3eebc35dea015e725f704a7ab0b26df70cb4c875a3ba17029c9dd3",
-      "term": "呕吐",
-      "tree_position": "0.107",
-      "unit_id": "937c362d3884f7aa262dd6ba00305aa09d9c8b2512d994c16a829abe1fd36eab"
-    },
-    {
-      "block_id": "20240902143743-awesamb",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 222,
-      "character_start": 220,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205153858-56v8a9r.sy",
-      "evidence_start": "208",
-      "evidence_text": "反应轻的一般表现为腹痛、呕吐、哮喘、荨麻疹、丘疹、头",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "7319d3a75a3eebc35dea015e725f704a7ab0b26df70cb4c875a3ba17029c9dd3",
-      "term": "呕吐",
-      "tree_position": "0.180",
-      "unit_id": "3eccef3174975b07314a1b9df05327976087e95af1568e785cbd9d3d1da31dc7"
-    },
-    {
-      "block_id": "20240902135011-jsz1bvj",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 207,
-      "character_start": 205,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205170448-y5e24p4.sy",
-      "evidence_start": "198",
-      "evidence_text": "急性中毒症状有呕吐、淘米水样腹泻、蛋白尿、",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "5a5a088cebb130a12b5f976d5212170aa52081088354be0b654daf3e0cb47075",
-      "term": "呕吐",
-      "tree_position": "0.27",
-      "unit_id": "573f867b7015187b2465b2b8bfaf086959e2242e2a836d11d673fd674a40fcf3"
-    },
-    {
-      "block_id": "20240902135011-i36outg",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 13,
-      "character_start": 11,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240205170448-y5e24p4.sy",
-      "evidence_start": "0",
-      "evidence_text": "【毒性】急性中毒症状有呕吐、淘米水样腹泻、蛋白尿、",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "5a5a088cebb130a12b5f976d5212170aa52081088354be0b654daf3e0cb47075",
-      "term": "呕吐",
-      "tree_position": "0.106",
-      "unit_id": "f364abbccd97b1c892df62c5f65668cc2c76664e0fddc742eae2f2c2bd3781be"
-    },
-    {
-      "block_id": "20240902133948-rk1twqz",
-      "candidate_id": "term_561f5a3310cf5e9e0fb8b153",
-      "candidate_type": "SYMPTOM",
-      "character_end": 47,
-      "character_start": 45,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240206103439-tau9w0k.sy",
-      "evidence_start": "33",
-      "evidence_text": "毒症状：表现为食欲不振，恶心，呕吐，腹痛，腹泻，呼吸",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "84f3fa40e3f1874288025f2ba504e105b7aa8de3e2275e93ff1834d19f57b5ea",
-      "term": "恶心",
-      "tree_position": "0.52",
-      "unit_id": "1fbf44f366a6681bfdee434cfd768aaca13f70bad37bfe65505fb01166deac7e"
-    },
-    {
-      "block_id": "20240902133948-rk1twqz",
-      "candidate_id": "term_85618f8e38029dfe96ff7013",
-      "candidate_type": "SYMPTOM",
-      "character_end": 50,
-      "character_start": 48,
-      "document": "20240205144800-g67i349/20240222115302-lmaamn5/20240206103439-tau9w0k.sy",
-      "evidence_start": "36",
-      "evidence_text": "：表现为食欲不振，恶心，呕吐，腹痛，腹泻，呼吸困难，",
-      "rule_ids": [
-        "SYMPTOM_CONTEXT_01",
-        "SYMPTOM_CONTEXT_02"
-      ],
-      "source_sha256": "84f3fa40e3f1874288025f2ba504e105b7aa8de3e2275e93ff1834d19f57b5ea",
-      "term": "呕吐",
-      "tree_position": "0.52",
-      "unit_id": "1fbf44f366a6681bfdee434cfd768aaca13f70bad37bfe65505fb01166deac7e"
     }
   ],
-  "multi_rule_occurrence_groups": 86,
+  "multi_rule_occurrence_groups": 144,
   "multi_rule_occurrence_groups_by_type": {
-    "SYMPTOM": 86
+    "SYMPTOM": 144
   },
   "occurrence_counts_by_type": {
+    "ACUPOINT": 4506,
+    "ACUPUNCTURE_TECHNIQUE": 4455,
+    "CLASSICAL_SOURCE": 1103,
+    "CLASSICAL_THEORY": 8677,
     "FORMULA": 5900,
     "HERB": 19380,
     "PULSE": 4556,
-    "SYMPTOM": 30145,
+    "SYMPTOM": 41637,
     "SYNDROME": 3841,
     "TONGUE": 3034,
     "TREATMENT": 710
@@ -1571,7 +1827,7 @@
     "rule_assignments": "multiple matching rules are reported, not treated as multiple source occurrences"
   },
   "rule_combinations_by_type": {
-    "SYMPTOM:SYMPTOM_CONTEXT_01|SYMPTOM_CONTEXT_02": 86
+    "SYMPTOM:SYMPTOM_CONTEXT_01|SYMPTOM_CONTEXT_02": 144
   },
   "schema_version": 1
 }
