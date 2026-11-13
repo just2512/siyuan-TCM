@@ -133,13 +133,6 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 classify_span(text, start, start + len(term)),
                 (text, term),
             )
-        text = "灸左右天枢穴"
-        start = text.index("天枢穴")
-        self.assertIn(
-            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
-            classify_span(text, start, start + len("天枢穴")),
-            text,
-        )
         for term in ("关元穴", "血海穴", "中脘穴"):
             start = text.index(term)
             self.assertIn(
@@ -147,6 +140,13 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 classify_span(text, start, start + len(term)),
                 (text, term),
             )
+        laterality_text = "灸左右天枢穴"
+        start = laterality_text.index("天枢穴")
+        self.assertIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span(laterality_text, start, start + len("天枢穴")),
+            laterality_text,
+        )
 
     def test_discovers_explicit_acupuncture_technique_terms_and_rejects_negated_ones(self):
         positive = [
