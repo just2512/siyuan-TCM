@@ -147,6 +147,18 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span(text, start, start + len("内经")),
             text,
         )
+        text = "黄帝内经有言：水精四布"
+        start = text.index("内经")
+        self.assertNotIn(
+            ("CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01"),
+            classify_span(text, start, start + len("内经")),
+            text,
+        )
+        self.assertIn(
+            ("CLASSICAL_SOURCE", "CLASSICAL_SOURCE_CONTEXT_01"),
+            classify_span(text, 0, len("黄帝内经")),
+            text,
+        )
 
     def test_classical_theory_candidates_are_exact_source_observed_terms(self):
         for term in (
