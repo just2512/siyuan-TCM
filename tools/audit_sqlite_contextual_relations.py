@@ -27,8 +27,10 @@ SOURCE_NOTE_ASSOCIATION_PAIRS = {
         ("POINT", "ACUPUNCTURE_TECHNIQUE"),
         ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
         ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("CLASSICAL_SOURCE", "CLASSICAL_THEORY"),
     )
 }
+CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)")
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 
