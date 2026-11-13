@@ -182,5 +182,32 @@ class SourceNoteAssociationTests(unittest.TestCase):
             self.assertEqual({row["object_text"] for row in rows}, {"胃痛", "恶心", "呕吐"})
 
 
+    def test_source_note_label_validation_accepts_closing_punctuation_before_colon(self):
+        for index, marker in enumerate(("）：", "):", "】：")):
+            with self.subTest(marker=marker), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                source_text = f"中脘穴{marker}胃痛。"
+                terms = [
+                    ("point-label", "中脘穴", "ACUPOINT"),
+                    ("symptom-1", "胃痛", "SYMPTOM"),
+                ]
+                context, mentions, units, output = write_fixture(
+                    root, source_text, f"punctuation-{index}", "note/source.sy",
+                    f"sha-punctuation-{index}", "0.1", "block-punctuation", terms,
+                )
+                self.assertEqual(
+                    extract(context, mentions, units, output)["contextual_relation_candidates"], 0
+                )
+                self.assertEqual(
+                    extract_source_note_associations(context, mentions, units, output), 1
+                )
+                self.assertEqual(validate(output, units, context, mentions), 1)
+                with output.open(encoding="utf-8", newline="") as stream:
+                    rows = list(csv.DictReader(stream))
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(rows[0]["predicate_text"], marker)
+                self.assertEqual(rows[0]["evidence_text"], source_text)
+
+
 if __name__ == "__main__":
     unittest.main()
