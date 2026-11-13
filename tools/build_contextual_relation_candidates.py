@@ -66,7 +66,9 @@ def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
         for row in reader:
             if row["classification_status"] != "CONTEXT_RULE_CANDIDATE":
                 raise ValueError("context candidate input contains unsafe status")
-            if row["candidate_type"] in {"SYMPTOM", "SYNDROME", "TREATMENT"}:
+            if row["candidate_type"] in {
+                "SYMPTOM", "SYNDROME", "TREATMENT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE"
+            }:
                 grouped[row["unit_id"]].append({
                     "candidate_id": row["candidate_id"], "term": row["term"],
                     "candidate_type": row["candidate_type"],
@@ -80,14 +82,14 @@ def load_context_candidates(path: Path) -> dict[str, list[dict[str, str]]]:
     return grouped
 
 
-def load_formula_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
+def load_entity_mentions(path: Path, entity_types: set[str]) -> dict[str, list[dict[str, str]]]:
     grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
     with gzip.open(path, "rt", encoding="utf-8-sig", newline="") as stream:
         for row in csv.DictReader(stream):
-            if row["entity_type"] == "FORMULA":
+            if row["entity_type"] in entity_types:
                 grouped[row["unit_id"]].append({
                     "candidate_id": row["mention_id"], "term": row["matched_text"],
-                    "candidate_type": "FORMULA",
+                    "candidate_type": row["entity_type"],
                     "character_start": row["character_start"],
                     "character_end": row["character_end"],
                     "document": row["document"], "source_sha256": row["source_sha256"],
@@ -96,10 +98,49 @@ def load_formula_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
     return grouped
 
 
+def load_formula_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
+    return load_entity_mentions(path, {"FORMULA"})
+
+
+def load_point_mentions(path: Path) -> dict[str, list[dict[str, str]]]:
+    return load_entity_mentions(path, {"POINT"})
+
+
 def sentence_ranges(text: str):
     for match in SENTENCE_END.finditer(text):
         if match.group(0).strip():
             yield match.start(), match.end()
+
+
+SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
+SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
+SOURCE_NOTE_ENDPOINT_TYPES = {
+    "SYMPTOM", "SYNDROME", "FORMULA", "POINT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE"
+}
+SOURCE_NOTE_ASSOCIATION_PAIRS = {
+    frozenset(pair) for pair in (
+        ("SYMPTOM", "FORMULA"), ("SYMPTOM", "POINT"),
+        ("SYMPTOM", "ACUPOINT"), ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
+        ("SYNDROME", "FORMULA"), ("SYNDROME", "POINT"),
+        ("SYNDROME", "ACUPOINT"), ("SYNDROME", "ACUPUNCTURE_TECHNIQUE"),
+        ("FORMULA", "SYMPTOM"), ("FORMULA", "SYNDROME"),
+        ("POINT", "SYMPTOM"), ("POINT", "SYNDROME"),
+        ("POINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
+        ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+    )
+}
+
+
+def source_note_ranges(text: str):
+    """A source-note label may own comma/semicolon-separated items until sentence end."""
+    for match in SOURCE_NOTE_RANGE.finditer(text):
+        if match.group(0).strip():
+            yield match.start(), match.end()
+
+
+def source_note_pair_allowed(subject_type: str, object_type: str) -> bool:
+    return frozenset((subject_type, object_type)) in SOURCE_NOTE_ASSOCIATION_PAIRS
 
 
 def canonicalize_spans(
@@ -267,6 +308,108 @@ def extract(context_path: Path, mentions_path: Path, units_path: Path,
             "predicate_types": len(distinct_predicates)}
 
 
+def extract_source_note_associations(
+    context_path: Path, mentions_path: Path, units_path: Path, output_path: Path
+) -> int:
+    """Append unresolved links explicitly grouped by a colon label in one source note block.
+
+    This predicate records source-note grouping only. It is not a treatment,
+    efficacy, causality, diagnosis, or classical-source assertion.
+    """
+    candidates = load_context_candidates(context_path)
+    formulas = load_formula_mentions(mentions_path)
+    points = load_point_mentions(mentions_path)
+    count = 0
+    with output_path.open("a", encoding="utf-8", newline="") as destination:
+        writer = csv.DictWriter(destination, fieldnames=FIELDS)
+        with gzip.open(units_path, "rt", encoding="utf-8", newline="") as source:
+            for raw in source:
+                unit = json.loads(raw)
+                unit_id = unit["unit_id"]
+                text = unit["content"]["source_text"]
+                src = unit["source"]
+                endpoints = candidates.get(unit_id, []) + formulas.get(unit_id, []) + points.get(unit_id, [])
+                if not endpoints:
+                    continue
+                for endpoint in endpoints:
+                    start = int(endpoint["character_start"])
+                    end = int(endpoint["character_end"])
+                    if (
+                        endpoint["document"] != src["document"]
+                        or endpoint["source_sha256"] != src["sha256"]
+                        or endpoint["tree_position"] != src["tree_position"]
+                        or endpoint["block_id"] != src.get("block_id", "")
+                        or start < 0 or end <= start or end > len(text)
+                        or text[start:end] != endpoint["term"]
+                    ):
+                        raise ValueError(f"source-note endpoint provenance/span mismatch: {unit_id}:{start}-{end}")
+
+                for scope_start, scope_end in source_note_ranges(text):
+                    unique_endpoints = {}
+                    for row in endpoints:
+                        start = int(row["character_start"])
+                        end = int(row["character_end"])
+                        if scope_start <= start < end <= scope_end:
+                            key = (
+                                row["candidate_id"], row["candidate_type"], row["term"], start, end
+                            )
+                            unique_endpoints[key] = row
+                    scope_spans = [
+                        (key[3], key[4], row) for key, row in unique_endpoints.items()
+                    ]
+                    scope_spans.sort(key=lambda item: (item[0], item[1], item[2]["candidate_id"]))
+                    # A note label is the last endpoint immediately before a colon.
+                    for subject_start, subject_end, subject in scope_spans:
+                        tail = text[subject_end:scope_end]
+                        colon = re.match(r"[\s、，,）)】』」]?[：:]", tail)
+                        if colon is None:
+                            continue
+                        between_colon = tail[colon.end():]
+                        if not between_colon.strip():
+                            continue
+                        for object_start, object_end, obj in scope_spans:
+                            if object_start < subject_end or object_start < subject_end + colon.end():
+                                continue
+                            if not source_note_pair_allowed(subject["candidate_type"], obj["candidate_type"]):
+                                continue
+                            # A negative instruction in the child phrase is not a positive link.
+                            child_prefix = text[subject_end:object_start]
+                            if re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", child_prefix):
+                                continue
+                            if SOURCE_NOTE_ATTRIBUTION_BOUNDARY.search(child_prefix):
+                                continue
+                            relation_id = relation_identity(
+                                "SOURCE_NOTE_ASSOCIATES", subject, obj, unit_id, scope_start, scope_end
+                            )
+                            writer.writerow({
+                                "relation_id": relation_id,
+                                "predicate": "SOURCE_NOTE_ASSOCIATES",
+                                "subject_candidate_id": subject["candidate_id"],
+                                "subject_text": subject["term"],
+                                "subject_type": subject["candidate_type"],
+                                "subject_start": subject_start,
+                                "subject_end": subject_end,
+                                "object_candidate_id": obj["candidate_id"],
+                                "object_text": obj["term"],
+                                "object_type": obj["candidate_type"],
+                                "object_start": object_start,
+                                "object_end": object_end,
+                                "unit_id": unit_id,
+                                "document": src["document"],
+                                "source_sha256": src["sha256"],
+                                "tree_position": src["tree_position"],
+                                "block_id": src.get("block_id", ""),
+                                "sentence_start": scope_start,
+                                "sentence_end": scope_end,
+                                "evidence_text": text[scope_start:scope_end],
+                                "predicate_text": colon.group(0).strip(),
+                                "extraction_rule": "SOURCE_NOTE_ASSOCIATES_LABEL_V1",
+                                "resolution_status": "UNRESOLVED_CANDIDATE",
+                            })
+                            count += 1
+    return count
+
+
 def validate(
     path: Path,
     units_path: Path,
@@ -291,6 +434,7 @@ def validate(
         for grouped in (
             load_context_candidates(context_candidates_path),
             load_formula_mentions(mentions_path),
+            load_point_mentions(mentions_path),
         ):
             for source_unit_id, rows in grouped.items():
                 for candidate in rows:
@@ -314,12 +458,21 @@ def validate(
             if row["resolution_status"] != "UNRESOLVED_CANDIDATE":
                 raise ValueError(f"row {line}: unsafe relation status")
             predicate = row["predicate"]
-            if predicate not in PREDICATES or row["extraction_rule"] != predicate + "_EXPLICIT_V1":
+            source_note_association = predicate == "SOURCE_NOTE_ASSOCIATES"
+            expected_rule = (
+                "SOURCE_NOTE_ASSOCIATES_LABEL_V1"
+                if source_note_association else predicate + "_EXPLICIT_V1"
+            )
+            if (predicate not in PREDICATES and not source_note_association) or row["extraction_rule"] != expected_rule:
                 raise ValueError(f"row {line}: unsupported relation predicate/rule")
-            if row["subject_type"] not in SUBJECT_TYPES[predicate.split("_TO_")[0]]:
-                raise ValueError(f"row {line}: invalid subject type")
-            if row["object_type"] not in OBJECT_TYPES[predicate]:
-                raise ValueError(f"row {line}: invalid object type")
+            if source_note_association:
+                if not source_note_pair_allowed(row["subject_type"], row["object_type"]):
+                    raise ValueError(f"row {line}: invalid source-note association endpoint types")
+            else:
+                if row["subject_type"] not in SUBJECT_TYPES[predicate.split("_TO_")[0]]:
+                    raise ValueError(f"row {line}: invalid subject type")
+                if row["object_type"] not in OBJECT_TYPES[predicate]:
+                    raise ValueError(f"row {line}: invalid object type")
             unit = units.get(row["unit_id"])
             if unit is None:
                 raise ValueError(f"row {line}: source unit not found")
@@ -332,9 +485,13 @@ def validate(
             start, end = int(row["sentence_start"]), int(row["sentence_end"])
             if start < 0 or end <= start or text[start:end] != row["evidence_text"]:
                 raise ValueError(f"row {line}: evidence span mismatch")
-            if row["unit_id"] not in sentence_boundaries:
-                sentence_boundaries[row["unit_id"]] = set(sentence_ranges(text))
-            if (start, end) not in sentence_boundaries[row["unit_id"]]:
+            if source_note_association:
+                valid_evidence_ranges = set(source_note_ranges(text))
+            else:
+                if row["unit_id"] not in sentence_boundaries:
+                    sentence_boundaries[row["unit_id"]] = set(sentence_ranges(text))
+                valid_evidence_ranges = sentence_boundaries[row["unit_id"]]
+            if (start, end) not in valid_evidence_ranges:
                 raise ValueError(f"row {line}: evidence span crosses a source sentence boundary")
             subject_start, subject_end = int(row["subject_start"]), int(row["subject_end"])
             object_start, object_end = int(row["object_start"]), int(row["object_end"])
@@ -345,11 +502,19 @@ def validate(
             if text[object_start:object_end] != row["object_text"]:
                 raise ValueError(f"row {line}: object span does not match source")
             between = text[subject_end:object_start]
-            predicate_match = PREDICATES[predicate].search(between)
-            if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
-                or NEGATION_PREFIX.search(between[:predicate_match.start()])):
-                raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
-            scope_break = RELATION_SCOPE_BREAKS.get(predicate)
+            if source_note_association:
+                predicate_match = re.search(r"[:：]", between)
+                if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
+                    raise ValueError(f"row {line}: source-note label marker is missing or outside endpoint scope")
+                if re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[:predicate_match.start()]):
+                    raise ValueError(f"row {line}: source-note association label is negated")
+                scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
+            else:
+                predicate_match = PREDICATES[predicate].search(between)
+                if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
+                    or NEGATION_PREFIX.search(between[:predicate_match.start()])):
+                    raise ValueError(f"row {line}: predicate evidence missing, negated, or outside relation scope")
+                scope_break = RELATION_SCOPE_BREAKS.get(predicate)
             if scope_break and scope_break.search(between):
                 raise ValueError(f"row {line}: relation crosses a source-attribution boundary")
             if candidate_index is not None:
@@ -404,6 +569,11 @@ def main() -> int:
         result = {"validated_contextual_relations": count}
     else:
         result = extract(args.context_candidates, args.mentions, args.units, args.output)
+        source_note_count = extract_source_note_associations(
+            args.context_candidates, args.mentions, args.units, args.output
+        )
+        result["source_note_associations"] = source_note_count
+        result["contextual_relation_candidates"] += source_note_count
         result["validated_contextual_relations"] = validate(
             args.output, args.units, args.context_candidates, args.mentions
         )
