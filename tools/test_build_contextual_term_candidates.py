@@ -518,6 +518,32 @@ class ContextualTermCandidateTests(unittest.TestCase):
                     (text, syndrome_term),
                 )
 
+    def test_formula_and_herb_overlap_queue_grammar_fragments_are_not_entities(self):
+        false_fragments = [
+            ("偏方草药、不用非处方用药及不憋尿", "用药及", "FORMULA", "FORMULA_CONTEXT_01"),
+            ("偏方草药、不用非处方用药及不憋尿", "及不憋尿", "HERB", "HERB_CONTEXT_01"),
+            ("使用中药复方来替人治病", "复方来", "HERB", "HERB_CONTEXT_01"),
+            ("使用中药复方来替人治病", "来替", "FORMULA", "FORMULA_CONTEXT_01"),
+            ("服用中药偏方而导致肾衰竭", "偏方而", "HERB", "HERB_CONTEXT_01"),
+            ("服用中药偏方而导致肾衰竭", "而导致", "FORMULA", "FORMULA_CONTEXT_01"),
+        ]
+        for text, term, candidate_type, rule_id in false_fragments:
+            start = text.index(term)
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        self.assertIn(
+            ("FORMULA", "FORMULA_CONTEXT_01"),
+            classify_span("方用桂枝汤", 2, 5),
+        )
+        self.assertIn(
+            ("HERB", "HERB_CONTEXT_01"),
+            classify_span("药用桂枝", 2, 4),
+        )
+
     def test_symptom_and_pulse_candidates_do_not_absorb_neighboring_clauses(self):
         for text, term in [
             ("如果这个人是发热而脉沉", "这个人是发热"),
