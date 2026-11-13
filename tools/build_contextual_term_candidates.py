@@ -221,11 +221,37 @@ def classify_span(
                     or non_symptom_clause.search(term)
                     else symptom_intro.search(symptom_before)
                 )
-            elif (candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_02") or candidate_type in {"PULSE", "TONGUE"}:
-                # Intrinsic clinical descriptors must occur inside the candidate
-                # span itself. A cue in the preceding ten characters belongs to
-                # the previous term and must not type this unrelated n-gram.
+            elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_02":
+                # Intrinsic symptom words can occur inside a short anatomical
+                # phrase (e.g. 骨节疼痛), but must not type a whole narrative
+                # fragment such as 这个人是发热 or 发热而脉沉.
+                symptom_match = re.search(pattern, term)
+                allowed_prefixes = {
+                    "", "头", "头部", "面", "面部", "眼", "耳", "鼻", "咽", "喉",
+                    "颈", "项", "肩", "背", "腰", "腹", "小腹", "少腹", "胃", "脘",
+                    "胸", "胁", "心", "四肢", "手", "足", "腿", "膝", "关节", "骨节",
+                    "周身", "全身", "肌肉", "午后", "夜间", "晨起", "反复", "阵发",
+                    "持续", "剧烈", "频繁", "偶发",
+                }
+                allowed_suffixes = {"", "不止", "不退", "加重"}
+                matched = (
+                    symptom_match
+                    if symptom_match
+                    and term[:symptom_match.start()] in allowed_prefixes
+                    and term[symptom_match.end():] in allowed_suffixes
+                    else None
+                )
+            elif candidate_type in {"PULSE", "TONGUE"}:
+                # Intrinsic pulse/tongue cues must occur inside the candidate.
+                # Pulse windows also have to begin at 脉; otherwise phrases like
+                # 发热而脉沉 would be misclassified as one oversized pulse term.
                 matched = re.search(pattern, term)
+                if (
+                    matched
+                    and candidate_type == "PULSE"
+                    and matched.start() != 0
+                ):
+                    matched = None
             else:
                 matched = re.search(pattern, before + term)
             if matched:

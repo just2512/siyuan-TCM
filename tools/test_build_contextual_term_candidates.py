@@ -518,5 +518,42 @@ class ContextualTermCandidateTests(unittest.TestCase):
                     (text, syndrome_term),
                 )
 
+    def test_symptom_and_pulse_candidates_do_not_absorb_neighboring_clauses(self):
+        for text, term in [
+            ("如果这个人是发热而脉沉", "这个人是发热"),
+            ("如果这个人是发热而脉沉", "个人是发热"),
+            ("如果这个人是发热而脉沉", "发热而"),
+            ("如果这个人是发热而脉沉", "发热而脉沉"),
+        ]:
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        for term in ("发热而脉沉", "热而脉沉", "而脉沉"):
+            text = f"如果这个人是{term}"
+            start = text.index(term)
+            self.assertNotIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+    def test_symptom_and_pulse_lexical_spans_remain_classifiable(self):
+        for term in ("发热", "骨节疼痛", "反复咳嗽"):
+            self.assertIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("脉沉", "脉沉细", "脉浮数"):
+            self.assertIn(
+                ("PULSE", "PULSE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
 if __name__ == "__main__":
     unittest.main()
