@@ -4,10 +4,33 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 from pathlib import Path
 
-from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS
+from build_contextual_relation_candidates import PREDICATES, RELATION_SCOPE_BREAKS, sentence_ranges
+
+SOURCE_NOTE_ASSOCIATION_PAIRS = {
+    frozenset(pair) for pair in (
+        ("SYMPTOM", "FORMULA"), ("SYMPTOM", "POINT"),
+        ("SYMPTOM", "ACUPOINT"), ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
+        ("SYNDROME", "FORMULA"), ("SYNDROME", "POINT"),
+        ("SYNDROME", "ACUPOINT"), ("SYNDROME", "ACUPUNCTURE_TECHNIQUE"),
+        ("FORMULA", "SYMPTOM"), ("FORMULA", "SYNDROME"),
+        ("POINT", "SYMPTOM"), ("POINT", "SYNDROME"),
+        ("POINT", "ACUPUNCTURE_TECHNIQUE"),
+        ("ACUPOINT", "SYMPTOM"), ("ACUPOINT", "SYNDROME"),
+        ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+    )
+}
+SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
+SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
+
+
+def source_note_ranges(text: str):
+    for match in SOURCE_NOTE_RANGE.finditer(text):
+        if match.group(0).strip():
+            yield match.start(), match.end()
 from build_siyuan_search_db import (
     search_contextual_relation_candidates,
     search_contextual_term_candidates,
@@ -96,18 +119,26 @@ def validate_full_text_index_content_parity(connection: sqlite3.Connection) -> N
 
 def validate_contextual_predicate_queries(database_path: Path, predicate_counts: dict[str, int]) -> None:
     """Exercise all supported predicate queries, including audited zero-row results."""
-    for predicate, (expected_subject, expected_object) in CONTEXTUAL_PREDICATE_TYPES.items():
+    for predicate, count in predicate_counts.items():
         rows = search_contextual_relation_candidates(database_path, predicate, limit=20)
-        if predicate_counts[predicate] == 0 and rows:
+        if count == 0 and rows:
             raise AssertionError(f"zero-row contextual predicate query returned records: {predicate}")
-        if predicate_counts[predicate] > 0 and not rows:
+        if count > 0 and not rows:
             raise AssertionError(f"contextual predicate query returned no records: {predicate}")
-        if any(
-            row["predicate"] != predicate
-            or row["subject_type"] != expected_subject
-            or row["object_type"] != expected_object
-            for row in rows
-        ):
+        if predicate == "SOURCE_NOTE_ASSOCIATES":
+            invalid = any(
+                frozenset((row["subject_type"], row["object_type"])) not in SOURCE_NOTE_ASSOCIATION_PAIRS
+                for row in rows
+            )
+        else:
+            expected_subject, expected_object = CONTEXTUAL_PREDICATE_TYPES[predicate]
+            invalid = any(
+                row["predicate"] != predicate
+                or row["subject_type"] != expected_subject
+                or row["object_type"] != expected_object
+                for row in rows
+            )
+        if invalid:
             raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
 
 def validate_all_formula_herb_relation_rows(connection: sqlite3.Connection) -> int:
@@ -200,10 +231,12 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
         "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
     }
     for row in rows:
-        contract = contracts.get(row["predicate"])
-        if contract is None:
-            raise AssertionError(f"unsupported contextual relation predicate: {row['predicate']}")
-        if (row["subject_type"], row["object_type"]) != contract:
+        predicate = row["predicate"]
+        source_note = predicate == "SOURCE_NOTE_ASSOCIATES"
+        if source_note:
+            if frozenset((row["subject_type"], row["object_type"])) not in SOURCE_NOTE_ASSOCIATION_PAIRS:
+                raise AssertionError(f"source-note association endpoint direction mismatch: {row['relation_id']}")
+        elif predicate not in contracts or (row["subject_type"], row["object_type"]) != contracts[predicate]:
             raise AssertionError(f"contextual relation endpoint direction mismatch: {row['relation_id']}")
         if not row["subject_candidate_id"] or not row["object_candidate_id"]:
             raise AssertionError(f"contextual relation endpoint identity missing: {row['relation_id']}")
@@ -214,7 +247,7 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
             ("object", row["object_candidate_id"], row["object_text"], row["object_type"],
              row["object_start"], row["object_end"]),
         ):
-            if candidate_type == "FORMULA":
+            if candidate_type in {"FORMULA", "POINT"}:
                 matches = connection.execute("""
                     SELECT mention_id FROM entity_mentions
                     WHERE mention_id=? AND matched_text=? AND entity_type=? AND unit_id=?
@@ -254,6 +287,12 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
         if (sentence_start < 0 or sentence_end <= sentence_start or sentence_end > len(text)
             or text[sentence_start:sentence_end] != row["evidence_text"]):
             raise AssertionError(f"contextual relation evidence offset mismatch: {row['relation_id']}")
+        valid_ranges = (
+            set(source_note_ranges(text))
+            if source_note else set(sentence_ranges(text))
+        )
+        if (sentence_start, sentence_end) not in valid_ranges:
+            raise AssertionError(f"contextual relation evidence boundary mismatch: {row['relation_id']}")
         if not (sentence_start <= subject_start < subject_end <= sentence_end
                 and sentence_start <= object_start < object_end <= sentence_end
                 and subject_end <= object_start):
@@ -262,10 +301,17 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
             or text[object_start:object_end] != row["object_text"]):
             raise AssertionError(f"contextual relation endpoint text/offset mismatch: {row['relation_id']}")
         between = text[subject_end:object_start]
-        predicate_match = PREDICATES[row["predicate"]].search(between)
-        if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
-            raise AssertionError(f"contextual relation predicate is outside endpoint scope: {row['relation_id']}")
-        scope_break = RELATION_SCOPE_BREAKS.get(row["predicate"])
+        if source_note:
+            predicate_match = re.search(r"[:：]", between)
+            if (predicate_match is None or predicate_match.group(0) != row["predicate_text"]
+                or re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():])):
+                raise AssertionError(f"source-note association label is outside endpoint scope: {row['relation_id']}")
+            scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
+        else:
+            predicate_match = PREDICATES[row["predicate"]].search(between)
+            if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
+                raise AssertionError(f"contextual relation predicate is outside endpoint scope: {row['relation_id']}")
+            scope_break = RELATION_SCOPE_BREAKS.get(row["predicate"])
         if scope_break and scope_break.search(between):
             raise AssertionError(f"contextual relation crosses source-attribution boundary: {row['relation_id']}")
     return len(rows)
@@ -290,6 +336,7 @@ def smoke(database_path: Path) -> dict:
         "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
         "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
         "TREATMENT_TO_FORMULA": ("TREATMENT", "FORMULA"),
+        "SOURCE_NOTE_ASSOCIATES": None,
     }
     contextual_predicates = {
         predicate: connection.execute(
@@ -476,16 +523,26 @@ def smoke(database_path: Path) -> dict:
             )
         ]
         for predicate in predicates:
-            if predicate not in contracts:
-                raise AssertionError(f"unsupported contextual relation predicate: {predicate}")
             rows = search_contextual_relation_candidates(database_path, predicate, limit=20)
-            expected_subject, expected_object = contracts[predicate]
-            if not rows or any(
-                row["predicate"] != predicate
-                or row["subject_type"] != expected_subject
-                or row["object_type"] != expected_object
-                for row in rows
-            ):
+            if not rows:
+                raise AssertionError(f"contextual relation predicate query returned no rows: {predicate}")
+            if predicate == "SOURCE_NOTE_ASSOCIATES":
+                invalid = any(
+                    row["predicate"] != predicate
+                    or frozenset((row["subject_type"], row["object_type"])) not in SOURCE_NOTE_ASSOCIATION_PAIRS
+                    for row in rows
+                )
+            else:
+                if predicate not in contracts:
+                    raise AssertionError(f"unsupported contextual relation predicate: {predicate}")
+                expected_subject, expected_object = contracts[predicate]
+                invalid = any(
+                    row["predicate"] != predicate
+                    or row["subject_type"] != expected_subject
+                    or row["object_type"] != expected_object
+                    for row in rows
+                )
+            if invalid:
                 raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
         checks["contextual_relation_predicate_direction"] = "PASS"
 
