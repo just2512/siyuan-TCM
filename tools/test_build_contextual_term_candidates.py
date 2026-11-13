@@ -106,6 +106,55 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span("舌红", 0, 2),
         )
 
+    def test_discovers_source_grounded_acupoint_candidates_without_promoting_them_to_entities(self):
+        positive = [
+            "关元穴", "中脘穴", "血海穴", "风府穴", "中府穴", "云门穴", "百会穴",
+        ]
+        for term in positive:
+            self.assertIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        for term in ("穴位", "穴道", "穴名", "此穴", "该穴"):
+            self.assertNotIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
+    def test_discovers_explicit_acupuncture_technique_terms_and_rejects_negated_ones(self):
+        positive = [
+            "针灸", "针刺", "艾灸", "隔姜灸", "隔盐灸", "隔蒜灸",
+            "米粒灸", "梅花灸", "十宣放血法", "放血", "透穴", "留针",
+            "捻针", "运气法", "导引法", "补泻", "开四关",
+        ]
+        for term in positive:
+            self.assertIn(
+                ("ACUPUNCTURE_TECHNIQUE", "ACUPUNCTURE_TECHNIQUE_CONTEXT_01"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+
+        text = "热症不宜针灸"
+        start = text.index("针灸")
+        self.assertNotIn(
+            ("ACUPUNCTURE_TECHNIQUE", "ACUPUNCTURE_TECHNIQUE_CONTEXT_01"),
+            classify_span(text, start, start + len("针灸")),
+        )
+
+    def test_adds_common_pain_and_discomfort_terms_without_generalizing_to_all_words(self):
+        for term in ("头痛", "痛经", "月经痛", "胃痛", "印堂痛", "气喘", "麻木不仁"):
+            self.assertIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(term, 0, len(term)),
+                term,
+            )
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+            classify_span("心脏病", 0, len("心脏病")),
+        )
+
     def test_validation_rejects_rule_from_another_candidate_type(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "typed.csv.gz"
