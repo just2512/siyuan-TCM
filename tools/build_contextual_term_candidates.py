@@ -166,15 +166,37 @@ def classify_span(
                 and re.search(r"辨为[\s:：、]{0,2}$", before)
             ):
                 continue
+            # "属于可以用的方剂" is a formula-use phrase, not a syndrome name.
+            if candidate_type == "SYNDROME" and ("方剂" in term or term.startswith("可以用")):
+                continue
             # Prefix cues must precede the candidate. Intrinsic cues may be
             # part of the candidate itself; cues after it are never borrowed.
             if candidate_type in PREFIX_ONLY_TYPES:
                 # A prefix cue must terminate immediately before the candidate
                 # (allowing only a tiny punctuation/whitespace separator).
                 matched = re.search(
-                    rf"(?:{pattern})[\s:：、]{{0,2}}$",
+                    rf"(?:{pattern})[\\s:：、]{{0,2}}$",
                     before,
                 )
+                if matched and candidate_type == "FORMULA":
+                    # Do not type the tail of ordinary compounds (方向/方法/
+                    # 方式/方剂/方子) as a formula after a generic "用...方" cue.
+                    if term[:1] in "向法式面位子剂":
+                        matched = None
+                    # "地方用药..." contains "方用" but does not introduce a formula.
+                    elif (
+                        matched.group(0).endswith("方用")
+                        and matched.start() > 0
+                        and before[matched.start() - 1] == "地"
+                    ):
+                        matched = None
+                if matched and candidate_type == "HERB":
+                    # A preceding "用药/中药" cue does not turn grammatical
+                    # continuations or generic formula nouns into herb mentions.
+                    if term.startswith((
+                        "的", "是", "方向", "方法", "方式", "方子", "方剂", "一样", "之", "就"
+                    )):
+                        matched = None
             elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_01":
                 # Symptom labels such as “症状” describe the following list;
                 # they are not symptoms themselves. Allow a short list-intro
