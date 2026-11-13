@@ -188,7 +188,10 @@ def classify_span(
                 if matched and candidate_type == "FORMULA":
                     # Generic grammar and outcome phrases are not formula names,
                     # even when a nearby "处方"/"用...方" cue is present.
-                    if term.startswith(("药", "方", "治", "处方", "就", "是")):
+                    if (
+                        term[:1] in "向法式面位子剂的是"
+                        or term.startswith(("本草", "药", "方", "治", "处方", "就", "是"))
+                    ):
                         matched = None
                     # "使用的地方非常..." can satisfy the broad use...方 regex,
                     # but 地方 is not a formula-introduction cue.
@@ -238,10 +241,11 @@ def classify_span(
                     r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由|"
                     r"用药|药方|方剂|方子|方法|方式|条文|解释|讲法|观点|相对论|"
                     r"那至于说|你看|当以|脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
-                    r"舌(?:象|苔|质)|症状)"
+                    r"舌(?:象|苔|质))"
                 )
                 matched = (
-                    None if non_symptom_clause.search(symptom_before)
+                    None if term.startswith(("症状", "症见", "表现"))
+                    or non_symptom_clause.search(symptom_before)
                     or non_symptom_clause.search(term)
                     else symptom_intro.search(symptom_before)
                 )
