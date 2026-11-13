@@ -10,7 +10,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\\s、，,）)】』」]?[：:]")
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\s、，,）)】』」]?[：:]")
 
 MAX_EXAMPLES_PER_DIAGNOSIS = 5
 MAX_CANDIDATE_SPANS_PER_EXAMPLE = 12
