@@ -28,13 +28,13 @@ RULES = {
         ("SYMPTOM_CONTEXT_02", r"(?:疼痛|胀痛|刺痛|麻木|瘙痒|咳嗽|恶心|呕吐|发热|畏寒)"),
     ],
     "PULSE": [
-        ("PULSE_CONTEXT_01", r"(?:脉象|脉诊|脉见|脉为|脉沉|脉浮|脉数|脉迟|脉弦|脉滑|脉细)"),
+        ("PULSE_CONTEXT_01", r"(?:脉象|脉诊|脉见|脉沉|脉浮|脉数|脉迟|脉弦|脉滑|脉细)"),
     ],
     "TONGUE": [
         ("TONGUE_CONTEXT_01", r"(?:舌象|舌质|舌苔|舌红|舌淡|舌绛|苔白|苔黄|苔腻)"),
     ],
     "SYNDROME": [
-        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|属于|证候|证型|此证|本证)"),
+        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|(?<!不)(?<!未)属于|证候|证型|此证|本证)"),
     ],
     "TREATMENT": [
         ("TREATMENT_CONTEXT_01", r"(?:治法(?:为|是)|治法[：:]|治宜|宜.{0,4}法|治以|当以|治疗原则|治疗方法)"),
@@ -135,6 +135,13 @@ def classify_span(
             start, end, formula_spans
         ):
             continue
+        # Diagnostic observations (pulse/tongue findings) are not treatment
+        # methods merely because the sentence uses the broad cue "当以".
+        if candidate_type == "TREATMENT" and (
+            term.startswith("经脉")
+            or re.search(r"舌(?:象|苔|质)", term)
+        ):
+            continue
         for rule_id, pattern in rules:
             # “可用” is an operational phrase, not a treatment entity;
             # do not let the generic “治法” prefix type this two-character span.
@@ -179,9 +186,21 @@ def classify_span(
                     before,
                 )
                 if matched and candidate_type == "FORMULA":
-                    # Do not type the tail of ordinary compounds (方向/方法/
-                    # 方式/方剂/方子) as a formula after a generic "用...方" cue.
-                    if term[:1] in "向法式面位子剂的是" or term.startswith("本草"):
+                    # Generic grammar and outcome phrases are not formula names,
+                    # even when a nearby "处方"/"用...方" cue is present.
+                    if term.startswith(("药", "方", "治", "处方")):
+                        matched = None
+                    # "使用的地方非常..." can satisfy the broad use...方 regex,
+                    # but 地方 is not a formula-introduction cue.
+                    elif matched.group(0).endswith("地方"):
+                        matched = None
+                    # "经方用药..." is a generic expression; the substring 方用
+                    # must not make the following word look like a formula.
+                    elif (
+                        matched.group(0).endswith("方用")
+                        and matched.start() > 0
+                        and before[matched.start() - 1] == "经"
+                    ):
                         matched = None
                     # "地方用药..." contains "方用" but does not introduce a formula.
                     elif (
@@ -195,7 +214,8 @@ def classify_span(
                     # continuations or generic formula nouns into herb mentions.
                     if term.startswith((
                         "的", "是", "证", "观", "方向", "方法", "方式",
-                        "方子", "方剂", "一样", "之", "就"
+                        "方子", "方剂", "一样", "之", "就", "处方",
+                        "药", "方", "后", "治", "导致", "使用"
                     )):
                         matched = None
             elif candidate_type == "SYMPTOM" and rule_id == "SYMPTOM_CONTEXT_01":
@@ -217,7 +237,8 @@ def classify_span(
                     r"(?:西医|中医|医生|医师|患者|病人|认为|诊断|治疗|处方|药物|"
                     r"目前|经过|导致|造成|因此|所以|可见|说明|表示|相继|只是由|"
                     r"用药|药方|方剂|方子|方法|方式|条文|解释|讲法|观点|相对论|"
-                    r"脉(?:象|诊)|舌(?:象|苔|质))"
+                    r"那至于说|你看|当以|脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
+                    r"舌(?:象|苔|质)|症状)"
                 )
                 matched = (
                     None if non_symptom_clause.search(symptom_before)
@@ -261,6 +282,12 @@ def classify_span(
                     matched = matched if pulse_phrase else None
             else:
                 matched = re.search(pattern, before + term)
+            if (
+                matched
+                and candidate_type == "SYNDROME"
+                and "属于发热充血的状态" in text[max(0, start - 8):min(len(text), end + 10)]
+            ):
+                matched = None
             if matched:
                 found.append((candidate_type, rule_id))
     return found
