@@ -114,6 +114,7 @@ def sentence_ranges(text: str):
 
 
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
+SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\s、，,）)】』」]?[：:]")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
 SOURCE_NOTE_ENDPOINT_TYPES = {
     "SYMPTOM", "SYNDROME", "FORMULA", "POINT", "ACUPOINT", "ACUPUNCTURE_TECHNIQUE",
@@ -365,7 +366,7 @@ def extract_source_note_associations(
                     # A note label is the last endpoint immediately before a colon.
                     for subject_start, subject_end, subject in scope_spans:
                         tail = text[subject_end:scope_end]
-                        colon = re.match(r"[\s、，,）)】』」]?[：:]", tail)
+                        colon = SOURCE_NOTE_LABEL_MARKER.match(r"[\s、，,）)】』」]?[：:]", tail)
                         if colon is None:
                             continue
                         between_colon = tail[colon.end():]
@@ -568,12 +569,12 @@ def validate(
             between = text[subject_end:object_start]
             if source_note_association:
                 predicate_match = (
-                    CLASSICAL_ATTRIBUTION_MARKER.search(between)
-                    if classical_attribution else re.search(r"[:：]", between)
+                    CLASSICAL_ATTRIBUTION_MARKER.match(between)
+                    if classical_attribution else SOURCE_NOTE_LABEL_MARKER.match(between)
                 )
-                if predicate_match is None or predicate_match.group(0) != row["predicate_text"]:
+                if predicate_match is None or predicate_match.group(0).strip() != row["predicate_text"]:
                     raise ValueError(f"row {line}: source-note marker is missing or outside endpoint scope")
-                if re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[:predicate_match.start()]):
+                if re.search(r"(?:不宜|不应|不可|不能|禁用|禁止|勿用|忌用)", between[predicate_match.end():]):
                     raise ValueError(f"row {line}: source-note association label is negated")
                 scope_break = SOURCE_NOTE_ATTRIBUTION_BOUNDARY
             else:
