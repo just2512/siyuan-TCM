@@ -156,6 +156,8 @@ jobs:
             catalog/generated/entity_mention_overlap_audit.json
             catalog/generated/entity_mention_cross_type_overlap_review.csv
             catalog/generated/entity_mention_cross_type_overlap_review.json
+            catalog/generated/entity_mention_cross_type_overlap_review.source.csv
+            catalog/generated/entity_mention_cross_type_overlap_review.import-report.json
             catalog/generated/contextual_overlap_review_batches/
             catalog/generated/entity_mention_overlap_review_batches/
             catalog/generated/sqlite_entity_mention_audit.json
