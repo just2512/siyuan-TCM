@@ -79,7 +79,7 @@ PUNCTUATION = "，。！？；、\n"
 SENTENCE_BOUNDARIES = "。！？；\n"
 NON_SYMPTOM_FRAGMENT = re.compile(
     r"^(?:缓解|减轻|好转|改善|治愈|消失|恢复|加重|出现|发作|发生|下垂(?:了)?|"
-    r"是一(?:个|只|种|项)?|心脏|心呕吐)$"
+    r"是一(?:个|只|种|项)?|心脏|心呕吐|开处)$"
 )
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
     r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
@@ -195,6 +195,10 @@ def classify_span(
                 and re.search(r"辨为[\s:：、]{0,2}$", before)
             ):
                 continue
+            # Normal/prognostic descriptions such as "属于正常现象" are
+            # not syndrome labels, even when preceded by the broad cue "属于".
+            if candidate_type == "SYNDROME" and term.startswith("正常"):
+                continue
             # "属于可以用的方剂" is a formula-use phrase, not a syndrome name.
             if candidate_type == "SYNDROME" and ("方剂" in term or term.startswith("可以用")):
                 continue
@@ -238,6 +242,13 @@ def classify_span(
                         matched = None
                     # "使用的地方非常..." can satisfy the broad use...方 regex,
                     # but 地方 is not a formula-introduction cue.
+                    elif term in {"呢没", "呢没有"}:
+                        # "这个处方呢没有了" is a sentence continuation, not a formula name.
+                        matched = None
+                    elif term.startswith(("跟下", "下穴")):
+                        # "处方跟下针" / "处方下穴道" are action grammar,
+                        # not formula names following the generic 处方 cue.
+                        matched = None
                     elif matched.group(0).endswith("地方"):
                         matched = None
                     # "经方用药..." is a generic expression; the substring 方用
@@ -302,7 +313,7 @@ def classify_span(
                     or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
                         "或者", "以及", "并且", "而且", "但是", "不过", "如",
-                        "都", "就是", "属于", "不属于", "它的", "为",
+                        "都", "就是", "有的", "有时", "有时候", "属于", "不属于", "它的", "为",
                     ))
                     or non_symptom_clause.search(symptom_before)
                     or non_symptom_clause.search(term)
@@ -334,7 +345,7 @@ def classify_span(
                 # a longer acupoint name (e.g. 元穴 inside 关元穴, 海穴 inside 血海穴).
                 matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
                 if (
-                    term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}
+                    term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴", "错穴"}
                     or term.startswith(("到", "透", "两", "一", "针", "灸", "近取", "取", "按", "左", "右", "双侧", "两侧"))
                 ):
                     matched = None

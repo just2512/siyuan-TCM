@@ -470,6 +470,67 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span(text, start, start + len("六名")),
         )
 
+    def test_normal_outcome_and_time_connectors_are_not_syndromes_or_symptoms(self):
+        for term in ("正常", "正常现", "正常现象"):
+            text = f"使用此方后属于{term}，不代表证候。"
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYNDROME", "SYNDROME_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        text = "症状有的时候隔两天发，有的时候隔几天发一次，有的时候会口渴。"
+        for term in ("有的", "有的时", "有的时候"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        self.assertIn(
+            ("SYNDROME", "SYNDROME_CONTEXT_01"),
+            classify_span("辨证为少阳证", 3, 6),
+        )
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span("症状是头痛、恶心", 3, 5),
+        )
+
+    def test_treatment_grammar_and_invalid_acupoint_suffixes_are_not_entities(self):
+        text = "按症状开处方下穴道，针灸本就应有的效果。"
+        for term, candidate_type, rule_id in (
+            ("开处", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("下穴", "FORMULA", "FORMULA_CONTEXT_01"),
+        ):
+            start = text.index(term)
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        text = "那过去呢这个处方呢没有了。"
+        for term in ("呢没", "呢没有"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("FORMULA", "FORMULA_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        text = "如果没有效果，就是扎错穴道了。"
+        start = text.index("错穴")
+        self.assertNotIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span(text, start, start + len("错穴")),
+        )
+        self.assertIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span("关元穴", 0, 3),
+        )
+
     def test_generic_symptom_intro_does_not_type_ordinary_narrative_as_symptoms(self):
         text = "最轻微的症状是一只眼角垮下来；症状是头痛、恶心。"
         start = text.index("一只")
