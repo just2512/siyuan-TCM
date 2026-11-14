@@ -701,7 +701,7 @@ def search_classical_source_passage_links(
                c.content_text AS source_text
         FROM classical_source_passage_term_links l
         JOIN classical_source_passages p ON p.passage_id = l.passage_id
-        JOIN classical_source_documents d ON d.source_document_id = l.source_document_id
+        JOIN classical_source_documents d ON d.source_document_id = p.source_document_id
         JOIN classical_source_passage_mentions src
           ON src.occurrence_id = l.subject_occurrence_id
         JOIN classical_source_passage_mentions dst
