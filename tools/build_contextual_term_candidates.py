@@ -195,6 +195,10 @@ def classify_span(
                 and re.search(r"辨为[\s:：、]{0,2}$", before)
             ):
                 continue
+            # Normal/prognostic descriptions such as "属于正常现象" are
+            # not syndrome labels, even when preceded by the broad cue "属于".
+            if candidate_type == "SYNDROME" and term.startswith("正常"):
+                continue
             # "属于可以用的方剂" is a formula-use phrase, not a syndrome name.
             if candidate_type == "SYNDROME" and ("方剂" in term or term.startswith("可以用")):
                 continue
@@ -302,7 +306,7 @@ def classify_span(
                     or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
                         "或者", "以及", "并且", "而且", "但是", "不过", "如",
-                        "都", "就是", "属于", "不属于", "它的", "为",
+                        "都", "就是", "有的", "有时", "有时候", "属于", "不属于", "它的", "为",
                     ))
                     or non_symptom_clause.search(symptom_before)
                     or non_symptom_clause.search(term)
