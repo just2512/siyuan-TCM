@@ -2,10 +2,10 @@
   "schema_version": 1,
   "validated_classical_source_document_references": 0,
   "validated_classical_source_documents": 452,
-  "validated_classical_source_passage_mentions": 116512,
+  "validated_classical_source_passage_mentions": 116267,
   "validated_classical_source_passages": 95058,
-  "validated_contextual_relation_edges": 156,
-  "validated_contextual_term_candidates": 97943,
+  "validated_contextual_relation_edges": 148,
+  "validated_contextual_term_candidates": 97563,
   "validated_entity_nodes": 312,
   "validated_relation_edges": 139
 }

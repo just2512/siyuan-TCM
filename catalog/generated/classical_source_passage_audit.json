@@ -1,11 +1,1042 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_documents": 452,
   "source_documents_by_work": {
     "HUANG_DI_NEI_JING": 179,
     "JIN_GUI_YAO_LUE": 126,
     "SHANG_HAN_LUN": 103,
     "ZHEN_JIU_DA_CHENG": 44
+  },
+  "source_passages_by_work": {
+    "HUANG_DI_NEI_JING": 14616,
+    "JIN_GUI_YAO_LUE": 10714,
+    "SHANG_HAN_LUN": 11863,
+    "ZHEN_JIU_DA_CHENG": 5539
+  },
+  "passages_with_term_type_by_work": {
+    "HUANG_DI_NEI_JING": {
+      "ACUPOINT": 579,
+      "ACUPUNCTURE_TECHNIQUE": 1511,
+      "CLASSICAL_SOURCE": 230,
+      "CLASSICAL_THEORY": 1616,
+      "FORMULA": 105,
+      "HERB": 159,
+      "ORGAN": 9272,
+      "POINT": 241,
+      "PULSE": 512,
+      "SYMPTOM": 2014,
+      "SYNDROME": 1238,
+      "TONGUE": 5,
+      "TREATMENT": 88
+    },
+    "JIN_GUI_YAO_LUE": {
+      "ACUPOINT": 40,
+      "ACUPUNCTURE_TECHNIQUE": 121,
+      "CLASSICAL_SOURCE": 24,
+      "CLASSICAL_THEORY": 284,
+      "FORMULA": 3287,
+      "HERB": 5636,
+      "ORGAN": 4750,
+      "POINT": 46,
+      "PULSE": 311,
+      "SYMPTOM": 1165,
+      "SYNDROME": 410,
+      "TONGUE": 59,
+      "TREATMENT": 14
+    },
+    "SHANG_HAN_LUN": {
+      "ACUPOINT": 62,
+      "ACUPUNCTURE_TECHNIQUE": 68,
+      "CLASSICAL_SOURCE": 9,
+      "CLASSICAL_THEORY": 436,
+      "FORMULA": 4344,
+      "HERB": 7160,
+      "ORGAN": 4281,
+      "POINT": 39,
+      "PULSE": 535,
+      "SYMPTOM": 1219,
+      "SYNDROME": 1031,
+      "TONGUE": 126,
+      "TREATMENT": 19
+    },
+    "ZHEN_JIU_DA_CHENG": {
+      "ACUPOINT": 1774,
+      "ACUPUNCTURE_TECHNIQUE": 741,
+      "CLASSICAL_SOURCE": 38,
+      "CLASSICAL_THEORY": 72,
+      "FORMULA": 35,
+      "HERB": 73,
+      "ORGAN": 3070,
+      "POINT": 636,
+      "PULSE": 1,
+      "SYMPTOM": 348,
+      "SYNDROME": 58,
+      "TONGUE": 5,
+      "TREATMENT": 5
+    }
+  },
+  "same_passage_cooccurrences_by_work": {
+    "HUANG_DI_NEI_JING": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 83,
+      "CLASSICAL_THEORY|FORMULA": 1,
+      "CLASSICAL_THEORY|SYMPTOM": 80,
+      "FORMULA|HERB": 15,
+      "SYMPTOM|ACUPOINT": 49,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 129,
+      "SYMPTOM|FORMULA": 6,
+      "SYMPTOM|POINT": 18
+    },
+    "JIN_GUI_YAO_LUE": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 6,
+      "CLASSICAL_THEORY|FORMULA": 53,
+      "CLASSICAL_THEORY|SYMPTOM": 27,
+      "FORMULA|HERB": 2178,
+      "SYMPTOM|ACUPOINT": 5,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 8,
+      "SYMPTOM|FORMULA": 317,
+      "SYMPTOM|POINT": 2
+    },
+    "SHANG_HAN_LUN": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 11,
+      "CLASSICAL_THEORY|FORMULA": 143,
+      "CLASSICAL_THEORY|SYMPTOM": 28,
+      "FORMULA|HERB": 2943,
+      "SYMPTOM|ACUPOINT": 1,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 2,
+      "SYMPTOM|FORMULA": 448,
+      "SYMPTOM|POINT": 3
+    },
+    "ZHEN_JIU_DA_CHENG": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 111,
+      "CLASSICAL_THEORY|SYMPTOM": 2,
+      "FORMULA|HERB": 3,
+      "SYMPTOM|ACUPOINT": 60,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 20,
+      "SYMPTOM|FORMULA": 2,
+      "SYMPTOM|POINT": 45
+    }
+  },
+  "same_passage_cooccurrence_examples_by_work": {
+    "HUANG_DI_NEI_JING": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "d773900131a30e9d6f7f14338f9cb7d054ec375d6214a9b8dedbc35019dd8e6f",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.456",
+          "block_id": "20231115101542-ilczjsi",
+          "character_start": 74,
+          "character_end": 134,
+          "passage_text": " （治心病，取经络手少阴手太阳，或舌头下的金津穴和玉液穴两个经外奇穴扎洞放血，变化延伸的病，可以刺阴郄穴养老穴这种放血；"
+        },
+        {
+          "passage_id": "37ad8d84047a03a65eb7c1ae6fe02e3c68aa750e250d638a35b92265b1fdfceb",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.524",
+          "block_id": "20231116115417-fm63xsx",
+          "character_start": 53,
+          "character_end": 121,
+          "passage_text": "等经气到时，要谨慎对待，深浅由你自己决定，远近若一（远取穴、近取穴 一导一引配合同时进行，此谓针灸导引法），全神贯注关注不到外界的变化；"
+        },
+        {
+          "passage_id": "78ce115e244266540155d5b21014c163ad08eb719c12a62e7a73a9622987edbf",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.886",
+          "block_id": "20231214093956-3if8w3z",
+          "character_start": 0,
+          "character_end": 24,
+          "passage_text": "黄帝问道：秋天针刺，要取经穴和输穴，是什么道理？"
+        }
+      ],
+      "CLASSICAL_THEORY|FORMULA": [
+        {
+          "passage_id": "2a5a5228ba722567c6d6b9ecee8b371a7e113400eaa3d5de53837d27a56c2706",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1457",
+          "block_id": "20240527084025-wpmbeym",
+          "character_start": 488,
+          "character_end": 713,
+          "passage_text": "所以邪之始入于皮也，溯然汗毛立正起来，开腠理，入于络，则络脉盛，当你入于络的时候我们看到络脉颜色特别鲜艳，变掉了，我们有一种雷诺斯症，手脚四肢就那个指甲整个冰的，冰的像紫色一样，你摸好象那个手指头是放在冰块里面冰的，你故意都没有办法这样子，前面整个是冰的，然后青紫色，那个指头碰到你真的像冰块，这是冰在络上面，那放血放掉，那如果这个人形瘦，已经没有力气了，不要放血了，当归四逆汤诸如此类的，所以这是治症，我们知道它的络，越来越严重的话就跑到脏里去了。"
+        }
+      ],
+      "CLASSICAL_THEORY|SYMPTOM": [
+        {
+          "passage_id": "763d1ec25af04f67f5a537927229c225716f8f948ecd84732fa49648a3e8d0e5",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.307",
+          "block_id": "20231025100815-s7022mt",
+          "character_start": 0,
+          "character_end": 47,
+          "passage_text": "厥阴气绝 ：（肝经脉气绝）中焦发热，喉咙苦干，心情烦躁，严重时舌头会往上卷，睾丸会往上缩而死；"
+        },
+        {
+          "passage_id": "092b8fa39e8bbce83e632e545ffcb076bd26152e6c50d66553a69ce85e89302c",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.647",
+          "block_id": "20231124112225-9gwyj39",
+          "character_start": 0,
+          "character_end": 29,
+          "passage_text": "308、血气虚，肌肉就容易麻木不仁，卫气虚就没有办法出力；"
+        },
+        {
+          "passage_id": "94abfe821f6ac018587b9759621a18c1e97461fcfcc40286ae1f38fd87f1dd9a",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.769",
+          "block_id": "20231206155808-tvihg6x",
+          "character_start": 78,
+          "character_end": 122,
+          "passage_text": "不痛而麻木不仁的，系患病日久，病邪深入，营卫之气运行涩滞，致使经络中气血空虚，所以不痛；"
+        }
+      ],
+      "FORMULA|HERB": [
+        {
+          "passage_id": "ace56de2822a3e6f437aafdcfae7a6bc2327351ef058ea6f94d352c95a563a1a",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.656",
+          "block_id": "20231128085832-64c9jhs",
+          "character_start": 43,
+          "character_end": 53,
+          "passage_text": "（可以用桂枝汤调理）"
+        },
+        {
+          "passage_id": "a46dcf6976cbff919d147402c2f2e0847e6caa0c161eea701f3668b35e05aa9a",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.849",
+          "block_id": "20231212104919-qse9gaz",
+          "character_start": 0,
+          "character_end": 29,
+          "passage_text": "425、 桂枝汤，手冷脚温，桂枝加倍，脚冷手温，白芍加倍；"
+        },
+        {
+          "passage_id": "fbdfad848a7d72d6fcae7d4f610ebcb826d70e6e85d0f8a41c3af91315b723dd",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1028",
+          "block_id": "20240524120011-syneulz",
+          "character_start": 506,
+          "character_end": 568,
+          "passage_text": "你心里想，这个是麻黄汤症，我要用回阳汤，麻黄汤又叫回阳汤，我下麻黄汤，下麻黄汤，一下不行啊，他这个下了他津液没了不很危险吗？"
+        }
+      ],
+      "SYMPTOM|ACUPOINT": [
+        {
+          "passage_id": "5cb854fe105962e64eb35e68bd3841e02c7ffa0cf1432408c0807145db24bd7b",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.455",
+          "block_id": "20231115094409-x756g3y",
+          "character_start": 79,
+          "character_end": 125,
+          "passage_text": " （肝气开窍在眼，如果头痛位置是眼睛后面痛，说明就是肝病，肝气上逆，头顶百会穴痛，肝气上逆）"
+        },
+        {
+          "passage_id": "f766c43e6e33f1d080d90441c7d3b237dc92c743b5485882ab47f5c6ad9208fe",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.729",
+          "block_id": "20231201104153-74k9bjs",
+          "character_start": 0,
+          "character_end": 39,
+          "passage_text": "352、腰痛：看到淤血放掉，没有淤血，找委中、阴谷穴及阴谷穴周边的压痛点下针；"
+        },
+        {
+          "passage_id": "e5ce567d4bd8944cd82a9b7da774db05006a8791531727307af29dfd1c0a805b",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.868",
+          "block_id": "20231213160238-35v9z9d",
+          "character_start": 0,
+          "character_end": 46,
+          "passage_text": "438.1、心痛彻背背痛彻心： 天突穴+中脘穴+关元穴 +背后第十椎（三焦气脉汇于第十椎）；"
+        }
+      ],
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "ecf8d6c5cebac04874fa353ff5758a919ea32b979f5c35c24302c2aae7512f76",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.633",
+          "block_id": "20231124104529-3hx2v3f",
+          "character_start": 0,
+          "character_end": 55,
+          "passage_text": "301.1、做针灸遇到虚症时能不刺就不刺，不应该刺的时候下针时，病症五日后又会回来，回来之后会少气发热等症状；"
+        },
+        {
+          "passage_id": "3968c1fe67d7b088dcd5941dd0da68590aec5740e76adc88b1d7ab30299f125c",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.727",
+          "block_id": "20231201103820-e7dkoo8",
+          "character_start": 10,
+          "character_end": 31,
+          "passage_text": "(腰背痛，大多可以在委中上面找到地方放血)"
+        },
+        {
+          "passage_id": "4f53107cb20f0861fd60b8a6818c469a0026e2916f2fdf1dd3cdc700faa1c623",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1078",
+          "block_id": "20240524133256-v21lpqg",
+          "character_start": 50,
+          "character_end": 142,
+          "passage_text": "病以时间来发作，只要一定时间发作的，那我们都称为疟，那因为先伤于寒，我们就说寒疟，那如果另外一种呢是先发热再发寒，现在我们的西医看到疟用奎灵去治，中医我们针灸也可以做好，药也可以治好。"
+        }
+      ],
+      "SYMPTOM|FORMULA": [
+        {
+          "passage_id": "c93d99e0a487b19e3e098590b7a53104f45df79cfd7b4d8e5527c60995af354b",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1069",
+          "block_id": "20240524132828-dk0e3sf",
+          "character_start": 256,
+          "character_end": 356,
+          "passage_text": "那老师这个少阳证还是太阳证，太阳证也有热多寒少，寒多热少，我们处方不一样，那在少阳证往来寒热，那这个寒热怎么分，少阳证就多个呕，因为少阳组开合，门枢的地方，所以会影响到胃，因为忽冷忽热、恶心，少阳证。"
+        },
+        {
+          "passage_id": "9195cf40af89fd008ced26c6a9f880e599ab7754a203a03a2531078a27a95aea",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1069",
+          "block_id": "20240524132828-dk0e3sf",
+          "character_start": 356,
+          "character_end": 504,
+          "passage_text": "那如果说我有往来寒热但是没有恶心这是太阳证，那这是病在肌表上，这里的疟不是啊，从里面发出来的，寒要冷到牙齿都打颤，我跟你讲我们那个伤寒论得了麻黄汤时伤御寒的时候也没有牙齿打颤哪，那只是表寒牙齿不会打颤，它是从里面出来，那个牙齿就在打颤了，背很痛，那热的时候嘴巴渴得要死，疟，不要弄错了，这是疟症。"
+        },
+        {
+          "passage_id": "61fbb18afe17c9952ce2cb083e6e9f3402d0c33545411a44300e30002e17d12d",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1089",
+          "block_id": "20240524133913-l9083t2",
+          "character_start": 566,
+          "character_end": 1186,
+          "passage_text": "肺在上面，心脏在这边，中间是胃，肾在下面，常人正常人肺气是下降的，都没有问题，当肾脏有问题的时候，肾气下面是阴寒的，那这个肺气下不来了，寒就堵塞到，这个寒会往回走，一回走的时候顶到胃，胃里面东西吐掉，所以说我们常常就呕吐得很严重的时候，我们知道这个人肾出问题了，所以你在临床上看的时候，这个病人肾衰竭的时候，要准备开始肾完全衰竭掉，也就是说你现在的俗话来说准备洗肾了，之前的时候病人都是头非常的晕眩，还有的呕吐一吃就吐一吃就吐，根本饮食无法入胃，然后晕眩的很厉害，那人躺在床上都会头昏，那你是倒立过来正反过来怎么睡都是呕吐，因为肾脏快要衰竭掉，所以说当你知道胃呢是肾的关，那我们在治肾的时候反过来我们在治肾的时候，这个胃口饮食都很好，一直在恢复中间，那把它延伸出去的时候，我们知道肾是管冬天嘛，冬天是病起的时候，那你在冬天治疗的时候病会起来，那比较难治，那在下个节气春天的时候是它所相生的节气，他应该痊愈在春天，对不对，那你注意你的病人冬天来治，那你跟他说现在刚好是冬天，你来的时间不是很好，要治就治三个月，三个月以后你开始慢慢会回春，那真正开始好转的时候你会在这个冬至日开始慢慢慢慢的回升，因为冬至的时候阳气开始升，那到明年的春天你的肾才会好，那这个病人肾脏有病，跑来，秋天，那你说你要稍微更久一点，这是按照节气来说话，我们可以预测他什么时候会好，但是你在处方上使用的时候，你处方使用得很好，可以提前，就不会受到节气的影响，一般是这样子。"
+        }
+      ],
+      "SYMPTOM|POINT": [
+        {
+          "passage_id": "5cb854fe105962e64eb35e68bd3841e02c7ffa0cf1432408c0807145db24bd7b",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+          "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+          "tree_position": "0.455",
+          "block_id": "20231115094409-x756g3y",
+          "character_start": 79,
+          "character_end": 125,
+          "passage_text": " （肝气开窍在眼，如果头痛位置是眼睛后面痛，说明就是肝病，肝气上逆，头顶百会穴痛，肝气上逆）"
+        },
+        {
+          "passage_id": "f2d43c57d4fdf4295ea00def6edbee9fd4c6c4d5d9f65460c700b705a71a0a35",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1102",
+          "block_id": "20240524134525-gjai9if",
+          "character_start": 58,
+          "character_end": 122,
+          "passage_text": "我一开始的时候后项强硬，先治后项，你问病人就知道了嘛，如果先头痛，重者先去头上就两个额角，比如说百会，我们的额角、太阳、瞳子髎。"
+        },
+        {
+          "passage_id": "cdcf9917cbd8f42a13937fc68151ed457cce977fc4dd8ed812eae3a780186250",
+          "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+          "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+          "tree_position": "0.1170",
+          "block_id": "20240524151649-pgat970",
+          "character_start": 929,
+          "character_end": 970,
+          "passage_text": " 善悲 ，很容易哭， 刺阳明的前三痏 ，就是讲足三里的地方，就会让他腰痛好得很快。"
+        }
+      ]
+    },
+    "JIN_GUI_YAO_LUE": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "3e72d31c3393860d33cb617682e5a1aeb9cf90e43e9e157fd21f887396293b07",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1397",
+          "block_id": "20240314085241-s2pn1dk",
+          "character_start": 104,
+          "character_end": 184,
+          "passage_text": "我们去查查到底是虚实的时候，我们就按天枢穴......所以针灸要很熟，天枢啊，中脘啊，下脘啊，关元啊，尤其天枢你按脉，你按到他，按下去，他没有感觉到，他不难过。"
+        },
+        {
+          "passage_id": "e53eb128fcabfcadae0e2e4da61a568e9bc119b247040a03d137501bacff1a6d",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.2680",
+          "block_id": "20240409104936-6qf566h",
+          "character_start": 61,
+          "character_end": 167,
+          "passage_text": "就在我们讲针灸的时候哦，鼻头点个黑墨，往那一点，照那个黑点一针就下去，这是一个下针的手法，还有一拉，这个小老鼠（弘二头肌）跑起来，侠白穴可以止流鼻血，那你帮他治，包括你开处方治疗好了，好了之后呢，结果 目睛晕黄。"
+        },
+        {
+          "passage_id": "b87a86a10f9cd65b256cf038033a91397a50c220fe4caf91a23db3035451da46",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.3367",
+          "block_id": "20240314085241-zeuq6pm",
+          "character_start": 177,
+          "character_end": 286,
+          "passage_text": "那你如果说你会针灸哦，那我们 下针下大敦穴，隐白 ，你大敦穴在大拇指头旁边，脚的拇指旁边，很痛啊，你一......哦， 就扎对侧，如果是右边的睾丸那边疝气坠下来，你去扎左边 ，那扎大敦你扎一下去一痛啊，一痛就收起来了。"
+        }
+      ],
+      "CLASSICAL_THEORY|FORMULA": [
+        {
+          "passage_id": "e0ff35b5b322ac85bd7cdff4e66e06ae8d558c0440d8f2e7066d72be7a0017f8",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1497",
+          "block_id": "20240314085241-i3909qt",
+          "character_start": 73,
+          "character_end": 94,
+          "passage_text": " 大建中汤呢，中焦这边的寒，比较重的寒 。"
+        },
+        {
+          "passage_id": "0c55df7effaa04e7ef83e855347a6f7c3158543fd04f3ede07c0f4fba0f3fde1",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1497",
+          "block_id": "20240314085241-i3909qt",
+          "character_start": 94,
+          "character_end": 141,
+          "passage_text": " 如果是胸口，胸的寒痛，就是我们的乌头赤石脂丸 ，就是因为有寒淤在里面，那由于是中焦胃的地方。"
+        },
+        {
+          "passage_id": "6b58736e9c2fd8866de925c23778e73475a5e14c07014d1e111aac94b9d6960b",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1510",
+          "block_id": "20240314085241-tp9ad0v",
+          "character_start": 187,
+          "character_end": 205,
+          "passage_text": "甘草干姜汤 ，如果是 上焦的寒实呢？"
+        }
+      ],
+      "CLASSICAL_THEORY|SYMPTOM": [
+        {
+          "passage_id": "44b97583bdaef1e6160da7e1c99b67b2315df80f740ea067f4bb184e1f6fd7c7",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1028",
+          "block_id": "20240321153939-cu65tc8",
+          "character_start": 0,
+          "character_end": 227,
+          "passage_text": "热在上焦者，因咳为肺痿，所以肺痿之病呢从哪里得到呢，他（张仲景）回答了哦，有的肺痿呢从汗流太多，津液伤到，或者是呕吐，吐太多津液伤到，或者是消渴哦，就是喝了水还是口渴，不能止渴，小便太多都是失掉津液，或者从大便难大便干燥....大肠的大便干燥，因为大肠和肺是表里的，所以你如果大肠干的话，肺也跟津液也伤掉了，或者呢会被快药下利，就是你有，本来有便秘，攻坚的药攻下去以后太快了，还是伤到津液，反正总而言之就是 重亡津液，肺里面的津液没有了，所以叫做肺痿 。"
+        },
+        {
+          "passage_id": "e4b7efba0f5031f821404587f7bf8ac42856a89b613792edad6bf5ea8ef37228",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1225",
+          "block_id": "20240314085241-fadawd5",
+          "character_start": 34,
+          "character_end": 59,
+          "passage_text": "今阳虚，知在上焦，所以胸痹心痛者，以其阴 弦故也。"
+        },
+        {
+          "passage_id": "f68cd4ba61d1d81f3b972f92d4a40d8d43e3876213a08ccd5eda1e6a78d3df7a",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1230",
+          "block_id": "20240322155751-8s09puv",
+          "character_start": 26,
+          "character_end": 52,
+          "passage_text": "“ 今阳虚，知在上焦，所以胸痹心痛者，以其阴弦故也。"
+        }
+      ],
+      "FORMULA|HERB": [
+        {
+          "passage_id": "35897c8bfbc77a1ec1a37bae0b153b84d35f5c67f9a7e0ff0b1cb974d6743f94",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1000",
+          "block_id": "20240314085241-r7hh109",
+          "character_start": 0,
+          "character_end": 9,
+          "passage_text": "《千金翼》灸甘草汤"
+        },
+        {
+          "passage_id": "993aa6047b666b24956576db7bc179775e44eaf593c77d083343aa2285895ac2",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1003",
+          "block_id": "20240321152456-zfhmy0z",
+          "character_start": 13,
+          "character_end": 56,
+          "passage_text": "看啊， 炙甘草汤，治虚劳不足，汗出而闷，脉结悸，行动如常，不出百日，危急者十一日死 。"
+        },
+        {
+          "passage_id": "d459ffe5cf6afcb9b4b89b26dc57977bcacc3c8c21b322637b416794eba3b3ac",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1004",
+          "block_id": "20240321152456-1i2hisu",
+          "character_start": 0,
+          "character_end": 49,
+          "passage_text": "他这是《千金翼》，看到没有，实际上炙甘草汤哪是什么《千金翼》的啊，伤寒论里面就有炙甘草汤，对不对？"
+        }
+      ],
+      "SYMPTOM|ACUPOINT": [
+        {
+          "passage_id": "f24853183bd752ffef7fa476ea7c345a4af11a01e1a4dca793c15617a69e1615",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1348",
+          "block_id": "20240325111729-ruycpl6",
+          "character_start": 22,
+          "character_end": 81,
+          "passage_text": "下针， 公孙、内关 以外，下胃经的井主心下满，所以下胃经的 厉兑穴 ，如果心痛在左边下右脚的厉兑，在右侧下左脚的厉兑。"
+        },
+        {
+          "passage_id": "969be9df7a7a43729c2e5f7ec4c6e4f1aec6045604752324f38264069a0f23ef",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.2878",
+          "block_id": "20240410104102-1bkrssp",
+          "character_start": 45,
+          "character_end": 104,
+          "passage_text": "所谓特殊的治症呢，病人 强烈地头痛 ，然后呢他这个痛是从...最常见的是 从肩胛到后脑沿着耳朵一直到太阳穴的地方痛 。"
+        },
+        {
+          "passage_id": "449f3f78f470d5ab83a7323cd5017dd2af2fdaa4e5b8d0974951f0a3d7c2f007",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.3321",
+          "block_id": "20240314085241-jooh06s",
+          "character_start": 218,
+          "character_end": 318,
+          "passage_text": "痛也是一样，比如说这个人呢原来背痛，你帮他扎完针以后，诶，他如果背不痛了痛到肩膀上来了，你再扎同样的穴道，他说肩膀不痛了背也不痛了我现在手臂痛， 由身体往外走了，统统都是顺，都是好，都是在好转的中间。"
+        }
+      ],
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "66658e3e6e78aa00a3f4737762e2c416bc767293ede60ab1e7f69e871ab5d50c",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1323",
+          "block_id": "20240325101417-x4bf9r3",
+          "character_start": 156,
+          "character_end": 181,
+          "passage_text": "这个症状在黄帝内经里面讲怎么针刺就是针对这个而来。"
+        },
+        {
+          "passage_id": "0bc8eb1f7700b24495417c05922f3e2bd0f7b5e2b91efefd1ed44ed17e77b086",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.201",
+          "block_id": "20240314085241-he2uwlb",
+          "character_start": 0,
+          "character_end": 51,
+          "passage_text": "那有的人，他们那个外面的针灸乱来啊，那个腰痛，就在病人腰上扎，二三十针，结果好像那个刺猬的背，有没有。"
+        },
+        {
+          "passage_id": "bcf613389ed5b3f5877c94d6c754c98ed06bc91d496c8196c23c63ae4221a901",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.201",
+          "block_id": "20240314085241-he2uwlb",
+          "character_start": 218,
+          "character_end": 289,
+          "passage_text": "扎完他腰还在那里痛,完全没有改变,你就知道他这个腰痛啊，它有其他的问题在里边，哦，所以说这个就是我们需要做那个针灸啦，用经方啦啊，有这个好处。"
+        }
+      ],
+      "SYMPTOM|FORMULA": [
+        {
+          "passage_id": "b9c5e25ea50a197498e8a917acaf3b781acd7a750b58870b76814076a58b87bf",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1068",
+          "block_id": "20240321165717-8g25enf",
+          "character_start": 0,
+          "character_end": 49,
+          "passage_text": "寒饮咳嗽用射干麻黄汤 ，专门是寒饮，也就是说，如果你是看到热那根本不可能是射干麻黄汤，一定是寒饮。"
+        },
+        {
+          "passage_id": "e7f0ac4802962540640b3025167620201b9b0117de3527734ae5800233950395",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1071",
+          "block_id": "20240321170448-44wtioq",
+          "character_start": 0,
+          "character_end": 130,
+          "passage_text": "所以如果这个病人呢，上气，咳而上气，他是吐气非常不好吐，我们就知道是肺的问题，那射干麻黄汤呢因为是寒饮，所以病人一定没有口渴，对不对，舌苔是白的，那一般来说，只要有咳嗽，我不管你是虚热还是寒饮，大部分晚上三点到五点都会醒过来不能睡觉，就是因为这个肺里面有问题。"
+        },
+        {
+          "passage_id": "304f1d327383fd01e39bc09fe7967908e7a2161695fff0427d084cfd01d86b6d",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1080",
+          "block_id": "20240321171714-pnvaoqg",
+          "character_start": 0,
+          "character_end": 135,
+          "passage_text": "这个皂荚丸呢，皂荚是碱性的，所以说碱性的呢，它把皮刮掉，制酥了以后，做成丸变成皂荚丸，用红枣汤来吃，红枣能够把它皂荚跟胃酸分隔开来，这样子的话你吃皂荚丸就不会产生在胃里面难过，就因为红枣在那里，那你如果说这个皂荚丸配合红枣汤，那是，只是去你的胶痰的咳嗽而已，胶痰的咳嗽。"
+        }
+      ],
+      "SYMPTOM|POINT": [
+        {
+          "passage_id": "f24853183bd752ffef7fa476ea7c345a4af11a01e1a4dca793c15617a69e1615",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1348",
+          "block_id": "20240325111729-ruycpl6",
+          "character_start": 22,
+          "character_end": 81,
+          "passage_text": "下针， 公孙、内关 以外，下胃经的井主心下满，所以下胃经的 厉兑穴 ，如果心痛在左边下右脚的厉兑，在右侧下左脚的厉兑。"
+        },
+        {
+          "passage_id": "7bc8584f7bd947a169b53f3a64fa7bdfb64944dad2d0346e88dadb59d4ab861f",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.1348",
+          "block_id": "20240325111729-ruycpl6",
+          "character_start": 81,
+          "character_end": 111,
+          "passage_text": "正中心痛的时候，你公孙、内关下去痛就去掉了，因为井主心下满。"
+        }
+      ]
+    },
+    "SHANG_HAN_LUN": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "1c01698394a4493f07599ddaff1367754dcd0f6fcf5fbc86c41eb358c62356ea",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.1157",
+          "block_id": "20240220104919-pjnm4ti",
+          "character_start": 0,
+          "character_end": 306,
+          "passage_text": "太阳与少阳并病,张仲景只有这一条不能用小柴胡汤,照理说太阳与少阳并病,小柴胡汤就好了,如果病人头项强痛,太阳病证有了,或眩冒,头昏,时如结胸,并不是真正的结胸,看起来好像结胸,胃里面很难过,心下痞鞕者,胃里面硬硬的,看起来是,这里为什么是小柴胡汤的禁忌?这病人在没有得病的时候,本来他胃的津液就是虚的,胃肠津液虚掉的人,平常喝水喝的很多,喝多了又不能止渴,一直在喝的人,就是胃肠津液本来就不够的人,前面讲的就是胃的津液虚,所以如果开小柴胡汤和解的方子,小柴胡汤大剂下去,病人也会流汗的,遇到这种情形的时候,先刺大椎第一间,泄太阳的热,大椎穴放血,三阳会在大椎,所以大椎穴放血的时候,太阳的热会退掉,为什么扎肺腧？"
+        },
+        {
+          "passage_id": "7bd64093fdca60544ea745170fac815dc0bec6580d42bfca5e234acc840ad391",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.1378",
+          "block_id": "20240220111623-lzflegm",
+          "character_start": 0,
+          "character_end": 234,
+          "passage_text": "因为张仲景不懂针灸,不能急救,所以说死,实际临床上在做的时候不需要开刀,因为人阴部的地方只有一条经,就是肝经,肠子都堆在鼠蹊部了,很难过都陷在那里了,所以下针「大敦」,肝经上的井穴,针一下马上就缩回去了,因为很痛,痛得他吓回去了,右边痛就扎左边,左边痛就扎右边,平常中医的俗名叫「脱肠」,脱肠到严重的时候,西医叫「坎顿脱肠」,就是肠子都烂掉了,有时候会小肠挂在肾的上面,下针「大敦」、「曲泉」,平常可以「灸」,因为是小肠坠下去,大肠不会坠下去,所以灸小肠的「关元穴」。"
+        },
+        {
+          "passage_id": "10357824bd0ea952efc640576b1ea98f268fa38a4fd4d9030013bea77657ecdc",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.519",
+          "block_id": "20240220092555-s012tca",
+          "character_start": 0,
+          "character_end": 145,
+          "passage_text": "二、寒喘：看到最多的就是寒喘,每到冬天的时候都不能睡觉,都要坐着睡,吐出来的是白痰,肺寅大卯胃辰宫,每天晚上三点到五点的时候就开始喘,很准时,确定病人是寒喘,除了针之外还可以灸,针灸的穴道还是一样的,也是虚证的治疗,背后的「肺俞」、「脾俞」、「胃俞」,其它的穴道一样,用土生金的方法来治疗。"
+        }
+      ],
+      "CLASSICAL_THEORY|FORMULA": [
+        {
+          "passage_id": "7469b7e6b1b0c094a6ae732c9c8289b8278cab63abbe0f49b706f02a7899304e",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.121",
+          "block_id": "20240220130636-83e95qp",
+          "character_start": 0,
+          "character_end": 270,
+          "passage_text": "伤寒本来就是肠胃的功能缓掉了,手脚冰冷就是进入厥阴证,还有心下悸胃已经没有吸收的功能了,胃不能吸收水份,这时候水跑到胃里面,水停在中间就会有动悸,就是水饮很多,所以像肌肉跳动、眼皮跳,就是有水饮,都是真武汤证就是水逆行离开血了,遇到这种情形的时候,要先治水,中焦的水最好的药就是茯苓,下焦的水用猪苓,上焦的水就用半夏,胸腔里面用十枣汤,现在水在胃里面所以用茯苓甘草汤,加甘草让药停在胃里面,真正的主药是茯苓,所以茯苓二,甘草一,吃了茯苓甘草汤,水排掉了后,再治手脚冰冷,来不及治的话,水跑到胃里面,这胃要把它当成肠,就会变成下利,小肠是火。"
+        },
+        {
+          "passage_id": "9cba401d97fc5f38e7b9ae65f03623ecabeef2ad03d3ef74d91934e7a2f38d71",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.124",
+          "block_id": "20240220130644-g729x1j",
+          "character_start": 0,
+          "character_end": 420,
+          "passage_text": "麻黄升麻汤专门治疗上热下寒,所以麻黄升麻汤是寒热并用的汤剂,而且是补泻寒热并用在一个方子里面,为什么张仲景设计这方子?就是担心病人进入厥阴的时候,被医生误下了,误下了之后,如何去救他?伤寒六七日,大下后,如果是太阳伤寒表证的时候,被攻下会变成结胸或心下痞,不会有寸脉沉而迟的现象,这是直接进入厥阴了,寸脉讲的是阳脉,所以阳脉很弱了,里面的阳气很弱了,手足厥逆,手脚冰冷,这时候下部脉不至,尺部的脉没有了,这时候咽喉不利,唾脓血,肝是藏血的脏,人的血进入肝以后、肝过滤血后、血再从肝的静脉出来到身上来,肝脏有血管直接到子宫、大肠、到下焦里来,下焦一寒掉后,下焦凝固了,血没有办法下来,血就往上冲逆了,一冲到喉咙,喉咙就肿起来,这是血逆行经脉,严重的话就会吐血,所以肝病到后来会吐血,就是肝血逆往上走,全身只有一条血管没有倒勾,就是肝脏到大肠的血管,就是没有办膜,所以肝病就是利用这管道把病毒排出去,泄利不止,就是肠胃都冷掉了,麻黄升麻汤主之。"
+        },
+        {
+          "passage_id": "5d95c665741ddedf98f2251a1fb58bcd1b31fa69172f987540f8cda309f79903",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.216",
+          "block_id": "20240220131132-503n7qo",
+          "character_start": 0,
+          "character_end": 101,
+          "passage_text": "照理说呕吐的病人胃裹面虚了,亦即胃里面的津液不够了,所以脉弱,小便复利,小便很多,下焦也是虚寒的,所以中焦、下焦都是虚寒的,身为微热,里面寒湿很盛,体能往外散了,这都是阴太盛,阳不足了,所以四逆汤主之。"
+        }
+      ],
+      "CLASSICAL_THEORY|SYMPTOM": [
+        {
+          "passage_id": "5d95c665741ddedf98f2251a1fb58bcd1b31fa69172f987540f8cda309f79903",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.216",
+          "block_id": "20240220131132-503n7qo",
+          "character_start": 0,
+          "character_end": 101,
+          "passage_text": "照理说呕吐的病人胃裹面虚了,亦即胃里面的津液不够了,所以脉弱,小便复利,小便很多,下焦也是虚寒的,所以中焦、下焦都是虚寒的,身为微热,里面寒湿很盛,体能往外散了,这都是阴太盛,阳不足了,所以四逆汤主之。"
+        },
+        {
+          "passage_id": "359926ba6dd4d9195434a43710840ec678f960f062b29dfd1728febb9e9fea91",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.96",
+          "block_id": "20240220130501-gzwu2gg",
+          "character_start": 26,
+          "character_end": 504,
+          "passage_text": "当归四逆汤是中医治疗冻疮的主方,处方还是桂枝汤的加减,手足厥寒,脉细欲绝者,实际上心脏极度的衰竭了,所以加护病房裹面,靠维生机的病人都是当归四逆汤证,摸他的手脚都是冰冷的,心脏的血没有办法运行到四肢的末梢,四肢就缺氧,会坏死掉,这就是造成冻疮,除了冻疮外,紧急的时候也在用的,桂枝和白芍等量,由于动脉和静脉两个相等长,血液就会加速,平常胖子开三钱,人都昏迷了,靠维生机的时候用三两都不过份,因为身体里面完全没有功能,完全要靠药力,桂枝和白芍一定等量,如果桂枝少白芍重,会造成血管爆裂,因为出去的力量不够,人已经极虚了,肠胃的功能不够了津液也不够了,怕里面的东西梗到,所以用通草,通草是很轻的润肠剂,连麻子仁对病人来说都太强了,可是不攻又不行,因为怕里面有脏的东西,所以用通草,同时再加炙甘草、大枣,把津液都补回来,平常张仲景很少用补药,因为病人需要,病人在失血的状况下,所以用当归,把血补足,细辛壮里阳,让下焦的阳往上升,下面的阳往上走,整个人能循环起来,为什么不用生姜?生姜是散胃里面的水,病人有恶心呕吐的时候才会用生姜,现在要把水补回来,所以不用生姜。"
+        },
+        {
+          "passage_id": "877ef412c8eecbbe582b7866765c185926d73279b6bc26e432590a022fd2c03c",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150242-qfpw5wk.sy",
+          "source_sha256": "ed9403636fc8af945e341754960a99704f4952979ef98db14dc4da49ab6c7eb0",
+          "tree_position": "0.208",
+          "block_id": "20240220125643-1psljp3",
+          "character_start": 0,
+          "character_end": 163,
+          "passage_text": "或,是副证,不一定看得到的现象,主证是腹痛,小便不利,四肢沉重疼痛,少阴病本来就是里寒很盛,水湿很盛,如果小便很正常出来的话,小便一定是白的,四肢很痛就是附子汤,现在小便不利了,已经是水堵在里面了,属于虚寒的积水,为什么腹痛,水通通堵在下焦,下焦肠子里面的水份太多,肠壁上的血液循环一定不好,所以肚子会痛,这时候用真武汤主之。"
+        }
+      ],
+      "FORMULA|HERB": [
+        {
+          "passage_id": "1b208f4ece4b0f69574dc6991d3569ab0bfcfbdc409ba4c1589de8e0d0f35135",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.101",
+          "block_id": "20240220130514-hbudpxt",
+          "character_start": 0,
+          "character_end": 50,
+          "passage_text": "如果遇到病人很危险的时候,就照上面的剂量开,用两计,平常用钱计,晚上睡觉脚冰冷的,就是当归四逆汤证。"
+        },
+        {
+          "passage_id": "9d7780344ce9f954a58116cfcb6a43142225e047587398a165182a86cf7ca35b",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.101",
+          "block_id": "20240220130514-hbudpxt",
+          "character_start": 50,
+          "character_end": 82,
+          "passage_text": "还有一个地方用当归四逆汤,就是疝气,疝气时可加上升麻来升提阳气。"
+        },
+        {
+          "passage_id": "3dd38cb6bab58c294787224ddffe9536247cc6994489b2d767e87c4936c8f8e5",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.101",
+          "block_id": "20240220130514-hbudpxt",
+          "character_start": 82,
+          "character_end": 110,
+          "passage_text": "所以只有疝气和冻疮用到当归四逆汤,还有就是急救的时候用。"
+        }
+      ],
+      "SYMPTOM|ACUPOINT": [
+        {
+          "passage_id": "1c01698394a4493f07599ddaff1367754dcd0f6fcf5fbc86c41eb358c62356ea",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.1157",
+          "block_id": "20240220104919-pjnm4ti",
+          "character_start": 0,
+          "character_end": 306,
+          "passage_text": "太阳与少阳并病,张仲景只有这一条不能用小柴胡汤,照理说太阳与少阳并病,小柴胡汤就好了,如果病人头项强痛,太阳病证有了,或眩冒,头昏,时如结胸,并不是真正的结胸,看起来好像结胸,胃里面很难过,心下痞鞕者,胃里面硬硬的,看起来是,这里为什么是小柴胡汤的禁忌?这病人在没有得病的时候,本来他胃的津液就是虚的,胃肠津液虚掉的人,平常喝水喝的很多,喝多了又不能止渴,一直在喝的人,就是胃肠津液本来就不够的人,前面讲的就是胃的津液虚,所以如果开小柴胡汤和解的方子,小柴胡汤大剂下去,病人也会流汗的,遇到这种情形的时候,先刺大椎第一间,泄太阳的热,大椎穴放血,三阳会在大椎,所以大椎穴放血的时候,太阳的热会退掉,为什么扎肺腧？"
+        }
+      ],
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "8d1ab11b0c915e56dfbcc4c1ed7bae4706fa72d00202bf320d391d1645acfcb0",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.125",
+          "block_id": "20240220130644-46lpree",
+          "character_start": 293,
+          "character_end": 379,
+          "passage_text": "就是讲疝气,针灸的时候,左边腹痛扎右脚,右边腹痛扎左脚,肝经的「大敦」穴下针,一痛就收回去了,然后下肝经的母穴「曲泉」,因为只有肝经络过阴器,「大敦」一下,一痛就收回去了。"
+        },
+        {
+          "passage_id": "1c01698394a4493f07599ddaff1367754dcd0f6fcf5fbc86c41eb358c62356ea",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.1157",
+          "block_id": "20240220104919-pjnm4ti",
+          "character_start": 0,
+          "character_end": 306,
+          "passage_text": "太阳与少阳并病,张仲景只有这一条不能用小柴胡汤,照理说太阳与少阳并病,小柴胡汤就好了,如果病人头项强痛,太阳病证有了,或眩冒,头昏,时如结胸,并不是真正的结胸,看起来好像结胸,胃里面很难过,心下痞鞕者,胃里面硬硬的,看起来是,这里为什么是小柴胡汤的禁忌?这病人在没有得病的时候,本来他胃的津液就是虚的,胃肠津液虚掉的人,平常喝水喝的很多,喝多了又不能止渴,一直在喝的人,就是胃肠津液本来就不够的人,前面讲的就是胃的津液虚,所以如果开小柴胡汤和解的方子,小柴胡汤大剂下去,病人也会流汗的,遇到这种情形的时候,先刺大椎第一间,泄太阳的热,大椎穴放血,三阳会在大椎,所以大椎穴放血的时候,太阳的热会退掉,为什么扎肺腧？"
+        }
+      ],
+      "SYMPTOM|FORMULA": [
+        {
+          "passage_id": "114e0c551e6f23c4d88fd645464fbbe71b2683203c9084f59432ce2bf85d8fb9",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.112",
+          "block_id": "20240220130609-nfl2858",
+          "character_start": 0,
+          "character_end": 240,
+          "passage_text": "如果有发热,应该汗出就都解掉了,现在大汗出,热不去,就是津液伤到了,四肢痛而拘急,关节会痛,就是津液不足了,血液循环就不好,四肢关节就会痛,又下利,厥逆而恶寒者,已经血液循环不好了,又下利,代表里寒很强,这时候又手脚冰冷,这裹的恶寒和太阳的恶寒不一样,麻黄汤的恶寒是怕冷,这裹的恶寒是虚掉的冷,四逆汤主之,四逆汤都是救逆的,里寒很盛的时候用,所谓里寒就是里面的功能都没有了,四逆汤里面用干姜和生附,很危险的时候,可以炮附生附并用,生附可以壮心阳,炮附使关节打通,同时有壮肾阳之功。"
+        },
+        {
+          "passage_id": "bb78132ee539dd2738f7aa47b167b2fd09edf616517fe27c683adad7671ac5f5",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.142",
+          "block_id": "20240220130753-6hbc8b1",
+          "character_start": 241,
+          "character_end": 301,
+          "passage_text": "这个方常用来治疗现在说的胰脏癌,另外一个胰脏癌常用的处方是旋覆代赭汤加干姜吴茱萸,这是用在病人严重呕吐、呕酸很多的时候；"
+        },
+        {
+          "passage_id": "2eb893c12c65445b5975edf79e016e1b4e673fc2b34823eb2de8f264438ab81a",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+          "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+          "tree_position": "0.2",
+          "block_id": "20240220130105-z5g6tyy",
+          "character_start": 0,
+          "character_end": 303,
+          "passage_text": "厥阴主要谈的就是肝,附属的就是心包、手厥阴心包经、足厥阴肝经,所以看到厥阴证,手足四逆的时候,心脏一定衰弱了,因为心血不足,肝又不受血了,病从太阴进入少阴,到了少阴没有好,所有的病毒会进入厥阴,这是人体最后一道关卡,人身上有五分之一的血在肝里面,像现在的急性肝炎、从饮食来的或输血来的,病毒随着血就到肝裹面去了,肝能把血里面的毒代谢掉,把脏的排出去,因为五脏六腑所有的血通通会进入肝,从肝的静脉出来,再到胸腔再交换,厥阴证里面方子不多,轻微的有用到皮肤表面,重病的时候,汤方一样,只是剂量加重,像冻疮,热水敷都没有用,因为老是表热但里面仍是冷的,用「当归四逆汤」,能从脚指头发热出来,因为有新鲜的血进入了。"
+        }
+      ],
+      "SYMPTOM|POINT": [
+        {
+          "passage_id": "c9efbf4ae95b42f6617cf9595f1fe1e8e5a0a81fdaf7d189b94d0074ea68ee8e",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219150244-qcrbzkb.sy",
+          "source_sha256": "8ec8a00cacba8cbb8904cb9ffbe849de856856e5771eda7798f938881353a5d5",
+          "tree_position": "0.517",
+          "block_id": "20240220092546-d83wmbj",
+          "character_start": 0,
+          "character_end": 87,
+          "passage_text": "一、热喘：就是病人虚汗很多,阳虚了,舌苔黄黄的,气喘到你的手上的时候,大都是虚证了,一定喘很久了,小孩用单剌不留针,呼吸痰的声音很大,只针不灸：下「公孙」「内关」〈胃心胸〉,"
+        },
+        {
+          "passage_id": "6a870c434d35081d77d16d93bbfcf37cdd2f6075b95ca27b57f761164de56466",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110837-z7wfuan.sy",
+          "source_sha256": "c643101133f8903cc3e891154a83d161aad42ca2aa906086bb8f558ff94c5d3b",
+          "tree_position": "0.274",
+          "block_id": "20240306084646-r2r0chx",
+          "character_start": 0,
+          "character_end": 35,
+          "passage_text": "170、 头痛有三 ：阙上痛或头顶即正头顶百会穴位置痛， 阳明头痛 ；"
+        },
+        {
+          "passage_id": "a8b137a0895cbb0cd93d694c2e76928ae2679bccb78d678f20e4612ecba61e32",
+          "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+          "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+          "tree_position": "0.1652",
+          "block_id": "20240220131918-6ohlbuz",
+          "character_start": 54,
+          "character_end": 77,
+          "passage_text": "如果头顶，正头顶百会穴位置痛，也是阳明头痛 。"
+        }
+      ]
+    },
+    "ZHEN_JIU_DA_CHENG": {
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "78ab201fc552f4d6efa24cfac2ab129864e3436a8b736195cbae76dfc095f09f",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.152",
+          "block_id": "20230928080749-yzw4y93",
+          "character_start": 0,
+          "character_end": 34,
+          "passage_text": "80、立竿见影，是针灸本就应有的效果，如果没有效果，就是扎错穴道了；"
+        },
+        {
+          "passage_id": "e0794724f34542fdc39c80682b2a708a2583edc5c8233d3d974878bd5a3845cf",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.175",
+          "block_id": "20230928080749-09g4qqv",
+          "character_start": 0,
+          "character_end": 23,
+          "passage_text": "92、扎子穴母穴补泻的手法多用于外症如肺经痛；"
+        },
+        {
+          "passage_id": "c29a1a1bb2809d9a3135ec30a3ab832b626021b98bb9dab9299a545d9fed2002",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.18",
+          "block_id": "20230928080749-znqwd90",
+          "character_start": 0,
+          "character_end": 33,
+          "passage_text": "17、成人留针（针下到穴道后，针要留一段时间如半小时做一些补泻）；"
+        }
+      ],
+      "CLASSICAL_THEORY|SYMPTOM": [
+        {
+          "passage_id": "69d4548af4278d60620c4b26fcd1183ef1b96f20296a8c0c7467d37fd28f7921",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1068",
+          "block_id": "20240523115029-5zaigol",
+          "character_start": 44,
+          "character_end": 77,
+          "passage_text": "你底座在晃的时候，我们知道是水饮停在中焦，所以头昏眼花，常常恶心。"
+        },
+        {
+          "passage_id": "9cf8a4d5129eb1187d00d0d94b2b5ee1038d50569d98e33628d5a58e95d37747",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1245",
+          "block_id": "20240523115029-2daisbj",
+          "character_start": 166,
+          "character_end": 178,
+          "passage_text": "呕吐消渴，因脾是在中焦。"
+        }
+      ],
+      "FORMULA|HERB": [
+        {
+          "passage_id": "d442dbb40b193f6326b4f7a0e0f96b310af856a6b7af9c145dd2505659378f78",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1701",
+          "block_id": "20240523115029-f6sl6ea",
+          "character_start": 432,
+          "character_end": 454,
+          "passage_text": "书上写吃小柴胡汤，但这小柴胡汤下去都太慢了。"
+        },
+        {
+          "passage_id": "57bf5f1e81bd2f99e1f5c91de8200f723e6cb72ccb692429d73cfb1c8fbd802d",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1701",
+          "block_id": "20240523115029-f6sl6ea",
+          "character_start": 454,
+          "character_end": 521,
+          "passage_text": "我们扎期门，如果你不会扎期门怎么办，就吃小柴胡汤，当然再扎期门也很好啊!至于后面说太阳少阳并病、结胸等等，这都是《伤寒论》里面的东西。"
+        },
+        {
+          "passage_id": "7c857855197ee49d2d401e0ffd9bc599a3c9e55f203a54207a1a50faebcfe288",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.337",
+          "block_id": "20240523115029-bghgo6y",
+          "character_start": 176,
+          "character_end": 190,
+          "passage_text": "太阳少阳并病就是小柴胡汤症。"
+        }
+      ],
+      "SYMPTOM|ACUPOINT": [
+        {
+          "passage_id": "fc7381bd24ffc4e0eb36b2b2c555d59365b75c49f3dda897b44bf43af4dd5f9f",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+          "tree_position": "0.109",
+          "block_id": "20230928081620-mxblm6e",
+          "character_start": 0,
+          "character_end": 18,
+          "passage_text": "85、公孙穴：妇女怀孕妊娠恶心呕吐；"
+        },
+        {
+          "passage_id": "0de2b20f0bfdd658907d37874dc0d80abdf8fa0a856bbb620e8b99f40faf7bf9",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+          "tree_position": "0.134",
+          "block_id": "20230928081635-v8oi1a3",
+          "character_start": 0,
+          "character_end": 24,
+          "passage_text": "109、头痛：玉枕穴（近取穴，头皮和头骨之间）；"
+        },
+        {
+          "passage_id": "4ffc4cc5e3edadf8628044e4f89c4ab7e8296ef9341215debf60b86cca3002bd",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+          "tree_position": "0.153",
+          "block_id": "20230928081705-gyk8i3d",
+          "character_start": 0,
+          "character_end": 39,
+          "passage_text": "123.1、胃痛：梁丘穴是胃经郄穴，腑会中脘穴，中脘穴+梁丘穴（会郄治疗法）；"
+        }
+      ],
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": [
+        {
+          "passage_id": "9d5cc31380a32fd8165563d788f146c076fe315b700a5d8e59276d5ba2cafff7",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.100",
+          "block_id": "20230928080749-qae441r",
+          "character_start": 45,
+          "character_end": 85,
+          "passage_text": "如病人说全身都痛无法判断痛点，就开四关，其余疼痛就消失，有问题的病变经就显现了；"
+        },
+        {
+          "passage_id": "8b5efa22e6cbebd748a1ff672660097e4bff1901e93bc74778d3151513ae274a",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.305",
+          "block_id": "20230928080749-tv3gyro",
+          "character_start": 0,
+          "character_end": 45,
+          "passage_text": "185、运气法（治疼痛，泻的一种手法）：取阴数6，捻针法，补泻完针头偏向疼痛的地方刺过去；"
+        },
+        {
+          "passage_id": "70d68db36408634967bdbb6c58dc783d3c64809e44fcd7c18ff4ba8c146f7ba1",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.398",
+          "block_id": "20230928080749-wvsicye",
+          "character_start": 103,
+          "character_end": 154,
+          "passage_text": "例头痛，就在天应穴的位置下一针，此为‘导’，再在对侧经的本穴，引气，用泻法，此为‘引’，亦为导引之法；"
+        }
+      ],
+      "SYMPTOM|FORMULA": [
+        {
+          "passage_id": "5ab81a49dea4999a9344a4a3ed271055674df46d99029fde7cd08ac37ed6115e",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.1433",
+          "block_id": "20240523115029-nadle26",
+          "character_start": 147,
+          "character_end": 165,
+          "passage_text": "所以，气喘在处方跟下针上通通不一样。"
+        },
+        {
+          "passage_id": "5a0d054db00da042b3827c2a4e417626814a257a42aa1ab561b7c57ae62dc8c6",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
+          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
+          "tree_position": "0.208",
+          "block_id": "20240523115029-tczu42w",
+          "character_start": 15,
+          "character_end": 85,
+          "passage_text": "我们辨证论治，不一定要了解他的病名，可能是尿道发炎，也可能是性病感染，这些都不要管，我们要的是辨证，我们按症状开处方下穴道，不要被病吓到了。"
+        }
+      ],
+      "SYMPTOM|POINT": [
+        {
+          "passage_id": "4cd182fcf90ceffde3a3dcc5ecf54405a83ef30ec7c24122a3ce03f53481ae3f",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.274",
+          "block_id": "20230928080749-da65fph",
+          "character_start": 0,
+          "character_end": 18,
+          "passage_text": "167、足三里：治一切胃病包括呕吐；"
+        },
+        {
+          "passage_id": "812e4a4b2995a3a990061406547eda460cdb596360aee2aee3325e17adf8af8e",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+          "tree_position": "0.17",
+          "block_id": "20230928081403-x148t3r",
+          "character_start": 32,
+          "character_end": 50,
+          "passage_text": "三阴交（立竿见影，著名治痛经大穴）；"
+        },
+        {
+          "passage_id": "e6058f2c958c85c94860a96c662f3f9e5b909d6c98c4fc94b9d070f4a52e7bd7",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
+          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
+          "tree_position": "0.214",
+          "block_id": "20230928081816-y5bpy1n",
+          "character_start": 0,
+          "character_end": 45,
+          "passage_text": "169、 公孙+内关 ：胃、心胸相关的方面的症状，如呼吸短气、气喘、咳嗽、心脏痛、胃痛等；"
+        }
+      ]
+    }
   },
   "source_documents_by_role": {
     "AUXILIARY_NOTE": 11,
@@ -18,11 +1049,11 @@
     "WORK_ROOT": 5
   },
   "source_passages": 95058,
-  "passage_mentions": 116512,
+  "passage_mentions": 116267,
   "entity_mention_occurrences": 88884,
-  "contextual_term_occurrences": 27628,
+  "contextual_term_occurrences": 27383,
   "passage_mentions_by_type": {
-    "ACUPOINT": 3515,
+    "ACUPOINT": 3316,
     "ACUPUNCTURE_TECHNIQUE": 3055,
     "CLASSICAL_SOURCE": 344,
     "CLASSICAL_THEORY": 3264,
@@ -31,7 +1062,7 @@
     "ORGAN": 42786,
     "POINT": 1241,
     "PULSE": 1811,
-    "SYMPTOM": 9963,
+    "SYMPTOM": 9917,
     "SYNDROME": 3959,
     "TONGUE": 1153,
     "TREATMENT": 221
@@ -41,6 +1072,7 @@
   "unassigned_contextual_terms_outside_single_passage": 0,
   "policy": {
     "passage_mentions": "source occurrence only; not a treatment, efficacy, diagnosis or theory assertion",
+    "same_passage_cooccurrences": "both term types have at least one exact source occurrence in the same passage; this is navigation metadata, not a semantic or clinical relation",
     "native_references": "only existing, resolved SiYuan BLOCK_REFERENCE edges whose two documents are in supported source works",
     "sentence_boundary": "an occurrence crossing passage boundaries is retained in its source table and is not linked to a passage"
   }

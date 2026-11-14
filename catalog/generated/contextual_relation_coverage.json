@@ -1,24 +1,24 @@
 {
   "schema_version": 3,
-  "source_note_association_rows": 155,
+  "source_note_association_rows": 147,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 135,
+      "ordered_typed_pairs": 134,
       "pairs_with_predicate_between": 1,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
       "eligible_pairs": 1,
       "marker_sentences_without_typed_pair": 62,
       "typed_pair_sentences_without_marker": 77,
-      "marker_sentences_with_subject_type": 7,
+      "marker_sentences_with_subject_type": 5,
       "marker_sentences_with_object_type": 12,
       "marker_sentences_with_both_endpoint_types": 1,
       "marker_sentences_with_both_types_but_no_ordered_pair": 0,
       "marker_sentences_with_ordered_pair_but_no_predicate_between": 0,
-      "marker_sentences_without_subject_type": 56,
+      "marker_sentences_without_subject_type": 58,
       "marker_sentences_without_object_type": 51,
       "units_with_marker": 61,
       "units_with_eligible_pair": 1,
@@ -26,7 +26,7 @@
       "typed_candidate_mentions_by_type_in_marker_sentences": {
         "ACUPUNCTURE_TECHNIQUE": 6,
         "ACUPOINT": 2,
-        "SYMPTOM": 8,
+        "SYMPTOM": 6,
         "FORMULA": 2,
         "SYNDROME": 14,
         "TREATMENT": 1
@@ -86,7 +86,7 @@
         "CLASSICAL_THEORY": 74,
         "SYMPTOM": 222,
         "ACUPUNCTURE_TECHNIQUE": 80,
-        "ACUPOINT": 48,
+        "ACUPOINT": 47,
         "CLASSICAL_SOURCE": 1,
         "SYNDROME": 15,
         "TREATMENT": 7
@@ -321,34 +321,6 @@
               "text": "诊断为",
               "start": 98,
               "end": 101
-            }
-          ]
-        },
-        {
-          "unit_id": "da9ae38d9b4b47e9a33349b58d80e452edde6e3072abc6a8a128ce7645ffb61e",
-          "document": "20230928080422-67pnka7/20240423083801-u5dua5v/20240511124126-oswi60v/20240511124212-a6wepzt.sy",
-          "source_sha256": "5802d97e3e274b601a189c3be4d3f5ac2e9dab75ebbaba8a3772d0f227c65e92",
-          "tree_position": "0.820",
-          "block_id": "20240511124241-c93256s",
-          "sentence_start": 0,
-          "sentence_end": 65,
-          "sentence_text": "1，同样是抽搐的症状，只是由于患者抽搐的频率和程度比先前严重，因此，西医从原来诊断“癫痫”该作诊断为“Rasmussen”综合症。",
-          "sentence_truncated": false,
-          "typed_candidate_spans": [
-            {
-              "candidate_id": "term_3fb2673f8e43a434131a92b9",
-              "term": "只是",
-              "candidate_type": "SYMPTOM",
-              "start": 11,
-              "end": 13
-            }
-          ],
-          "candidate_spans_truncated": false,
-          "predicate_marker_spans": [
-            {
-              "text": "诊断为",
-              "start": 47,
-              "end": 50
             }
           ]
         }

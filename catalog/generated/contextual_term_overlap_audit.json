@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 97799,
+  "distinct_occurrence_rows": 97419,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -1003,8 +1003,8 @@
     }
   ],
   "overlap_pair_candidate_type_counts": {
-    "ACUPOINT|ACUPOINT": 235,
-    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 51,
+    "ACUPOINT|ACUPOINT": 90,
+    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 8,
     "ACUPOINT|CLASSICAL_THEORY": 3,
     "ACUPOINT|SYMPTOM": 3,
     "ACUPOINT|TREATMENT": 3,
@@ -1023,27 +1023,27 @@
     "HERB|HERB": 10012,
     "HERB|SYMPTOM": 6,
     "PULSE|PULSE": 840,
-    "SYMPTOM|SYMPTOM": 17923,
+    "SYMPTOM|SYMPTOM": 17797,
     "SYMPTOM|SYNDROME": 8,
     "SYNDROME|SYNDROME": 3346,
     "TONGUE|TONGUE": 5977,
     "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
-    "current_nested": 4601,
-    "exact_span": 32,
-    "partial_overlap": 3419,
-    "prior_nested": 36776
+    "current_nested": 4453,
+    "exact_span": 26,
+    "partial_overlap": 3383,
+    "prior_nested": 36652
   },
   "overlap_pair_type_relation_counts": {
-    "cross_type": 166,
-    "same_type": 44662
+    "cross_type": 123,
+    "same_type": 44391
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 7525,
+  "repeated_lexical_forms_with_multiple_occurrences": 7463,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",
