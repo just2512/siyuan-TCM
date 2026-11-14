@@ -284,8 +284,18 @@ def classify_span(
                     r"脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
                     r"舌(?:象|苔|质))"
                 )
+                # A generic list introduction is not enough to type a
+                # grammatical quantity phrase (e.g. "一只") as a symptom.
+                # Keep unusual but source-labelled clinical terms such as
+                # "少阳证" when the exact span is introduced by "症见".
+                quantity_fragment = re.match(
+                    r"(?:[一二三四五六七八九十两几\d]+(?:个|只|条|块|种|类|项|次|处)|"
+                    r"只是|一个|一种|有些|很多|各种)",
+                    term,
+                )
                 matched = (
-                    None if term.startswith((
+                    None if quantity_fragment
+                    or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
                         "或者", "以及", "并且", "而且", "但是", "不过",
                         "都", "就是", "属于", "不属于", "它的", "为",
@@ -318,7 +328,10 @@ def classify_span(
                 # Keep compact lexical forms, but never accept a suffix cut from
                 # a longer acupoint name (e.g. 元穴 inside 关元穴, 海穴 inside 血海穴).
                 matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
-                if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
+                if (
+                    term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}
+                    or term.startswith(("到", "透", "两", "一", "针", "灸", "近取", "取", "按", "左", "右", "双侧", "两侧"))
+                ):
                     matched = None
                 if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
                     action_prefix = re.search(

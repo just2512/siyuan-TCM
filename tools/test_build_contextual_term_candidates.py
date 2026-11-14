@@ -124,6 +124,24 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 term,
             )
 
+    def test_acupoint_candidates_reject_action_and_quantifier_fragments(self):
+        text = "中府刺到云门穴；一针透两穴；左右天枢穴。"
+        invalid_terms = ("到云门穴", "透两穴", "针透两穴", "两穴")
+        for term in invalid_terms:
+            start = text.index(term)
+            self.assertNotIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+        for term in ("云门穴", "天枢穴"):
+            start = text.index(term)
+            self.assertIn(
+                ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
     def test_acupoint_candidates_do_not_accept_partial_suffixes_inside_point_names(self):
         text = "月经痛：关元穴、血海穴；针灸中脘穴。"
         for term in ("元穴", "海穴", "脘穴"):
@@ -423,6 +441,20 @@ class ContextualTermCandidateTests(unittest.TestCase):
             ("SYNDROME", "SYNDROME_CONTEXT_01"),
             classify_span(text, start, start + len("六名")),
         )
+
+    def test_generic_symptom_intro_does_not_type_ordinary_narrative_as_symptoms(self):
+        text = "最轻微的症状是一只眼角垮下来；症状是头痛、恶心。"
+        start = text.index("一只")
+        self.assertNotIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            classify_span(text, start, start + len("一只")),
+        )
+        for term in ("头痛", "恶心"):
+            start = text.index(term)
+            self.assertIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+            )
 
     def test_symptom_list_intro_does_not_type_narrative_connectors_as_symptoms(self):
         for text, term in [
