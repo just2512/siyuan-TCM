@@ -1,0 +1,36 @@
+name: Overlap review snapshot
+
+on:
+  push:
+    branches:
+      - work/2026-11-14-overlap-review-snapshot
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-review-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pinned branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Export compact review queues
+        run: |
+          python tools/export_overlap_review_snapshot.py \
+            --entity-queue catalog/generated/entity_mention_cross_type_overlap_review.csv \
+            --contextual-queue catalog/generated/contextual_term_cross_type_overlap_review.csv \
+            --output-dir overlap-review-snapshot
+      - name: Publish compact review snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: siyuan-tcm-overlap-review-snapshot
+          path: overlap-review-snapshot/
+          if-no-files-found: error
+          retention-days: 7
