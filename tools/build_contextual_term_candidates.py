@@ -242,6 +242,9 @@ def classify_span(
                         matched = None
                     # "使用的地方非常..." can satisfy the broad use...方 regex,
                     # but 地方 is not a formula-introduction cue.
+                    elif term in {"呢没", "呢没有"}:
+                        # "这个处方呢没有了" is a sentence continuation, not a formula name.
+                        matched = None
                     elif term.startswith(("跟下", "下穴")):
                         # "处方跟下针" / "处方下穴道" are action grammar,
                         # not formula names following the generic 处方 cue.
