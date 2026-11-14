@@ -22,7 +22,7 @@ def hierarchy_rows():
         },
         {
             "document": shanghan_chapter, "parent_document": shanghan, "notebook": "倪海厦",
-            "title": "太阳篇", "document_depth": "1", "child_document_count": "0",
+            "title": "第一篇 太阳篇", "document_depth": "1", "child_document_count": "0",
             "structure_role": "LEAF",
         },
         {
