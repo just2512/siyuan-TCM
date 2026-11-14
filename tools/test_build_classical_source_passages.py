@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from build_classical_source_passages import build
+from build_classical_source_passages import build, source_document_rows
 
 
 def hierarchy_rows():
@@ -166,6 +166,38 @@ def create_fixture_database(path: Path):
 
 
 class ClassicalSourcePassageBuilderTests(unittest.TestCase):
+    def test_unumbered_neijing_chapter_titles_are_not_misclassified_as_notes(self):
+        rows = [
+            {
+                "document": "neijing-root.sy", "parent_document": "",
+                "notebook": "倪海厦", "title": "黄帝内经",
+                "document_depth": "0", "child_document_count": "1",
+            },
+            {
+                "document": "neijing-root/收纳.sy", "parent_document": "neijing-root.sy",
+                "notebook": "倪海厦", "title": "收纳",
+                "document_depth": "1", "child_document_count": "8",
+            },
+        ]
+        chapter_titles = (
+            "素问·异法方宜论", "素问·汤液醪醴论", "素问 · 诊要经终论篇",
+            "平人气象论", "血气形志篇", "太阴阳明论", "阳明脉解篇",
+        )
+        for index, title in enumerate((*chapter_titles, "节气")):
+            rows.append({
+                "document": f"neijing-root/收纳/{index}.sy",
+                "parent_document": "neijing-root/收纳.sy",
+                "notebook": "倪海厦", "title": title,
+                "document_depth": "2", "child_document_count": "0",
+            })
+
+        resolved = source_document_rows(rows)
+        roles = {row["title"]: row["document_role"] for row in resolved}
+        for title in chapter_titles:
+            self.assertEqual(roles[title], "CLASSICAL_CHAPTER", title)
+        self.assertEqual(roles["节气"], "SOURCE_NOTE")
+
+
     def test_builds_work_chapter_passages_occurrences_and_native_references(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
