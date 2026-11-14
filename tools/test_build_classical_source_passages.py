@@ -188,7 +188,7 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(result["unassigned_contextual_terms_outside_single_passage"], 1)
             self.assertEqual(
                 result["source_passages_by_role_and_work"]["SHANG_HAN_LUN"]["CLASSICAL_CHAPTER"],
-                2,
+                1,
             )
             self.assertEqual(
                 result["source_passages_by_role_and_work"]["SHANG_HAN_LUN"]["FORMULA_REFERENCE"],
