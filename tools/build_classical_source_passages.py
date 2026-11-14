@@ -476,9 +476,10 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
 
         connection.commit()
 
-        # Materialize exact occurrence-to-occurrence navigation edges. The edge
-        # label states only that two typed occurrences share one sentence/clause;
-        # it does not imply treatment, efficacy, diagnosis, causality or theory.
+        # Materialize exact occurrence-to-occurrence navigation edges. Both endpoints
+        # must be distinct, non-overlapping source spans; a term nested inside another
+        # name (for example HERB "柴胡" inside FORMULA "小柴胡汤") is not a second
+        # co-occurring mention. The edge label is navigation only, not clinical meaning.
         link_insert: list[tuple[Any, ...]] = []
         link_count = 0
         for left_type, right_type in COOCCURRENCE_PAIRS:
@@ -495,6 +496,10 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
                 JOIN classical_source_passage_mentions dst_occ
                   ON dst_occ.passage_id = p.passage_id AND dst_occ.term_type = ?
                 WHERE src_occ.occurrence_id <> dst_occ.occurrence_id
+                  AND (
+                    src_occ.character_end <= dst_occ.character_start
+                    OR dst_occ.character_end <= src_occ.character_start
+                  )
                 ORDER BY p.document, p.tree_position, p.character_start,
                          src_occ.character_start, dst_occ.character_start
             """, (left_type, right_type)):
