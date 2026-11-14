@@ -284,12 +284,17 @@ def classify_span(
                     r"脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
                     r"舌(?:象|苔|质))"
                 )
-                # A generic list introduction ("症状是……") is not enough to
-                # type the next arbitrary n-gram as a symptom. Require an
-                # intrinsic symptom lexeme inside this exact source span.
-                symptom_lexeme = re.search(RULES["SYMPTOM"][1][1], term)
+                # A generic list introduction is not enough to type a
+                # grammatical quantity phrase (e.g. "一只") as a symptom.
+                # Keep unusual but source-labelled clinical terms such as
+                # "少阳证" when the exact span is introduced by "症见".
+                quantity_fragment = re.match(
+                    r"(?:[一二三四五六七八九十两几\\d]+(?:个|只|条|块|种|类|项|次|处)|"
+                    r"只是|一个|一种|有些|很多|各种)",
+                    term,
+                )
                 matched = (
-                    None if not symptom_lexeme
+                    None if quantity_fragment
                     or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
                         "或者", "以及", "并且", "而且", "但是", "不过",
