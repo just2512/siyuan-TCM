@@ -1,0 +1,24 @@
+{
+  "candidate_mutations": 0,
+  "input_rows": 30098,
+  "kind": "entity",
+  "preexisting_reviewed_rows": 27419,
+  "relationship_inferences": 0,
+  "remaining_unreviewed_rows": 2,
+  "review_decision_counts": {
+    "KEEP_BOTH": 27620,
+    "KEEP_LEFT_ONLY": 1625,
+    "KEEP_RIGHT_ONLY": 851
+  },
+  "review_status_counts": {
+    "REVIEWED": 30096,
+    "UNREVIEWED": 2
+  },
+  "reviewed_by_rules": 2677,
+  "rule_counts": {
+    "ENTITY_ORGAN_AND_FULL_SYNDROME_LAYERS_V1": 201,
+    "ENTITY_ORGAN_CHARACTER_INSIDE_FORMULA_NAME_V1": 2106,
+    "ENTITY_ORGAN_CHARACTER_INSIDE_HERB_NAME_V1": 370
+  },
+  "scope": "review annotations only; graph integration remains gated"
+}

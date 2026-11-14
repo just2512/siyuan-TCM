@@ -1,0 +1,39 @@
+{
+  "candidate_mutations": 0,
+  "input_rows": 123,
+  "kind": "contextual",
+  "preexisting_reviewed_rows": 0,
+  "relationship_inferences": 0,
+  "remaining_unreviewed_rows": 9,
+  "review_decision_counts": {
+    "KEEP_BOTH": 6,
+    "KEEP_LEFT_ONLY": 49,
+    "KEEP_RIGHT_ONLY": 59
+  },
+  "review_status_counts": {
+    "REVIEWED": 114,
+    "UNREVIEWED": 9
+  },
+  "reviewed_by_rules": 114,
+  "rule_counts": {
+    "CTX_ACUPOINT_FRAGMENT_V1": 8,
+    "CTX_FULL_ACUPOINT_NAME_V1": 3,
+    "CTX_GRAMMAR_FRAGMENT_NOT_SYNDROME_V1": 5,
+    "CTX_INCOMPLETE_SYNDROME_FRAGMENT_V1": 1,
+    "CTX_KEEP_DISTINCT_TECHNIQUE_AND_TREATMENT_V1": 1,
+    "CTX_KEEP_DISTINCT_TREATMENT_AND_POINT_V1": 1,
+    "CTX_KEEP_FULL_PATTERN_AND_SYMPTOM_V1": 2,
+    "CTX_KEEP_REGION_AND_FULL_PATTERN_V1": 2,
+    "CTX_MERIDIAN_PHRASE_NOT_PULSE_V1": 1,
+    "CTX_NON_FORMULA_GRAMMAR_FRAGMENT_V1": 2,
+    "CTX_NON_HERB_GRAMMAR_FRAGMENT_V1": 15,
+    "CTX_PROCEDURE_NOT_SYMPTOM_FRAGMENT_V1": 16,
+    "CTX_PROCEDURE_NOT_TREATMENT_FRAGMENT_V1": 1,
+    "CTX_REGION_PHRASE_NOT_SYMPTOM_V1": 20,
+    "CTX_REGION_TERM_NOT_TREATMENT_V1": 2,
+    "CTX_TECHNIQUE_NOT_SYNDROME_V1": 8,
+    "CTX_THEORY_TERM_NOT_SYNDROME_FRAGMENT_V1": 24,
+    "CTX_TREATMENT_PREFIX_FRAGMENT_V1": 2
+  },
+  "scope": "review annotations only; graph integration remains gated"
+}
