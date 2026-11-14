@@ -27,6 +27,28 @@ WORK_ROOTS = {
     ("倪海厦", "针灸大成"): ("ZHEN_JIU_DA_CHENG", "针灸大成"),
 }
 AUXILIARY_TITLES = {"素材", "素材&笔记", "素材&amp;笔记", "方便法门", "笔记", "视频同步文字"}
+NEIJING_UNNUMBERED_CHAPTER_TITLES = {
+    "素问·异法方宜论",
+    "素问·汤液醪醴论",
+    "素问·诊要经终论篇",
+    "平人气象论",
+    "血气形志篇",
+    "太阴阳明论",
+    "阳明脉解篇",
+}
+
+
+def is_classical_chapter_title(
+    source_work: str, title: str, relative_titles: list[str],
+) -> bool:
+    if re.match(r"^第[一二三四五六七八九十百零〇两0-9]+[篇章节]", title):
+        return True
+    normalized = re.sub(r"\s+", "", title).replace("・", "·").replace("．", "·")
+    return (
+        source_work == "HUANG_DI_NEI_JING"
+        and "收纳" in relative_titles
+        and normalized in NEIJING_UNNUMBERED_CHAPTER_TITLES
+    )
 
 # These are evidence-navigation pairs, not asserted clinical or causal relations.
 COOCCURRENCE_PAIRS = (
@@ -124,7 +146,7 @@ def source_document_rows(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
             role = "FORMULA_COLLECTION"
         elif int(row["child_document_count"] or 0) > 0:
             role = "SECTION_CONTAINER"
-        elif re.match(r"^第[一二三四五六七八九十百零〇两0-9]+[篇章节]", current_title):
+        elif is_classical_chapter_title(source_work, current_title, relative_titles):
             role = "CLASSICAL_CHAPTER"
         else:
             role = "SOURCE_NOTE"
