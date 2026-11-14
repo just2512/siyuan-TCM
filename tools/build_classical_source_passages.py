@@ -474,7 +474,7 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
                   ON dst_occ.passage_id = p.passage_id AND dst_occ.term_type = ?
                 WHERE src_occ.occurrence_id <> dst_occ.occurrence_id
                 ORDER BY p.document, p.tree_position, p.character_start,
-                         left.character_start, right.character_start
+                         src_occ.character_start, dst_occ.character_start
             """, (left_type, right_type)):
                 link_id = stable_id(
                     "CLASSICAL_SOURCE_PASSAGE_TERM_LINK", row["passage_id"],
