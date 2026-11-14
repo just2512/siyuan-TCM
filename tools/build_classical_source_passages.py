@@ -28,6 +28,18 @@ WORK_ROOTS = {
 }
 AUXILIARY_TITLES = {"素材", "素材&笔记", "素材&amp;笔记", "方便法门", "笔记", "视频同步文字"}
 
+# These are evidence-navigation pairs, not asserted clinical or causal relations.
+COOCCURRENCE_PAIRS = (
+    ("SYMPTOM", "FORMULA"),
+    ("FORMULA", "HERB"),
+    ("CLASSICAL_THEORY", "FORMULA"),
+    ("SYMPTOM", "ACUPOINT"),
+    ("SYMPTOM", "POINT"),
+    ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
+    ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+    ("CLASSICAL_THEORY", "SYMPTOM"),
+)
+
 
 def digest(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -136,6 +148,7 @@ def source_document_rows(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
 
 def create_tables(connection: sqlite3.Connection) -> None:
     connection.executescript("""
+        DROP TABLE IF EXISTS classical_source_passage_term_links;
         DROP TABLE IF EXISTS classical_source_document_references;
         DROP TABLE IF EXISTS classical_source_passage_mentions;
         DROP TABLE IF EXISTS classical_source_passages;
@@ -187,6 +200,21 @@ def create_tables(connection: sqlite3.Connection) -> None:
             resolution_status TEXT NOT NULL
         );
 
+        CREATE TABLE classical_source_passage_term_links (
+            link_id TEXT PRIMARY KEY,
+            passage_id TEXT NOT NULL,
+            source_work TEXT NOT NULL,
+            document TEXT NOT NULL,
+            document_role TEXT NOT NULL,
+            pair_key TEXT NOT NULL,
+            relation_type TEXT NOT NULL,
+            subject_occurrence_id TEXT NOT NULL,
+            object_occurrence_id TEXT NOT NULL,
+            FOREIGN KEY (passage_id) REFERENCES classical_source_passages(passage_id),
+            FOREIGN KEY (subject_occurrence_id) REFERENCES classical_source_passage_mentions(occurrence_id),
+            FOREIGN KEY (object_occurrence_id) REFERENCES classical_source_passage_mentions(occurrence_id)
+        );
+
         CREATE TABLE classical_source_document_references (
             reference_id TEXT PRIMARY KEY,
             source_document_id TEXT NOT NULL,
@@ -210,6 +238,10 @@ def create_tables(connection: sqlite3.Connection) -> None:
             ON classical_source_passage_mentions(term_type, term_text);
         CREATE INDEX idx_classical_passage_mentions_passage
             ON classical_source_passage_mentions(passage_id, character_start);
+        CREATE INDEX idx_classical_passage_term_links_scope
+            ON classical_source_passage_term_links(source_work, document_role, pair_key);
+        CREATE INDEX idx_classical_passage_term_links_passage
+            ON classical_source_passage_term_links(passage_id);
         CREATE INDEX idx_classical_document_refs_source
             ON classical_source_document_references(source_document_id);
         CREATE INDEX idx_classical_document_refs_target
@@ -422,39 +454,85 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
 
         connection.commit()
 
+        # Materialize exact occurrence-to-occurrence navigation edges. The edge
+        # label states only that two typed occurrences share one sentence/clause;
+        # it does not imply treatment, efficacy, diagnosis, causality or theory.
+        link_insert: list[tuple[Any, ...]] = []
+        link_count = 0
+        for left_type, right_type in COOCCURRENCE_PAIRS:
+            pair_key = f"{left_type}|{right_type}"
+            for row in connection.execute("""
+                SELECT p.passage_id, p.source_work, p.document, d.document_role,
+                       src_occ.occurrence_id AS subject_occurrence_id,
+                       dst_occ.occurrence_id AS object_occurrence_id
+                FROM classical_source_passages p
+                JOIN classical_source_documents d
+                  ON d.source_document_id = p.source_document_id
+                JOIN classical_source_passage_mentions src_occ
+                  ON src_occ.passage_id = p.passage_id AND src_occ.term_type = ?
+                JOIN classical_source_passage_mentions dst_occ
+                  ON dst_occ.passage_id = p.passage_id AND dst_occ.term_type = ?
+                WHERE src_occ.occurrence_id <> dst_occ.occurrence_id
+                ORDER BY p.document, p.tree_position, p.character_start,
+                         src_occ.character_start, dst_occ.character_start
+            """, (left_type, right_type)):
+                link_id = stable_id(
+                    "CLASSICAL_SOURCE_PASSAGE_TERM_LINK", row["passage_id"],
+                    pair_key, row["subject_occurrence_id"], row["object_occurrence_id"],
+                )
+                link_insert.append((
+                    link_id, row["passage_id"], row["source_work"], row["document"],
+                    row["document_role"], pair_key, "SAME_PASSAGE_CO_OCCURRENCE",
+                    row["subject_occurrence_id"], row["object_occurrence_id"],
+                ))
+                link_count += 1
+                if len(link_insert) >= 5000:
+                    connection.executemany("""
+                        INSERT INTO classical_source_passage_term_links
+                        VALUES (?,?,?,?,?,?,?,?,?)
+                    """, link_insert)
+                    link_insert.clear()
+        if link_insert:
+            connection.executemany("""
+                INSERT INTO classical_source_passage_term_links
+                VALUES (?,?,?,?,?,?,?,?,?)
+            """, link_insert)
+        connection.commit()
+
         # Build navigation-oriented, same-passage co-mention summaries. These
         # counts are deliberately not promoted to semantic/treatment relations:
         # each endpoint remains an exact occurrence under one passage_id.
         passage_type_rows = connection.execute("""
-            SELECT DISTINCT p.passage_id, p.source_work, m.term_type
+            SELECT DISTINCT p.passage_id, p.source_work, d.document_role, m.term_type
             FROM classical_source_passages p
+            JOIN classical_source_documents d ON d.source_document_id = p.source_document_id
             JOIN classical_source_passage_mentions m ON m.passage_id = p.passage_id
-            ORDER BY p.source_work, p.passage_id, m.term_type
+            ORDER BY p.source_work, d.document_role, p.passage_id, m.term_type
         """)
         types_by_passage: dict[str, set[str]] = defaultdict(set)
         work_by_passage: dict[str, str] = {}
+        role_by_passage: dict[str, str] = {}
         for row in passage_type_rows:
             types_by_passage[row["passage_id"]].add(row["term_type"])
             work_by_passage[row["passage_id"]] = row["source_work"]
+            role_by_passage[row["passage_id"]] = row["document_role"]
 
         passage_counts_by_work: dict[str, int] = Counter()
         passages_with_type_by_work: dict[str, Counter[str]] = defaultdict(Counter)
+        passage_counts_by_role_and_work: dict[str, Counter[str]] = defaultdict(Counter)
+        passages_with_type_by_role_and_work: dict[str, dict[str, Counter[str]]] = defaultdict(
+            lambda: defaultdict(Counter)
+        )
         for passage_id, term_types in types_by_passage.items():
             work = work_by_passage[passage_id]
+            role = role_by_passage[passage_id]
             passage_counts_by_work[work] += 1
+            passage_counts_by_role_and_work[work][role] += 1
             for term_type in term_types:
                 passages_with_type_by_work[work][term_type] += 1
+                passages_with_type_by_role_and_work[work][role][term_type] += 1
 
-        cooccurrence_pairs = (
-            ("SYMPTOM", "FORMULA"),
-            ("FORMULA", "HERB"),
-            ("CLASSICAL_THEORY", "FORMULA"),
-            ("SYMPTOM", "ACUPOINT"),
-            ("SYMPTOM", "POINT"),
-            ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
-            ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
-            ("CLASSICAL_THEORY", "SYMPTOM"),
-        )
+        cooccurrence_pairs = COOCCURRENCE_PAIRS
         cooccurrences_by_work: dict[str, Counter[str]] = defaultdict(Counter)
         examples_by_work: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
             lambda: defaultdict(list)
@@ -485,6 +563,63 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
                         "passage_text": passage["passage_text"],
                     })
 
+        # Count and retain exact occurrence pairs by work and document role.
+        # Each example can be opened through its passage_id and both occurrence IDs.
+        link_counts_by_work: dict[str, Counter[str]] = defaultdict(Counter)
+        link_counts_by_role_and_work: dict[str, dict[str, Counter[str]]] = defaultdict(
+            lambda: defaultdict(Counter)
+        )
+        link_examples_by_role_and_work: dict[str, dict[str, dict[str, list[dict[str, Any]]]]] = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(list))
+        )
+        for row in connection.execute("""
+            SELECT l.source_work, l.document_role, l.pair_key, l.relation_type,
+                   l.link_id, l.passage_id, l.document,
+                   p.source_sha256, p.tree_position, p.block_id,
+                   p.character_start AS passage_start, p.character_end AS passage_end,
+                   p.passage_text,
+                   s.occurrence_id AS subject_occurrence_id,
+                   s.term_type AS subject_type, s.term_text AS subject_text,
+                   s.character_start AS subject_start, s.character_end AS subject_end,
+                   o.occurrence_id AS object_occurrence_id,
+                   o.term_type AS object_type, o.term_text AS object_text,
+                   o.character_start AS object_start, o.character_end AS object_end
+            FROM classical_source_passage_term_links l
+            JOIN classical_source_passages p ON p.passage_id = l.passage_id
+            JOIN classical_source_passage_mentions s ON s.occurrence_id = l.subject_occurrence_id
+            JOIN classical_source_passage_mentions o ON o.occurrence_id = l.object_occurrence_id
+            ORDER BY l.source_work, l.document_role, l.pair_key,
+                     l.document, p.tree_position, p.character_start,
+                     s.character_start, o.character_start
+        """):
+            work, role, pair_key = row["source_work"], row["document_role"], row["pair_key"]
+            link_counts_by_work[work][pair_key] += 1
+            link_counts_by_role_and_work[work][role][pair_key] += 1
+            examples = link_examples_by_role_and_work[work][role][pair_key]
+            if len(examples) < 3:
+                examples.append({
+                    "link_id": row["link_id"],
+                    "relation_type": row["relation_type"],
+                    "passage_id": row["passage_id"],
+                    "document": row["document"],
+                    "source_sha256": row["source_sha256"],
+                    "tree_position": row["tree_position"],
+                    "block_id": row["block_id"],
+                    "passage_start": row["passage_start"],
+                    "passage_end": row["passage_end"],
+                    "passage_text": row["passage_text"],
+                    "subject": {
+                        "occurrence_id": row["subject_occurrence_id"],
+                        "type": row["subject_type"], "text": row["subject_text"],
+                        "start": row["subject_start"], "end": row["subject_end"],
+                    },
+                    "object": {
+                        "occurrence_id": row["object_occurrence_id"],
+                        "type": row["object_type"], "text": row["object_text"],
+                        "start": row["object_start"], "end": row["object_end"],
+                    },
+                })
+
         counts_by_work = {
             row["source_work"]: row["count"]
             for row in connection.execute("""
@@ -508,13 +643,24 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             """)
         }
         result = {
-            "schema_version": 2,
+            "schema_version": 3,
             "source_documents": len(documents),
             "source_documents_by_work": counts_by_work,
             "source_passages_by_work": dict(sorted(passage_counts_by_work.items())),
+            "source_passages_by_role_and_work": {
+                work: dict(sorted(counts.items()))
+                for work, counts in sorted(passage_counts_by_role_and_work.items())
+            },
             "passages_with_term_type_by_work": {
                 work: dict(sorted(counts.items()))
                 for work, counts in sorted(passages_with_type_by_work.items())
+            },
+            "passages_with_term_type_by_role_and_work": {
+                work: {
+                    role: dict(sorted(counts.items()))
+                    for role, counts in sorted(roles.items())
+                }
+                for work, roles in sorted(passages_with_type_by_role_and_work.items())
             },
             "same_passage_cooccurrences_by_work": {
                 work: dict(sorted(counts.items()))
@@ -523,6 +669,25 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             "same_passage_cooccurrence_examples_by_work": {
                 work: dict(sorted(pairs.items()))
                 for work, pairs in sorted(examples_by_work.items())
+            },
+            "same_passage_occurrence_link_rows": link_count,
+            "same_passage_occurrence_links_by_work": {
+                work: dict(sorted(counts.items()))
+                for work, counts in sorted(link_counts_by_work.items())
+            },
+            "same_passage_occurrence_links_by_role_and_work": {
+                work: {
+                    role: dict(sorted(counts.items()))
+                    for role, counts in sorted(roles.items())
+                }
+                for work, roles in sorted(link_counts_by_role_and_work.items())
+            },
+            "same_passage_occurrence_link_examples_by_role_and_work": {
+                work: {
+                    role: dict(sorted(pairs.items()))
+                    for role, pairs in sorted(roles.items())
+                }
+                for work, roles in sorted(link_examples_by_role_and_work.items())
             },
             "source_documents_by_role": roles,
             "source_passages": passage_count,
@@ -535,7 +700,8 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             "unassigned_contextual_terms_outside_single_passage": unassigned_contextual_terms,
             "policy": {
                 "passage_mentions": "source occurrence only; not a treatment, efficacy, diagnosis or theory assertion",
-                "same_passage_cooccurrences": "both term types have at least one exact source occurrence in the same passage; this is navigation metadata, not a semantic or clinical relation",
+                "same_passage_cooccurrences": "both term types occur in one exact source passage; counts are grouped by source work and are navigation metadata, not semantic or clinical relations",
+                "same_passage_occurrence_links": "each row links two exact occurrence IDs in the same passage; document_role separates classical chapter text from formula references, commentary and source notes; no clinical or causal assertion is made",
                 "native_references": "only existing, resolved SiYuan BLOCK_REFERENCE edges whose two documents are in supported source works",
                 "sentence_boundary": "an occurrence crossing passage boundaries is retained in its source table and is not linked to a passage",
             },
