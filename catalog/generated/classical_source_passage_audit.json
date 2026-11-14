@@ -1250,43 +1250,43 @@
       ]
     }
   },
-  "same_passage_occurrence_link_rows": 33794,
+  "same_passage_occurrence_link_rows": 25698,
   "same_passage_occurrence_links_by_work": {
     "HUANG_DI_NEI_JING": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 143,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 138,
       "CLASSICAL_THEORY|FORMULA": 2,
-      "CLASSICAL_THEORY|SYMPTOM": 198,
-      "FORMULA|HERB": 105,
+      "CLASSICAL_THEORY|SYMPTOM": 196,
+      "FORMULA|HERB": 89,
       "SYMPTOM|ACUPOINT": 122,
-      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 478,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 464,
       "SYMPTOM|FORMULA": 37,
       "SYMPTOM|POINT": 49
     },
     "JIN_GUI_YAO_LUE": {
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
       "CLASSICAL_THEORY|FORMULA": 99,
-      "CLASSICAL_THEORY|SYMPTOM": 63,
-      "FORMULA|HERB": 12927,
+      "CLASSICAL_THEORY|SYMPTOM": 55,
+      "FORMULA|HERB": 9581,
       "SYMPTOM|ACUPOINT": 5,
-      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 46,
-      "SYMPTOM|FORMULA": 885,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 44,
+      "SYMPTOM|FORMULA": 858,
       "SYMPTOM|POINT": 2
     },
     "SHANG_HAN_LUN": {
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 22,
       "CLASSICAL_THEORY|FORMULA": 511,
       "CLASSICAL_THEORY|SYMPTOM": 50,
-      "FORMULA|HERB": 16162,
+      "FORMULA|HERB": 11517,
       "SYMPTOM|ACUPOINT": 2,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 4,
-      "SYMPTOM|FORMULA": 1446,
+      "SYMPTOM|FORMULA": 1423,
       "SYMPTOM|POINT": 4
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 171,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 170,
       "CLASSICAL_THEORY|SYMPTOM": 2,
-      "FORMULA|HERB": 6,
-      "SYMPTOM|ACUPOINT": 102,
+      "FORMULA|HERB": 2,
+      "SYMPTOM|ACUPOINT": 99,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 31,
       "SYMPTOM|POINT": 111
     }
@@ -1297,30 +1297,30 @@
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 36,
         "CLASSICAL_THEORY|FORMULA": 2,
         "CLASSICAL_THEORY|SYMPTOM": 35,
-        "FORMULA|HERB": 101,
+        "FORMULA|HERB": 87,
         "SYMPTOM|ACUPOINT": 18,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 72,
         "SYMPTOM|FORMULA": 37,
         "SYMPTOM|POINT": 14
       },
       "CLASSICAL_CHAPTER": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 72,
-        "CLASSICAL_THEORY|SYMPTOM": 130,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 68,
+        "CLASSICAL_THEORY|SYMPTOM": 128,
         "SYMPTOM|ACUPOINT": 77,
-        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 363,
+        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 350,
         "SYMPTOM|POINT": 30
       },
       "COMMENTARY": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 27,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 26,
         "CLASSICAL_THEORY|SYMPTOM": 20,
         "SYMPTOM|ACUPOINT": 16,
-        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 39,
+        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 38,
         "SYMPTOM|POINT": 4
       },
       "SOURCE_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 8,
         "CLASSICAL_THEORY|SYMPTOM": 13,
-        "FORMULA|HERB": 4,
+        "FORMULA|HERB": 2,
         "SYMPTOM|ACUPOINT": 11,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 4,
         "SYMPTOM|POINT": 1
@@ -1330,24 +1330,24 @@
       "AUXILIARY_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
         "CLASSICAL_THEORY|FORMULA": 65,
-        "CLASSICAL_THEORY|SYMPTOM": 50,
-        "FORMULA|HERB": 7807,
+        "CLASSICAL_THEORY|SYMPTOM": 46,
+        "FORMULA|HERB": 5747,
         "SYMPTOM|ACUPOINT": 3,
-        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 39,
-        "SYMPTOM|FORMULA": 569,
+        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 37,
+        "SYMPTOM|FORMULA": 546,
         "SYMPTOM|POINT": 2
       },
       "FORMULA_REFERENCE": {
         "CLASSICAL_THEORY|FORMULA": 33,
-        "CLASSICAL_THEORY|SYMPTOM": 13,
-        "FORMULA|HERB": 4951,
+        "CLASSICAL_THEORY|SYMPTOM": 9,
+        "FORMULA|HERB": 3727,
         "SYMPTOM|ACUPOINT": 2,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 7,
-        "SYMPTOM|FORMULA": 314
+        "SYMPTOM|FORMULA": 310
       },
       "SOURCE_NOTE": {
         "CLASSICAL_THEORY|FORMULA": 1,
-        "FORMULA|HERB": 169,
+        "FORMULA|HERB": 107,
         "SYMPTOM|FORMULA": 2
       }
     },
@@ -1356,41 +1356,41 @@
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 4,
         "CLASSICAL_THEORY|FORMULA": 34,
         "CLASSICAL_THEORY|SYMPTOM": 9,
-        "FORMULA|HERB": 3856,
-        "SYMPTOM|FORMULA": 364,
+        "FORMULA|HERB": 2406,
+        "SYMPTOM|FORMULA": 354,
         "SYMPTOM|POINT": 1
       },
       "COMMENTARY": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 8,
         "CLASSICAL_THEORY|FORMULA": 424,
         "CLASSICAL_THEORY|SYMPTOM": 35,
-        "FORMULA|HERB": 7552,
+        "FORMULA|HERB": 6087,
         "SYMPTOM|ACUPOINT": 2,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 4,
-        "SYMPTOM|FORMULA": 590,
+        "SYMPTOM|FORMULA": 587,
         "SYMPTOM|POINT": 1
       },
       "FORMULA_REFERENCE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 6,
         "CLASSICAL_THEORY|FORMULA": 40,
         "CLASSICAL_THEORY|SYMPTOM": 6,
-        "FORMULA|HERB": 4504,
-        "SYMPTOM|FORMULA": 446
+        "FORMULA|HERB": 2871,
+        "SYMPTOM|FORMULA": 439
       },
       "SOURCE_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 4,
         "CLASSICAL_THEORY|FORMULA": 13,
-        "FORMULA|HERB": 250,
-        "SYMPTOM|FORMULA": 46,
+        "FORMULA|HERB": 153,
+        "SYMPTOM|FORMULA": 43,
         "SYMPTOM|POINT": 2
       }
     },
     "ZHEN_JIU_DA_CHENG": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 155,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 154,
         "CLASSICAL_THEORY|SYMPTOM": 2,
-        "FORMULA|HERB": 6,
-        "SYMPTOM|ACUPOINT": 100,
+        "FORMULA|HERB": 2,
+        "SYMPTOM|ACUPOINT": 97,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 22,
         "SYMPTOM|POINT": 110
       },
@@ -1621,32 +1621,6 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "0b968564057d4e7f313ce1f7c4254456f554eae21f9001277e16d68dfc9868e7",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "fbdfad848a7d72d6fcae7d4f610ebcb826d70e6e85d0f8a41c3af91315b723dd",
-            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
-            "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
-            "tree_position": "0.1028",
-            "block_id": "20240524120011-syneulz",
-            "passage_start": 506,
-            "passage_end": 568,
-            "passage_text": "你心里想，这个是麻黄汤症，我要用回阳汤，麻黄汤又叫回阳汤，我下麻黄汤，下麻黄汤，一下不行啊，他这个下了他津液没了不很危险吗？",
-            "subject": {
-              "occurrence_id": "a27da6362659bd3d6f8bdbe0037d6a1fd403a06c8a591f82179327e035891e6e",
-              "type": "FORMULA",
-              "text": "麻黄汤",
-              "start": 514,
-              "end": 517
-            },
-            "object": {
-              "occurrence_id": "6b107f3dfd5e0c472bfcaaab2e7434b20e8d03a454dc3daf9bc4b2c334a627f6",
-              "type": "HERB",
-              "text": "麻黄",
-              "start": 514,
-              "end": 516
-            }
-          },
-          {
             "link_id": "b55247f6bfc9d169274dfd8fb88d1b103b4c5b1a4ee54437eda00fcef5eb2279",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "fbdfad848a7d72d6fcae7d4f610ebcb826d70e6e85d0f8a41c3af91315b723dd",
@@ -1696,6 +1670,32 @@
               "text": "麻黄",
               "start": 537,
               "end": 539
+            }
+          },
+          {
+            "link_id": "b8451c763aa7bc0c6e335a0754787db24731658e23124ed90ff58c2483e362fe",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "fbdfad848a7d72d6fcae7d4f610ebcb826d70e6e85d0f8a41c3af91315b723dd",
+            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+            "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+            "tree_position": "0.1028",
+            "block_id": "20240524120011-syneulz",
+            "passage_start": 506,
+            "passage_end": 568,
+            "passage_text": "你心里想，这个是麻黄汤症，我要用回阳汤，麻黄汤又叫回阳汤，我下麻黄汤，下麻黄汤，一下不行啊，他这个下了他津液没了不很危险吗？",
+            "subject": {
+              "occurrence_id": "a27da6362659bd3d6f8bdbe0037d6a1fd403a06c8a591f82179327e035891e6e",
+              "type": "FORMULA",
+              "text": "麻黄汤",
+              "start": 514,
+              "end": 517
+            },
+            "object": {
+              "occurrence_id": "e5866a4af9c6c54d62d3d5ac264d04d2510a7f5407cd765fb9156f679d462f4c",
+              "type": "HERB",
+              "text": "麻黄",
+              "start": 542,
+              "end": 544
             }
           }
         ],
@@ -2987,58 +2987,6 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "1b5cfe35c41ce51afeb41769c1e5c953b0a43d94f8ae4bec5ff064feb680d855",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "ace56de2822a3e6f437aafdcfae7a6bc2327351ef058ea6f94d352c95a563a1a",
-            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
-            "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
-            "tree_position": "0.656",
-            "block_id": "20231128085832-64c9jhs",
-            "passage_start": 43,
-            "passage_end": 53,
-            "passage_text": "（可以用桂枝汤调理）",
-            "subject": {
-              "occurrence_id": "eab0cab0c1b4db6c629ad291735e5a02cae493d74686230d41160ab4fc26af5d",
-              "type": "FORMULA",
-              "text": "桂枝汤",
-              "start": 47,
-              "end": 50
-            },
-            "object": {
-              "occurrence_id": "7cd49c347028ec32b4cd6b30a0f819c772c3638cfdf8bc93df2dc69b8e7be06f",
-              "type": "HERB",
-              "text": "桂枝",
-              "start": 47,
-              "end": 49
-            }
-          },
-          {
-            "link_id": "18df25d221e16b71aa428ba6f5155e625e64477bea9bc4711f99113b3c584de2",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "a46dcf6976cbff919d147402c2f2e0847e6caa0c161eea701f3668b35e05aa9a",
-            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
-            "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
-            "tree_position": "0.849",
-            "block_id": "20231212104919-qse9gaz",
-            "passage_start": 0,
-            "passage_end": 29,
-            "passage_text": "425、 桂枝汤，手冷脚温，桂枝加倍，脚冷手温，白芍加倍；",
-            "subject": {
-              "occurrence_id": "43748208360f4245d6ab8344c38794a5fc2d70cf60ec8d0f7c9168fc478217bb",
-              "type": "FORMULA",
-              "text": "桂枝汤",
-              "start": 5,
-              "end": 8
-            },
-            "object": {
-              "occurrence_id": "262eee929eec616e7c6dec6a738fd8e294a99bd8f249a7555dc5fa081a9fddd3",
-              "type": "HERB",
-              "text": "桂枝",
-              "start": 5,
-              "end": 7
-            }
-          },
-          {
             "link_id": "4bb0e92d419d3507f1640623d2ff411eacf04b6edcb2d0b5693bd0ad6cacdffb",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "a46dcf6976cbff919d147402c2f2e0847e6caa0c161eea701f3668b35e05aa9a",
@@ -3062,6 +3010,32 @@
               "text": "桂枝",
               "start": 14,
               "end": 16
+            }
+          },
+          {
+            "link_id": "6bf7920da780fcd7c605e3c1c73e0db513f3429559ee72dd24efa41f09bc0730",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "a46dcf6976cbff919d147402c2f2e0847e6caa0c161eea701f3668b35e05aa9a",
+            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20231011154723-4wcc28c.sy",
+            "source_sha256": "f83ebf0062dd505c92ac9533cd63f9b662413e05c9f73c302495459d3521f89e",
+            "tree_position": "0.849",
+            "block_id": "20231212104919-qse9gaz",
+            "passage_start": 0,
+            "passage_end": 29,
+            "passage_text": "425、 桂枝汤，手冷脚温，桂枝加倍，脚冷手温，白芍加倍；",
+            "subject": {
+              "occurrence_id": "43748208360f4245d6ab8344c38794a5fc2d70cf60ec8d0f7c9168fc478217bb",
+              "type": "FORMULA",
+              "text": "桂枝汤",
+              "start": 5,
+              "end": 8
+            },
+            "object": {
+              "occurrence_id": "5081a1c94e53c1045cacbaaf7fa1103cdce209cb5b98b95b95620e1d68c8062c",
+              "type": "HERB",
+              "text": "白芍",
+              "start": 24,
+              "end": 26
             }
           }
         ],
@@ -3499,77 +3473,77 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "843769321319801205ae71d54d7feb1b2d0aa11f4c1cfb2395c45414a23f3037",
+            "link_id": "6606051b27f60cf217348d06389eac0f149dee5f4cf532a7e25bcc1d3a15b0c4",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "35897c8bfbc77a1ec1a37bae0b153b84d35f5c67f9a7e0ff0b1cb974d6743f94",
+            "passage_id": "d459ffe5cf6afcb9b4b89b26dc57977bcacc3c8c21b322637b416794eba3b3ac",
             "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
             "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
-            "tree_position": "0.1000",
-            "block_id": "20240314085241-r7hh109",
+            "tree_position": "0.1004",
+            "block_id": "20240321152456-1i2hisu",
             "passage_start": 0,
-            "passage_end": 9,
-            "passage_text": "《千金翼》灸甘草汤",
+            "passage_end": 49,
+            "passage_text": "他这是《千金翼》，看到没有，实际上炙甘草汤哪是什么《千金翼》的啊，伤寒论里面就有炙甘草汤，对不对？",
             "subject": {
-              "occurrence_id": "86bd4776396f9683fb149cc129b27c4d37079e9e46ad3ec0889173fa9d329e4a",
-              "type": "FORMULA",
-              "text": "甘草汤",
-              "start": 6,
-              "end": 9
-            },
-            "object": {
-              "occurrence_id": "230bfc8a785eca67632b89fe305337fa35197d03b8f42f890ad5166771997fa8",
-              "type": "HERB",
-              "text": "甘草",
-              "start": 6,
-              "end": 8
-            }
-          },
-          {
-            "link_id": "780f5684c06767ac26122595018e4f9deed0a5a080f83bba8a55c7f941617ac5",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "993aa6047b666b24956576db7bc179775e44eaf593c77d083343aa2285895ac2",
-            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
-            "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
-            "tree_position": "0.1003",
-            "block_id": "20240321152456-zfhmy0z",
-            "passage_start": 13,
-            "passage_end": 56,
-            "passage_text": "看啊， 炙甘草汤，治虚劳不足，汗出而闷，脉结悸，行动如常，不出百日，危急者十一日死 。",
-            "subject": {
-              "occurrence_id": "5143e9b1a8757231554d4e3958868d4fdaf623e27f180cfdad618f1a7c357619",
+              "occurrence_id": "630a3aa7435d15b0acd794824ee7a5b94a989d3ea03adbf86a5af87e7d9d63dd",
               "type": "FORMULA",
               "text": "炙甘草汤",
               "start": 17,
               "end": 21
             },
             "object": {
-              "occurrence_id": "258d957d6101c09ffe44e2662417a31eeb225e46783ca4dc978135d6520c7ec8",
+              "occurrence_id": "f0209b577d3fd33afcb04097840856dbb0a741d56912af2f5f0626d6851ca73d",
               "type": "HERB",
               "text": "甘草",
-              "start": 18,
-              "end": 20
+              "start": 41,
+              "end": 43
             }
           },
           {
-            "link_id": "6fa45b868ff8c2a726d65e7d07c37a6dcfcf6bd3cbd5d7004830c69743c24e60",
+            "link_id": "6bb975caaf5a650d7047769dc3b29936fe00210bba1bf801b61668fdc5364e87",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "993aa6047b666b24956576db7bc179775e44eaf593c77d083343aa2285895ac2",
+            "passage_id": "d459ffe5cf6afcb9b4b89b26dc57977bcacc3c8c21b322637b416794eba3b3ac",
             "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
             "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
-            "tree_position": "0.1003",
-            "block_id": "20240321152456-zfhmy0z",
-            "passage_start": 13,
-            "passage_end": 56,
-            "passage_text": "看啊， 炙甘草汤，治虚劳不足，汗出而闷，脉结悸，行动如常，不出百日，危急者十一日死 。",
+            "tree_position": "0.1004",
+            "block_id": "20240321152456-1i2hisu",
+            "passage_start": 0,
+            "passage_end": 49,
+            "passage_text": "他这是《千金翼》，看到没有，实际上炙甘草汤哪是什么《千金翼》的啊，伤寒论里面就有炙甘草汤，对不对？",
             "subject": {
-              "occurrence_id": "1b1edc066eb38199d6bae5479375a8519fd4614a1aeb2bddc76466459c942a8b",
+              "occurrence_id": "f86a9184222bc7f71ca91815d05452824d18afe58f76c1c7ed6625434bfc2b43",
               "type": "FORMULA",
               "text": "甘草汤",
               "start": 18,
               "end": 21
             },
             "object": {
-              "occurrence_id": "258d957d6101c09ffe44e2662417a31eeb225e46783ca4dc978135d6520c7ec8",
+              "occurrence_id": "f0209b577d3fd33afcb04097840856dbb0a741d56912af2f5f0626d6851ca73d",
+              "type": "HERB",
+              "text": "甘草",
+              "start": 41,
+              "end": 43
+            }
+          },
+          {
+            "link_id": "4580dd42973de9ef3610ef5c92cbeeb4b50c3d8627b01bfb1154151e298a2612",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "d459ffe5cf6afcb9b4b89b26dc57977bcacc3c8c21b322637b416794eba3b3ac",
+            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+            "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+            "tree_position": "0.1004",
+            "block_id": "20240321152456-1i2hisu",
+            "passage_start": 0,
+            "passage_end": 49,
+            "passage_text": "他这是《千金翼》，看到没有，实际上炙甘草汤哪是什么《千金翼》的啊，伤寒论里面就有炙甘草汤，对不对？",
+            "subject": {
+              "occurrence_id": "569d987145cecd98cbe7397ce1daff388aca8d1503c0209f26000675a77751ce",
+              "type": "FORMULA",
+              "text": "炙甘草汤",
+              "start": 40,
+              "end": 44
+            },
+            "object": {
+              "occurrence_id": "b63a8fd8d653c8daa684ba725a904d8cb7dfd1907ab8a6a389e09012d275839a",
               "type": "HERB",
               "text": "甘草",
               "start": 18,
@@ -4385,32 +4359,6 @@
             }
           },
           {
-            "link_id": "96a7a708691b7c1ba23fb3cadffe91a47b93befd28ca53ca8d0fe34cbd1d2237",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "b778134f3c59017c1f43287014389f5ea67a9eccdb2c0c3dc0ba7deef1972cd7",
-            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091111-rxmkg0x.sy",
-            "source_sha256": "a56da83d75151ebf043cc3e518ca61fc152ca645752b47d40b1967671370ab9c",
-            "tree_position": "0.111",
-            "block_id": "20240325102231-4zc7l81",
-            "passage_start": 30,
-            "passage_end": 62,
-            "passage_text": "该痰用半夏、南星不见得能去掉，用皂荚丸也不行，皂荚丸是去肺中汤；",
-            "subject": {
-              "occurrence_id": "3384b83ffd549fefc23bd51885158d6c2f28ec213e6a6972cd8c0bcbaa0282b3",
-              "type": "FORMULA",
-              "text": "皂荚丸",
-              "start": 46,
-              "end": 49
-            },
-            "object": {
-              "occurrence_id": "31ade6ec8abc34100bbb1f8d493abc2f79e22efd45969fd579f6be41d86ed32f",
-              "type": "HERB",
-              "text": "皂荚",
-              "start": 46,
-              "end": 48
-            }
-          },
-          {
             "link_id": "95ea2bc5ff4307d5b74aafec44289329aabc121c5fbad94aea9408fe3970b195",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "b778134f3c59017c1f43287014389f5ea67a9eccdb2c0c3dc0ba7deef1972cd7",
@@ -4434,6 +4382,32 @@
               "text": "皂荚",
               "start": 53,
               "end": 55
+            }
+          },
+          {
+            "link_id": "6668e7a095501b7ce06375e03a96baafbd76e2a69a5cf80b813e5115570ec5ba",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "b778134f3c59017c1f43287014389f5ea67a9eccdb2c0c3dc0ba7deef1972cd7",
+            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091111-rxmkg0x.sy",
+            "source_sha256": "a56da83d75151ebf043cc3e518ca61fc152ca645752b47d40b1967671370ab9c",
+            "tree_position": "0.111",
+            "block_id": "20240325102231-4zc7l81",
+            "passage_start": 30,
+            "passage_end": 62,
+            "passage_text": "该痰用半夏、南星不见得能去掉，用皂荚丸也不行，皂荚丸是去肺中汤；",
+            "subject": {
+              "occurrence_id": "43ffcede7ec4c00333c30da680a437495288189313c0ae1090499fc25a15cb2a",
+              "type": "FORMULA",
+              "text": "皂荚丸",
+              "start": 53,
+              "end": 56
+            },
+            "object": {
+              "occurrence_id": "d6e29f9c020ef6b3d8a3c12dbacd63e0732113c1af10a03246ddaac5392eedd6",
+              "type": "HERB",
+              "text": "半夏",
+              "start": 33,
+              "end": 35
             }
           }
         ],
@@ -4737,81 +4711,81 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "16962a3761e93421bbe39b1f3c3193a6a135b1a7f0164d3391607e5db67edf62",
+            "link_id": "092e4a03c525eb91bbfbbb01df5c13ffcdd2df90a3c168ef5a98e7d05096ae4b",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "1341e9919d22d1370cbde014ec6583e9e51ea0144b6e23b88e54aa6bfac8f4ab",
-            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
-            "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
-            "tree_position": "0.1004",
-            "block_id": "20240220131918-ufdwkyt",
-            "passage_start": 0,
-            "passage_end": 53,
-            "passage_text": "原文：烧针令其汗,针处被寒,核起而赤者,必发「奔豚」,气从少腹上冲心者,灸其核上各一壮,与「桂枝加桂汤」。",
-            "subject": {
-              "occurrence_id": "e1852220836f033cb7fe98ea076a49379fe7bb5839b023e03955885db397f673",
-              "type": "FORMULA",
-              "text": "桂枝加桂汤",
-              "start": 46,
-              "end": 51
-            },
-            "object": {
-              "occurrence_id": "84fea8ac15a3be176f31e4ea27000e08d1f0d99fc274f36caffb20ed1da073e7",
-              "type": "HERB",
-              "text": "桂枝",
-              "start": 46,
-              "end": 48
-            }
-          },
-          {
-            "link_id": "8c51b3f78fa28286d455c2283b85b50250905ea02b024913ed7b1359013da5d4",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "4655e56f32a1c7319ee6ddf9265042d5fa0af718b85990317fe48c7cb9361127",
+            "passage_id": "f4d81fac849b331d71f141f9aa8a453f5a852d21065efe6ed79b2b182c83ac7f",
             "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
             "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
             "tree_position": "0.1007",
             "block_id": "20240220131918-hq58ne9",
-            "passage_start": 173,
-            "passage_end": 185,
-            "passage_text": "奔豚，为什么桂枝加桂汤？",
+            "passage_start": 274,
+            "passage_end": 294,
+            "passage_text": "临床桂枝加桂汤，你加桂是桂枝，效果不强。",
             "subject": {
-              "occurrence_id": "e52dcf3c9660dd5bff6654634e86d99a49510db8fdbee32888ca31362cc68ccc",
+              "occurrence_id": "9890f73fa5b3ef12777880cd7f850639a4de919becd6ad3843f37c040169e830",
               "type": "FORMULA",
               "text": "桂枝加桂汤",
-              "start": 179,
-              "end": 184
+              "start": 276,
+              "end": 281
             },
             "object": {
-              "occurrence_id": "856fc98ccbdaa38b1d1bb7f45c7345a0d6cf8a4627c59c52044846db7b097417",
+              "occurrence_id": "1b04ee521ba4d17b4c3766a26288bf401c95cbd43df947735dff750a696122b9",
               "type": "HERB",
               "text": "桂枝",
-              "start": 179,
-              "end": 181
+              "start": 286,
+              "end": 288
             }
           },
           {
-            "link_id": "5d4d698f2cf1b4a4cb05e81e4b0cfc4150e481b6ddb622799d6e1017e298fa2e",
+            "link_id": "9f8591db1b12f31b5e10ba8f650bc02fcd6c4fb3f88febb24331200c6c8b276a",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "3be0e870be33c153e50534c289a42c9f901ab424278a426f07566ec98e68dcd4",
+            "passage_id": "dc109c6e5239eefc032181fa15d179d1bf6d9d282e9cdeb5211656f69835cef4",
             "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
             "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
             "tree_position": "0.1007",
             "block_id": "20240220131918-hq58ne9",
-            "passage_start": 185,
-            "passage_end": 204,
-            "passage_text": "第一，桂枝汤可以增润津液，和解，解肌。",
+            "passage_start": 327,
+            "passage_end": 412,
+            "passage_text": "肉桂配在桂枝汤里面，因为桂枝汤解肌，解肌就是能补津液，除了太阳中风以外， 桂枝汤能够补津液 ，桂枝汤里面有生姜、甘草、大枣，桂枝跟白芍可以让血液循环加速，同时可以补津液。",
             "subject": {
-              "occurrence_id": "70ff4fb21ef9ea4bc108ff424bf2e174bb72ead615a8dee1aadef5a97b4ce10f",
+              "occurrence_id": "cfe860f5ae7b423e701720962597d66620f44f8c0f0927aa0db8edce9a63d5b8",
               "type": "FORMULA",
               "text": "桂枝汤",
-              "start": 188,
-              "end": 191
+              "start": 331,
+              "end": 334
             },
             "object": {
-              "occurrence_id": "5125380c2478a63673a07bcf9ceb59e45b90533a334acd30d088266c1bc54528",
+              "occurrence_id": "64c02b8b35d09041c62162a958fd378058cf63383f6680cd50f204e08d362d85",
+              "type": "HERB",
+              "text": "肉桂",
+              "start": 327,
+              "end": 329
+            }
+          },
+          {
+            "link_id": "75eda25374812d89ca287ec5906b592d4bd8d6d3d1ae6e1ce504ec3127700f5c",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "dc109c6e5239eefc032181fa15d179d1bf6d9d282e9cdeb5211656f69835cef4",
+            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220131902-atkt16w.sy",
+            "source_sha256": "b16f89197f28f30c49fee0c7668cfe371e27463d60be69e48da6c06849f4dd71",
+            "tree_position": "0.1007",
+            "block_id": "20240220131918-hq58ne9",
+            "passage_start": 327,
+            "passage_end": 412,
+            "passage_text": "肉桂配在桂枝汤里面，因为桂枝汤解肌，解肌就是能补津液，除了太阳中风以外， 桂枝汤能够补津液 ，桂枝汤里面有生姜、甘草、大枣，桂枝跟白芍可以让血液循环加速，同时可以补津液。",
+            "subject": {
+              "occurrence_id": "cfe860f5ae7b423e701720962597d66620f44f8c0f0927aa0db8edce9a63d5b8",
+              "type": "FORMULA",
+              "text": "桂枝汤",
+              "start": 331,
+              "end": 334
+            },
+            "object": {
+              "occurrence_id": "cb620e1c26d417437733f6b05a457705b54b2977915c25afb0eaad40af3b4e97",
               "type": "HERB",
               "text": "桂枝",
-              "start": 188,
-              "end": 190
+              "start": 339,
+              "end": 341
             }
           }
         ],
@@ -5167,32 +5141,6 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "77c41348d84ad99d97df7b2d598ab001af8f5e0c1a2b34dceee915ee6d5b3726",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "1b208f4ece4b0f69574dc6991d3569ab0bfcfbdc409ba4c1589de8e0d0f35135",
-            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
-            "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
-            "tree_position": "0.101",
-            "block_id": "20240220130514-hbudpxt",
-            "passage_start": 0,
-            "passage_end": 50,
-            "passage_text": "如果遇到病人很危险的时候,就照上面的剂量开,用两计,平常用钱计,晚上睡觉脚冰冷的,就是当归四逆汤证。",
-            "subject": {
-              "occurrence_id": "a003ff81fe3efde0a88dabda33ffb6caeb569a6e9ef5e921653b94b1918f1a85",
-              "type": "FORMULA",
-              "text": "当归四逆汤",
-              "start": 43,
-              "end": 48
-            },
-            "object": {
-              "occurrence_id": "175d17bd991a35cc0381bd522f8a6e093ffe716263acd8cd964c83ac3cc964e4",
-              "type": "HERB",
-              "text": "当归",
-              "start": 43,
-              "end": 45
-            }
-          },
-          {
             "link_id": "f30ef78502beb47f3ae76b1d652cb2ec0e3d8ee101990b7ca7e3636f8416c0d7",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "1b208f4ece4b0f69574dc6991d3569ab0bfcfbdc409ba4c1589de8e0d0f35135",
@@ -5219,7 +5167,7 @@
             }
           },
           {
-            "link_id": "f8b07b37b610d63931d947580ceb72b82a26be1a5eacf434e282dbf4217f6422",
+            "link_id": "ee4f84dff37083dbfe20c80b78f30265fd17237c9d408122bd9178761040e11b",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "9d7780344ce9f954a58116cfcb6a43142225e047587398a165182a86cf7ca35b",
             "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
@@ -5234,6 +5182,32 @@
               "type": "FORMULA",
               "text": "当归四逆汤",
               "start": 57,
+              "end": 62
+            },
+            "object": {
+              "occurrence_id": "583d8c4c23677230b320ba5fc3bf045c16df6b126b6bfa4fe0d9279788648861",
+              "type": "HERB",
+              "text": "升麻",
+              "start": 74,
+              "end": 76
+            }
+          },
+          {
+            "link_id": "82783bddf2b02475865b3ba4cf16c83a1d048d1e049ae18edb1bf1ddabb355cf",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "9d7780344ce9f954a58116cfcb6a43142225e047587398a165182a86cf7ca35b",
+            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110836-iotfq1a/20240219143105-ptvyzfp.sy",
+            "source_sha256": "b330504f3a6fd5a0efd9022962e6a92ab717586e707a3cd68f45d11212ffb909",
+            "tree_position": "0.101",
+            "block_id": "20240220130514-hbudpxt",
+            "passage_start": 50,
+            "passage_end": 82,
+            "passage_text": "还有一个地方用当归四逆汤,就是疝气,疝气时可加上升麻来升提阳气。",
+            "subject": {
+              "occurrence_id": "dc44c2e583d703a5098b36f0a795c3b0b1b4561787c795ec1e3ee514804e6461",
+              "type": "FORMULA",
+              "text": "四逆汤",
+              "start": 59,
               "end": 62
             },
             "object": {
@@ -5731,59 +5705,7 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "ed67877adc25c5fdabf020b0ab0870618e49cb9e8ff51024c1d35c7df3fb3671",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "017a7359df79e542cb6ebb981c96fcbab2ef171a617e1c3c1425142e98e74c8b",
-            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132559-xt77st1.sy",
-            "source_sha256": "934b82d768e073fc20510bd591ae12f62165093dec7a23258eec1f8188816a87",
-            "tree_position": "0.1",
-            "block_id": "20240312172020-6wktb0r",
-            "passage_start": 0,
-            "passage_end": 61,
-            "passage_text": "原文：「伤寒」六七日，大下后，寸脉沉而迟，手足厥逆，下部脉不至，咽喉不利，唾脓血，泄利不止者，为难治，「麻黄升麻汤」主之。",
-            "subject": {
-              "occurrence_id": "60e3aaa3547657ca9dd954f1c5409ce2d2f380d598723bf3167f4910ce7d33be",
-              "type": "FORMULA",
-              "text": "麻黄升麻汤",
-              "start": 52,
-              "end": 57
-            },
-            "object": {
-              "occurrence_id": "5467109481eaa49a2894639f6512ab52e4b2561a5e7c78362f8ec3d17ea24e1c",
-              "type": "HERB",
-              "text": "麻黄",
-              "start": 52,
-              "end": 54
-            }
-          },
-          {
-            "link_id": "15d860b728e132268872099e13e63f67bc1c0a5a3152ed74d0384bc7527b399b",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "017a7359df79e542cb6ebb981c96fcbab2ef171a617e1c3c1425142e98e74c8b",
-            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132559-xt77st1.sy",
-            "source_sha256": "934b82d768e073fc20510bd591ae12f62165093dec7a23258eec1f8188816a87",
-            "tree_position": "0.1",
-            "block_id": "20240312172020-6wktb0r",
-            "passage_start": 0,
-            "passage_end": 61,
-            "passage_text": "原文：「伤寒」六七日，大下后，寸脉沉而迟，手足厥逆，下部脉不至，咽喉不利，唾脓血，泄利不止者，为难治，「麻黄升麻汤」主之。",
-            "subject": {
-              "occurrence_id": "60e3aaa3547657ca9dd954f1c5409ce2d2f380d598723bf3167f4910ce7d33be",
-              "type": "FORMULA",
-              "text": "麻黄升麻汤",
-              "start": 52,
-              "end": 57
-            },
-            "object": {
-              "occurrence_id": "2672d76530bb00b22f819b7dd2dd3e40bb306c9c0eee06fa398f5a57cbdbbb10",
-              "type": "HERB",
-              "text": "升麻",
-              "start": 54,
-              "end": 56
-            }
-          },
-          {
-            "link_id": "68862e31a238ceab74ee837b2b1f5adf838c632a7a5174109b82ae8dc572a05f",
+            "link_id": "fbbfc3d37d0cc608045630ccf6a9a4142bfe329a267bbc27dff12292e932d907",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "e38a37d67ded5d9245d6f66c7d4383b4ceeb1aa0e1a06c8c7ac2e0762cb85624",
             "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132559-xt77st1.sy",
@@ -5801,11 +5723,63 @@
               "end": 15
             },
             "object": {
+              "occurrence_id": "51e3d219f6543372d3f9dbb581ad7df1410c60f03cd6844cde16d1255841bd0b",
+              "type": "HERB",
+              "text": "黄土",
+              "start": 23,
+              "end": 25
+            }
+          },
+          {
+            "link_id": "5ace8cedfe48095a78171e26100d212bb7fb79cb33035a5ad4747939255b0b17",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "e38a37d67ded5d9245d6f66c7d4383b4ceeb1aa0e1a06c8c7ac2e0762cb85624",
+            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132559-xt77st1.sy",
+            "source_sha256": "934b82d768e073fc20510bd591ae12f62165093dec7a23258eec1f8188816a87",
+            "tree_position": "0.16",
+            "block_id": "20240312172020-vhi18zr",
+            "passage_start": 9,
+            "passage_end": 27,
+            "passage_text": "胃癌有黄土汤，如果是吐血就用黄土汤。",
+            "subject": {
+              "occurrence_id": "08352ac862613867cc89fd7fd98888eebb9900003e49e03c66c3b8e0ab5903aa",
+              "type": "FORMULA",
+              "text": "黄土汤",
+              "start": 23,
+              "end": 26
+            },
+            "object": {
               "occurrence_id": "84db48d1babce83c25401014885fe2607d3b8c490b41c8d80876438ecfdd3c20",
               "type": "HERB",
               "text": "黄土",
               "start": 12,
               "end": 14
+            }
+          },
+          {
+            "link_id": "40dabf0fcef20afa0f772cc4e62f13e5f58e8b299ef095e0c553601e72228d48",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "835397a98505401cd945ad6477267e5c8f8d0783c93f0f0ba30f3190f53f30ec",
+            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240220132433-ne2wwuv/20240220132559-xt77st1.sy",
+            "source_sha256": "934b82d768e073fc20510bd591ae12f62165093dec7a23258eec1f8188816a87",
+            "tree_position": "0.4",
+            "block_id": "20240312172020-nbyvmki",
+            "passage_start": 84,
+            "passage_end": 148,
+            "passage_text": "临床上看，如果病人是半夜吐血吐出来，我们金匮里面的黄土汤是针对这个治的，这个「麻黄升麻汤」是针对肝病吐血，是寒热并用的一个方剂。",
+            "subject": {
+              "occurrence_id": "5a152eee4993410e196cd0c1e73f858bcde9ecec2ebfaf3320f1008bf088cf37",
+              "type": "FORMULA",
+              "text": "黄土汤",
+              "start": 109,
+              "end": 112
+            },
+            "object": {
+              "occurrence_id": "689bda476575ff108ba52752817742480034ae1584dff684f067bae8a15c44f2",
+              "type": "HERB",
+              "text": "麻黄",
+              "start": 123,
+              "end": 125
             }
           }
         ],
@@ -6079,32 +6053,6 @@
             }
           },
           {
-            "link_id": "06f1f0a3987a6544f801c07d7b209ca6b3142065d299f619918227972d917ace",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "0f4f57183023157c7738a01cc5054e54a1c78517ee69f68f62b7823cd7f2c2d4",
-            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110837-z7wfuan.sy",
-            "source_sha256": "c643101133f8903cc3e891154a83d161aad42ca2aa906086bb8f558ff94c5d3b",
-            "tree_position": "0.101",
-            "block_id": "20240227115742-jx8bsad",
-            "passage_start": 0,
-            "passage_end": 39,
-            "passage_text": "57、 麻黄不止能发表流汗，还有将阳气生发起来的作用，所以麻黄汤也叫做返魂汤；",
-            "subject": {
-              "occurrence_id": "bafc11b484ae9c3707a3bd2453af3bfe6d2d3a670c7adb1dab29b89615e99d18",
-              "type": "FORMULA",
-              "text": "麻黄汤",
-              "start": 29,
-              "end": 32
-            },
-            "object": {
-              "occurrence_id": "0ac65a45e15bf2157e4c5f602fb4e7589ed31b975791ec65c8f3bcbc80a78e30",
-              "type": "HERB",
-              "text": "麻黄",
-              "start": 29,
-              "end": 31
-            }
-          },
-          {
             "link_id": "07c80b6fa5e88d469a335403032cea4b26b07ffd09281d1f77e7f56073f5f491",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "b50f9a3ec2453b3c80745a5eba51a273cd5d99fd723d681aa01ed6f42ddec2eb",
@@ -6128,6 +6076,32 @@
               "text": "附子",
               "start": 18,
               "end": 20
+            }
+          },
+          {
+            "link_id": "cb2974f87f98cd52f3327bfe74122e946581248d4622e5c41f5ab107a6e9f005",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "218e7319b412ef92a930a38f7f6fd21963bc56a12de1ff5f337e1d35beddbacd",
+            "document": "20230928080422-67pnka7/20240219110805-0eup175/20240219110837-z7wfuan.sy",
+            "source_sha256": "c643101133f8903cc3e891154a83d161aad42ca2aa906086bb8f558ff94c5d3b",
+            "tree_position": "0.108",
+            "block_id": "20240227154727-tjcp9vy",
+            "passage_start": 0,
+            "passage_end": 87,
+            "passage_text": "61、在麻桂青龙三脚鼎力，麻黄汤、桂枝汤、葛根汤都是按照节气，就是春天是温暖的，夏天是热的，秋天是凉的，冬天是寒的，这个节气正常运作的时候得到的病就是桂枝汤、麻黄汤、葛根汤。",
+            "subject": {
+              "occurrence_id": "edd5762023acb47f1b20b8c9afb6ce377d348e93d2e944b9598542a5a03b7f03",
+              "type": "FORMULA",
+              "text": "麻黄汤",
+              "start": 13,
+              "end": 16
+            },
+            "object": {
+              "occurrence_id": "3ddd194c5f39247804613fd166dc6863cc0850bd9b71d7607d7e8c5bd7761edb",
+              "type": "HERB",
+              "text": "桂枝",
+              "start": 17,
+              "end": 19
             }
           }
         ],
@@ -6404,32 +6378,6 @@
           }
         ],
         "FORMULA|HERB": [
-          {
-            "link_id": "ee62069611eb810ecd8c84cb78983537fc04ce0ccba04292db5a658b327bc2ce",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "d442dbb40b193f6326b4f7a0e0f96b310af856a6b7af9c145dd2505659378f78",
-            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
-            "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
-            "tree_position": "0.1701",
-            "block_id": "20240523115029-f6sl6ea",
-            "passage_start": 432,
-            "passage_end": 454,
-            "passage_text": "书上写吃小柴胡汤，但这小柴胡汤下去都太慢了。",
-            "subject": {
-              "occurrence_id": "6a3875002cee6f1481c0bd7df09bf635df58a19a1d9f0b2dcbeae2c6f4d97894",
-              "type": "FORMULA",
-              "text": "小柴胡汤",
-              "start": 436,
-              "end": 440
-            },
-            "object": {
-              "occurrence_id": "3339164da4e88778162bf318965115115c77ff1929f0faccfdbea7c71a6ba9ea",
-              "type": "HERB",
-              "text": "柴胡",
-              "start": 437,
-              "end": 439
-            }
-          },
           {
             "link_id": "58153a4d48e83e3411b0563312ada6036c219143238dcf448f5af22c83b5d692",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
