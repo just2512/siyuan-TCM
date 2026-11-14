@@ -656,6 +656,69 @@ def search_contextual_relation_candidates(database_path: Path, query: str, limit
     return results
 
 
+def search_classical_source_passage_links(
+    database_path: Path, query: str, limit: int = 50, *,
+    source_work: str | None = None,
+    document_role: str | None = None,
+    pair_key: str | None = None,
+) -> list[dict[str, Any]]:
+    """Find exact occurrence-to-occurrence links with their full source locator.
+
+    Matching is substring-based on either endpoint term. Optional work/role/pair
+    filters restrict results without changing occurrence identity or offsets.
+    """
+    if not query.strip():
+        raise ValueError("classical passage link query must not be empty")
+    connection = sqlite3.connect(database_path)
+    connection.row_factory = sqlite3.Row
+    filters = ["(instr(src.term_text, ?) > 0 OR instr(dst.term_text, ?) > 0)"]
+    params: list[Any] = [query, query]
+    for column, value in (
+        ("source_work", source_work),
+        ("document_role", document_role),
+        ("pair_key", pair_key),
+    ):
+        if value is not None:
+            filters.append(f"l.{column} = ?")
+            params.append(value)
+    params.append(limit)
+    rows = connection.execute(f"""
+        SELECT l.link_id, l.passage_id, l.source_work, l.document,
+               l.document_role, l.pair_key, l.relation_type,
+               l.subject_occurrence_id, l.object_occurrence_id,
+               p.source_sha256, p.tree_position, p.block_id,
+               p.character_start AS passage_start, p.character_end AS passage_end,
+               p.passage_text, p.passage_kind,
+               d.source_document_id, d.title AS source_title, d.chapter_path_json,
+               src.reference_kind AS subject_reference_kind,
+               src.reference_id AS subject_reference_id, src.entity_id AS subject_entity_id,
+               src.term_type AS subject_type, src.term_text AS subject_text,
+               src.character_start AS subject_start, src.character_end AS subject_end,
+               dst.reference_kind AS object_reference_kind,
+               dst.reference_id AS object_reference_id, dst.entity_id AS object_entity_id,
+               dst.term_type AS object_type, dst.term_text AS object_text,
+               dst.character_start AS object_start, dst.character_end AS object_end,
+               c.content_text AS source_text
+        FROM classical_source_passage_term_links l
+        JOIN classical_source_passages p ON p.passage_id = l.passage_id
+        JOIN classical_source_documents d ON d.source_document_id = p.source_document_id
+        JOIN classical_source_passage_mentions src
+          ON src.occurrence_id = l.subject_occurrence_id
+        JOIN classical_source_passage_mentions dst
+          ON dst.occurrence_id = l.object_occurrence_id
+        LEFT JOIN content_blocks c
+          ON c.document = p.document AND c.source_sha256 = p.source_sha256
+         AND c.tree_position = p.tree_position AND c.block_id = p.block_id
+        WHERE {" AND ".join(filters)}
+        ORDER BY l.source_work, l.document, p.tree_position, p.character_start,
+                 src.character_start, dst.character_start, l.link_id
+        LIMIT ?
+    """, params).fetchall()
+    results = [dict(row) for row in rows]
+    connection.close()
+    return results
+
+
 def search_relation_candidates(database_path: Path, query: str, limit: int = 20) -> list[dict[str, Any]]:
     if not query.strip():
         raise ValueError("relation query must not be empty")
@@ -713,6 +776,10 @@ def main() -> int:
     parser.add_argument("--contextual-relations", type=Path, default=None,
                         help="optional explicit contextual relation candidate CSV")
     parser.add_argument("--contextual-relation-query", help="search contextual relation candidates")
+    parser.add_argument("--classical-link-query", help="search traceable classical passage occurrence links")
+    parser.add_argument("--classical-link-work", help="filter classical links by source work identifier")
+    parser.add_argument("--classical-link-role", help="filter classical links by source document role")
+    parser.add_argument("--classical-link-pair", help="filter by endpoint type pair, e.g. SYMPTOM|FORMULA")
     parser.add_argument("--entity-registry", type=Path, default=None,
                         help="stable lexical entity registry CSV")
     parser.add_argument("--relation-query", help="query formula-herb relation candidates")
@@ -726,8 +793,15 @@ def main() -> int:
         print(json.dumps(build_database(args.content_index, args.relationship_index, args.db, args.entity_mentions, args.relation_candidates, args.entity_registry, args.term_candidates, args.contextual_term_candidates, args.contextual_relations),
                          ensure_ascii=False, sort_keys=True))
         return 0
-    if sum(bool(value) for value in (args.query, args.entity_query, args.entity_id, args.relation_query, args.term_query, args.context_query, args.contextual_relation_query)) > 1:
+    query_modes = (
+        args.query, args.entity_query, args.entity_id, args.relation_query,
+        args.term_query, args.context_query, args.contextual_relation_query,
+        args.classical_link_query,
+    )
+    if sum(bool(value) for value in query_modes) > 1:
         parser.error("choose only one query mode")
+    if any((args.classical_link_work, args.classical_link_role, args.classical_link_pair)) and not args.classical_link_query:
+        parser.error("classical link filters require --classical-link-query")
     if args.query:
         results = search_database(args.db, args.query, args.limit)
         print(json.dumps(results, ensure_ascii=False, indent=2))
@@ -750,6 +824,15 @@ def main() -> int:
         return 0
     if args.contextual_relation_query:
         results = search_contextual_relation_candidates(args.db, args.contextual_relation_query, args.limit)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return 0
+    if args.classical_link_query:
+        results = search_classical_source_passage_links(
+            args.db, args.classical_link_query, args.limit,
+            source_work=args.classical_link_work,
+            document_role=args.classical_link_role,
+            pair_key=args.classical_link_pair,
+        )
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
     if args.relation_query:

@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from build_classical_source_passages import create_tables as create_classical_source_tables
 from smoke_test_search_index import smoke
 
 
@@ -181,6 +182,35 @@ class SearchIndexSmokeTests(unittest.TestCase):
                  "0.1", "b1", 0, len(source), source, "）：",
                  "SOURCE_NOTE_ASSOCIATES_LABEL_V1", "UNRESOLVED_CANDIDATE"),
             )
+            create_classical_source_tables(connection)
+            connection.execute("""
+                INSERT INTO classical_source_documents VALUES (?,?,?,?,?,?,?,?,?,?,?)
+            """, (
+                "sd1", "note/a.sy", "ZHEN_JIU_DA_CHENG", "针灸大成",
+                "note/a.sy", "", "笔记", "月经痛", 1, "SOURCE_NOTE", '["针灸大成","月经痛"]',
+            ))
+            connection.execute("""
+                INSERT INTO classical_source_passages VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """, (
+                "passage-1", "sd1", "note/a.sy", "ZHEN_JIU_DA_CHENG", "sha-a",
+                "0.1", "b1", "", "PARAGRAPH", "", 0, len(source), source,
+                "SENTENCE_OR_CLAUSE",
+            ))
+            connection.executemany("""
+                INSERT INTO classical_source_passage_mentions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+            """, [
+                ("occ-symptom", "passage-1", "sd1", "CONTEXTUAL_TERM_CANDIDATE",
+                 "s1", "", "SYMPTOM", "月经痛", 0, 3, "[]", "CONTEXT_RULE_CANDIDATE"),
+                ("occ-acupoint", "passage-1", "sd1", "CONTEXTUAL_TERM_CANDIDATE",
+                 "p1", "", "ACUPOINT", "关元穴", 7, 10, "[]", "CONTEXT_RULE_CANDIDATE"),
+            ])
+            connection.execute("""
+                INSERT INTO classical_source_passage_term_links VALUES (?,?,?,?,?,?,?,?,?)
+            """, (
+                "link-1", "passage-1", "ZHEN_JIU_DA_CHENG", "note/a.sy",
+                "SOURCE_NOTE", "SYMPTOM|ACUPOINT", "SAME_PASSAGE_CO_OCCURRENCE",
+                "occ-symptom", "occ-acupoint",
+            ))
             counts = {
                 "content_blocks": 1, "relationships": 0, "entity_mentions": 0,
                 "lexical_entities": 0, "relation_candidates": 0,
@@ -199,6 +229,8 @@ class SearchIndexSmokeTests(unittest.TestCase):
             self.assertEqual(result["checks"]["contextual_relation_all_rows_provenance"], "PASS")
             self.assertEqual(result["checks"]["contextual_relation_predicate_queries"], "PASS")
             self.assertEqual(result["relation_predicate_counts"]["SOURCE_NOTE_ASSOCIATES"], 1)
+            self.assertEqual(result["table_counts"]["classical_source_passage_term_links"], 1)
+            self.assertEqual(result["checks"]["classical_passage_link_search"], "PASS")
 
     def test_smoke_checks_classical_source_to_theory_attribution(self):
         with tempfile.TemporaryDirectory() as temp:

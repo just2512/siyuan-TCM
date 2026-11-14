@@ -35,6 +35,7 @@ def source_note_ranges(text: str):
         if match.group(0).strip():
             yield match.start(), match.end()
 from build_siyuan_search_db import (
+    search_classical_source_passage_links,
     search_contextual_relation_candidates,
     search_contextual_term_candidates,
     search_database,
@@ -339,6 +340,13 @@ def smoke(database_path: Path) -> dict:
         table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
         for table in TABLES
     }
+    passage_link_table = connection.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='classical_source_passage_term_links'"
+    ).fetchone()
+    counts["classical_source_passage_term_links"] = (
+        connection.execute("SELECT COUNT(*) FROM classical_source_passage_term_links").fetchone()[0]
+        if passage_link_table else 0
+    )
 
     formula_herb_predicates = dict(connection.execute(
         "SELECT predicate, COUNT(*) FROM semantic_relation_candidates GROUP BY predicate ORDER BY predicate"
@@ -556,6 +564,41 @@ def smoke(database_path: Path) -> dict:
             if invalid:
                 raise AssertionError(f"contextual relation predicate/direction query failed: {predicate}")
         checks["contextual_relation_predicate_direction"] = "PASS"
+
+    if counts["classical_source_passage_term_links"]:
+        sample = connection.execute("""
+            SELECT l.link_id, src.term_text AS subject_text, l.source_work,
+                   l.document_role, l.pair_key
+            FROM classical_source_passage_term_links l
+            JOIN classical_source_passage_mentions src
+              ON src.occurrence_id = l.subject_occurrence_id
+            JOIN classical_source_passages p ON p.passage_id = l.passage_id
+            ORDER BY l.source_work, l.document, p.tree_position, p.character_start,
+                     src.character_start, l.link_id
+            LIMIT 1
+        """).fetchone()
+        rows = search_classical_source_passage_links(
+            database_path, sample["subject_text"], limit=5000,
+        )
+        matched = next((row for row in rows if row["link_id"] == sample["link_id"]), None)
+        if matched is None:
+            raise AssertionError("classical passage occurrence-link query did not return its indexed edge")
+        if (matched["source_work"] != sample["source_work"]
+            or matched["document_role"] != sample["document_role"]
+            or matched["pair_key"] != sample["pair_key"]
+            or matched["subject_occurrence_id"] == matched["object_occurrence_id"]
+            or f"{matched['subject_type']}|{matched['object_type']}" != matched["pair_key"]):
+            raise AssertionError("classical passage occurrence-link query returned invalid endpoint identity or scope")
+        source = matched["source_text"]
+        if (source is None
+            or source[matched["passage_start"]:matched["passage_end"]] != matched["passage_text"]
+            or source[matched["subject_start"]:matched["subject_end"]] != matched["subject_text"]
+            or source[matched["object_start"]:matched["object_end"]] != matched["object_text"]):
+            raise AssertionError("classical passage occurrence-link query has an invalid source offset")
+        if not (matched["passage_start"] <= matched["subject_start"] < matched["subject_end"] <= matched["passage_end"]
+                and matched["passage_start"] <= matched["object_start"] < matched["object_end"] <= matched["passage_end"]):
+            raise AssertionError("classical passage occurrence-link endpoints are outside the passage")
+        checks["classical_passage_link_search"] = "PASS"
 
     connection.close()
     return {
