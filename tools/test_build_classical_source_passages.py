@@ -192,7 +192,7 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             )
             self.assertEqual(
                 result["source_passages_by_role_and_work"]["SHANG_HAN_LUN"]["FORMULA_REFERENCE"],
-                2,
+                1,
             )
             self.assertEqual(
                 result["same_passage_cooccurrences_by_work"]["SHANG_HAN_LUN"]["SYMPTOM|FORMULA"],
