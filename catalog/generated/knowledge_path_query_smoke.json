@@ -1,0 +1,77 @@
+{
+  "checks": [
+    {
+      "label": "SHANG_HAN_LUN symptom",
+      "matched_occurrences_returned": 7,
+      "navigation_links_returned": 0,
+      "query": "恶寒",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "SHANG_HAN_LUN",
+      "term_type": "SYMPTOM"
+    },
+    {
+      "label": "SHANG_HAN_LUN formula",
+      "matched_occurrences_returned": 20,
+      "navigation_links_returned": 182,
+      "query": "桂枝汤",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "SHANG_HAN_LUN",
+      "term_type": "FORMULA"
+    },
+    {
+      "label": "SHANG_HAN_LUN herb",
+      "matched_occurrences_returned": 20,
+      "navigation_links_returned": 37,
+      "query": "桂枝",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "SHANG_HAN_LUN",
+      "term_type": "HERB"
+    },
+    {
+      "label": "HUANG_DI_NEI_JING theory",
+      "matched_occurrences_returned": 20,
+      "navigation_links_returned": 2,
+      "query": "腠理",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "HUANG_DI_NEI_JING",
+      "term_type": "CLASSICAL_THEORY"
+    },
+    {
+      "label": "ZHEN_JIU_DA_CHENG symptom",
+      "matched_occurrences_returned": 20,
+      "navigation_links_returned": 24,
+      "query": "头痛",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "ZHEN_JIU_DA_CHENG",
+      "term_type": "SYMPTOM"
+    },
+    {
+      "label": "ZHEN_JIU_DA_CHENG acupoint",
+      "matched_occurrences_returned": 2,
+      "navigation_links_returned": 1,
+      "query": "玉枕穴",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "ZHEN_JIU_DA_CHENG",
+      "term_type": null
+    },
+    {
+      "label": "ZHEN_JIU_DA_CHENG technique",
+      "matched_occurrences_returned": 20,
+      "navigation_links_returned": 3,
+      "query": "放血",
+      "source_locators_complete": true,
+      "source_spans_exact": true,
+      "source_work": "ZHEN_JIU_DA_CHENG",
+      "term_type": "ACUPUNCTURE_TECHNIQUE"
+    }
+  ],
+  "database": "catalog/generated/siyuan_search.sqlite3",
+  "relation_semantics": "same-passage links are navigation-only; explicit relation candidates remain unresolved and are not clinical assertions",
+  "schema_version": 1
+}
