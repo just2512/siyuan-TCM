@@ -1,10 +1,10 @@
 {
-  "checked_relation_rows": 138,
+  "checked_relation_rows": 135,
   "endpoint_candidate_validation": "PASS",
   "evidence_source_validation": "PASS",
   "identity_validation": "PASS",
   "relation_counts_by_predicate": {
-    "SOURCE_NOTE_ASSOCIATES": 137,
+    "SOURCE_NOTE_ASSOCIATES": 134,
     "SYMPTOM_TO_SYNDROME": 1,
     "SYNDROME_TO_TREATMENT": 0,
     "TREATMENT_TO_FORMULA": 0

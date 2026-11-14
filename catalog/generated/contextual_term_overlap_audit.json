@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 96936,
+  "distinct_occurrence_rows": 96730,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -784,186 +784,6 @@
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
       "left": {
-        "candidate_id": "term_1f1bdef3fba5d5906983a428",
-        "candidate_type": "SYMPTOM",
-        "end": 220,
-        "start": 218,
-        "term": "有的"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_3cbda7ac6fe7a3f8e1a3b81a",
-        "candidate_type": "SYMPTOM",
-        "end": 221,
-        "start": 218,
-        "term": "有的人"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_1f1bdef3fba5d5906983a428",
-        "candidate_type": "SYMPTOM",
-        "end": 220,
-        "start": 218,
-        "term": "有的"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_8f2201809eef4d38fe6c9daf",
-        "candidate_type": "SYMPTOM",
-        "end": 222,
-        "start": 218,
-        "term": "有的人是"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_3cbda7ac6fe7a3f8e1a3b81a",
-        "candidate_type": "SYMPTOM",
-        "end": 221,
-        "start": 218,
-        "term": "有的人"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_8f2201809eef4d38fe6c9daf",
-        "candidate_type": "SYMPTOM",
-        "end": 222,
-        "start": 218,
-        "term": "有的人是"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_1f1bdef3fba5d5906983a428",
-        "candidate_type": "SYMPTOM",
-        "end": 227,
-        "start": 225,
-        "term": "有的"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_3cbda7ac6fe7a3f8e1a3b81a",
-        "candidate_type": "SYMPTOM",
-        "end": 228,
-        "start": 225,
-        "term": "有的人"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_1f1bdef3fba5d5906983a428",
-        "candidate_type": "SYMPTOM",
-        "end": 227,
-        "start": 225,
-        "term": "有的"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_8f2201809eef4d38fe6c9daf",
-        "candidate_type": "SYMPTOM",
-        "end": 229,
-        "start": 225,
-        "term": "有的人是"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_3cbda7ac6fe7a3f8e1a3b81a",
-        "candidate_type": "SYMPTOM",
-        "end": 228,
-        "start": 225,
-        "term": "有的人"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_8f2201809eef4d38fe6c9daf",
-        "candidate_type": "SYMPTOM",
-        "end": 229,
-        "start": 225,
-        "term": "有的人是"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_1f1bdef3fba5d5906983a428",
-        "candidate_type": "SYMPTOM",
-        "end": 227,
-        "start": 225,
-        "term": "有的"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_16ed7b526102d39e96570478",
-        "candidate_type": "SYMPTOM",
-        "end": 230,
-        "start": 225,
-        "term": "有的人是神"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_3cbda7ac6fe7a3f8e1a3b81a",
-        "candidate_type": "SYMPTOM",
-        "end": 228,
-        "start": 225,
-        "term": "有的人"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_16ed7b526102d39e96570478",
-        "candidate_type": "SYMPTOM",
-        "end": 230,
-        "start": 225,
-        "term": "有的人是神"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_8f2201809eef4d38fe6c9daf",
-        "candidate_type": "SYMPTOM",
-        "end": 229,
-        "start": 225,
-        "term": "有的人是"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_16ed7b526102d39e96570478",
-        "candidate_type": "SYMPTOM",
-        "end": 230,
-        "start": 225,
-        "term": "有的人是神"
-      },
-      "type_relation": "same_type",
-      "unit_id": "3f378d095caecab5d7177b08f1e2aa234cfc1ba23b92ba345fde215590dd7c56"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
         "candidate_id": "term_1022596750cbdc49987ea503",
         "candidate_type": "SYMPTOM",
         "end": 210,
@@ -1000,10 +820,190 @@
       },
       "type_relation": "same_type",
       "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_64c4b20a61d9d017f18e4104",
+        "candidate_type": "SYMPTOM",
+        "end": 215,
+        "start": 212,
+        "term": "当归四"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_13e9f7a5892261fde22dd26a",
+        "candidate_type": "SYMPTOM",
+        "end": 218,
+        "start": 212,
+        "term": "当归四逆汤也"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_64f2574006857856cdf4ccc8",
+        "candidate_type": "SYMPTOM",
+        "end": 216,
+        "start": 212,
+        "term": "当归四逆"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_13e9f7a5892261fde22dd26a",
+        "candidate_type": "SYMPTOM",
+        "end": 218,
+        "start": 212,
+        "term": "当归四逆汤也"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_59e18b793aa53ec7e92d5809",
+        "candidate_type": "SYMPTOM",
+        "end": 229,
+        "start": 227,
+        "term": "那我"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_5ab569d3ecf4da016d198cf8",
+        "candidate_type": "SYMPTOM",
+        "end": 230,
+        "start": 227,
+        "term": "那我们"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_59e18b793aa53ec7e92d5809",
+        "candidate_type": "SYMPTOM",
+        "end": 229,
+        "start": 227,
+        "term": "那我"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_5e5297a893199b2f8e0bf251",
+        "candidate_type": "SYMPTOM",
+        "end": 231,
+        "start": 227,
+        "term": "那我们今"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5ab569d3ecf4da016d198cf8",
+        "candidate_type": "SYMPTOM",
+        "end": 230,
+        "start": 227,
+        "term": "那我们"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_5e5297a893199b2f8e0bf251",
+        "candidate_type": "SYMPTOM",
+        "end": 231,
+        "start": 227,
+        "term": "那我们今"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_59e18b793aa53ec7e92d5809",
+        "candidate_type": "SYMPTOM",
+        "end": 229,
+        "start": 227,
+        "term": "那我"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_a3151bb9f5cfee095ad12da5",
+        "candidate_type": "SYMPTOM",
+        "end": 232,
+        "start": 227,
+        "term": "那我们今天"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5ab569d3ecf4da016d198cf8",
+        "candidate_type": "SYMPTOM",
+        "end": 230,
+        "start": 227,
+        "term": "那我们"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_a3151bb9f5cfee095ad12da5",
+        "candidate_type": "SYMPTOM",
+        "end": 232,
+        "start": 227,
+        "term": "那我们今天"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_5e5297a893199b2f8e0bf251",
+        "candidate_type": "SYMPTOM",
+        "end": 231,
+        "start": 227,
+        "term": "那我们今"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_a3151bb9f5cfee095ad12da5",
+        "candidate_type": "SYMPTOM",
+        "end": 232,
+        "start": 227,
+        "term": "那我们今天"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
+    },
+    {
+      "candidate_type_pair": "SYMPTOM|SYMPTOM",
+      "left": {
+        "candidate_id": "term_59e18b793aa53ec7e92d5809",
+        "candidate_type": "SYMPTOM",
+        "end": 229,
+        "start": 227,
+        "term": "那我"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_02711ff40e84620f9e8bb8be",
+        "candidate_type": "SYMPTOM",
+        "end": 233,
+        "start": 227,
+        "term": "那我们今天是"
+      },
+      "type_relation": "same_type",
+      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
     }
   ],
   "overlap_pair_candidate_type_counts": {
-    "ACUPOINT|ACUPOINT": 90,
+    "ACUPOINT|ACUPOINT": 88,
     "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 8,
     "ACUPOINT|CLASSICAL_THEORY": 3,
     "ACUPOINT|SYMPTOM": 3,
@@ -1018,32 +1018,32 @@
     "CLASSICAL_THEORY|SYMPTOM": 21,
     "CLASSICAL_THEORY|SYNDROME": 31,
     "CLASSICAL_THEORY|TREATMENT": 2,
-    "FORMULA|FORMULA": 5826,
+    "FORMULA|FORMULA": 5824,
     "FORMULA|SYMPTOM": 2,
     "HERB|HERB": 10012,
     "HERB|SYMPTOM": 6,
     "PULSE|PULSE": 840,
-    "SYMPTOM|SYMPTOM": 17255,
+    "SYMPTOM|SYMPTOM": 16988,
     "SYMPTOM|SYNDROME": 8,
-    "SYNDROME|SYNDROME": 3346,
+    "SYNDROME|SYNDROME": 3323,
     "TONGUE|TONGUE": 5977,
     "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
-    "current_nested": 4325,
+    "current_nested": 4302,
     "exact_span": 26,
-    "partial_overlap": 3242,
-    "prior_nested": 36379
+    "partial_overlap": 3211,
+    "prior_nested": 36139
   },
   "overlap_pair_type_relation_counts": {
     "cross_type": 123,
-    "same_type": 43849
+    "same_type": 43555
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 7409,
+  "repeated_lexical_forms_with_multiple_occurrences": 7379,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",

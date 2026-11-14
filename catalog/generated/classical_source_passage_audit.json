@@ -10,8 +10,8 @@
   "source_passages_by_work": {
     "HUANG_DI_NEI_JING": 14608,
     "JIN_GUI_YAO_LUE": 10712,
-    "SHANG_HAN_LUN": 11863,
-    "ZHEN_JIU_DA_CHENG": 5538
+    "SHANG_HAN_LUN": 11860,
+    "ZHEN_JIU_DA_CHENG": 5535
   },
   "source_passages_by_role_and_work": {
     "HUANG_DI_NEI_JING": {
@@ -27,14 +27,14 @@
       "WORK_ROOT": 6
     },
     "SHANG_HAN_LUN": {
-      "AUXILIARY_NOTE": 4553,
+      "AUXILIARY_NOTE": 4552,
       "COMMENTARY": 2758,
-      "FORMULA_REFERENCE": 4132,
-      "SOURCE_NOTE": 410,
+      "FORMULA_REFERENCE": 4131,
+      "SOURCE_NOTE": 409,
       "WORK_ROOT": 10
     },
     "ZHEN_JIU_DA_CHENG": {
-      "AUXILIARY_NOTE": 4710,
+      "AUXILIARY_NOTE": 4707,
       "SECTION_CONTAINER": 1,
       "SOURCE_NOTE": 827
     }
@@ -51,7 +51,7 @@
       "POINT": 241,
       "PULSE": 512,
       "SYMPTOM": 2005,
-      "SYNDROME": 1238,
+      "SYNDROME": 1237,
       "TONGUE": 5,
       "TREATMENT": 88
     },
@@ -60,7 +60,7 @@
       "ACUPUNCTURE_TECHNIQUE": 121,
       "CLASSICAL_SOURCE": 24,
       "CLASSICAL_THEORY": 284,
-      "FORMULA": 3287,
+      "FORMULA": 3285,
       "HERB": 5636,
       "ORGAN": 4750,
       "POINT": 46,
@@ -80,22 +80,22 @@
       "ORGAN": 4281,
       "POINT": 39,
       "PULSE": 535,
-      "SYMPTOM": 1218,
-      "SYNDROME": 1031,
+      "SYMPTOM": 1215,
+      "SYNDROME": 1030,
       "TONGUE": 126,
       "TREATMENT": 19
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT": 1774,
+      "ACUPOINT": 1770,
       "ACUPUNCTURE_TECHNIQUE": 741,
       "CLASSICAL_SOURCE": 38,
       "CLASSICAL_THEORY": 72,
-      "FORMULA": 35,
+      "FORMULA": 33,
       "HERB": 73,
       "ORGAN": 3070,
       "POINT": 636,
       "PULSE": 1,
-      "SYMPTOM": 347,
+      "SYMPTOM": 346,
       "SYNDROME": 58,
       "TONGUE": 5,
       "TREATMENT": 5
@@ -129,7 +129,7 @@
         "POINT": 106,
         "PULSE": 335,
         "SYMPTOM": 1009,
-        "SYNDROME": 603,
+        "SYNDROME": 602,
         "TONGUE": 1,
         "TREATMENT": 66
       },
@@ -167,7 +167,7 @@
         "ACUPUNCTURE_TECHNIQUE": 93,
         "CLASSICAL_SOURCE": 20,
         "CLASSICAL_THEORY": 210,
-        "FORMULA": 2070,
+        "FORMULA": 2069,
         "HERB": 3468,
         "ORGAN": 3415,
         "POINT": 33,
@@ -182,7 +182,7 @@
         "ACUPUNCTURE_TECHNIQUE": 26,
         "CLASSICAL_SOURCE": 4,
         "CLASSICAL_THEORY": 66,
-        "FORMULA": 1171,
+        "FORMULA": 1170,
         "HERB": 2058,
         "ORGAN": 1189,
         "POINT": 11,
@@ -222,8 +222,8 @@
         "ORGAN": 1560,
         "POINT": 15,
         "PULSE": 192,
-        "SYMPTOM": 444,
-        "SYNDROME": 411,
+        "SYMPTOM": 443,
+        "SYNDROME": 410,
         "TONGUE": 28,
         "TREATMENT": 8
       },
@@ -251,7 +251,7 @@
         "ORGAN": 1316,
         "POINT": 7,
         "PULSE": 130,
-        "SYMPTOM": 360,
+        "SYMPTOM": 359,
         "SYNDROME": 206,
         "TONGUE": 33,
         "TREATMENT": 5
@@ -266,7 +266,7 @@
         "ORGAN": 187,
         "POINT": 5,
         "PULSE": 4,
-        "SYMPTOM": 35,
+        "SYMPTOM": 34,
         "SYNDROME": 26,
         "TONGUE": 1,
         "TREATMENT": 1
@@ -280,16 +280,16 @@
     },
     "ZHEN_JIU_DA_CHENG": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT": 1385,
+        "ACUPOINT": 1382,
         "ACUPUNCTURE_TECHNIQUE": 655,
         "CLASSICAL_SOURCE": 38,
         "CLASSICAL_THEORY": 57,
-        "FORMULA": 34,
+        "FORMULA": 32,
         "HERB": 70,
         "ORGAN": 2625,
         "POINT": 560,
         "PULSE": 1,
-        "SYMPTOM": 328,
+        "SYMPTOM": 327,
         "SYNDROME": 52,
         "TONGUE": 5,
         "TREATMENT": 5
@@ -298,7 +298,7 @@
         "CLASSICAL_THEORY": 1
       },
       "SOURCE_NOTE": {
-        "ACUPOINT": 389,
+        "ACUPOINT": 388,
         "ACUPUNCTURE_TECHNIQUE": 86,
         "CLASSICAL_THEORY": 14,
         "FORMULA": 1,
@@ -325,7 +325,7 @@
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 6,
       "CLASSICAL_THEORY|FORMULA": 53,
       "CLASSICAL_THEORY|SYMPTOM": 27,
-      "FORMULA|HERB": 2178,
+      "FORMULA|HERB": 2176,
       "SYMPTOM|ACUPOINT": 5,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 8,
       "SYMPTOM|FORMULA": 315,
@@ -342,12 +342,11 @@
       "SYMPTOM|POINT": 3
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 111,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 110,
       "CLASSICAL_THEORY|SYMPTOM": 2,
       "FORMULA|HERB": 3,
-      "SYMPTOM|ACUPOINT": 60,
+      "SYMPTOM|ACUPOINT": 59,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 20,
-      "SYMPTOM|FORMULA": 2,
       "SYMPTOM|POINT": 45
     }
   },
@@ -1069,16 +1068,6 @@
     "ZHEN_JIU_DA_CHENG": {
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
         {
-          "passage_id": "78ab201fc552f4d6efa24cfac2ab129864e3436a8b736195cbae76dfc095f09f",
-          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
-          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
-          "tree_position": "0.152",
-          "block_id": "20230928080749-yzw4y93",
-          "character_start": 0,
-          "character_end": 34,
-          "passage_text": "80、立竿见影，是针灸本就应有的效果，如果没有效果，就是扎错穴道了；"
-        },
-        {
           "passage_id": "e0794724f34542fdc39c80682b2a708a2583edc5c8233d3d974878bd5a3845cf",
           "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
           "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
@@ -1097,6 +1086,16 @@
           "character_start": 0,
           "character_end": 33,
           "passage_text": "17、成人留针（针下到穴道后，针要留一段时间如半小时做一些补泻）；"
+        },
+        {
+          "passage_id": "d5b58d5f9afb575a0d5f856fc8de9d5b108d54a7bc799f9d5c7165353ed27be8",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.245",
+          "block_id": "20230928080749-4vvopnd",
+          "character_start": 0,
+          "character_end": 83,
+          "passage_text": "144、腿要坐着弯起来才有环跳穴，环跳穴下针不留针，三呼三吸刺法（补法），扎针引到气后，让患者吸气，吸气时把针慢慢拉到皮肤表面，再吐气，吐完气后再将针推入，重复三次；"
         }
       ],
       "CLASSICAL_THEORY|SYMPTOM": [
@@ -1217,28 +1216,6 @@
           "passage_text": "例头痛，就在天应穴的位置下一针，此为‘导’，再在对侧经的本穴，引气，用泻法，此为‘引’，亦为导引之法；"
         }
       ],
-      "SYMPTOM|FORMULA": [
-        {
-          "passage_id": "5ab81a49dea4999a9344a4a3ed271055674df46d99029fde7cd08ac37ed6115e",
-          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
-          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
-          "tree_position": "0.1433",
-          "block_id": "20240523115029-nadle26",
-          "character_start": 147,
-          "character_end": 165,
-          "passage_text": "所以，气喘在处方跟下针上通通不一样。"
-        },
-        {
-          "passage_id": "5a0d054db00da042b3827c2a4e417626814a257a42aa1ab561b7c57ae62dc8c6",
-          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
-          "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
-          "tree_position": "0.208",
-          "block_id": "20240523115029-tczu42w",
-          "character_start": 15,
-          "character_end": 85,
-          "passage_text": "我们辨证论治，不一定要了解他的病名，可能是尿道发炎，也可能是性病感染，这些都不要管，我们要的是辨证，我们按症状开处方下穴道，不要被病吓到了。"
-        }
-      ],
       "SYMPTOM|POINT": [
         {
           "passage_id": "4cd182fcf90ceffde3a3dcc5ecf54405a83ef30ec7c24122a3ce03f53481ae3f",
@@ -1273,15 +1250,15 @@
       ]
     }
   },
-  "same_passage_occurrence_link_rows": 33822,
+  "same_passage_occurrence_link_rows": 33794,
   "same_passage_occurrence_links_by_work": {
     "HUANG_DI_NEI_JING": {
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 143,
       "CLASSICAL_THEORY|FORMULA": 2,
-      "CLASSICAL_THEORY|SYMPTOM": 212,
+      "CLASSICAL_THEORY|SYMPTOM": 198,
       "FORMULA|HERB": 105,
       "SYMPTOM|ACUPOINT": 122,
-      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 483,
+      "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 478,
       "SYMPTOM|FORMULA": 37,
       "SYMPTOM|POINT": 49
     },
@@ -1289,7 +1266,7 @@
       "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
       "CLASSICAL_THEORY|FORMULA": 99,
       "CLASSICAL_THEORY|SYMPTOM": 63,
-      "FORMULA|HERB": 12931,
+      "FORMULA|HERB": 12927,
       "SYMPTOM|ACUPOINT": 5,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 46,
       "SYMPTOM|FORMULA": 885,
@@ -1306,12 +1283,11 @@
       "SYMPTOM|POINT": 4
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 172,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 171,
       "CLASSICAL_THEORY|SYMPTOM": 2,
       "FORMULA|HERB": 6,
-      "SYMPTOM|ACUPOINT": 104,
+      "SYMPTOM|ACUPOINT": 102,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 31,
-      "SYMPTOM|FORMULA": 2,
       "SYMPTOM|POINT": 111
     }
   },
@@ -1320,10 +1296,10 @@
       "AUXILIARY_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 36,
         "CLASSICAL_THEORY|FORMULA": 2,
-        "CLASSICAL_THEORY|SYMPTOM": 49,
+        "CLASSICAL_THEORY|SYMPTOM": 35,
         "FORMULA|HERB": 101,
         "SYMPTOM|ACUPOINT": 18,
-        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 77,
+        "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 72,
         "SYMPTOM|FORMULA": 37,
         "SYMPTOM|POINT": 14
       },
@@ -1355,7 +1331,7 @@
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
         "CLASSICAL_THEORY|FORMULA": 65,
         "CLASSICAL_THEORY|SYMPTOM": 50,
-        "FORMULA|HERB": 7809,
+        "FORMULA|HERB": 7807,
         "SYMPTOM|ACUPOINT": 3,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 39,
         "SYMPTOM|FORMULA": 569,
@@ -1364,7 +1340,7 @@
       "FORMULA_REFERENCE": {
         "CLASSICAL_THEORY|FORMULA": 33,
         "CLASSICAL_THEORY|SYMPTOM": 13,
-        "FORMULA|HERB": 4953,
+        "FORMULA|HERB": 4951,
         "SYMPTOM|ACUPOINT": 2,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 7,
         "SYMPTOM|FORMULA": 314
@@ -1414,13 +1390,12 @@
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 155,
         "CLASSICAL_THEORY|SYMPTOM": 2,
         "FORMULA|HERB": 6,
-        "SYMPTOM|ACUPOINT": 102,
+        "SYMPTOM|ACUPOINT": 100,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 22,
-        "SYMPTOM|FORMULA": 2,
         "SYMPTOM|POINT": 110
       },
       "SOURCE_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 17,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 16,
         "SYMPTOM|ACUPOINT": 2,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 9,
         "SYMPTOM|POINT": 1
@@ -1592,7 +1567,7 @@
             }
           },
           {
-            "link_id": "ec58c38dbe6d292da689d93c39522f8c979f7e1863a5e99b17241b8ebb2f51a4",
+            "link_id": "81fcb8f8ce98dad6e796f3326218e8a0a637aae855fc91a8062553b429ba61a3",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "831fb85407a3d7fb713645e2eca1f17919aa6c846627c00a2e313d9f62be043b",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
@@ -1610,15 +1585,15 @@
               "end": 102
             },
             "object": {
-              "occurrence_id": "aee33cd0370c2739a13d65855b26efed59c4dfce017bb8b4d06b32f0a93e1ded",
+              "occurrence_id": "b2a6a76c70dcd1cbf56cd07bcb166b9f6299d2b078d36bb15af8c2d703073d61",
               "type": "SYMPTOM",
-              "text": "有的",
-              "start": 29,
-              "end": 31
+              "text": "的时",
+              "start": 30,
+              "end": 32
             }
           },
           {
-            "link_id": "ab51d3b71933f1866524cd6cc348c8d924f8e96dcce26f6c3355f496051dbe4f",
+            "link_id": "e7b161a62ebe11139182839d5b439b85a328abdfabc4c5adc4691a90fd34581e",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "831fb85407a3d7fb713645e2eca1f17919aa6c846627c00a2e313d9f62be043b",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
@@ -1636,11 +1611,11 @@
               "end": 102
             },
             "object": {
-              "occurrence_id": "74d3009ad7a88fe1b21e58312da94ab3bd127d061368f327fdadf9e36bca0a17",
+              "occurrence_id": "0b8456b88dc90c0a9014df3824587c6bf739c25f039de3ebbf1c47675be2d9d0",
               "type": "SYMPTOM",
-              "text": "有的时",
-              "start": 29,
-              "end": 32
+              "text": "的时候",
+              "start": 30,
+              "end": 33
             }
           }
         ],
@@ -4060,58 +4035,6 @@
         ],
         "FORMULA|HERB": [
           {
-            "link_id": "527d0d4d17bfc985560576f897b646abd65259544eacded426a635fdc1bf52de",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "11f87f7f3a92b8eaab81e0ebd61b4ddfaa94e70ec7ab8c9b2a03356413bbcaf2",
-            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314091737-5bwnlq1.sy",
-            "source_sha256": "63dbf3ed11ba3355c21781a66f158c354d7690cb9437b0cd4858211944141a7c",
-            "tree_position": "0.3",
-            "block_id": "20240422171543-uu0ol6z",
-            "passage_start": 0,
-            "passage_end": 34,
-            "passage_text": "那过去呢这个处方呢没有了，那有人认为这个 胶艾汤加干姜，这是对的 。",
-            "subject": {
-              "occurrence_id": "bec6f5891f03326adf5dd1cd33c830e93d045e45eca65ce01eceb60c90583870",
-              "type": "FORMULA",
-              "text": "呢没",
-              "start": 8,
-              "end": 10
-            },
-            "object": {
-              "occurrence_id": "b00652e6498f410855067a5b860fad0fc622581f39bb73f58187b711ef841387",
-              "type": "HERB",
-              "text": "干姜",
-              "start": 25,
-              "end": 27
-            }
-          },
-          {
-            "link_id": "035365341491571cafafeb3c45149c980b08b5483ced0b8c5d31e300dfd72839",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "11f87f7f3a92b8eaab81e0ebd61b4ddfaa94e70ec7ab8c9b2a03356413bbcaf2",
-            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314091737-5bwnlq1.sy",
-            "source_sha256": "63dbf3ed11ba3355c21781a66f158c354d7690cb9437b0cd4858211944141a7c",
-            "tree_position": "0.3",
-            "block_id": "20240422171543-uu0ol6z",
-            "passage_start": 0,
-            "passage_end": 34,
-            "passage_text": "那过去呢这个处方呢没有了，那有人认为这个 胶艾汤加干姜，这是对的 。",
-            "subject": {
-              "occurrence_id": "09c681cfb9e941b075f659da07f6a9a33f0a1803a5da6b6098d67dd37f71867e",
-              "type": "FORMULA",
-              "text": "呢没有",
-              "start": 8,
-              "end": 11
-            },
-            "object": {
-              "occurrence_id": "b00652e6498f410855067a5b860fad0fc622581f39bb73f58187b711ef841387",
-              "type": "HERB",
-              "text": "干姜",
-              "start": 25,
-              "end": 27
-            }
-          },
-          {
             "link_id": "1ae7b4d853bf73eaab054bdffaf0489d97caeffdfe12145fc3322b4b23d121d6",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "8dbddd17e178601d980b84b2157cb46a311bf0417e12c00796e14c7927f8a095",
@@ -4135,6 +4058,58 @@
               "text": "半夏",
               "start": 34,
               "end": 36
+            }
+          },
+          {
+            "link_id": "5cc029bee36bbdce4caa2dd74bf42a2fcf3f3d713649b4998a6dbf273e9409fc",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "8dbddd17e178601d980b84b2157cb46a311bf0417e12c00796e14c7927f8a095",
+            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314091739-y7434zk.sy",
+            "source_sha256": "be1f7a3a349dc92084427d2552c1a31d3da429a305e98b13e885b0cd6e936aa8",
+            "tree_position": "0.10",
+            "block_id": "20240422171430-jiw1mkh",
+            "passage_start": 0,
+            "passage_end": 55,
+            "passage_text": "那一般来说这温经汤呢我们会加一些...你看 张仲景在治妇科的时候，像半夏厚朴汤之类的方剂都会用到半夏，为什么？",
+            "subject": {
+              "occurrence_id": "511f6857e2cb296840bc7bdd131635c6d78ca04967a7e72bc4c35725983e21a4",
+              "type": "FORMULA",
+              "text": "温经汤",
+              "start": 6,
+              "end": 9
+            },
+            "object": {
+              "occurrence_id": "e7ca8bd37a97d8fc706992a444fe7a3e8aab09f950d49f26c581790145aff17e",
+              "type": "HERB",
+              "text": "厚朴",
+              "start": 36,
+              "end": 38
+            }
+          },
+          {
+            "link_id": "db5e91c0b4edf56375caa9385d30d2ec042ca935f924decd8aa4f2d6b3157b65",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "8dbddd17e178601d980b84b2157cb46a311bf0417e12c00796e14c7927f8a095",
+            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240314091723-hbqfqv6/20240314091739-y7434zk.sy",
+            "source_sha256": "be1f7a3a349dc92084427d2552c1a31d3da429a305e98b13e885b0cd6e936aa8",
+            "tree_position": "0.10",
+            "block_id": "20240422171430-jiw1mkh",
+            "passage_start": 0,
+            "passage_end": 55,
+            "passage_text": "那一般来说这温经汤呢我们会加一些...你看 张仲景在治妇科的时候，像半夏厚朴汤之类的方剂都会用到半夏，为什么？",
+            "subject": {
+              "occurrence_id": "511f6857e2cb296840bc7bdd131635c6d78ca04967a7e72bc4c35725983e21a4",
+              "type": "FORMULA",
+              "text": "温经汤",
+              "start": 6,
+              "end": 9
+            },
+            "object": {
+              "occurrence_id": "394a309be8475e81d04f8ba8e946522caf8b88665dbb40688cff1eb4925a8ad7",
+              "type": "HERB",
+              "text": "半夏",
+              "start": 48,
+              "end": 50
             }
           }
         ],
@@ -6668,60 +6643,6 @@
             }
           }
         ],
-        "SYMPTOM|FORMULA": [
-          {
-            "link_id": "79075bf4b5a41c0e1588dd390f994067c18189cf3d4b58c3895aa462ce5396da",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "5ab81a49dea4999a9344a4a3ed271055674df46d99029fde7cd08ac37ed6115e",
-            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
-            "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
-            "tree_position": "0.1433",
-            "block_id": "20240523115029-nadle26",
-            "passage_start": 147,
-            "passage_end": 165,
-            "passage_text": "所以，气喘在处方跟下针上通通不一样。",
-            "subject": {
-              "occurrence_id": "10571cdbef83b34e60dcb942ff51e6f00528d809d795386dcf3bb709e8f0c10e",
-              "type": "SYMPTOM",
-              "text": "气喘",
-              "start": 150,
-              "end": 152
-            },
-            "object": {
-              "occurrence_id": "d693a881b03fb8a2dc3e91468459d2c12595632c471108d8adc070d3786fb843",
-              "type": "FORMULA",
-              "text": "跟下",
-              "start": 155,
-              "end": 157
-            }
-          },
-          {
-            "link_id": "6c786ad6c243d01baf7e509df9930cc5531ce260e5a24136f0bcb706ccc80ba9",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "5a0d054db00da042b3827c2a4e417626814a257a42aa1ab561b7c57ae62dc8c6",
-            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20240523111826-kgaq9dd.sy",
-            "source_sha256": "65a63d72d8f4f5f329e3bf4c95fddd3803b641921f09fa721263ce2ba8d402a9",
-            "tree_position": "0.208",
-            "block_id": "20240523115029-tczu42w",
-            "passage_start": 15,
-            "passage_end": 85,
-            "passage_text": "我们辨证论治，不一定要了解他的病名，可能是尿道发炎，也可能是性病感染，这些都不要管，我们要的是辨证，我们按症状开处方下穴道，不要被病吓到了。",
-            "subject": {
-              "occurrence_id": "8da540d07803705434c4c646fb67e7e867983e1febb374f111ce8b1caf6cc00a",
-              "type": "SYMPTOM",
-              "text": "开处",
-              "start": 70,
-              "end": 72
-            },
-            "object": {
-              "occurrence_id": "0eea8dca2551f02bad349289d9261cf918d164994ad454b5e2dabd30b235e8eb",
-              "type": "FORMULA",
-              "text": "下穴",
-              "start": 73,
-              "end": 75
-            }
-          }
-        ],
         "SYMPTOM|POINT": [
           {
             "link_id": "a3115475bd6464701fb5171b6a6f476b046c356f163a8f767581b09f87b513f6",
@@ -6806,32 +6727,6 @@
       "SOURCE_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
           {
-            "link_id": "d119ff9baca2ec0f2dda6e8f24c37852893a2f928246e3cd2420de1f419064aa",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "78ab201fc552f4d6efa24cfac2ab129864e3436a8b736195cbae76dfc095f09f",
-            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
-            "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
-            "tree_position": "0.152",
-            "block_id": "20230928080749-yzw4y93",
-            "passage_start": 0,
-            "passage_end": 34,
-            "passage_text": "80、立竿见影，是针灸本就应有的效果，如果没有效果，就是扎错穴道了；",
-            "subject": {
-              "occurrence_id": "f1049155721a2698340f0743180f0b50e90df277d40c4e84adfef3239dd70fe8",
-              "type": "ACUPOINT",
-              "text": "错穴",
-              "start": 29,
-              "end": 31
-            },
-            "object": {
-              "occurrence_id": "3059a5af2264bd657bdab678f295c9b139a794df2a0faf95b4f860634ce5b3b3",
-              "type": "ACUPUNCTURE_TECHNIQUE",
-              "text": "针灸",
-              "start": 9,
-              "end": 11
-            }
-          },
-          {
             "link_id": "3c06cef1ec19d2ef37b4f2a2338e608cb4f7cc052e62b849c34f7f26be7f40cb",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "e0794724f34542fdc39c80682b2a708a2583edc5c8233d3d974878bd5a3845cf",
@@ -6881,6 +6776,32 @@
               "text": "补泻",
               "start": 8,
               "end": 10
+            }
+          },
+          {
+            "link_id": "00b811f1a8675255147e1a3e6a47d465359ffa69c3b6a23216f5e550c80dcbdb",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "c29a1a1bb2809d9a3135ec30a3ab832b626021b98bb9dab9299a545d9fed2002",
+            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+            "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+            "tree_position": "0.18",
+            "block_id": "20230928080749-znqwd90",
+            "passage_start": 0,
+            "passage_end": 33,
+            "passage_text": "17、成人留针（针下到穴道后，针要留一段时间如半小时做一些补泻）；",
+            "subject": {
+              "occurrence_id": "47747ca3f985277d428995ed62e7c5a7e03e2c7ddf3aa04888acbe00161ebc01",
+              "type": "ACUPOINT",
+              "text": "下到穴",
+              "start": 9,
+              "end": 12
+            },
+            "object": {
+              "occurrence_id": "a0d22476b1724c9f75da3e515370e0f732286173417ee9607bc4530b49fd6d2a",
+              "type": "ACUPUNCTURE_TECHNIQUE",
+              "text": "留针",
+              "start": 5,
+              "end": 7
             }
           }
         ],
@@ -7060,21 +6981,21 @@
     "WORK_ROOT": 5
   },
   "source_passages": 95058,
-  "passage_mentions": 116134,
+  "passage_mentions": 116040,
   "entity_mention_occurrences": 88884,
-  "contextual_term_occurrences": 27250,
+  "contextual_term_occurrences": 27156,
   "passage_mentions_by_type": {
-    "ACUPOINT": 3316,
+    "ACUPOINT": 3310,
     "ACUPUNCTURE_TECHNIQUE": 3055,
     "CLASSICAL_SOURCE": 344,
     "CLASSICAL_THEORY": 3264,
-    "FORMULA": 12790,
+    "FORMULA": 12784,
     "HERB": 32410,
     "ORGAN": 42786,
     "POINT": 1241,
     "PULSE": 1811,
-    "SYMPTOM": 9784,
-    "SYNDROME": 3959,
+    "SYMPTOM": 9706,
+    "SYNDROME": 3955,
     "TONGUE": 1153,
     "TREATMENT": 221
   },

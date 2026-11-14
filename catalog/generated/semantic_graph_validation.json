@@ -2,11 +2,11 @@
   "schema_version": 1,
   "validated_classical_source_document_references": 0,
   "validated_classical_source_documents": 452,
-  "validated_classical_source_passage_mentions": 116134,
-  "validated_classical_source_passage_term_links": 33822,
+  "validated_classical_source_passage_mentions": 116040,
+  "validated_classical_source_passage_term_links": 33794,
   "validated_classical_source_passages": 95058,
-  "validated_contextual_relation_edges": 138,
-  "validated_contextual_term_candidates": 97080,
+  "validated_contextual_relation_edges": 135,
+  "validated_contextual_term_candidates": 96874,
   "validated_entity_nodes": 312,
   "validated_relation_edges": 139
 }

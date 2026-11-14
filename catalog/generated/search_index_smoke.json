@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "database_bytes": 8322719744,
+  "database_bytes": 8322514944,
   "search_backend": "fts5-trigram",
   "table_counts": {
     "content_blocks": 236987,
@@ -9,15 +9,16 @@
     "entity_catalog": 312,
     "semantic_relation_candidates": 139,
     "unclassified_term_candidates": 2363692,
-    "contextual_term_type_candidates": 97080,
-    "contextual_relation_candidates": 138
+    "contextual_term_type_candidates": 96874,
+    "contextual_relation_candidates": 135,
+    "classical_source_passage_term_links": 33794
   },
   "relation_predicate_counts": {
     "FORMULA_CONTAINS_HERB": 139,
     "SYMPTOM_TO_SYNDROME": 1,
     "SYNDROME_TO_TREATMENT": 0,
     "TREATMENT_TO_FORMULA": 0,
-    "SOURCE_NOTE_ASSOCIATES": 137
+    "SOURCE_NOTE_ASSOCIATES": 134
   },
   "checks": {
     "full_text_index_rows": "PASS",
@@ -31,6 +32,7 @@
     "contextual_relation_evidence": "PASS",
     "contextual_relation_all_rows_provenance": "PASS",
     "contextual_relation_predicate_queries": "PASS",
-    "contextual_relation_predicate_direction": "PASS"
+    "contextual_relation_predicate_direction": "PASS",
+    "classical_passage_link_search": "PASS"
   }
 }

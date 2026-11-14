@@ -1,18 +1,18 @@
 {
   "schema_version": 3,
-  "source_note_association_rows": 137,
+  "source_note_association_rows": 134,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 132,
+      "ordered_typed_pairs": 130,
       "pairs_with_predicate_between": 1,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
       "eligible_pairs": 1,
       "marker_sentences_without_typed_pair": 62,
-      "typed_pair_sentences_without_marker": 77,
+      "typed_pair_sentences_without_marker": 76,
       "marker_sentences_with_subject_type": 5,
       "marker_sentences_with_object_type": 12,
       "marker_sentences_with_both_endpoint_types": 1,

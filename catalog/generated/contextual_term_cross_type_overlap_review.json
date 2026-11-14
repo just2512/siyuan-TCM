@@ -23,7 +23,7 @@
     "HERB|SYMPTOM": 6,
     "SYMPTOM|SYNDROME": 8
   },
-  "distinct_occurrences": 96936,
+  "distinct_occurrences": 96730,
   "policy": {
     "candidate_mutation": "none",
     "evidence": "each row includes an exact source excerpt and source locator",
@@ -36,6 +36,6 @@
     "status": "PASS"
   },
   "review_status": "UNREVIEWED",
-  "same_type_overlap_pairs_not_queued": 43849,
+  "same_type_overlap_pairs_not_queued": 43555,
   "schema_version": 1
 }
