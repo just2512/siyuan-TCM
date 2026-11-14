@@ -97,7 +97,7 @@ def create_fixture_database(path: Path):
             "sha-sh", "0.1", "b-sh",
         ),
         "shanghan/方剂/【桂枝汤】.sy": (
-            "桂枝汤：桂枝、芍药。桂枝再加。",
+            "桂枝汤：桂枝、芍药、桂枝再加。",
             "sha-formula", "0.1", "b-formula",
         ),
         "neijing/阴阳应象大论.sy": (
