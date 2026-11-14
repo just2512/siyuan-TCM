@@ -463,16 +463,16 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             pair_key = f"{left_type}|{right_type}"
             for row in connection.execute("""
                 SELECT p.passage_id, p.source_work, p.document, d.document_role,
-                       left.occurrence_id AS subject_occurrence_id,
-                       right.occurrence_id AS object_occurrence_id
+                       src_occ.occurrence_id AS subject_occurrence_id,
+                       dst_occ.occurrence_id AS object_occurrence_id
                 FROM classical_source_passages p
                 JOIN classical_source_documents d
                   ON d.source_document_id = p.source_document_id
-                JOIN classical_source_passage_mentions left
-                  ON left.passage_id = p.passage_id AND left.term_type = ?
-                JOIN classical_source_passage_mentions right
-                  ON right.passage_id = p.passage_id AND right.term_type = ?
-                WHERE left.occurrence_id <> right.occurrence_id
+                JOIN classical_source_passage_mentions src_occ
+                  ON src_occ.passage_id = p.passage_id AND src_occ.term_type = ?
+                JOIN classical_source_passage_mentions dst_occ
+                  ON dst_occ.passage_id = p.passage_id AND dst_occ.term_type = ?
+                WHERE src_occ.occurrence_id <> dst_occ.occurrence_id
                 ORDER BY p.document, p.tree_position, p.character_start,
                          left.character_start, right.character_start
             """, (left_type, right_type)):
