@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 from build_contextual_relation_candidates import relation_identity
+from build_classical_source_passages import create_tables as create_classical_source_tables
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).with_name("export_semantic_graph.py")
@@ -85,6 +86,7 @@ class SemanticGraphExportTests(unittest.TestCase):
                 "classical_source_documents": 0, "classical_source_passages": 0,
                 "classical_source_passage_mentions": 0,
                 "classical_source_document_references": 0,
+                "classical_source_passage_term_links": 0,
             })
             self.assertEqual(module.validate(database, output), {
                 "validated_entity_nodes": 2, "validated_relation_edges": 1,
@@ -94,6 +96,7 @@ class SemanticGraphExportTests(unittest.TestCase):
                 "validated_classical_source_passages": 0,
                 "validated_classical_source_passage_mentions": 0,
                 "validated_classical_source_document_references": 0,
+                "validated_classical_source_passage_term_links": 0,
             })
             with gzip.open(output, "rt", encoding="utf-8") as stream:
                 rows = [json.loads(line) for line in stream]
@@ -207,6 +210,108 @@ class SemanticGraphExportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "relation evidence mismatch"):
                 module.validate(database, output)
 
+
+    def test_exports_validated_passage_term_links_and_rejects_invalid_endpoints(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            mentions = root / "mentions.csv.gz"
+            registry = root / "registry.csv"
+            database = root / "search.sqlite3"
+            output = root / "graph.jsonl.gz"
+            source_text = "桂枝汤由桂枝组成。"
+
+            def write_gzip(path, fields, rows):
+                with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+                    writer = csv.DictWriter(stream, fieldnames=fields)
+                    writer.writeheader()
+                    writer.writerows(rows)
+
+            write_gzip(content, db.CONTENT_FIELDS, [{
+                "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
+                "block_id": "b1", "content_type": "PARAGRAPH", "characters": len(source_text),
+                "content_text": source_text,
+            }])
+            write_gzip(mentions, db.ENTITY_FIELDS, [
+                {"mention_id": "f1", "unit_id": "u1", "entity_type": "FORMULA",
+                 "matched_text": "桂枝汤", "character_start": 0, "character_end": 3,
+                 "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
+                 "block_id": "b1", "content_type": "PARAGRAPH", "section_path": "",
+                 "lexicon_version": "1.3.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+                {"mention_id": "h1", "unit_id": "u1", "entity_type": "HERB",
+                 "matched_text": "桂枝", "character_start": 4, "character_end": 6,
+                 "document": "a.sy", "source_sha256": "hash", "tree_position": "0.0",
+                 "block_id": "b1", "content_type": "PARAGRAPH", "section_path": "",
+                 "lexicon_version": "1.3.0", "extraction_method": "EXACT_LEXICON_MATCH",
+                 "resolution_status": "UNRESOLVED_CANDIDATE"},
+            ])
+            with registry.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=db.ENTITY_REGISTRY_FIELDS)
+                writer.writeheader()
+                writer.writerows([
+                    {"entity_id": "ef", "entity_type": "FORMULA", "preferred_label": "桂枝汤",
+                     "lexical_form": "桂枝汤", "lexicon_version": "1.3.0",
+                     "identity_status": "LEXICAL_ID_ONLY"},
+                    {"entity_id": "eh", "entity_type": "HERB", "preferred_label": "桂枝",
+                     "lexical_form": "桂枝", "lexicon_version": "1.3.0",
+                     "identity_status": "LEXICAL_ID_ONLY"},
+                ])
+            db.build_database(content, None, database, mentions, None, registry)
+            with sqlite3.connect(database) as connection:
+                create_classical_source_tables(connection)
+                connection.execute("""
+                    INSERT INTO classical_source_documents VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    "sd1", "a.sy", "SHANG_HAN_LUN", "伤寒论", "a.sy", "", "倪海厦",
+                    "第一篇 太阳篇", 1, "CLASSICAL_CHAPTER", "[\"伤寒论\",\"第一篇 太阳篇\"]",
+                ))
+                connection.execute("""
+                    INSERT INTO classical_source_passages VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    "p1", "sd1", "a.sy", "SHANG_HAN_LUN", "hash", "0.0", "b1", "",
+                    "PARAGRAPH", "", 0, len(source_text), source_text, "SENTENCE_OR_CLAUSE",
+                ))
+                connection.executemany("""
+                    INSERT INTO classical_source_passage_mentions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                """, [
+                    ("occ-f", "p1", "sd1", "ENTITY_MENTION", "f1", "ef", "FORMULA",
+                     "桂枝汤", 0, 3, "[]", "UNRESOLVED_CANDIDATE"),
+                    ("occ-h", "p1", "sd1", "ENTITY_MENTION", "h1", "eh", "HERB",
+                     "桂枝", 4, 6, "[]", "UNRESOLVED_CANDIDATE"),
+                ])
+                connection.execute("""
+                    INSERT INTO classical_source_passage_term_links VALUES (?,?,?,?,?,?,?,?,?)
+                """, (
+                    "link1", "p1", "SHANG_HAN_LUN", "a.sy", "CLASSICAL_CHAPTER",
+                    "FORMULA|HERB", "SAME_PASSAGE_CO_OCCURRENCE", "occ-f", "occ-h",
+                ))
+
+            counts = module.export(database, output)
+            self.assertEqual(counts["classical_source_passage_term_links"], 1)
+            validated = module.validate(database, output)
+            self.assertEqual(validated["validated_classical_source_passage_term_links"], 1)
+            with gzip.open(output, "rt", encoding="utf-8") as stream:
+                rows = [json.loads(line) for line in stream]
+            link = next(row for row in rows if row["record_type"] == "CLASSICAL_SOURCE_PASSAGE_TERM_LINK")
+            self.assertEqual(link, {
+                "record_type": "CLASSICAL_SOURCE_PASSAGE_TERM_LINK", "link_id": "link1",
+                "passage_id": "p1", "source_work": "SHANG_HAN_LUN", "document": "a.sy",
+                "document_role": "CLASSICAL_CHAPTER", "pair_key": "FORMULA|HERB",
+                "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+                "subject_occurrence_id": "occ-f", "object_occurrence_id": "occ-h",
+            })
+
+            # A link cannot point to an occurrence from another passage or invent
+            # a type pair, even when its serialized fields otherwise match SQLite.
+            with sqlite3.connect(database) as connection:
+                connection.execute(
+                    "UPDATE classical_source_passage_term_links SET object_occurrence_id='missing' "
+                    "WHERE link_id='link1'"
+                )
+            module.export(database, output)
+            with self.assertRaisesRegex(ValueError, "classical passage term link endpoint mismatch"):
+                module.validate(database, output)
 
     def test_exports_contextual_terms_and_explicit_relation_edges(self):
         with tempfile.TemporaryDirectory() as temp:
