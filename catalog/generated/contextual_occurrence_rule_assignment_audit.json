@@ -1,6 +1,6 @@
 {
-  "candidate_rows": 97563,
-  "distinct_occurrences": 97419,
+  "candidate_rows": 97080,
+  "distinct_occurrences": 96936,
   "extra_rule_assignments": 144,
   "multi_rule_examples": [
     {
@@ -1816,7 +1816,7 @@
     "FORMULA": 5900,
     "HERB": 19380,
     "PULSE": 4556,
-    "SYMPTOM": 41525,
+    "SYMPTOM": 41042,
     "SYNDROME": 3841,
     "TONGUE": 3034,
     "TREATMENT": 710

@@ -7,11 +7,11 @@
     "FORMULA": 5900,
     "HERB": 19380,
     "PULSE": 4556,
-    "SYMPTOM": 41669,
+    "SYMPTOM": 41186,
     "SYNDROME": 3841,
     "TONGUE": 3034,
     "TREATMENT": 710
   },
-  "checked_contextual_term_candidates": 97563,
+  "checked_contextual_term_candidates": 97080,
   "schema_version": 1
 }
