@@ -93,7 +93,7 @@ def create_fixture_database(path: Path):
     """)
     sources = {
         "shanghan/太阳.sy": (
-            "太阳病，头项强痛而恶寒，桂枝汤主之。",
+            "太阳病，头项强痛而恶寒，桂枝汤主之。太阳病复见发热。",
             "sha-sh", "0.1", "b-sh",
         ),
         "shanghan/方剂/【桂枝汤】.sy": (
@@ -141,7 +141,7 @@ def create_fixture_database(path: Path):
         ("formula-candidate", "桂枝汤", "FORMULA", text.index("桂枝汤")),
         # Deliberately spans two clauses: retain upstream, but do not make a
         # passage backlink that would cross an evidence boundary.
-        ("cross-clause", "恶寒。桂", "SYMPTOM", text.index("恶寒")),
+        ("cross-clause", "主之。太阳病", "SYMPTOM", text.index("主之")),
     ):
         connection.execute("""
             INSERT INTO contextual_term_type_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
