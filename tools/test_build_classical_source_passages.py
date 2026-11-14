@@ -134,6 +134,18 @@ def create_fixture_database(path: Path):
     add_entity("herb-1", "herb-gui-zhi", "HERB", "桂枝", "shanghan/方剂/【桂枝汤】.sy")
     add_entity("herb-2", "herb-gui-zhi", "HERB", "桂枝", "shanghan/方剂/【桂枝汤】.sy")
     add_entity("herb-shao-yao", "herb-shao-yao", "HERB", "芍药", "shanghan/方剂/【桂枝汤】.sy")
+    # Keep the herb occurrence nested inside the formula name, but never turn
+    # the shared characters in "桂枝汤" into a FORMULA|HERB relation edge.
+    formula_document = "shanghan/方剂/【桂枝汤】.sy"
+    formula_text, formula_sha, formula_tree, formula_block = sources[formula_document]
+    nested_herb_start = formula_text.index("桂枝汤")
+    connection.execute("""
+        INSERT INTO entity_mentions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        "herb-contained", "herb-gui-zhi", "HERB", "桂枝",
+        nested_herb_start, nested_herb_start + 2, formula_document,
+        formula_sha, formula_tree, formula_block, "UNRESOLVED_CANDIDATE",
+    ))
 
     text, sha, tree, block = sources["shanghan/太阳.sy"]
     for candidate_id, term, candidate_type, start in (
@@ -215,7 +227,7 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
                 "SHANG_HAN_LUN": 4,
             })
             self.assertEqual(result["native_classical_document_references"], 1)
-            self.assertEqual(result["entity_mention_occurrences"], 4)
+            self.assertEqual(result["entity_mention_occurrences"], 5)
             self.assertEqual(result["contextual_term_occurrences"], 2)
             self.assertEqual(result["unassigned_contextual_terms_outside_single_passage"], 1)
             self.assertEqual(
@@ -279,6 +291,24 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(len(repeated), 2)
             self.assertNotEqual(repeated[0]["character_start"], repeated[1]["character_start"])
             self.assertEqual([row["term_text"] for row in repeated], ["桂枝", "桂枝"])
+            nested = connection.execute("""
+                SELECT character_start, character_end, term_text, document,
+                       source_sha256, tree_position, block_id
+                FROM classical_source_passage_mentions
+                WHERE reference_id='herb-contained'
+            """).fetchone()
+            self.assertIsNotNone(nested)
+            nested_source = connection.execute("""
+                SELECT content_text FROM content_blocks
+                WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?
+            """, (
+                nested["document"], nested["source_sha256"],
+                nested["tree_position"], nested["block_id"],
+            )).fetchone()[0]
+            self.assertEqual(
+                nested_source[nested["character_start"]:nested["character_end"]],
+                "桂枝",
+            )
 
             links = connection.execute("""
                 SELECT l.*, s.term_type AS subject_type, s.term_text AS subject_text,
@@ -297,6 +327,11 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             """).fetchall()
             self.assertEqual(len(links), 4)
             self.assertTrue(all(row["relation_type"] == "SAME_PASSAGE_CO_OCCURRENCE" for row in links))
+            self.assertTrue(all(
+                row["subject_end"] <= row["object_start"]
+                or row["object_end"] <= row["subject_start"]
+                for row in links
+            ))
             self.assertTrue(any(
                 row["subject_type"] == "SYMPTOM" and row["subject_text"] == "恶寒"
                 and row["object_type"] == "FORMULA" and row["object_text"] == "桂枝汤"
