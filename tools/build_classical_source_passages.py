@@ -421,6 +421,70 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             """, reference_rows)
 
         connection.commit()
+
+        # Build navigation-oriented, same-passage co-mention summaries. These
+        # counts are deliberately not promoted to semantic/treatment relations:
+        # each endpoint remains an exact occurrence under one passage_id.
+        passage_type_rows = connection.execute("""
+            SELECT DISTINCT p.passage_id, p.source_work, m.term_type
+            FROM classical_source_passages p
+            JOIN classical_source_passage_mentions m ON m.passage_id = p.passage_id
+            ORDER BY p.source_work, p.passage_id, m.term_type
+        """)
+        types_by_passage: dict[str, set[str]] = defaultdict(set)
+        work_by_passage: dict[str, str] = {}
+        for row in passage_type_rows:
+            types_by_passage[row["passage_id"]].add(row["term_type"])
+            work_by_passage[row["passage_id"]] = row["source_work"]
+
+        passage_counts_by_work: dict[str, int] = Counter()
+        passages_with_type_by_work: dict[str, Counter[str]] = defaultdict(Counter)
+        for passage_id, term_types in types_by_passage.items():
+            work = work_by_passage[passage_id]
+            passage_counts_by_work[work] += 1
+            for term_type in term_types:
+                passages_with_type_by_work[work][term_type] += 1
+
+        cooccurrence_pairs = (
+            ("SYMPTOM", "FORMULA"),
+            ("FORMULA", "HERB"),
+            ("CLASSICAL_THEORY", "FORMULA"),
+            ("SYMPTOM", "ACUPOINT"),
+            ("SYMPTOM", "POINT"),
+            ("SYMPTOM", "ACUPUNCTURE_TECHNIQUE"),
+            ("ACUPOINT", "ACUPUNCTURE_TECHNIQUE"),
+            ("CLASSICAL_THEORY", "SYMPTOM"),
+        )
+        cooccurrences_by_work: dict[str, Counter[str]] = defaultdict(Counter)
+        examples_by_work: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
+        for passage in connection.execute("""
+            SELECT passage_id, source_work, document, source_sha256,
+                   tree_position, block_id, character_start, character_end,
+                   passage_text
+            FROM classical_source_passages
+            ORDER BY source_work, document, tree_position, character_start
+        """):
+            present = types_by_passage.get(passage["passage_id"], set())
+            work = passage["source_work"]
+            for left_type, right_type in cooccurrence_pairs:
+                if left_type not in present or right_type not in present:
+                    continue
+                pair_key = f"{left_type}|{right_type}"
+                cooccurrences_by_work[work][pair_key] += 1
+                if len(examples_by_work[work][pair_key]) < 3:
+                    examples_by_work[work][pair_key].append({
+                        "passage_id": passage["passage_id"],
+                        "document": passage["document"],
+                        "source_sha256": passage["source_sha256"],
+                        "tree_position": passage["tree_position"],
+                        "block_id": passage["block_id"],
+                        "character_start": passage["character_start"],
+                        "character_end": passage["character_end"],
+                        "passage_text": passage["passage_text"],
+                    })
+
         counts_by_work = {
             row["source_work"]: row["count"]
             for row in connection.execute("""
@@ -444,9 +508,22 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             """)
         }
         result = {
-            "schema_version": 1,
+            "schema_version": 2,
             "source_documents": len(documents),
             "source_documents_by_work": counts_by_work,
+            "source_passages_by_work": dict(sorted(passage_counts_by_work.items())),
+            "passages_with_term_type_by_work": {
+                work: dict(sorted(counts.items()))
+                for work, counts in sorted(passages_with_type_by_work.items())
+            },
+            "same_passage_cooccurrences_by_work": {
+                work: dict(sorted(counts.items()))
+                for work, counts in sorted(cooccurrences_by_work.items())
+            },
+            "same_passage_cooccurrence_examples_by_work": {
+                work: dict(sorted(pairs.items()))
+                for work, pairs in sorted(examples_by_work.items())
+            },
             "source_documents_by_role": roles,
             "source_passages": passage_count,
             "passage_mentions": entity_occurrence_count + contextual_occurrence_count,
@@ -458,6 +535,7 @@ def build(database_path: Path, hierarchy_path: Path, report_path: Path) -> dict[
             "unassigned_contextual_terms_outside_single_passage": unassigned_contextual_terms,
             "policy": {
                 "passage_mentions": "source occurrence only; not a treatment, efficacy, diagnosis or theory assertion",
+                "same_passage_cooccurrences": "both term types have at least one exact source occurrence in the same passage; this is navigation metadata, not a semantic or clinical relation",
                 "native_references": "only existing, resolved SiYuan BLOCK_REFERENCE edges whose two documents are in supported source works",
                 "sentence_boundary": "an occurrence crossing passage boundaries is retained in its source table and is not linked to a passage",
             },
