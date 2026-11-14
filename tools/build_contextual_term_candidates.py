@@ -289,7 +289,7 @@ def classify_span(
                 # Keep unusual but source-labelled clinical terms such as
                 # "少阳证" when the exact span is introduced by "症见".
                 quantity_fragment = re.match(
-                    r"(?:[一二三四五六七八九十两几\\d]+(?:个|只|条|块|种|类|项|次|处)|"
+                    r"(?:[一二三四五六七八九十两几\d]+(?:个|只|条|块|种|类|项|次|处)|"
                     r"只是|一个|一种|有些|很多|各种)",
                     term,
                 )
