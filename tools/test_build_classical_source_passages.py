@@ -187,6 +187,14 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(result["contextual_term_occurrences"], 2)
             self.assertEqual(result["unassigned_contextual_terms_outside_single_passage"], 1)
             self.assertEqual(
+                result["source_passages_by_role_and_work"]["SHANG_HAN_LUN"]["CLASSICAL_CHAPTER"],
+                2,
+            )
+            self.assertEqual(
+                result["source_passages_by_role_and_work"]["SHANG_HAN_LUN"]["FORMULA_REFERENCE"],
+                2,
+            )
+            self.assertEqual(
                 result["same_passage_cooccurrences_by_work"]["SHANG_HAN_LUN"]["SYMPTOM|FORMULA"],
                 1,
             )
@@ -204,6 +212,16 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(
                 result["passages_with_term_type_by_work"]["SHANG_HAN_LUN"]["SYMPTOM"],
                 1,
+            )
+            self.assertEqual(
+                result["same_passage_occurrence_links_by_role_and_work"]
+                ["SHANG_HAN_LUN"]["CLASSICAL_CHAPTER"]["SYMPTOM|FORMULA"],
+                1,
+            )
+            self.assertEqual(
+                result["same_passage_occurrence_links_by_role_and_work"]
+                ["SHANG_HAN_LUN"]["FORMULA_REFERENCE"]["FORMULA|HERB"],
+                3,
             )
 
 
@@ -229,6 +247,57 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(len(repeated), 2)
             self.assertNotEqual(repeated[0]["character_start"], repeated[1]["character_start"])
             self.assertEqual([row["term_text"] for row in repeated], ["桂枝", "桂枝"])
+
+            links = connection.execute("""
+                SELECT l.*, s.term_type AS subject_type, s.term_text AS subject_text,
+                       s.character_start AS subject_start, s.character_end AS subject_end,
+                       o.term_type AS object_type, o.term_text AS object_text,
+                       o.character_start AS object_start, o.character_end AS object_end,
+                       p.document, p.source_sha256, p.tree_position, p.block_id,
+                       p.character_start AS passage_start, p.character_end AS passage_end,
+                       p.passage_text, d.document_role
+                FROM classical_source_passage_term_links l
+                JOIN classical_source_passage_mentions s ON s.occurrence_id=l.subject_occurrence_id
+                JOIN classical_source_passage_mentions o ON o.occurrence_id=l.object_occurrence_id
+                JOIN classical_source_passages p ON p.passage_id=l.passage_id
+                JOIN classical_source_documents d ON d.source_document_id=p.source_document_id
+                ORDER BY l.pair_key, s.character_start, o.character_start
+            """).fetchall()
+            self.assertEqual(len(links), 4)
+            self.assertTrue(all(row["relation_type"] == "SAME_PASSAGE_CO_OCCURRENCE" for row in links))
+            self.assertTrue(any(
+                row["subject_type"] == "SYMPTOM" and row["subject_text"] == "恶寒"
+                and row["object_type"] == "FORMULA" and row["object_text"] == "桂枝汤"
+                and row["document_role"] == "CLASSICAL_CHAPTER"
+                for row in links
+            ))
+            formula_herb_links = [row for row in links if row["pair_key"] == "FORMULA|HERB"]
+            self.assertEqual(len(formula_herb_links), 3)
+            self.assertEqual(
+                [row["object_text"] for row in formula_herb_links],
+                ["桂枝", "桂枝", "芍药"],
+            )
+            self.assertNotEqual(
+                formula_herb_links[0]["object_start"], formula_herb_links[1]["object_start"]
+            )
+            for row in links:
+                source = connection.execute("""
+                    SELECT content_text FROM content_blocks
+                    WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?
+                """, (row["document"], row["source_sha256"], row["tree_position"], row["block_id"])).fetchone()
+                self.assertIsNotNone(source)
+                self.assertEqual(
+                    source["content_text"][row["passage_start"]:row["passage_end"]],
+                    row["passage_text"],
+                )
+                self.assertEqual(
+                    source["content_text"][row["subject_start"]:row["subject_end"]],
+                    row["subject_text"],
+                )
+                self.assertEqual(
+                    source["content_text"][row["object_start"]:row["object_end"]],
+                    row["object_text"],
+                )
 
             ref = connection.execute("""
                 SELECT source_document, target_document, target_block_id, relation_type, resolution
