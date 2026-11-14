@@ -275,10 +275,10 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(len(formula_herb_links), 3)
             self.assertEqual(
                 [row["object_text"] for row in formula_herb_links],
-                ["桂枝", "桂枝", "芍药"],
+                ["桂枝", "芍药", "桂枝"],
             )
             self.assertNotEqual(
-                formula_herb_links[0]["object_start"], formula_herb_links[1]["object_start"]
+                formula_herb_links[0]["object_start"], formula_herb_links[2]["object_start"]
             )
             for row in links:
                 source = connection.execute("""
