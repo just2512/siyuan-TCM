@@ -231,6 +231,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
             self.assertEqual(result["relation_predicate_counts"]["SOURCE_NOTE_ASSOCIATES"], 1)
             self.assertEqual(result["table_counts"]["classical_source_passage_term_links"], 1)
             self.assertEqual(result["checks"]["classical_passage_link_search"], "PASS")
+            self.assertEqual(result["checks"]["classical_passage_link_non_overlap"], "PASS")
 
     def test_smoke_checks_classical_source_to_theory_attribution(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -476,6 +477,31 @@ class SearchIndexSmokeTests(unittest.TestCase):
         self.assertIsNone(
             smoke_module.validate_full_text_index_count(connection, "sqlite-instr-fallback", 2)
         )
+        connection.close()
+
+
+    def test_rejects_classical_passage_links_with_overlapping_source_spans(self):
+        connection = sqlite3.connect(":memory:")
+        create_classical_source_tables(connection)
+        connection.executemany("""
+            INSERT INTO classical_source_passage_mentions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        """, [
+            ("occ-formula", "passage-1", "doc-1", "ENTITY_MENTION",
+             "formula-ref", "formula-id", "FORMULA", "小柴胡汤", 0, 4, "[]",
+             "UNRESOLVED_CANDIDATE"),
+            ("occ-herb", "passage-1", "doc-1", "ENTITY_MENTION",
+             "herb-ref", "herb-id", "HERB", "柴胡", 1, 3, "[]",
+             "UNRESOLVED_CANDIDATE"),
+        ])
+        connection.execute("""
+            INSERT INTO classical_source_passage_term_links VALUES (?,?,?,?,?,?,?,?,?)
+        """, (
+            "link-overlap", "passage-1", "SHANG_HAN_LUN", "shanghan/太阳.sy",
+            "CLASSICAL_CHAPTER", "FORMULA|HERB", "SAME_PASSAGE_CO_OCCURRENCE",
+            "occ-formula", "occ-herb",
+        ))
+        with self.assertRaisesRegex(AssertionError, "endpoints overlap in source text"):
+            smoke_module.validate_classical_passage_link_non_overlaps(connection)
         connection.close()
 
 
