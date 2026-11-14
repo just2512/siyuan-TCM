@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from build_classical_source_passages import create_tables as create_classical_source_tables
+
 MODULE_PATH = Path(__file__).with_name("build_siyuan_search_db.py")
 SPEC = importlib.util.spec_from_file_location("build_siyuan_search_db", MODULE_PATH)
 search_db = importlib.util.module_from_spec(SPEC)
@@ -358,9 +360,118 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertEqual(found[0]["predicate_text"], "辨证为")
             self.assertEqual(len(search_db.search_contextual_relation_candidates(db, "SYMPTOM_TO_SYNDROME")), 1)
 
+    def test_searches_role_scoped_classical_passage_links_with_occurrence_offsets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            content = root / "content.csv.gz"
+            db = root / "search.sqlite3"
+            source_text = "发热复见发热，桂枝汤由桂枝组成。"
+            self._write_gzip_csv(content, search_db.CONTENT_FIELDS, [{
+                "document": "shanghan/太阳.sy", "source_sha256": "sha-classical",
+                "tree_position": "0.1", "block_id": "b1",
+                "content_type": "PARAGRAPH", "characters": len(source_text),
+                "content_text": source_text,
+            }])
+            search_db.build_database(content, None, db)
+
+            with sqlite3.connect(db) as connection:
+                create_classical_source_tables(connection)
+                connection.execute("""
+                    INSERT INTO classical_source_documents VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    "sd1", "shanghan/太阳.sy", "SHANG_HAN_LUN", "伤寒论",
+                    "shanghan.sy", "", "书籍", "第一篇 太阳篇", 1,
+                    "CLASSICAL_CHAPTER", '[\"伤寒论\",\"第一篇 太阳篇\"]',
+                ))
+                connection.execute("""
+                    INSERT INTO classical_source_passages VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                """, (
+                    "passage-1", "sd1", "shanghan/太阳.sy", "SHANG_HAN_LUN",
+                    "sha-classical", "0.1", "b1", "", "PARAGRAPH", "太阳",
+                    0, len(source_text), source_text, "SENTENCE_OR_CLAUSE",
+                ))
+                formula_start = source_text.index("桂枝汤")
+                herb_start = source_text.index("桂枝", formula_start + len("桂枝汤"))
+                occurrences = [
+                    ("symptom-1", "passage-1", "sd1", "CONTEXTUAL_TERM_CANDIDATE",
+                     "ctx-symptom-1", "", "SYMPTOM", "发热", 0, 2, "[]", "CONTEXT_RULE_CANDIDATE"),
+                    ("symptom-2", "passage-1", "sd1", "CONTEXTUAL_TERM_CANDIDATE",
+                     "ctx-symptom-2", "", "SYMPTOM", "发热", 4, 6, "[]", "CONTEXT_RULE_CANDIDATE"),
+                    ("formula-1", "passage-1", "sd1", "ENTITY_MENTION",
+                     "mention-formula", "entity-formula", "FORMULA", "桂枝汤",
+                     formula_start, formula_start + 3, "[]", "UNRESOLVED_CANDIDATE"),
+                    ("herb-1", "passage-1", "sd1", "ENTITY_MENTION",
+                     "mention-herb", "entity-herb", "HERB", "桂枝",
+                     herb_start, herb_start + 2, "[]", "UNRESOLVED_CANDIDATE"),
+                ]
+                connection.executemany("""
+                    INSERT INTO classical_source_passage_mentions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                """, occurrences)
+                connection.executemany("""
+                    INSERT INTO classical_source_passage_term_links VALUES (?,?,?,?,?,?,?,?,?)
+                """, [
+                    ("link-symptom-1", "passage-1", "SHANG_HAN_LUN",
+                     "shanghan/太阳.sy", "CLASSICAL_CHAPTER", "SYMPTOM|FORMULA",
+                     "SAME_PASSAGE_CO_OCCURRENCE", "symptom-1", "formula-1"),
+                    ("link-symptom-2", "passage-1", "SHANG_HAN_LUN",
+                     "shanghan/太阳.sy", "CLASSICAL_CHAPTER", "SYMPTOM|FORMULA",
+                     "SAME_PASSAGE_CO_OCCURRENCE", "symptom-2", "formula-1"),
+                    ("link-formula-herb", "passage-1", "SHANG_HAN_LUN",
+                     "shanghan/太阳.sy", "CLASSICAL_CHAPTER", "FORMULA|HERB",
+                     "SAME_PASSAGE_CO_OCCURRENCE", "formula-1", "herb-1"),
+                ])
+
+            symptom_links = search_db.search_classical_source_passage_links(db, "发热")
+            self.assertEqual(len(symptom_links), 2)
+            self.assertEqual(
+                {row["subject_occurrence_id"] for row in symptom_links},
+                {"symptom-1", "symptom-2"},
+            )
+            self.assertEqual({row["subject_start"] for row in symptom_links}, {0, 4})
+            self.assertTrue(all(row["subject_type"] == "SYMPTOM" for row in symptom_links))
+            self.assertTrue(all(row["object_type"] == "FORMULA" for row in symptom_links))
+            self.assertTrue(all(row["source_work"] == "SHANG_HAN_LUN" for row in symptom_links))
+            self.assertTrue(all(row["document_role"] == "CLASSICAL_CHAPTER" for row in symptom_links))
+            for row in symptom_links:
+                self.assertEqual(
+                    row["source_text"][row["passage_start"]:row["passage_end"]],
+                    row["passage_text"],
+                )
+                self.assertEqual(
+                    row["source_text"][row["subject_start"]:row["subject_end"]],
+                    row["subject_text"],
+                )
+                self.assertEqual(
+                    row["source_text"][row["object_start"]:row["object_end"]],
+                    row["object_text"],
+                )
+
+            formula_herb = search_db.search_classical_source_passage_links(
+                db, "桂枝", source_work="SHANG_HAN_LUN",
+                document_role="CLASSICAL_CHAPTER", pair_key="FORMULA|HERB",
+            )
+            self.assertEqual(len(formula_herb), 1)
+            self.assertEqual(formula_herb[0]["subject_text"], "桂枝汤")
+            self.assertEqual(formula_herb[0]["object_text"], "桂枝")
+            self.assertEqual(formula_herb[0]["source_title"], "第一篇 太阳篇")
+            self.assertEqual(
+                search_db.search_classical_source_passage_links(
+                    db, "桂枝", document_role="COMMENTARY",
+                ),
+                [],
+            )
+            self.assertEqual(
+                search_db.search_classical_source_passage_links(
+                    db, "桂枝", source_work="JIN_GUI_YAO_LUE",
+                ),
+                [],
+            )
+
     def test_rejects_empty_query(self):
         with self.assertRaises(ValueError):
             search_db.search_database(Path("unused.db"), "  ")
+        with self.assertRaises(ValueError):
+            search_db.search_classical_source_passage_links(Path("unused.db"), "  ")
 
 
 if __name__ == "__main__":
