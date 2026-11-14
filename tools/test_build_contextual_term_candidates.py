@@ -252,6 +252,34 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span("心脏病", 0, len("心脏病")),
         )
 
+    def test_symptom_context_rejects_grammatical_outcome_and_fragment_terms(self):
+        # These are list/narrative fragments, not standalone symptom mentions.
+        for term in (
+            "缓解", "是一", "是一只", "下垂", "下垂了", "如呼", "如呼吸",
+            "心脏", "心呕吐",
+        ):
+            text = f"症状：{term}，"
+            start = text.index(term)
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+            self.assertNotIn(
+                ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        # The exclusions must not suppress genuine clinical terms or a
+        # source-labelled syndrome that is intentionally retained by context.
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_02"), classify_span("心痛", 0, 2)
+        )
+        self.assertIn(
+            ("SYMPTOM", "SYMPTOM_CONTEXT_01"), classify_span("症见少阳证", 2, 5)
+        )
+
     def test_validation_rejects_rule_from_another_candidate_type(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "typed.csv.gz"

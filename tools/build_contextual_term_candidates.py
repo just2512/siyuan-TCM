@@ -77,6 +77,10 @@ NGRAM_PATTERNS = {
 }
 PUNCTUATION = "，。！？；、\n"
 SENTENCE_BOUNDARIES = "。！？；\n"
+NON_SYMPTOM_FRAGMENT = re.compile(
+    r"^(?:缓解|减轻|好转|改善|治愈|消失|恢复|加重|出现|发作|发生|下垂(?:了)?|"
+    r"是一(?:个|只|种|项)?|心脏|心呕吐)$"
+)
 AUTHOR_ATTRIBUTION_BOUNDARY = re.compile(
     r"(?:[\u3400-\u9fff]{1,8}(?:曰|云)[：:∶]|《[^》\n]{1,40}》(?:曰|云)[：:∶])"
 )
@@ -294,10 +298,10 @@ def classify_span(
                     term,
                 )
                 matched = (
-                    None if quantity_fragment
+                    None if quantity_fragment or NON_SYMPTOM_FRAGMENT.fullmatch(term)
                     or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
-                        "或者", "以及", "并且", "而且", "但是", "不过",
+                        "或者", "以及", "并且", "而且", "但是", "不过", "如",
                         "都", "就是", "属于", "不属于", "它的", "为",
                     ))
                     or non_symptom_clause.search(symptom_before)
@@ -320,6 +324,7 @@ def classify_span(
                 matched = (
                     symptom_match
                     if symptom_match
+                    and not NON_SYMPTOM_FRAGMENT.fullmatch(term)
                     and term[:symptom_match.start()] in allowed_prefixes
                     and term[symptom_match.end():] in allowed_suffixes
                     else None
