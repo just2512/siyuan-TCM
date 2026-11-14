@@ -329,6 +329,37 @@ def validate_all_contextual_relation_rows(connection: sqlite3.Connection) -> int
     return len(rows)
 
 
+def validate_classical_passage_link_non_overlaps(connection: sqlite3.Connection) -> int:
+    """Reject navigation edges whose two occurrence endpoints share source characters."""
+    overlapping = connection.execute("""
+        SELECT l.link_id, s.term_type AS subject_type, s.term_text AS subject_text,
+               s.character_start AS subject_start, s.character_end AS subject_end,
+               o.term_type AS object_type, o.term_text AS object_text,
+               o.character_start AS object_start, o.character_end AS object_end
+        FROM classical_source_passage_term_links l
+        JOIN classical_source_passage_mentions s
+          ON s.occurrence_id = l.subject_occurrence_id
+        JOIN classical_source_passage_mentions o
+          ON o.occurrence_id = l.object_occurrence_id
+        WHERE s.character_start < o.character_end
+          AND o.character_start < s.character_end
+        ORDER BY l.link_id
+        LIMIT 1
+    """).fetchone()
+    if overlapping is not None:
+        raise AssertionError(
+            "classical passage link endpoints overlap in source text: "
+            f"{overlapping['link_id']} "
+            f"({overlapping['subject_type']} {overlapping['subject_text']}"
+            f"[{overlapping['subject_start']}:{overlapping['subject_end']}] / "
+            f"{overlapping['object_type']} {overlapping['object_text']}"
+            f"[{overlapping['object_start']}:{overlapping['object_end']}])"
+        )
+    return connection.execute(
+        "SELECT COUNT(*) FROM classical_source_passage_term_links"
+    ).fetchone()[0]
+
+
 def smoke(database_path: Path) -> dict:
     if not database_path.is_file():
         raise FileNotFoundError(database_path)
@@ -566,6 +597,8 @@ def smoke(database_path: Path) -> dict:
         checks["contextual_relation_predicate_direction"] = "PASS"
 
     if counts["classical_source_passage_term_links"]:
+        validate_classical_passage_link_non_overlaps(connection)
+        checks["classical_passage_link_non_overlap"] = "PASS"
         sample = connection.execute("""
             SELECT l.link_id, src.term_text AS subject_text, l.source_work,
                    l.document_role, l.pair_key
