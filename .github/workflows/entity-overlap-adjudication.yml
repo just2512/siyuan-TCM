@@ -1,0 +1,25 @@
+name: Entity overlap adjudication
+on:
+  push:
+    branches: [work/2026-11-14-entity-overlap-adjudication]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test and run on committed entity overlap queue
+        run: |
+          python -m unittest discover -s tools -p 'test_review_source_verified_overlap_decisions.py' -v
+          mkdir -p review-output
+          python tools/review_source_verified_overlap_decisions.py --kind entity --input catalog/generated/entity_mention_cross_type_overlap_review.csv --output review-output/entity-reviewed.csv --report review-output/entity-review-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: entity-overlap-adjudication
+          path: review-output/*
+          retention-days: 7
