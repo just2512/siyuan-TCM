@@ -498,6 +498,30 @@ class ContextualTermCandidateTests(unittest.TestCase):
             classify_span("症状是头痛、恶心", 3, 5),
         )
 
+    def test_treatment_grammar_and_invalid_acupoint_suffixes_are_not_entities(self):
+        text = "按症状开处方下穴道，针灸本就应有的效果。"
+        for term, candidate_type, rule_id in (
+            ("开处", "SYMPTOM", "SYMPTOM_CONTEXT_01"),
+            ("下穴", "FORMULA", "FORMULA_CONTEXT_01"),
+        ):
+            start = text.index(term)
+            self.assertNotIn(
+                (candidate_type, rule_id),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
+        text = "如果没有效果，就是扎错穴道了。"
+        start = text.index("错穴")
+        self.assertNotIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span(text, start, start + len("错穴")),
+        )
+        self.assertIn(
+            ("ACUPOINT", "ACUPOINT_CONTEXT_01"),
+            classify_span("关元穴", 0, 3),
+        )
+
     def test_generic_symptom_intro_does_not_type_ordinary_narrative_as_symptoms(self):
         text = "最轻微的症状是一只眼角垮下来；症状是头痛、恶心。"
         start = text.index("一只")
