@@ -482,6 +482,7 @@ class SearchIndexSmokeTests(unittest.TestCase):
 
     def test_rejects_classical_passage_links_with_overlapping_source_spans(self):
         connection = sqlite3.connect(":memory:")
+        connection.row_factory = sqlite3.Row
         create_classical_source_tables(connection)
         connection.executemany("""
             INSERT INTO classical_source_passage_mentions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
