@@ -17,6 +17,7 @@ from build_contextual_relation_candidates import (
     relation_identity,
     sentence_ranges,
 )
+from build_classical_source_passages import COOCCURRENCE_PAIRS
 
 SOURCE_NOTE_ASSOCIATION_PAIRS = {
     frozenset(pair) for pair in (
@@ -36,6 +37,7 @@ CLASSICAL_ATTRIBUTION_MARKER = re.compile(r"(?:有言|说|曰|云|记载|指出)
 SOURCE_NOTE_LABEL_MARKER = re.compile(r"[\s、，,）)】』」]?[：:]")
 SOURCE_NOTE_RANGE = re.compile(r"[^。！？．\n]+[。！？．]?|\n+")
 SOURCE_NOTE_ATTRIBUTION_BOUNDARY = next(iter(RELATION_SCOPE_BREAKS.values()))
+CLASSICAL_PASSAGE_LINK_PAIRS = {"|".join(pair) for pair in COOCCURRENCE_PAIRS}
 
 
 def _table_exists(connection: sqlite3.Connection, table: str) -> bool:
@@ -124,6 +126,13 @@ def records(database_path: Path):
         FROM classical_source_document_references
         ORDER BY source_document, source_block_id, target_document, target_block_id
     """).fetchall() if _table_exists(connection, "classical_source_document_references") else []
+    classical_term_links = connection.execute("""
+        SELECT link_id, passage_id, source_work, document, document_role,
+               pair_key, relation_type, subject_occurrence_id, object_occurrence_id
+        FROM classical_source_passage_term_links
+        ORDER BY source_work, document_role, pair_key, document, passage_id,
+                 subject_occurrence_id, object_occurrence_id
+    """).fetchall() if _table_exists(connection, "classical_source_passage_term_links") else []
     connection.close()
     for row in entities:
         yield {"record_type": "ENTITY", "entity_id": row["entity_id"],
@@ -218,6 +227,14 @@ def records(database_path: Path):
                "source_block_id": row["source_block_id"], "target_block_id": row["target_block_id"],
                "target_subtype": row["target_subtype"], "relation_type": row["relation_type"],
                "resolution": row["resolution"]}
+    for row in classical_term_links:
+        yield {"record_type": "CLASSICAL_SOURCE_PASSAGE_TERM_LINK",
+               "link_id": row["link_id"], "passage_id": row["passage_id"],
+               "source_work": row["source_work"], "document": row["document"],
+               "document_role": row["document_role"], "pair_key": row["pair_key"],
+               "relation_type": row["relation_type"],
+               "subject_occurrence_id": row["subject_occurrence_id"],
+               "object_occurrence_id": row["object_occurrence_id"]}
 
 def export(database_path: Path, output_path: Path) -> dict[str, int]:
     if not database_path.is_file():
@@ -225,7 +242,7 @@ def export(database_path: Path, output_path: Path) -> dict[str, int]:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     entity_count = relation_count = contextual_term_count = contextual_relation_count = 0
     classical_document_count = classical_passage_count = 0
-    classical_mention_count = classical_reference_count = 0
+    classical_mention_count = classical_reference_count = classical_term_link_count = 0
     with output_path.open("wb") as raw:
         with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:
             import io
@@ -248,13 +265,16 @@ def export(database_path: Path, output_path: Path) -> dict[str, int]:
                         classical_mention_count += 1
                     elif record["record_type"] == "CLASSICAL_SOURCE_DOCUMENT_REFERENCE":
                         classical_reference_count += 1
+                    elif record["record_type"] == "CLASSICAL_SOURCE_PASSAGE_TERM_LINK":
+                        classical_term_link_count += 1
     return {"entity_nodes": entity_count, "relation_edges": relation_count,
             "contextual_term_candidates": contextual_term_count,
             "contextual_relation_edges": contextual_relation_count,
             "classical_source_documents": classical_document_count,
             "classical_source_passages": classical_passage_count,
             "classical_source_passage_mentions": classical_mention_count,
-            "classical_source_document_references": classical_reference_count}
+            "classical_source_document_references": classical_reference_count,
+             "classical_source_passage_term_links": classical_term_link_count}
 
 
 def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
@@ -357,6 +377,15 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
             ))
             for row in connection.execute("SELECT * FROM classical_source_document_references")
         }
+    expected_classical_term_links = {}
+    if _table_exists(connection, "classical_source_passage_term_links"):
+        expected_classical_term_links = {
+            row["link_id"]: tuple(row[key] for key in (
+                "passage_id", "source_work", "document", "document_role", "pair_key",
+                "relation_type", "subject_occurrence_id", "object_occurrence_id",
+            ))
+            for row in connection.execute("SELECT * FROM classical_source_passage_term_links")
+        }
     contextual_endpoint_types = {
         "SYMPTOM_TO_SYNDROME": ("SYMPTOM", "SYNDROME"),
         "SYNDROME_TO_TREATMENT": ("SYNDROME", "TREATMENT"),
@@ -364,9 +393,10 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
     }
     seen_entities, seen_relations, seen_contextual_relations, seen_contextual_terms = set(), set(), set(), set()
     seen_classical_documents, seen_classical_passages = set(), set()
-    seen_classical_mentions, seen_classical_references = set(), set()
+    seen_classical_mentions, seen_classical_references, seen_classical_term_links = set(), set(), set()
     edge_count = contextual_edge_count = contextual_term_count = 0
     classical_passage_count = classical_mention_count = classical_reference_count = 0
+    classical_term_link_count = 0
     with gzip.open(graph_path, "rt", encoding="utf-8") as stream:
         for line, raw in enumerate(stream, 1):
             row: dict[str, Any] = json.loads(raw)
@@ -734,6 +764,49 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
                     raise ValueError(f"classical document reference has no native block link at line {line}")
                 seen_classical_references.add(reference_id)
                 classical_reference_count += 1
+            elif kind == "CLASSICAL_SOURCE_PASSAGE_TERM_LINK":
+                link_id = row["link_id"]
+                expected = expected_classical_term_links.get(link_id)
+                exported = tuple(row[key] for key in (
+                    "passage_id", "source_work", "document", "document_role", "pair_key",
+                    "relation_type", "subject_occurrence_id", "object_occurrence_id",
+                ))
+                if (link_id in seen_classical_term_links or expected is None
+                    or expected != exported):
+                    raise ValueError(f"classical passage term link graph/SQLite mismatch at line {line}")
+                if (row["relation_type"] != "SAME_PASSAGE_CO_OCCURRENCE"
+                    or row["pair_key"] not in CLASSICAL_PASSAGE_LINK_PAIRS):
+                    raise ValueError(f"classical passage term link type invalid at line {line}")
+                passage = expected_classical_passages.get(row["passage_id"])
+                subject = expected_classical_mentions.get(row["subject_occurrence_id"])
+                object_ = expected_classical_mentions.get(row["object_occurrence_id"])
+                if (passage is None or subject is None or object_ is None
+                    or row["subject_occurrence_id"] == row["object_occurrence_id"]
+                    or subject[0] != row["passage_id"] or object_[0] != row["passage_id"]
+                    or f"{subject[5]}|{object_[5]}" != row["pair_key"]):
+                    raise ValueError(f"classical passage term link endpoint mismatch at line {line}")
+                source_document = expected_classical_documents.get(passage[0])
+                if (source_document is None or passage[1] != row["document"]
+                    or passage[2] != row["source_work"]
+                    or source_document[8] != row["document_role"]):
+                    raise ValueError(f"classical passage term link source scope mismatch at line {line}")
+                source = connection.execute("""
+                    SELECT content_text FROM content_blocks
+                    WHERE document=? AND source_sha256=? AND tree_position=? AND block_id=?
+                    LIMIT 1
+                """, (passage[1], passage[3], passage[4], passage[5])).fetchone()
+                if source is None:
+                    raise ValueError(f"classical passage term link source block missing at line {line}")
+                passage_start, passage_end = passage[9], passage[10]
+                if source[0][passage_start:passage_end] != passage[11]:
+                    raise ValueError(f"classical passage term link passage evidence mismatch at line {line}")
+                for endpoint in (subject, object_):
+                    start, end, term = endpoint[7], endpoint[8], endpoint[6]
+                    if (start < passage_start or end <= start or end > passage_end
+                        or source[0][start:end] != term):
+                        raise ValueError(f"classical passage term link occurrence evidence mismatch at line {line}")
+                seen_classical_term_links.add(link_id)
+                classical_term_link_count += 1
             else:
                 raise ValueError(f"unknown graph record type at line {line}")
     connection.close()
@@ -753,13 +826,16 @@ def validate(database_path: Path, graph_path: Path) -> dict[str, int]:
         raise ValueError("classical source passage mention coverage does not match SQLite")
     if seen_classical_references != set(expected_classical_references):
         raise ValueError("classical source reference coverage does not match SQLite")
+    if seen_classical_term_links != set(expected_classical_term_links):
+        raise ValueError("classical passage term link coverage does not match SQLite")
     return {"validated_entity_nodes": len(seen_entities), "validated_relation_edges": edge_count,
             "validated_contextual_term_candidates": contextual_term_count,
             "validated_contextual_relation_edges": contextual_edge_count,
             "validated_classical_source_documents": len(seen_classical_documents),
             "validated_classical_source_passages": classical_passage_count,
             "validated_classical_source_passage_mentions": classical_mention_count,
-            "validated_classical_source_document_references": classical_reference_count}
+            "validated_classical_source_document_references": classical_reference_count,
+            "validated_classical_source_passage_term_links": classical_term_link_count}
 
 def write_validation_report(path: Path, result: dict) -> None:
     report = {"schema_version": 1, **result}
