@@ -432,6 +432,9 @@ class SiYuanSearchDatabaseTests(unittest.TestCase):
             self.assertTrue(all(row["object_type"] == "FORMULA" for row in symptom_links))
             self.assertTrue(all(row["source_work"] == "SHANG_HAN_LUN" for row in symptom_links))
             self.assertTrue(all(row["document_role"] == "CLASSICAL_CHAPTER" for row in symptom_links))
+            self.assertTrue(all(row["subject_reference_id"].startswith("ctx-symptom-") for row in symptom_links))
+            self.assertTrue(all(row["object_reference_id"] == "mention-formula" for row in symptom_links))
+            self.assertTrue(all(row["object_entity_id"] == "entity-formula" for row in symptom_links))
             for row in symptom_links:
                 self.assertEqual(
                     row["source_text"][row["passage_start"]:row["passage_end"]],
