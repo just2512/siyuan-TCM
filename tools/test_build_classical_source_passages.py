@@ -292,10 +292,11 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertNotEqual(repeated[0]["character_start"], repeated[1]["character_start"])
             self.assertEqual([row["term_text"] for row in repeated], ["桂枝", "桂枝"])
             nested = connection.execute("""
-                SELECT character_start, character_end, term_text, document,
-                       source_sha256, tree_position, block_id
-                FROM classical_source_passage_mentions
-                WHERE reference_id='herb-contained'
+                SELECT m.character_start, m.character_end, m.term_text,
+                       p.document, p.source_sha256, p.tree_position, p.block_id
+                FROM classical_source_passage_mentions m
+                JOIN classical_source_passages p ON p.passage_id=m.passage_id
+                WHERE m.reference_id='herb-contained'
             """).fetchone()
             self.assertIsNotNone(nested)
             nested_source = connection.execute("""
