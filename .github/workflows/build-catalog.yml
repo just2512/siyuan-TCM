@@ -116,6 +116,12 @@ jobs:
           python tools/review_nested_formula_herb_overlaps.py --batch-dir catalog/generated/entity_mention_overlap_review_batches --report catalog/generated/entity_mention_cross_type_overlap_review.json
           python tools/merge_overlap_review_batches.py --source-queue catalog/generated/entity_mention_cross_type_overlap_review.source.csv --batch-dir catalog/generated/entity_mention_overlap_review_batches --output catalog/generated/entity_mention_cross_type_overlap_review.reviewed.csv --report catalog/generated/entity_mention_cross_type_overlap_review.import-report.json
           mv catalog/generated/entity_mention_cross_type_overlap_review.reviewed.csv catalog/generated/entity_mention_cross_type_overlap_review.csv
+      - name: Apply source-verified overlap review decisions
+        run: |
+          python tools/review_source_verified_overlap_decisions.py --kind entity --input catalog/generated/entity_mention_cross_type_overlap_review.csv --output catalog/generated/entity_mention_cross_type_overlap_review.decided.csv --report catalog/generated/entity_mention_cross_type_overlap_review.decisions.json
+          mv catalog/generated/entity_mention_cross_type_overlap_review.decided.csv catalog/generated/entity_mention_cross_type_overlap_review.csv
+          python tools/review_source_verified_overlap_decisions.py --kind contextual --input catalog/generated/contextual_term_cross_type_overlap_review.csv --output catalog/generated/contextual_term_cross_type_overlap_review.decided.csv --report catalog/generated/contextual_term_cross_type_overlap_review.decisions.json
+          mv catalog/generated/contextual_term_cross_type_overlap_review.decided.csv catalog/generated/contextual_term_cross_type_overlap_review.csv
       - name: Extract explicit symptom-syndrome-treatment-formula relation candidates
         run: python tools/build_contextual_relation_candidates.py
       - name: Validate contextual relation candidate provenance
@@ -164,6 +170,8 @@ jobs:
             catalog/generated/entity_mention_cross_type_overlap_review.json
             catalog/generated/entity_mention_cross_type_overlap_review.source.csv
             catalog/generated/entity_mention_cross_type_overlap_review.import-report.json
+            catalog/generated/entity_mention_cross_type_overlap_review.decisions.json
+            catalog/generated/contextual_term_cross_type_overlap_review.decisions.json
             catalog/generated/contextual_overlap_review_batches/
             catalog/generated/entity_mention_overlap_review_batches/
             catalog/generated/sqlite_entity_mention_audit.json
