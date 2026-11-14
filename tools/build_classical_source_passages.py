@@ -43,7 +43,7 @@ def is_classical_chapter_title(
 ) -> bool:
     if re.match(r"^第[一二三四五六七八九十百零〇两0-9]+[篇章节]", title):
         return True
-    normalized = re.sub(r"\\s+", "", title).replace("・", "·").replace("．", "·")
+    normalized = re.sub(r"\s+", "", title).replace("・", "·").replace("．", "·")
     return (
         source_work == "HUANG_DI_NEI_JING"
         and "收纳" in relative_titles
