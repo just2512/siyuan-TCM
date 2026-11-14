@@ -158,6 +158,7 @@ jobs:
             catalog/generated/contextual_relation_candidates.csv
             catalog/generated/contextual_relation_coverage.json
             catalog/generated/search_index_smoke.json
+            catalog/generated/knowledge_path_query_smoke.json
             catalog/generated/entity_mention_overlap_audit.json
             catalog/generated/entity_mention_cross_type_overlap_review.csv
             catalog/generated/entity_mention_cross_type_overlap_review.json
