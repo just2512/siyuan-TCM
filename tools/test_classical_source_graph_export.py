@@ -184,6 +184,7 @@ class ClassicalSourceGraphExportTests(unittest.TestCase):
                 "classical_source_documents": 2, "classical_source_passages": 3,
                 "classical_source_passage_mentions": 3,
                 "classical_source_document_references": 1,
+                "classical_source_passage_term_links": 0,
             })
             validated = validate(database, graph)
             self.assertEqual(validated, {
@@ -192,6 +193,7 @@ class ClassicalSourceGraphExportTests(unittest.TestCase):
                 "validated_classical_source_documents": 2, "validated_classical_source_passages": 3,
                 "validated_classical_source_passage_mentions": 3,
                 "validated_classical_source_document_references": 1,
+                "validated_classical_source_passage_term_links": 0,
             })
 
             with gzip.open(graph, "rt", encoding="utf-8") as stream:
