@@ -511,6 +511,15 @@ class ContextualTermCandidateTests(unittest.TestCase):
                 (text, term),
             )
 
+        text = "那过去呢这个处方呢没有了。"
+        for term in ("呢没", "呢没有"):
+            start = text.index(term)
+            self.assertNotIn(
+                ("FORMULA", "FORMULA_CONTEXT_01"),
+                classify_span(text, start, start + len(term)),
+                (text, term),
+            )
+
         text = "如果没有效果，就是扎错穴道了。"
         start = text.index("错穴")
         self.assertNotIn(
