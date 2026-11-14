@@ -93,7 +93,7 @@ def create_fixture_database(path: Path):
     """)
     sources = {
         "shanghan/太阳.sy": (
-            "太阳病，头项强痛而恶寒。桂枝汤主之。",
+            "太阳病，头项强痛而恶寒，桂枝汤主之。太阳病复见发热。",
             "sha-sh", "0.1", "b-sh",
         ),
         "shanghan/方剂/【桂枝汤】.sy": (
@@ -141,7 +141,7 @@ def create_fixture_database(path: Path):
         ("formula-candidate", "桂枝汤", "FORMULA", text.index("桂枝汤")),
         # Deliberately spans two clauses: retain upstream, but do not make a
         # passage backlink that would cross an evidence boundary.
-        ("cross-clause", "恶寒。桂", "SYMPTOM", text.index("恶寒")),
+        ("cross-clause", "主之。太阳病", "SYMPTOM", text.index("主之")),
     ):
         connection.execute("""
             INSERT INTO contextual_term_type_candidates VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -186,6 +186,26 @@ class ClassicalSourcePassageBuilderTests(unittest.TestCase):
             self.assertEqual(result["entity_mention_occurrences"], 4)
             self.assertEqual(result["contextual_term_occurrences"], 2)
             self.assertEqual(result["unassigned_contextual_terms_outside_single_passage"], 1)
+            self.assertEqual(
+                result["same_passage_cooccurrences_by_work"]["SHANG_HAN_LUN"]["SYMPTOM|FORMULA"],
+                1,
+            )
+            self.assertEqual(
+                result["same_passage_cooccurrences_by_work"]["SHANG_HAN_LUN"]["FORMULA|HERB"],
+                1,
+            )
+            shanghan_example = result["same_passage_cooccurrence_examples_by_work"][
+                "SHANG_HAN_LUN"
+            ]["SYMPTOM|FORMULA"][0]
+            self.assertEqual(
+                shanghan_example["passage_text"],
+                "太阳病，头项强痛而恶寒，桂枝汤主之。",
+            )
+            self.assertEqual(
+                result["passages_with_term_type_by_work"]["SHANG_HAN_LUN"]["SYMPTOM"],
+                1,
+            )
+
 
             connection = sqlite3.connect(database)
             connection.row_factory = sqlite3.Row
