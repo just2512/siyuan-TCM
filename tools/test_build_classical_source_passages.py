@@ -166,7 +166,7 @@ def create_fixture_database(path: Path):
 
 
 class ClassicalSourcePassageBuilderTests(unittest.TestCase):
-    def test_unumbered_neijing_chapter_titles_are_not_misclassified_as_notes(self):
+    def test_unnumbered_neijing_chapter_titles_are_not_misclassified_as_notes(self):
         rows = [
             {
                 "document": "neijing-root.sy", "parent_document": "",
