@@ -284,8 +284,13 @@ def classify_span(
                     r"脉(?:象|诊|沉|浮|数|迟|弦|滑|细)|"
                     r"舌(?:象|苔|质))"
                 )
+                # A generic list introduction ("症状是……") is not enough to
+                # type the next arbitrary n-gram as a symptom. Require an
+                # intrinsic symptom lexeme inside this exact source span.
+                symptom_lexeme = re.search(RULES["SYMPTOM"][1][1], term)
                 matched = (
-                    None if term.startswith((
+                    None if not symptom_lexeme
+                    or term.startswith((
                         "症状", "症见", "表现", "证候", "证型",
                         "或者", "以及", "并且", "而且", "但是", "不过",
                         "都", "就是", "属于", "不属于", "它的", "为",
@@ -318,7 +323,10 @@ def classify_span(
                 # Keep compact lexical forms, but never accept a suffix cut from
                 # a longer acupoint name (e.g. 元穴 inside 关元穴, 海穴 inside 血海穴).
                 matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
-                if term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}:
+                if (
+                    term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴"}
+                    or term.startswith(("到", "透", "两", "一", "针", "灸", "近取", "取", "按", "左", "右", "双侧", "两侧"))
+                ):
                     matched = None
                 if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
                     action_prefix = re.search(
