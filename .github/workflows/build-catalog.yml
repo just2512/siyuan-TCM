@@ -144,6 +144,8 @@ jobs:
         run: python tools/export_semantic_graph.py --validate --report catalog/generated/semantic_graph_validation.json
       - name: Smoke-test full-corpus SQLite query paths
         run: python tools/smoke_test_search_index.py --db catalog/generated/siyuan_search.sqlite3 --output catalog/generated/search_index_smoke.json
+      - name: Smoke-test full-corpus classical knowledge-path queries
+        run: python tools/smoke_test_knowledge_path_queries.py --db catalog/generated/siyuan_search.sqlite3 --output catalog/generated/knowledge_path_query_smoke.json
       - name: Publish queryable SQLite and semantic graph artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -156,6 +158,7 @@ jobs:
             catalog/generated/contextual_relation_candidates.csv
             catalog/generated/contextual_relation_coverage.json
             catalog/generated/search_index_smoke.json
+            catalog/generated/knowledge_path_query_smoke.json
             catalog/generated/entity_mention_overlap_audit.json
             catalog/generated/entity_mention_cross_type_overlap_review.csv
             catalog/generated/entity_mention_cross_type_overlap_review.json
