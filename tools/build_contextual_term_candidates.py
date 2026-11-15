@@ -34,7 +34,7 @@ RULES = {
         ("TONGUE_CONTEXT_01", r"(?:舌象|舌质|舌苔|舌红|舌淡|舌绛|苔白|苔黄|苔腻)"),
     ],
     "SYNDROME": [
-        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|(?<!不)(?<!未)属于(?:是)?|证候|证型|此证|本证)"),
+        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|(?<!不)(?<!未)属于|证候|证型|此证|本证)"),
     ],
     "TREATMENT": [
         ("TREATMENT_CONTEXT_01", r"(?:治法(?:为|是)|治法[：:]|治宜|宜.{0,4}法|治以|当以|治疗原则|治疗方法)"),
@@ -154,6 +154,9 @@ def classify_span(
         # not as symptoms or syndromes, regardless of nearby generic introduction cues.
         if term in {"上焦寒", "下焦寒"} and candidate_type != "CLASSICAL_THEORY":
             continue
+        # Only the user-confirmed source wording has this leading judgment particle.
+        if candidate_type == "SYNDROME" and term.startswith("是") and before.endswith("属于"):
+            continue
         # The source phrase “属于是心痛彻背” labels the complete phrase only;
         # do not extend that cue to the nested “心痛” symptom occurrence.
         if candidate_type == "SYNDROME" and before.endswith("属于是") and term != "心痛彻背":
@@ -222,7 +225,7 @@ def classify_span(
             # Generic labels and grammatical/prognostic phrases are not syndrome names.
             if candidate_type == "SYNDROME" and term.startswith((
                 "症状", "症见", "表现", "证候", "证型",
-                "不能", "不可", "无法", "不属于", "属于", "是",
+                "不能", "不可", "无法", "不属于", "属于",
             )):
                 continue
             # Do not retain an n-gram cut in the middle of the clinical term 风寒咳嗽.
@@ -241,6 +244,10 @@ def classify_span(
                     rf"(?:{pattern})[\\s:：、]{{0,2}}$",
                     before,
                 )
+                # Preserve the corrected full term in “属于是心痛彻背” without
+                # broadening “属于是” into a general syndrome-introduction cue.
+                if candidate_type == "SYNDROME" and term == "心痛彻背" and before.endswith("属于是"):
+                    matched = True
                 if matched and candidate_type == "FORMULA":
                     # A generic medicine label is not a formula introduction.
                     # In particular, “非处方用药”, “中药复方来替” and
