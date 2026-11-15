@@ -55,6 +55,14 @@ class ContextualFourTermCorrectionTests(unittest.TestCase):
             self.assertNotIn(("SYMPTOM", "SYMPTOM_CONTEXT_02"), labels)
             self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), labels)
 
+    def test_jiao_cold_does_not_leave_a_symptom_prefix(self):
+        for term in ("上焦", "下焦"):
+            text = "症状哦，" + term + "寒"
+            start = text.index(term)
+            labels = classify_span(text, start, start + len(term))
+            self.assertNotIn(("SYMPTOM", "SYMPTOM_CONTEXT_01"), labels)
+            self.assertNotIn(("SYMPTOM", "SYMPTOM_CONTEXT_02"), labels)
+
     def test_neighbouring_existing_terms_keep_their_existing_types(self):
         self.assertIn(
             ("CLASSICAL_THEORY", "CLASSICAL_THEORY_CONTEXT_01"),
