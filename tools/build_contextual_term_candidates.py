@@ -154,6 +154,10 @@ def classify_span(
         # not as symptoms or syndromes, regardless of nearby generic introduction cues.
         if term in {"上焦寒", "下焦寒"} and candidate_type != "CLASSICAL_THEORY":
             continue
+        # The source phrase “属于是心痛彻背” labels the complete phrase only;
+        # do not extend that cue to the nested “心痛” symptom occurrence.
+        if candidate_type == "SYNDROME" and before.endswith("属于是") and term != "心痛彻背":
+            continue
         # A preceding location preposition is not part of the acupoint name.
         # Reject the grammar-led symptom window too; the following exact point span
         # (e.g. 绝骨穴) is independently retained at its own source offset.
