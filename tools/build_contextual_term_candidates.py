@@ -154,6 +154,14 @@ def classify_span(
         # not as symptoms or syndromes, regardless of nearby generic introduction cues.
         if term in {"上焦寒", "下焦寒"} and candidate_type != "CLASSICAL_THEORY":
             continue
+        # A regional cold pattern is one complete theory term; do not retain
+        # its leading region fragment as a symptom at the same source offset.
+        if (
+            candidate_type == "SYMPTOM"
+            and term in {"上焦", "下焦"}
+            and text.startswith(term + "寒", start)
+        ):
+            continue
         # Only the user-confirmed source wording has this leading judgment particle.
         if candidate_type == "SYNDROME" and term.startswith("是") and before.endswith("属于"):
             continue
