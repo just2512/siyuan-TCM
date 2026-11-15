@@ -42,10 +42,10 @@ class ContextualFourTermCorrectionTests(unittest.TestCase):
             ("SYNDROME", "SYNDROME_CONTEXT_01"),
             classify_span(text, syndrome_start, syndrome_start + len("心痛彻背")),
         )
-        self.assertIn(
-            ("SYMPTOM", "SYMPTOM_CONTEXT_02"),
-            classify_span(text, text.index("心痛"), text.index("心痛") + len("心痛")),
-        )
+        heart_pain_start = text.index("心痛")
+        heart_pain_labels = classify_span(text, heart_pain_start, heart_pain_start + len("心痛"))
+        self.assertIn(("SYMPTOM", "SYMPTOM_CONTEXT_02"), heart_pain_labels)
+        self.assertNotIn(("SYNDROME", "SYNDROME_CONTEXT_01"), heart_pain_labels)
 
     def test_upper_and_lower_jiao_cold_are_theory_only(self):
         for term in ("上焦寒", "下焦寒"):
