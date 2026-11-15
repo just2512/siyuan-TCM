@@ -157,10 +157,11 @@ def classify_span(
         # A preceding location preposition is not part of the acupoint name.
         # Reject the grammar-led symptom window too; the following exact point span
         # (e.g. 绝骨穴) is independently retained at its own source offset.
-        if candidate_type == "SYMPTOM" and re.match(r"在[\\u3400-\\u9fff]{1,4}穴", text[start:]):
-            continue
-        # A judgment particle belongs to the surrounding sentence, not the syndrome.
-        if candidate_type == "SYNDROME" and term.startswith("是") and re.search(r"属于\\s*$", before):
+        if (
+            candidate_type == "SYMPTOM"
+            and text.startswith("在", start)
+            and any(text.startswith("穴", start + 1 + length) for length in range(1, 5))
+        ):
             continue
         # A lexical formula mention owns its exact source span. A longer
         # n-gram that merely overlaps that formula must not be retyped as a
