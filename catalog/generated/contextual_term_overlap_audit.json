@@ -1,5 +1,5 @@
 {
-  "distinct_occurrence_rows": 96730,
+  "distinct_occurrence_rows": 96847,
   "overlap_examples": [
     {
       "candidate_type_pair": "SYMPTOM|SYMPTOM",
@@ -200,6 +200,26 @@
       },
       "type_relation": "same_type",
       "unit_id": "7a41661f97b5adb41516b4aaced6614b2bb3d058475b4358fbc999084b867b61"
+    },
+    {
+      "candidate_type_pair": "CLASSICAL_THEORY|CLASSICAL_THEORY",
+      "left": {
+        "candidate_id": "term_e32a095e39137789184ff524",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 19,
+        "start": 17,
+        "term": "下焦"
+      },
+      "overlap_kind": "prior_nested",
+      "right": {
+        "candidate_id": "term_697c0e12854722a95e11bc29",
+        "candidate_type": "CLASSICAL_THEORY",
+        "end": 20,
+        "start": 17,
+        "term": "下焦寒"
+      },
+      "type_relation": "same_type",
+      "unit_id": "bf8c1b0989dae6cd91164d4d67e5c3f0b910a292b3e9101ab608728677fbf5d7"
     },
     {
       "candidate_type_pair": "PULSE|PULSE",
@@ -980,40 +1000,19 @@
       },
       "type_relation": "same_type",
       "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
-    },
-    {
-      "candidate_type_pair": "SYMPTOM|SYMPTOM",
-      "left": {
-        "candidate_id": "term_59e18b793aa53ec7e92d5809",
-        "candidate_type": "SYMPTOM",
-        "end": 229,
-        "start": 227,
-        "term": "那我"
-      },
-      "overlap_kind": "prior_nested",
-      "right": {
-        "candidate_id": "term_02711ff40e84620f9e8bb8be",
-        "candidate_type": "SYMPTOM",
-        "end": 233,
-        "start": 227,
-        "term": "那我们今天是"
-      },
-      "type_relation": "same_type",
-      "unit_id": "7a6c588075e32adf42e16f50a1814475b5eaacc14b8a8e9cc0e1bafda30b5f69"
     }
   ],
   "overlap_pair_candidate_type_counts": {
-    "ACUPOINT|ACUPOINT": 88,
-    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 8,
+    "ACUPOINT|ACUPOINT": 91,
+    "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
     "ACUPOINT|CLASSICAL_THEORY": 3,
-    "ACUPOINT|SYMPTOM": 3,
     "ACUPOINT|TREATMENT": 3,
     "ACUPUNCTURE_TECHNIQUE|ACUPUNCTURE_TECHNIQUE": 9,
     "ACUPUNCTURE_TECHNIQUE|HERB": 9,
     "ACUPUNCTURE_TECHNIQUE|SYMPTOM": 16,
     "ACUPUNCTURE_TECHNIQUE|SYNDROME": 8,
     "ACUPUNCTURE_TECHNIQUE|TREATMENT": 2,
-    "CLASSICAL_THEORY|CLASSICAL_THEORY": 84,
+    "CLASSICAL_THEORY|CLASSICAL_THEORY": 191,
     "CLASSICAL_THEORY|PULSE": 1,
     "CLASSICAL_THEORY|SYMPTOM": 21,
     "CLASSICAL_THEORY|SYNDROME": 31,
@@ -1023,27 +1022,27 @@
     "HERB|HERB": 10012,
     "HERB|SYMPTOM": 6,
     "PULSE|PULSE": 840,
-    "SYMPTOM|SYMPTOM": 16988,
-    "SYMPTOM|SYNDROME": 8,
-    "SYNDROME|SYNDROME": 3323,
+    "SYMPTOM|SYMPTOM": 16984,
+    "SYMPTOM|SYNDROME": 5,
+    "SYNDROME|SYNDROME": 3160,
     "TONGUE|TONGUE": 5977,
     "TREATMENT|TREATMENT": 410
   },
   "overlap_pair_counts": {
     "current_nested": 4302,
-    "exact_span": 26,
-    "partial_overlap": 3211,
-    "prior_nested": 36139
+    "exact_span": 25,
+    "partial_overlap": 3210,
+    "prior_nested": 36079
   },
   "overlap_pair_type_relation_counts": {
-    "cross_type": 123,
-    "same_type": 43555
+    "cross_type": 118,
+    "same_type": 43498
   },
   "policy": {
     "overlap": "reported for semantic review; this audit does not merge, delete, or reclassify candidates",
     "repeated_term": "same lexical form at different source offsets remains separate"
   },
-  "repeated_lexical_forms_with_multiple_occurrences": 7379,
+  "repeated_lexical_forms_with_multiple_occurrences": 7355,
   "repeated_occurrence_examples": [
     {
       "candidate_type": "SYMPTOM",

@@ -1,6 +1,6 @@
 {
-  "candidate_rows": 96874,
-  "distinct_occurrences": 96730,
+  "candidate_rows": 96991,
+  "distinct_occurrences": 96847,
   "extra_rule_assignments": 144,
   "multi_rule_examples": [
     {
@@ -1809,15 +1809,15 @@
     "SYMPTOM": 144
   },
   "occurrence_counts_by_type": {
-    "ACUPOINT": 4232,
+    "ACUPOINT": 4441,
     "ACUPUNCTURE_TECHNIQUE": 4455,
     "CLASSICAL_SOURCE": 1103,
-    "CLASSICAL_THEORY": 8677,
+    "CLASSICAL_THEORY": 8784,
     "FORMULA": 5894,
     "HERB": 19380,
     "PULSE": 4556,
-    "SYMPTOM": 40882,
-    "SYNDROME": 3807,
+    "SYMPTOM": 40878,
+    "SYNDROME": 3612,
     "TONGUE": 3034,
     "TREATMENT": 710
   },

@@ -43,7 +43,7 @@
     {
       "label": "ZHEN_JIU_DA_CHENG symptom",
       "matched_occurrences_returned": 20,
-      "navigation_links_returned": 24,
+      "navigation_links_returned": 25,
       "query": "头痛",
       "source_locators_complete": true,
       "source_spans_exact": true,

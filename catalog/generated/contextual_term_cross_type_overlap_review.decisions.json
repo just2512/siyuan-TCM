@@ -1,10 +1,10 @@
 {
   "candidate_mutations": 0,
-  "input_rows": 123,
+  "input_rows": 118,
   "kind": "contextual",
   "preexisting_reviewed_rows": 0,
   "relationship_inferences": 0,
-  "remaining_unreviewed_rows": 9,
+  "remaining_unreviewed_rows": 4,
   "review_decision_counts": {
     "KEEP_BOTH": 6,
     "KEEP_LEFT_ONLY": 49,
@@ -12,7 +12,7 @@
   },
   "review_status_counts": {
     "REVIEWED": 114,
-    "UNREVIEWED": 9
+    "UNREVIEWED": 4
   },
   "reviewed_by_rules": 114,
   "rule_counts": {

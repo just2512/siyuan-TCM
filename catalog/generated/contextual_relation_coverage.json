@@ -1,18 +1,18 @@
 {
   "schema_version": 3,
-  "source_note_association_rows": 134,
+  "source_note_association_rows": 136,
   "source_units_scanned": 236987,
   "predicates": {
     "SYMPTOM_TO_SYNDROME": {
       "marker_occurrences": 66,
       "sentences_with_marker": 63,
-      "ordered_typed_pairs": 130,
+      "ordered_typed_pairs": 122,
       "pairs_with_predicate_between": 1,
       "negated_pairs": 0,
       "scope_break_pairs": 0,
       "eligible_pairs": 1,
       "marker_sentences_without_typed_pair": 62,
-      "typed_pair_sentences_without_marker": 76,
+      "typed_pair_sentences_without_marker": 71,
       "marker_sentences_with_subject_type": 5,
       "marker_sentences_with_object_type": 12,
       "marker_sentences_with_both_endpoint_types": 1,
@@ -86,7 +86,7 @@
         "CLASSICAL_THEORY": 74,
         "SYMPTOM": 221,
         "ACUPUNCTURE_TECHNIQUE": 80,
-        "ACUPOINT": 47,
+        "ACUPOINT": 48,
         "CLASSICAL_SOURCE": 1,
         "SYNDROME": 15,
         "TREATMENT": 7

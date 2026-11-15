@@ -8,17 +8,17 @@
     "ZHEN_JIU_DA_CHENG": 44
   },
   "source_passages_by_work": {
-    "HUANG_DI_NEI_JING": 14608,
+    "HUANG_DI_NEI_JING": 14632,
     "JIN_GUI_YAO_LUE": 10712,
-    "SHANG_HAN_LUN": 11860,
-    "ZHEN_JIU_DA_CHENG": 5535
+    "SHANG_HAN_LUN": 11862,
+    "ZHEN_JIU_DA_CHENG": 5576
   },
   "source_passages_by_role_and_work": {
     "HUANG_DI_NEI_JING": {
-      "AUXILIARY_NOTE": 4037,
-      "CLASSICAL_CHAPTER": 6606,
-      "COMMENTARY": 2606,
-      "SOURCE_NOTE": 1359
+      "AUXILIARY_NOTE": 4046,
+      "CLASSICAL_CHAPTER": 6613,
+      "COMMENTARY": 2613,
+      "SOURCE_NOTE": 1360
     },
     "JIN_GUI_YAO_LUE": {
       "AUXILIARY_NOTE": 7242,
@@ -27,21 +27,21 @@
       "WORK_ROOT": 6
     },
     "SHANG_HAN_LUN": {
-      "AUXILIARY_NOTE": 4552,
+      "AUXILIARY_NOTE": 4553,
       "COMMENTARY": 2758,
-      "FORMULA_REFERENCE": 4131,
+      "FORMULA_REFERENCE": 4132,
       "SOURCE_NOTE": 409,
       "WORK_ROOT": 10
     },
     "ZHEN_JIU_DA_CHENG": {
-      "AUXILIARY_NOTE": 4707,
+      "AUXILIARY_NOTE": 4741,
       "SECTION_CONTAINER": 1,
-      "SOURCE_NOTE": 827
+      "SOURCE_NOTE": 834
     }
   },
   "passages_with_term_type_by_work": {
     "HUANG_DI_NEI_JING": {
-      "ACUPOINT": 579,
+      "ACUPOINT": 628,
       "ACUPUNCTURE_TECHNIQUE": 1511,
       "CLASSICAL_SOURCE": 230,
       "CLASSICAL_THEORY": 1616,
@@ -56,7 +56,7 @@
       "TREATMENT": 88
     },
     "JIN_GUI_YAO_LUE": {
-      "ACUPOINT": 40,
+      "ACUPOINT": 41,
       "ACUPUNCTURE_TECHNIQUE": 121,
       "CLASSICAL_SOURCE": 24,
       "CLASSICAL_THEORY": 284,
@@ -71,7 +71,7 @@
       "TREATMENT": 14
     },
     "SHANG_HAN_LUN": {
-      "ACUPOINT": 62,
+      "ACUPOINT": 66,
       "ACUPUNCTURE_TECHNIQUE": 68,
       "CLASSICAL_SOURCE": 9,
       "CLASSICAL_THEORY": 436,
@@ -86,7 +86,7 @@
       "TREATMENT": 19
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT": 1770,
+      "ACUPOINT": 1839,
       "ACUPUNCTURE_TECHNIQUE": 741,
       "CLASSICAL_SOURCE": 38,
       "CLASSICAL_THEORY": 72,
@@ -95,7 +95,7 @@
       "ORGAN": 3070,
       "POINT": 636,
       "PULSE": 1,
-      "SYMPTOM": 346,
+      "SYMPTOM": 345,
       "SYNDROME": 58,
       "TONGUE": 5,
       "TREATMENT": 5
@@ -104,7 +104,7 @@
   "passages_with_term_type_by_role_and_work": {
     "HUANG_DI_NEI_JING": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT": 132,
+        "ACUPOINT": 152,
         "ACUPUNCTURE_TECHNIQUE": 339,
         "CLASSICAL_SOURCE": 220,
         "CLASSICAL_THEORY": 155,
@@ -119,7 +119,7 @@
         "TREATMENT": 7
       },
       "CLASSICAL_CHAPTER": {
-        "ACUPOINT": 288,
+        "ACUPOINT": 302,
         "ACUPUNCTURE_TECHNIQUE": 871,
         "CLASSICAL_SOURCE": 10,
         "CLASSICAL_THEORY": 1129,
@@ -134,7 +134,7 @@
         "TREATMENT": 66
       },
       "COMMENTARY": {
-        "ACUPOINT": 117,
+        "ACUPOINT": 130,
         "ACUPUNCTURE_TECHNIQUE": 227,
         "CLASSICAL_THEORY": 179,
         "FORMULA": 3,
@@ -147,7 +147,7 @@
         "TREATMENT": 13
       },
       "SOURCE_NOTE": {
-        "ACUPOINT": 42,
+        "ACUPOINT": 44,
         "ACUPUNCTURE_TECHNIQUE": 74,
         "CLASSICAL_THEORY": 153,
         "FORMULA": 5,
@@ -163,7 +163,7 @@
     },
     "JIN_GUI_YAO_LUE": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT": 35,
+        "ACUPOINT": 36,
         "ACUPUNCTURE_TECHNIQUE": 93,
         "CLASSICAL_SOURCE": 20,
         "CLASSICAL_THEORY": 210,
@@ -213,7 +213,7 @@
     },
     "SHANG_HAN_LUN": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT": 21,
+        "ACUPOINT": 23,
         "ACUPUNCTURE_TECHNIQUE": 22,
         "CLASSICAL_SOURCE": 5,
         "CLASSICAL_THEORY": 122,
@@ -242,7 +242,7 @@
         "TREATMENT": 5
       },
       "FORMULA_REFERENCE": {
-        "ACUPOINT": 18,
+        "ACUPOINT": 20,
         "ACUPUNCTURE_TECHNIQUE": 19,
         "CLASSICAL_SOURCE": 3,
         "CLASSICAL_THEORY": 100,
@@ -280,7 +280,7 @@
     },
     "ZHEN_JIU_DA_CHENG": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT": 1382,
+        "ACUPOINT": 1442,
         "ACUPUNCTURE_TECHNIQUE": 655,
         "CLASSICAL_SOURCE": 38,
         "CLASSICAL_THEORY": 57,
@@ -289,7 +289,7 @@
         "ORGAN": 2625,
         "POINT": 560,
         "PULSE": 1,
-        "SYMPTOM": 327,
+        "SYMPTOM": 326,
         "SYNDROME": 52,
         "TONGUE": 5,
         "TREATMENT": 5
@@ -298,7 +298,7 @@
         "CLASSICAL_THEORY": 1
       },
       "SOURCE_NOTE": {
-        "ACUPOINT": 388,
+        "ACUPOINT": 397,
         "ACUPUNCTURE_TECHNIQUE": 86,
         "CLASSICAL_THEORY": 14,
         "FORMULA": 1,
@@ -312,17 +312,17 @@
   },
   "same_passage_cooccurrences_by_work": {
     "HUANG_DI_NEI_JING": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 83,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 92,
       "CLASSICAL_THEORY|FORMULA": 1,
       "CLASSICAL_THEORY|SYMPTOM": 80,
       "FORMULA|HERB": 15,
-      "SYMPTOM|ACUPOINT": 49,
+      "SYMPTOM|ACUPOINT": 51,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 129,
       "SYMPTOM|FORMULA": 6,
       "SYMPTOM|POINT": 18
     },
     "JIN_GUI_YAO_LUE": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 6,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 7,
       "CLASSICAL_THEORY|FORMULA": 53,
       "CLASSICAL_THEORY|SYMPTOM": 27,
       "FORMULA|HERB": 2176,
@@ -342,10 +342,10 @@
       "SYMPTOM|POINT": 3
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 110,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 120,
       "CLASSICAL_THEORY|SYMPTOM": 2,
       "FORMULA|HERB": 3,
-      "SYMPTOM|ACUPOINT": 59,
+      "SYMPTOM|ACUPOINT": 62,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 20,
       "SYMPTOM|POINT": 45
     }
@@ -602,6 +602,16 @@
           "passage_text": "我们去查查到底是虚实的时候，我们就按天枢穴......所以针灸要很熟，天枢啊，中脘啊，下脘啊，关元啊，尤其天枢你按脉，你按到他，按下去，他没有感觉到，他不难过。"
         },
         {
+          "passage_id": "4ff0d5d788c6d52581f000a0b619d5b2144cd877a1da4fba4192648a9968c055",
+          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+          "tree_position": "0.2128",
+          "block_id": "20240329161033-j69tbjk",
+          "character_start": 18,
+          "character_end": 88,
+          "passage_text": "第一个呢，我们在踝关节，内怀踝的地方，在这个太溪穴，诸位，那时候我们在讲针灸的时候，假象这边是个肾脏（ 如图 ），一个肾脏区域，找到压痛点。"
+        },
+        {
           "passage_id": "e53eb128fcabfcadae0e2e4da61a568e9bc119b247040a03d137501bacff1a6d",
           "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
           "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
@@ -610,16 +620,6 @@
           "character_start": 61,
           "character_end": 167,
           "passage_text": "就在我们讲针灸的时候哦，鼻头点个黑墨，往那一点，照那个黑点一针就下去，这是一个下针的手法，还有一拉，这个小老鼠（弘二头肌）跑起来，侠白穴可以止流鼻血，那你帮他治，包括你开处方治疗好了，好了之后呢，结果 目睛晕黄。"
-        },
-        {
-          "passage_id": "b87a86a10f9cd65b256cf038033a91397a50c220fe4caf91a23db3035451da46",
-          "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
-          "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
-          "tree_position": "0.3367",
-          "block_id": "20240314085241-zeuq6pm",
-          "character_start": 177,
-          "character_end": 286,
-          "passage_text": "那你如果说你会针灸哦，那我们 下针下大敦穴，隐白 ，你大敦穴在大拇指头旁边，脚的拇指旁边，很痛啊，你一......哦， 就扎对侧，如果是右边的睾丸那边疝气坠下来，你去扎左边 ，那扎大敦你扎一下去一痛啊，一痛就收起来了。"
         }
       ],
       "CLASSICAL_THEORY|FORMULA": [
@@ -1088,14 +1088,14 @@
           "passage_text": "17、成人留针（针下到穴道后，针要留一段时间如半小时做一些补泻）；"
         },
         {
-          "passage_id": "d5b58d5f9afb575a0d5f856fc8de9d5b108d54a7bc799f9d5c7165353ed27be8",
+          "passage_id": "73d56deb8dcaf5d85416c08da96b9d321092a7b180676ea3d49c1793094ae352",
           "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
           "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
-          "tree_position": "0.245",
-          "block_id": "20230928080749-4vvopnd",
+          "tree_position": "0.231",
+          "block_id": "20230928080749-4vo7bis",
           "character_start": 0,
-          "character_end": 83,
-          "passage_text": "144、腿要坐着弯起来才有环跳穴，环跳穴下针不留针，三呼三吸刺法（补法），扎针引到气后，让患者吸气，吸气时把针慢慢拉到皮肤表面，再吐气，吐完气后再将针推入，重复三次；"
+          "character_end": 46,
+          "passage_text": "134.1、针刺手法，通生死桥：病人在大热高烧时，在外关穴下针，捻针引到气后，针透向内关穴；"
         }
       ],
       "CLASSICAL_THEORY|SYMPTOM": [
@@ -1154,6 +1154,16 @@
       ],
       "SYMPTOM|ACUPOINT": [
         {
+          "passage_id": "70d68db36408634967bdbb6c58dc783d3c64809e44fcd7c18ff4ba8c146f7ba1",
+          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+          "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+          "tree_position": "0.398",
+          "block_id": "20230928080749-wvsicye",
+          "character_start": 103,
+          "character_end": 154,
+          "passage_text": "例头痛，就在天应穴的位置下一针，此为‘导’，再在对侧经的本穴，引气，用泻法，此为‘引’，亦为导引之法；"
+        },
+        {
           "passage_id": "fc7381bd24ffc4e0eb36b2b2c555d59365b75c49f3dda897b44bf43af4dd5f9f",
           "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
           "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
@@ -1172,16 +1182,6 @@
           "character_start": 0,
           "character_end": 24,
           "passage_text": "109、头痛：玉枕穴（近取穴，头皮和头骨之间）；"
-        },
-        {
-          "passage_id": "4ffc4cc5e3edadf8628044e4f89c4ab7e8296ef9341215debf60b86cca3002bd",
-          "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928081238-auwnrf8.sy",
-          "source_sha256": "8c8fb506b029d2778a1e46a858af617280745032d683503b6bd8d13cf52c606f",
-          "tree_position": "0.153",
-          "block_id": "20230928081705-gyk8i3d",
-          "character_start": 0,
-          "character_end": 39,
-          "passage_text": "123.1、胃痛：梁丘穴是胃经郄穴，腑会中脘穴，中脘穴+梁丘穴（会郄治疗法）；"
         }
       ],
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": [
@@ -1250,22 +1250,22 @@
       ]
     }
   },
-  "same_passage_occurrence_link_rows": 25698,
+  "same_passage_occurrence_link_rows": 25756,
   "same_passage_occurrence_links_by_work": {
     "HUANG_DI_NEI_JING": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 138,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 154,
       "CLASSICAL_THEORY|FORMULA": 2,
-      "CLASSICAL_THEORY|SYMPTOM": 196,
+      "CLASSICAL_THEORY|SYMPTOM": 198,
       "FORMULA|HERB": 89,
-      "SYMPTOM|ACUPOINT": 122,
+      "SYMPTOM|ACUPOINT": 131,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 464,
       "SYMPTOM|FORMULA": 37,
       "SYMPTOM|POINT": 49
     },
     "JIN_GUI_YAO_LUE": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
-      "CLASSICAL_THEORY|FORMULA": 99,
-      "CLASSICAL_THEORY|SYMPTOM": 55,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 10,
+      "CLASSICAL_THEORY|FORMULA": 100,
+      "CLASSICAL_THEORY|SYMPTOM": 56,
       "FORMULA|HERB": 9581,
       "SYMPTOM|ACUPOINT": 5,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 44,
@@ -1283,10 +1283,10 @@
       "SYMPTOM|POINT": 4
     },
     "ZHEN_JIU_DA_CHENG": {
-      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 170,
+      "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 194,
       "CLASSICAL_THEORY|SYMPTOM": 2,
       "FORMULA|HERB": 2,
-      "SYMPTOM|ACUPOINT": 99,
+      "SYMPTOM|ACUPOINT": 103,
       "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 31,
       "SYMPTOM|POINT": 111
     }
@@ -1294,26 +1294,26 @@
   "same_passage_occurrence_links_by_role_and_work": {
     "HUANG_DI_NEI_JING": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 36,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 47,
         "CLASSICAL_THEORY|FORMULA": 2,
         "CLASSICAL_THEORY|SYMPTOM": 35,
         "FORMULA|HERB": 87,
-        "SYMPTOM|ACUPOINT": 18,
+        "SYMPTOM|ACUPOINT": 21,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 72,
         "SYMPTOM|FORMULA": 37,
         "SYMPTOM|POINT": 14
       },
       "CLASSICAL_CHAPTER": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 68,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 70,
         "CLASSICAL_THEORY|SYMPTOM": 128,
-        "SYMPTOM|ACUPOINT": 77,
+        "SYMPTOM|ACUPOINT": 78,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 350,
         "SYMPTOM|POINT": 30
       },
       "COMMENTARY": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 26,
-        "CLASSICAL_THEORY|SYMPTOM": 20,
-        "SYMPTOM|ACUPOINT": 16,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 29,
+        "CLASSICAL_THEORY|SYMPTOM": 22,
+        "SYMPTOM|ACUPOINT": 21,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 38,
         "SYMPTOM|POINT": 4
       },
@@ -1328,9 +1328,9 @@
     },
     "JIN_GUI_YAO_LUE": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 9,
-        "CLASSICAL_THEORY|FORMULA": 65,
-        "CLASSICAL_THEORY|SYMPTOM": 46,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 10,
+        "CLASSICAL_THEORY|FORMULA": 66,
+        "CLASSICAL_THEORY|SYMPTOM": 47,
         "FORMULA|HERB": 5747,
         "SYMPTOM|ACUPOINT": 3,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 37,
@@ -1387,16 +1387,16 @@
     },
     "ZHEN_JIU_DA_CHENG": {
       "AUXILIARY_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 154,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 175,
         "CLASSICAL_THEORY|SYMPTOM": 2,
         "FORMULA|HERB": 2,
-        "SYMPTOM|ACUPOINT": 97,
+        "SYMPTOM|ACUPOINT": 100,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 22,
         "SYMPTOM|POINT": 110
       },
       "SOURCE_NOTE": {
-        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 16,
-        "SYMPTOM|ACUPOINT": 2,
+        "ACUPOINT|ACUPUNCTURE_TECHNIQUE": 19,
+        "SYMPTOM|ACUPOINT": 3,
         "SYMPTOM|ACUPUNCTURE_TECHNIQUE": 9,
         "SYMPTOM|POINT": 1
       }
@@ -1406,6 +1406,32 @@
     "HUANG_DI_NEI_JING": {
       "AUXILIARY_NOTE": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
+          {
+            "link_id": "7b3f06fb2df90674284647ce7019f4b64086f99359b6549db63c395aafb393da",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "2ae0ea73ea4f5b8cde77a834eb7dd18f9cf1cdbbed293f441b37c783868a013d",
+            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
+            "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
+            "tree_position": "0.1007",
+            "block_id": "20240524115705-7jkqfie",
+            "passage_start": 35,
+            "passage_end": 93,
+            "passage_text": "“ 出血如大豆 ”，如果我们要出血，绝大多数就是在井穴上放血，诸位记得，凡是热症， 井主心下满 ，井穴呢，主心下满。",
+            "subject": {
+              "occurrence_id": "ee9531d82a2b47ab6f0d4e725b8706f22ba8654337f7f367f9e779d44fa9ee14",
+              "type": "ACUPOINT",
+              "text": "井穴",
+              "start": 60,
+              "end": 62
+            },
+            "object": {
+              "occurrence_id": "c7e8b04438c5e4a3f8d9cfa5e6cd5cde1ed38c36fe0fecf54d95832e7433f372",
+              "type": "ACUPUNCTURE_TECHNIQUE",
+              "text": "放血",
+              "start": 63,
+              "end": 65
+            }
+          },
           {
             "link_id": "444801d5f8041dbe5573874c8febe04088485d87aa75077226739b9945ebcd25",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
@@ -1449,32 +1475,6 @@
               "text": "荥穴",
               "start": 132,
               "end": 134
-            },
-            "object": {
-              "occurrence_id": "5fa9053d72e626012a978d35565b303c73b97cb5b048cda465877eb0d7edfe57",
-              "type": "ACUPUNCTURE_TECHNIQUE",
-              "text": "针灸",
-              "start": 122,
-              "end": 124
-            }
-          },
-          {
-            "link_id": "a7f39986d1094ff532a0a6ad8fac505e18698aa6e2666feacb55154be59b0466",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "50ad02db534ba43b86029c0059ed3c3d0996b4a8f197420343350408b734263d",
-            "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240523132743-llrdkkh.sy",
-            "source_sha256": "7f9ba3e2e649e9bf8c6c4bc7211b36d3774433c49a38ca24476f51c745ae1474",
-            "tree_position": "0.1007",
-            "block_id": "20240524115705-7jkqfie",
-            "passage_start": 111,
-            "passage_end": 149,
-            "passage_text": "这是我们那个五俞穴，在针灸大成里面五俞穴，荥穴，荥穴你可以下针，荥穴非常好。",
-            "subject": {
-              "occurrence_id": "8174c0b276c6110145419d475a7d4fbe4ceb4a94f508a28bfbcbfcd37468a811",
-              "type": "ACUPOINT",
-              "text": "荥穴",
-              "start": 135,
-              "end": 137
             },
             "object": {
               "occurrence_id": "5fa9053d72e626012a978d35565b303c73b97cb5b048cda465877eb0d7edfe57",
@@ -2425,7 +2425,7 @@
       "COMMENTARY": {
         "ACUPOINT|ACUPUNCTURE_TECHNIQUE": [
           {
-            "link_id": "18f9bdfbf9fff8bfe6dd8850ab0effd0e6a5044275e692bef3b412dea9f01378",
+            "link_id": "9acc7e380f25fae0226676c2cff557049a339f5a79494d41cc7dd3610b980829",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "b8a179881d6b5a0e5ca8ebd6b4aa407cac70745b12dbfe681b2486db5c349e1e",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
@@ -2436,10 +2436,10 @@
             "passage_end": 96,
             "passage_text": "如果造成膝盖酸痛不已，按之更痛，不可碰触时，此名“胕髓病”，吾人可用像刀一样的馋针，在绝骨穴位放血，可以立愈。",
             "subject": {
-              "occurrence_id": "9482ecbeec0b1ac0e0392c35b0db01fc749e1c50f94b38062eba641770fe9b57",
+              "occurrence_id": "ec5e81eb2f510232d6b5ec4ed2f4a85aad58e9befb011674f98ae0feea73a885",
               "type": "ACUPOINT",
-              "text": "在绝骨穴",
-              "start": 83,
+              "text": "绝骨穴",
+              "start": 84,
               "end": 87
             },
             "object": {
@@ -2477,29 +2477,29 @@
             }
           },
           {
-            "link_id": "7e133b5905afe729ffca2d8ee6aca1c796a55c92d5af2b8ffb7fa20583861486",
+            "link_id": "0dcfe1bcd36154896814d9bcb26f07419b11c48fd2f5c7c821e80340dd68b5b9",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "fe24a14f1e5b756baca6ae4b66c6bd9c86da637a2dec4547eb63e275961dfabe",
+            "passage_id": "1007a5021b0c98edf04480b9c585a658a93bcb1252bfa7eb4e510f74483ef081",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
             "source_sha256": "30b2a7dc054ebb642ee538fdf110a387953490c1710b9e892ce0eee4c1f83e58",
-            "tree_position": "0.1895",
-            "block_id": "20240606103755-skjys06",
-            "passage_start": 59,
-            "passage_end": 86,
-            "passage_text": "大风造成颈项强痛，针刺风府穴，风府在项后大筋中椎骨上。",
+            "tree_position": "0.1379",
+            "block_id": "20240606100521-geebz3d",
+            "passage_start": 45,
+            "passage_end": 90,
+            "passage_text": "吾人可以用针在阳陵泉穴外之骨端找青色血脉放血，可以立愈，但如正值夏季则不可见血，会损元气。",
             "subject": {
-              "occurrence_id": "afaee655280c7aa7ff19594dbe852b2617a71c1d12f2263b70e4e98d0bc93321",
+              "occurrence_id": "bca03f58efcfb3bc53fae39366bffa531dbf8270648528f6ef38324a5e1b8e22",
               "type": "ACUPOINT",
-              "text": "风府穴",
-              "start": 70,
-              "end": 73
+              "text": "阳陵泉穴",
+              "start": 52,
+              "end": 56
             },
             "object": {
-              "occurrence_id": "1bce2f73cb2e246ba0b565b43ab5b35304a6d0adfe66888f87c25cb96b02a451",
+              "occurrence_id": "aa4b78b4e90e60e1904bda3aa38e380c9c4eeab2863d222d3f21777c20dd597d",
               "type": "ACUPUNCTURE_TECHNIQUE",
-              "text": "针刺",
-              "start": 68,
-              "end": 70
+              "text": "放血",
+              "start": 65,
+              "end": 67
             }
           }
         ],
@@ -2611,7 +2611,7 @@
             }
           },
           {
-            "link_id": "f717828ab570b3d11c197d73c73c200a1df816c5015c9e1dd47c581349a9734f",
+            "link_id": "2ce635aaf03972977f2b3c98273f0a41224fc1b836198f804782d4e68db64a98",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "70d2872e31758f1a2addf9cf79b32e3d5cf829491dc6c0bd0095edc1a131fcbf",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
@@ -2629,15 +2629,15 @@
               "end": 9
             },
             "object": {
-              "occurrence_id": "72b16c7c2eeea372fdeb3c2641959de04d9ab971d1c057817f0f976f984ec589",
+              "occurrence_id": "d61796a67bc75fe820481d4ca0dcc945dee66d15fedcbb9ef5787ca81c1eadf9",
               "type": "ACUPOINT",
-              "text": "在绝骨穴",
-              "start": 37,
+              "text": "绝骨穴",
+              "start": 38,
               "end": 41
             }
           },
           {
-            "link_id": "d835651126d276594a5cf45d40dd25e04d77ec081322bb523db96710ceddf2d2",
+            "link_id": "4ca967713dcc006e038c05b7f86891115e63d998b5a084814b2c43bc4490cfc2",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "70d2872e31758f1a2addf9cf79b32e3d5cf829491dc6c0bd0095edc1a131fcbf",
             "document": "20230928080422-67pnka7/20231011154605-urg4edm/20240606080424-lzjv21l.sy",
@@ -2655,10 +2655,10 @@
               "end": 27
             },
             "object": {
-              "occurrence_id": "72b16c7c2eeea372fdeb3c2641959de04d9ab971d1c057817f0f976f984ec589",
+              "occurrence_id": "d61796a67bc75fe820481d4ca0dcc945dee66d15fedcbb9ef5787ca81c1eadf9",
               "type": "ACUPOINT",
-              "text": "在绝骨穴",
-              "start": 37,
+              "text": "绝骨穴",
+              "start": 38,
               "end": 41
             }
           }
@@ -3259,6 +3259,32 @@
             }
           },
           {
+            "link_id": "f1a6673a59cde304248ee178f3a237b9fcd100fed4710dc6aba35ba4a5decb20",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "4ff0d5d788c6d52581f000a0b619d5b2144cd877a1da4fba4192648a9968c055",
+            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
+            "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
+            "tree_position": "0.2128",
+            "block_id": "20240329161033-j69tbjk",
+            "passage_start": 18,
+            "passage_end": 88,
+            "passage_text": "第一个呢，我们在踝关节，内怀踝的地方，在这个太溪穴，诸位，那时候我们在讲针灸的时候，假象这边是个肾脏（ 如图 ），一个肾脏区域，找到压痛点。",
+            "subject": {
+              "occurrence_id": "c46bcaf53176242dd9438555e31ef3a3d02b669685d67ce61bad86adccdbc253",
+              "type": "ACUPOINT",
+              "text": "这个太溪穴",
+              "start": 38,
+              "end": 43
+            },
+            "object": {
+              "occurrence_id": "9173f5a23eb39a1c46704a6fdf5dd2748dfd3a8274dd75bf267536f43c2788ef",
+              "type": "ACUPUNCTURE_TECHNIQUE",
+              "text": "针灸",
+              "start": 54,
+              "end": 56
+            }
+          },
+          {
             "link_id": "1885e0c7dc405f3c53b12c369d69c5040c594e585bc74b2f2d8ed9d30a491270",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "e53eb128fcabfcadae0e2e4da61a568e9bc119b247040a03d137501bacff1a6d",
@@ -3282,32 +3308,6 @@
               "text": "针灸",
               "start": 66,
               "end": 68
-            }
-          },
-          {
-            "link_id": "e9c985d01bfa856a63896c77b6ebe96ff9fb98548bc75af33d1e1349c3cfa75d",
-            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
-            "passage_id": "b87a86a10f9cd65b256cf038033a91397a50c220fe4caf91a23db3035451da46",
-            "document": "20230928080422-67pnka7/20240313114512-bfhhurk/20240313152817-lpx0l3c.sy",
-            "source_sha256": "edeebd146691b12f803043077abaa3ba498943593223c09b31675caede29f494",
-            "tree_position": "0.3367",
-            "block_id": "20240314085241-zeuq6pm",
-            "passage_start": 177,
-            "passage_end": 286,
-            "passage_text": "那你如果说你会针灸哦，那我们 下针下大敦穴，隐白 ，你大敦穴在大拇指头旁边，脚的拇指旁边，很痛啊，你一......哦， 就扎对侧，如果是右边的睾丸那边疝气坠下来，你去扎左边 ，那扎大敦你扎一下去一痛啊，一痛就收起来了。",
-            "subject": {
-              "occurrence_id": "b91ea4e2f627fb99cbdfe642a1808f13b21c9a99f36b0cb0a572436f32900bfa",
-              "type": "ACUPOINT",
-              "text": "大敦穴",
-              "start": 195,
-              "end": 198
-            },
-            "object": {
-              "occurrence_id": "6b038d1dfac9dbbeff37c5f6991e848295b786aeb04d2135839483a7e728e1a2",
-              "type": "ACUPUNCTURE_TECHNIQUE",
-              "text": "针灸",
-              "start": 184,
-              "end": 186
             }
           }
         ],
@@ -6755,6 +6755,32 @@
         ],
         "SYMPTOM|ACUPOINT": [
           {
+            "link_id": "c9615bce1b9cb5371a2348d508b120f77f316a6e84c49da786e651ac564b436e",
+            "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
+            "passage_id": "70d68db36408634967bdbb6c58dc783d3c64809e44fcd7c18ff4ba8c146f7ba1",
+            "document": "20230928080422-67pnka7/20230928080718-t46zz9j/20230928080728-kloe4jd.sy",
+            "source_sha256": "e8699e4bcf5be251d5b81879dd2a948b901ca2af8c7bd34f2be2bed9ed764a9e",
+            "tree_position": "0.398",
+            "block_id": "20230928080749-wvsicye",
+            "passage_start": 103,
+            "passage_end": 154,
+            "passage_text": "例头痛，就在天应穴的位置下一针，此为‘导’，再在对侧经的本穴，引气，用泻法，此为‘引’，亦为导引之法；",
+            "subject": {
+              "occurrence_id": "f4d6287994960cd8c9e7f28be88812dee8e076f52d7ea03b69eba750a78d145a",
+              "type": "SYMPTOM",
+              "text": "头痛",
+              "start": 104,
+              "end": 106
+            },
+            "object": {
+              "occurrence_id": "442014d5813afa0da69e3961ccf16967dde402e64071a32c17467342c1b76203",
+              "type": "ACUPOINT",
+              "text": "天应穴",
+              "start": 109,
+              "end": 112
+            }
+          },
+          {
             "link_id": "860f3f0b56986aab47443b8ab479a34dad7a80e3208efaa5b0778e46aaea2499",
             "relation_type": "SAME_PASSAGE_CO_OCCURRENCE",
             "passage_id": "fe2257b798eeae68f30bb03b5f6f52e2c8cb609da638e20bcb0a1b7a43e8d990",
@@ -6929,20 +6955,20 @@
     "WORK_ROOT": 5
   },
   "source_passages": 95058,
-  "passage_mentions": 116040,
+  "passage_mentions": 116228,
   "entity_mention_occurrences": 88884,
-  "contextual_term_occurrences": 27156,
+  "contextual_term_occurrences": 27344,
   "passage_mentions_by_type": {
-    "ACUPOINT": 3310,
+    "ACUPOINT": 3475,
     "ACUPUNCTURE_TECHNIQUE": 3055,
     "CLASSICAL_SOURCE": 344,
-    "CLASSICAL_THEORY": 3264,
+    "CLASSICAL_THEORY": 3290,
     "FORMULA": 12784,
     "HERB": 32410,
     "ORGAN": 42786,
     "POINT": 1241,
     "PULSE": 1811,
-    "SYMPTOM": 9706,
+    "SYMPTOM": 9703,
     "SYNDROME": 3955,
     "TONGUE": 1153,
     "TREATMENT": 221
