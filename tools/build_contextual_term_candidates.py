@@ -34,7 +34,7 @@ RULES = {
         ("TONGUE_CONTEXT_01", r"(?:舌象|舌质|舌苔|舌红|舌淡|舌绛|苔白|苔黄|苔腻)"),
     ],
     "SYNDROME": [
-        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|(?<!不)(?<!未)属于|证候|证型|此证|本证)"),
+        ("SYNDROME_CONTEXT_01", r"(?:辨证为|辨证属|(?<!条)辨为|证属|(?<!不)(?<!未)属于(?:是)?|证候|证型|此证|本证)"),
     ],
     "TREATMENT": [
         ("TREATMENT_CONTEXT_01", r"(?:治法(?:为|是)|治法[：:]|治宜|宜.{0,4}法|治以|当以|治疗原则|治疗方法)"),
@@ -61,7 +61,7 @@ RULES = {
     # This compact vocabulary is drawn from terms observed in the note corpus.
     "CLASSICAL_THEORY": [
         ("CLASSICAL_THEORY_CONTEXT_01",
-         r"(?:气街|水精四布|三焦|中正之官|决渎之官|营卫|营气|卫气|宗气|十二经脉|奇经八脉|五运六气|六气|司天|在泉|清阳|浊阴|浊气归心|淫气于脉|腠理|上焦|中焦|下焦)"),
+         r"(?:气街|水精四布|三焦|中正之官|决渎之官|营卫|营气|卫气|宗气|十二经脉|奇经八脉|五运六气|六气|司天|在泉|清阳|浊阴|浊气归心|淫气于脉|腠理|上焦寒|下焦寒|上焦|中焦|下焦)"),
     ],
 }
 FIELDS = [
@@ -150,6 +150,18 @@ def classify_span(
     before = text[max(left_boundary, start - 10):start]
     found = []
     for candidate_type, rules in RULES.items():
+        # These two complete regional expressions are classified as classical theory,
+        # not as symptoms or syndromes, regardless of nearby generic introduction cues.
+        if term in {"上焦寒", "下焦寒"} and candidate_type != "CLASSICAL_THEORY":
+            continue
+        # A preceding location preposition is not part of the acupoint name.
+        # Reject the grammar-led symptom window too; the following exact point span
+        # (e.g. 绝骨穴) is independently retained at its own source offset.
+        if candidate_type == "SYMPTOM" and re.match(r"在[\\u3400-\\u9fff]{1,4}穴", text[start:]):
+            continue
+        # A judgment particle belongs to the surrounding sentence, not the syndrome.
+        if candidate_type == "SYNDROME" and term.startswith("是") and re.search(r"属于\\s*$", before):
+            continue
         # A lexical formula mention owns its exact source span. A longer
         # n-gram that merely overlaps that formula must not be retyped as a
         # treatment method (e.g. "附子汤温" around the formula "附子汤").
@@ -205,7 +217,7 @@ def classify_span(
             # Generic labels and grammatical/prognostic phrases are not syndrome names.
             if candidate_type == "SYNDROME" and term.startswith((
                 "症状", "症见", "表现", "证候", "证型",
-                "不能", "不可", "无法", "不属于", "属于",
+                "不能", "不可", "无法", "不属于", "属于", "是",
             )):
                 continue
             # Do not retain an n-gram cut in the middle of the clinical term 风寒咳嗽.
@@ -346,7 +358,7 @@ def classify_span(
                 matched = re.fullmatch(r"[\u3400-\u9fff]{1,4}穴", term)
                 if (
                     term in {"穴位", "穴道", "穴名", "穴法", "穴处", "穴上", "穴下", "此穴", "该穴", "错穴"}
-                    or term.startswith(("到", "透", "两", "一", "针", "灸", "近取", "取", "按", "左", "右", "双侧", "两侧"))
+                    or term.startswith(("在", "到", "透", "两", "一", "针", "灸", "近取", "取", "按", "左", "右", "双侧", "两侧"))
                 ):
                     matched = None
                 if matched and start > 0 and HAN_RUN.fullmatch(text[start - 1:start]):
